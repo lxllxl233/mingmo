@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { useGameStore, type PanelKey } from '../state/store';
@@ -122,7 +122,7 @@ export function GameShell() {
             <div className="panel">
               <h2>{country ? content.countries.get(country.tag)?.name : '—'}</h2>
               <p className="muted">
-                点击省份查看详情。左侧打开国策、科研、阶级、财政、军事、外交与决议。
+                点击地区查看详情。左侧打开国策、科研、阶级、财政、军事、外交与决议。
               </p>
               <div className="row"><span>国库</span><b>{Math.round(country?.treasury ?? 0).toLocaleString()} 两</b></div>
               <div className="row"><span>粮储</span><b>{Math.round(country?.food ?? 0).toLocaleString()} 石</b></div>
@@ -173,3 +173,4 @@ export function GameShell() {
     </div>
   );
 }
+

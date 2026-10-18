@@ -36,8 +36,8 @@ export function ProvincePanel() {
   return (
     <div className="panel">
       <button className="close" onClick={closePanel}>关闭</button>
-      <h2>{def.name}</h2>
-      <p className="muted">{region?.name} · {prefecture?.name} · {TERRAIN_NAMES[def.terrain] ?? def.terrain}</p>
+      <h2>地区 · {def.name}</h2>
+      <p className="muted">{region?.name} · 所属省份：{prefecture?.name ?? '—'} · {TERRAIN_NAMES[def.terrain] ?? def.terrain}</p>
       <div className="row"><span>所有者</span><b style={{ color: owner?.color }}>{owner?.name ?? province.owner}</b></div>
       <div className="row"><span>控制者</span><b style={{ color: controller?.color }}>{controller?.name ?? province.controller}</b></div>
       <div className="row"><span>人口 / 田亩</span><b>{province.population.toLocaleString()} / {def.landholding.toLocaleString()} 万亩</b></div>
@@ -79,7 +79,7 @@ export function ProvincePanel() {
           </div>
         );
       })}
-      <h3>相邻省份</h3>
+      <h3>相邻地区</h3>
       <div className="panel-actions">
         {def.neighbors.map(id => (
           <button key={id} onClick={() => useGameStore.getState().selectProvince(id)}>
@@ -90,3 +90,4 @@ export function ProvincePanel() {
     </div>
   );
 }
+

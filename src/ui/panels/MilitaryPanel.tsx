@@ -47,7 +47,7 @@ export function MilitaryPanel() {
   return (
     <div className="panel">
       <h2>军事</h2>
-      <p className="muted">军队按省移动，逐日结算战斗与围城。欠饷会先打募兵，再打家丁。</p>
+      <p className="muted">军队按地区移动，逐日结算战斗与围城。欠饷会先打募兵，再打家丁。</p>
       <div className="military-summary">
         <span>陆军 <b>{landArmies.length}</b> 支</span>
         <span>水军 <b>{navyArmies.length}</b> 支</span>
@@ -126,7 +126,7 @@ export function MilitaryPanel() {
                 command({ type: 'army.move', armyId: army.id, path });
               }}
             >
-              行军到选中省份
+              行军到选中地区
             </button>
             <button onClick={() => command({ type: 'army.stop', armyId: army.id })}>停止</button>
             <button className="ghost" onClick={() => selectArmy(null)}>取消选择</button>
@@ -136,3 +136,4 @@ export function MilitaryPanel() {
     </div>
   );
 }
+

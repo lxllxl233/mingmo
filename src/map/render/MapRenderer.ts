@@ -138,6 +138,7 @@ export class MapRenderer {
   private terrainDetailLayer = new Graphics();
   private selectionLayer = new Graphics();
   private provinceBorderLayer = new Graphics();
+  private prefectureBorderLayer = new Graphics();
   private countryBorderLayer = new Graphics();
   private seaRouteLayer = new Graphics();
   private trailLayer = new Graphics();
@@ -217,6 +218,7 @@ export class MapRenderer {
       this.terrainSymbolLayer,
       this.terrainDetailLayer,
       this.provinceBorderLayer,
+      this.prefectureBorderLayer,
       this.countryBorderLayer,
       this.seaRouteLayer,
       this.selectionLayer,
@@ -868,10 +870,12 @@ export class MapRenderer {
   private drawBorders(): void {
     if (!this.state) return;
     this.provinceBorderLayer.clear();
+    this.prefectureBorderLayer.clear();
     this.countryBorderLayer.clear();
     const scale = this.world.scale.x || 1;
     const countryWidth = Math.max(0.1, 3.2 / scale);
-    const provinceWidth = Math.max(0.03, 0.85 / scale);
+    const prefectureWidth = Math.max(0.05, 1.5 / scale);
+    const provinceWidth = Math.max(0.03, 0.65 / scale);
     for (const edge of this.edges) {
       const a = this.state.provinces[edge.a];
       if (!a || edge.b === null) continue;
@@ -880,9 +884,12 @@ export class MapRenderer {
       if (a.controller !== b.controller) {
         this.countryBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
           .stroke({ width: countryWidth, color: 0x1f1913, alpha: 1 });
+      } else if (this.content.provinces.get(edge.a)?.prefectureId !== this.content.provinces.get(edge.b)?.prefectureId) {
+        this.prefectureBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
+          .stroke({ width: prefectureWidth, color: 0x5a4a32, alpha: 0.78 });
       } else {
         this.provinceBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: provinceWidth, color: 0x5a5040, alpha: 0.62 });
+          .stroke({ width: provinceWidth, color: 0x5a5040, alpha: 0.48 });
       }
     }
   }
@@ -997,11 +1004,22 @@ export class MapRenderer {
     this.localLabelLayer.removeChildren();
     this.localLabelsDrawn = false;
     if (!this.state) return;
+    const groups = new Map<string, { x: number; y: number; area: number; count: number }>();
     for (const def of this.content.provinces.values()) {
       const centroid = this.centroids.get(def.id);
-      if (!centroid || !def.name) continue;
+      if (!centroid) continue;
+      const group = groups.get(def.prefectureId) ?? { x: 0, y: 0, area: 0, count: 0 };
+      group.x += centroid.x;
+      group.y += centroid.y;
+      group.area += labelArea(this.projected.get(def.id));
+      group.count += 1;
+      groups.set(def.prefectureId, group);
+    }
+    for (const [id, group] of groups) {
+      const name = this.content.prefectures.get(id)?.name;
+      if (!name) continue;
       const text = new Text({
-        text: baseProvinceName(def.name),
+        text: name,
         style: new TextStyle({
           fontFamily: '"Noto Serif SC", "Songti SC", serif',
           fontSize: 38,
@@ -1010,9 +1028,9 @@ export class MapRenderer {
         }),
       });
       text.anchor.set(0.5);
-      text.position.set(centroid.x, centroid.y);
+      text.position.set(group.x / Math.max(1, group.count), group.y / Math.max(1, group.count));
       this.provinceLabels.set(text, 14);
-      this.provinceLabelArea.set(text, labelArea(this.projected.get(def.id)));
+      this.provinceLabelArea.set(text, group.area);
       this.provinceLabelLayer.addChild(text);
     }
     this.updateProvinceLabelScales();
@@ -1025,36 +1043,20 @@ export class MapRenderer {
       const points = this.projected.get(def.id);
       const centroid = this.centroids.get(def.id);
       if (!points || !centroid || !def.name) continue;
-      let minX = Infinity;
-      let maxX = -Infinity;
-      for (let i = 0; i < points.length; i += 2) {
-        minX = Math.min(minX, points[i] ?? 0);
-        maxX = Math.max(maxX, points[i] ?? 0);
-      }
-      if (!Number.isFinite(minX) || maxX <= minX) continue;
-      const baseName = baseProvinceName(def.name);
-      const directions: Array<[string, number]> = [
-        ['', centroid.x],
-        ['东', centroid.x + (maxX - minX) * 0.23],
-        ['西', centroid.x - (maxX - minX) * 0.23],
-      ];
-      for (const [suffix, x] of directions) {
-        if (!pointInPolygon(x, centroid.y, points)) continue;
-        const text = new Text({
-          text: `${baseName}${suffix}`,
-          style: new TextStyle({
-            fontFamily: '"Noto Serif SC", "Songti SC", serif',
-            fontSize: 32,
-            fill: 0x5a4c38,
-            stroke: { color: 0xf2ead8, width: 2 },
-          }),
-        });
-        text.anchor.set(0.5);
-        text.position.set(x, centroid.y);
-        this.localLabels.set(text, 12);
-        this.localLabelArea.set(text, labelArea(points));
-        this.localLabelLayer.addChild(text);
-      }
+      const text = new Text({
+        text: def.name,
+        style: new TextStyle({
+          fontFamily: '"Noto Serif SC", "Songti SC", serif',
+          fontSize: 32,
+          fill: 0x5a4c38,
+          stroke: { color: 0xf2ead8, width: 2 },
+        }),
+      });
+      text.anchor.set(0.5);
+      text.position.set(centroid.x, centroid.y);
+      this.localLabels.set(text, 12);
+      this.localLabelArea.set(text, labelArea(points));
+      this.localLabelLayer.addChild(text);
     }
     this.updateProvinceLabelScales();
   }
@@ -1343,10 +1345,6 @@ export class MapRenderer {
     this.app?.destroy(true, { children: true });
     this.app = null;
   }
-}
-
-function baseProvinceName(name: string): string {
-  return name.replace(/[东西南北中]$/, '') || name;
 }
 
 function labelArea(points: number[] | undefined): number {

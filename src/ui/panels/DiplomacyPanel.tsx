@@ -74,7 +74,7 @@ export function DiplomacyPanel() {
             <div className="war-score">
               <span>我方战争分 <b>{myScore}</b></span>
               <span>敌方 <b>{enemyScore}</b></span>
-              <span>占领 <b>{myOccupied}</b> · 失守 <b>{lost}</b></span>
+              <span>占领地区 <b>{myOccupied}</b> · 失守地区 <b>{lost}</b></span>
             </div>
             <div className="war-score">
               <span>伤亡：我 <b>{myCasualties.toLocaleString()}</b> · 敌 <b>{enemyCasualties.toLocaleString()}</b></span>
@@ -155,3 +155,4 @@ export function DiplomacyPanel() {
     </div>
   );
 }
+

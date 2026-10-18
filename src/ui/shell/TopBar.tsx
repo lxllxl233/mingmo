@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
+import { controlledProvinceCount } from '../../engine/rules/geography';
 import { useGameStore } from '../state/store';
 
 function number(value: number, digits = 0): string {
@@ -57,6 +58,7 @@ export function TopBar() {
     + army.composition.infantry + army.composition.firearm + army.composition.cavalry
     + army.composition.artillery + army.composition.naval, 0);
   const provinces = Object.values(game.provinces).filter(province => province.controller === game.playerTag).length;
+  const provinceGroups = controlledProvinceCount(game, content, game.playerTag);
 
   return (
     <header className="topbar">
@@ -85,7 +87,7 @@ export function TopBar() {
           <>
             <b>粮储 {number(country?.food ?? 0)} 石</b>
             <span>粮价系数 {content.balance.economy.grainPrice.toFixed(2)}</span>
-            <span>控制省份 {provinces}</span>
+            <span>控制省份 {provinceGroups} / {content.prefectures.size} · 地区 {provinces} / {content.provinces.size}</span>
             <small>饥荒会降低稳定并引发民变；粮储过低时顶栏变为警示色。</small>
           </>
         }

@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
 import { relationKey } from '../state/types';
 
@@ -142,7 +142,7 @@ export function makePeace(
   state.log.push({
     day: state.day,
     category: 'diplomacy',
-    text: `${attackerName} 与 ${defenderName} ${termLabel}${transferred > 0 ? `，割让 ${transferred} 省` : ''}${restored > 0 ? `，归还 ${restored} 省` : ''}${reparations > 0 ? `，赔款 ${reparations} 两` : ''}`,
+    text: `${attackerName} 与 ${defenderName} ${termLabel}${transferred > 0 ? `，割让 ${transferred} 地区` : ''}${restored > 0 ? `，归还 ${restored} 地区` : ''}${reparations > 0 ? `，赔款 ${reparations} 两` : ''}`,
     severity: 'info',
   });
   return true;
@@ -165,3 +165,4 @@ export function surrenderTendency(state: GameState, war: WarState, tag: string):
   const raw = 42 - (mine - enemy) * 7 + exhaustion * 0.45 + (capitalLost ? 28 : 0) + (armies <= 1 ? 10 : 0);
   return Math.max(0, Math.min(100, Math.round(raw)));
 }
+

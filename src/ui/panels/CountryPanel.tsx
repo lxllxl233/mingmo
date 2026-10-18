@@ -1,6 +1,7 @@
 import type { LeaderDef } from '../../content/types';
 import { areAtWar } from '../../engine/rules/war';
 import { relationKey } from '../../engine/state/types';
+import { controlledProvinceCount, ownedProvinceCount } from '../../engine/rules/geography';
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 import { LeaderPortrait } from './LeaderPortrait';
@@ -94,6 +95,8 @@ export function CountryPanel() {
   const leader = def.leadersByScenario?.[game.scenarioId] ?? def.leader ?? fallbackLeader(def.name, def.color);
   const controlled = Object.values(game.provinces).filter(province => province.controller === tag);
   const owned = Object.values(game.provinces).filter(province => province.owner === tag);
+  const controlledProvinces = controlledProvinceCount(game, content, tag);
+  const ownedProvinces = ownedProvinceCount(game, content, tag);
   const population = controlled.reduce((sum, province) => sum + province.population, 0);
   const armies = Object.values(game.armies).filter(army => army.tag === tag);
   const strength = armies.reduce((sum, army) => sum + army.composition.infantry
@@ -167,7 +170,8 @@ export function CountryPanel() {
 
       <section className="country-grid">
         <div className="country-stat"><span>首都</span><strong>{content.provinces.get(country.capital)?.name ?? country.capital}</strong></div>
-        <div className="country-stat"><span>控制 / 领有</span><strong>{controlled.length} / {owned.length} 省</strong></div>
+        <div className="country-stat"><span>控制</span><strong>{controlledProvinces} / {content.prefectures.size} 省 · {controlled.length} / {content.provinces.size} 地区</strong></div>
+        <div className="country-stat"><span>领有</span><strong>{ownedProvinces} 省 · {owned.length} 地区</strong></div>
         <div className="country-stat"><span>人口</span><strong>{formatNumber(population)}</strong></div>
         <div className="country-stat"><span>国库 / 欠饷</span><strong>{formatNumber(country.treasury)} / {formatNumber(country.arrears)}</strong></div>
         <div className="country-stat"><span>稳定 / 天命</span><strong>{Math.round(country.stability)} / {Math.round(country.mandate)}</strong></div>

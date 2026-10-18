@@ -1,4 +1,4 @@
-import type { ArmyTemplate } from '../../content/types';
+﻿import type { ArmyTemplate } from '../../content/types';
 import { FOREIGN_TRAINING_LIMIT, isForeignTemplate } from '../../engine/rules/armyTemplates';
 import { useGameStore } from '../state/store';
 import { ArmyIcon } from '../panels/ArmyIcon';
@@ -34,7 +34,7 @@ export function TrainingModal() {
             <h2>{picker === 'navy' ? '训练水军' : '训练陆军'}</h2>
             <p className="muted">
               选择具体军团模板。选好后关闭弹窗，在地图上点击
-              {picker === 'navy' ? '我方港口' : '我方省份'}部署。
+              {picker === 'navy' ? '我方港口' : '我方地区'}部署。
               他国军种每次同时训练上限 {FOREIGN_TRAINING_LIMIT} 支。
             </p>
           </div>
@@ -84,3 +84,4 @@ export function TrainingModal() {
     </div>
   );
 }
+

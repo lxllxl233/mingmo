@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+﻿import { useCallback, useEffect, useRef } from 'react';
 import { MapRenderer } from '../../map/render/MapRenderer';
 import { useGameStore } from '../state/store';
 
@@ -102,7 +102,7 @@ export function MapViewport() {
       {trainingRequest && (
         <div className="deploy-banner">
           <b>{trainingRequest.kind === 'navy' ? '部署水军' : '部署陆军'}</b>
-          <span>点击地图上的{trainingRequest.kind === 'navy' ? '我方港口' : '我方省份'}开始训练</span>
+          <span>点击地图上的{trainingRequest.kind === 'navy' ? '我方港口' : '我方地区'}开始训练</span>
           <button onClick={cancelTrainingRequest}>取消</button>
         </div>
       )}
@@ -128,7 +128,7 @@ export function MapViewport() {
             <>
               <span><i style={{ background: '#a33a32' }} />低发展</span>
               <span><i style={{ background: '#d4b25a' }} />高发展</span>
-              <span className="muted">按省份发展度着色</span>
+              <span className="muted">按地区发展度着色</span>
             </>
           )}
           {mapMode === 'military' && (
@@ -151,3 +151,4 @@ export function MapViewport() {
     </div>
   );
 }
+

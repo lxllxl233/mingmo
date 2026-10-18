@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { hasLocal } from '../../app/save/save';
 import { createInitialState } from '../../engine/state/initial';
+import { controlledProvinceCount } from '../../engine/rules/geography';
 import { formatNumber } from '../format';
 import { useGameStore } from '../state/store';
 
@@ -59,7 +60,10 @@ export function StartScreen() {
   }, [content, scenario, selectedTag]);
   const previewCountry = preview?.countries[selectedTag];
   const previewDef = content.countries.get(selectedTag);
-  const previewProvinces = preview
+  const previewProvinces = preview && previewDef
+    ? controlledProvinceCount(preview, content, selectedTag)
+    : 0;
+  const previewAreas = preview
     ? Object.values(preview.provinces).filter(province => province.controller === selectedTag).length
     : 0;
   const previewArmies = preview
@@ -74,7 +78,7 @@ export function StartScreen() {
     <div className="start">
       <header>
         <h1>明末 华夏震荡</h1>
-        <p className="subtitle">1616–1683 · 明清易代 · 省份级大战略</p>
+        <p className="subtitle">1616–1683 · 明清易代 · 省份—地区级大战略</p>
       </header>
       <div className="start-grid">
         <section className="start-column">
@@ -108,7 +112,8 @@ export function StartScreen() {
                 <span>兵源 <b>{formatNumber(previewCountry.manpower)}</b></span>
                 <span>稳定 <b>{Math.round(previewCountry.stability)}</b></span>
                 <span>天命 <b>{Math.round(previewCountry.mandate)}</b></span>
-                <span>控制省份 <b>{previewProvinces}</b></span>
+                <span>控制省份 <b>{previewProvinces}</b> / {content.prefectures.size}</span>
+                <span>控制地区 <b>{previewAreas}</b> / {content.provinces.size}</span>
                 <span>军团 <b>{previewArmies}</b></span>
                 <span>战争 <b>{previewWars}</b></span>
               </div>
