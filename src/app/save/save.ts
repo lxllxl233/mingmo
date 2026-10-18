@@ -10,7 +10,7 @@ export interface SaveFile {
   checksum: string;
 }
 
-export const SAVE_VERSION = 5;
+export const SAVE_VERSION = 6;
 
 export function encodeSave(state: GameState): string {
   const payload = {
@@ -31,7 +31,7 @@ export function decodeSave(text: string): GameState {
   } catch {
     throw new Error('存档不是合法 JSON');
   }
-  if (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== 3 && parsed.version !== 4 && parsed.version !== SAVE_VERSION) {
+  if (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== 3 && parsed.version !== 4 && parsed.version !== 5 && parsed.version !== SAVE_VERSION) {
     throw new Error(`存档版本 ${parsed.version} 与当前版本 ${SAVE_VERSION} 不兼容`);
   }
   const checksum = hashState(parsed.state);
@@ -51,6 +51,16 @@ export function decodeSave(text: string): GameState {
     if (typeof parsed.state.nextTrainingId !== 'number') parsed.state.nextTrainingId = 0;
   }
   if (parsed.version <= 4 && !parsed.state.truces) parsed.state.truces = {};
+  if (parsed.version <= 5) {
+    if (!parsed.state.vassals) parsed.state.vassals = {};
+    if (!parsed.state.lastTribute) parsed.state.lastTribute = {};
+  }
+  for (const army of Object.values(parsed.state.armies)) {
+    if (typeof army.templateId !== 'string') army.templateId = '';
+  }
+  for (const war of parsed.state.wars) {
+    if (!war.casualties) war.casualties = { [war.attacker]: 0, [war.defender]: 0 };
+  }
   return parsed.state;
 }
 

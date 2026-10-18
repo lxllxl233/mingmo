@@ -39,6 +39,7 @@ function spawnArmy(
     history: [],
     movePath: [],
     moveProgress: 0,
+    templateId,
     embarked: false,
     navalTarget: null,
     navalProgress: 0,

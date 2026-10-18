@@ -146,6 +146,13 @@ export class MapRenderer {
   private portLayer = new Graphics();
   private portLabelLayer = new Container();
   private countryLabelLayer = new Container();
+  private provinceLabelLayer = new Container();
+  private localLabelLayer = new Container();
+  private provinceLabels = new Map<Text, number>();
+  private localLabels = new Map<Text, number>();
+  private provinceLabelArea = new Map<Text, number>();
+  private localLabelArea = new Map<Text, number>();
+  private localLabelsDrawn = false;
   private armyLayer = new Container();
   private projected = new Map<string, number[]>();
   private centroids = new Map<string, { x: number; y: number }>();
@@ -216,6 +223,8 @@ export class MapRenderer {
       this.hoverLayer,
       this.cityLayer,
       this.portLayer,
+      this.provinceLabelLayer,
+      this.localLabelLayer,
       this.countryLabelLayer,
       this.portLabelLayer,
       this.trailLayer,
@@ -650,6 +659,8 @@ export class MapRenderer {
     for (const label of this.portLabels) {
       label.visible = scale >= 13.5 && scale < 60;
     }
+    if (scale >= 120) this.ensureLocalLabels();
+    this.updateProvinceLabelScales();
     this.portLayer.visible = scale < 60;
     this.cityLayer.visible = scale < 80;
     this.updateTerrainScale();
@@ -829,6 +840,7 @@ export class MapRenderer {
     this.drawBorders();
 
     this.drawCities();
+    this.drawProvinceLabels();
     this.drawCountryLabels();
     this.hasDrawn = true;
     this.drawSelection();
@@ -857,7 +869,9 @@ export class MapRenderer {
     if (!this.state) return;
     this.provinceBorderLayer.clear();
     this.countryBorderLayer.clear();
-    const factor = this.lineFactor();
+    const scale = this.world.scale.x || 1;
+    const countryWidth = Math.max(0.1, 3.2 / scale);
+    const provinceWidth = Math.max(0.03, 0.85 / scale);
     for (const edge of this.edges) {
       const a = this.state.provinces[edge.a];
       if (!a || edge.b === null) continue;
@@ -865,10 +879,10 @@ export class MapRenderer {
       if (!b) continue;
       if (a.controller !== b.controller) {
         this.countryBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: 0.28 * factor, color: 0x1f1913, alpha: 1 });
+          .stroke({ width: countryWidth, color: 0x1f1913, alpha: 1 });
       } else {
         this.provinceBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: 0.045 * factor, color: 0x5a5040, alpha: 0.6 });
+          .stroke({ width: provinceWidth, color: 0x5a5040, alpha: 0.62 });
       }
     }
   }
@@ -972,6 +986,109 @@ export class MapRenderer {
     }
   }
 
+  private drawProvinceLabels(): void {
+    for (const label of this.provinceLabels.keys()) label.destroy();
+    for (const label of this.localLabels.keys()) label.destroy();
+    this.provinceLabels.clear();
+    this.localLabels.clear();
+    this.provinceLabelArea.clear();
+    this.localLabelArea.clear();
+    this.provinceLabelLayer.removeChildren();
+    this.localLabelLayer.removeChildren();
+    this.localLabelsDrawn = false;
+    if (!this.state) return;
+    for (const def of this.content.provinces.values()) {
+      const centroid = this.centroids.get(def.id);
+      if (!centroid || !def.name) continue;
+      const text = new Text({
+        text: baseProvinceName(def.name),
+        style: new TextStyle({
+          fontFamily: '"Noto Serif SC", "Songti SC", serif',
+          fontSize: 38,
+          fill: 0x3a3226,
+          stroke: { color: 0xf2ead8, width: 2.4 },
+        }),
+      });
+      text.anchor.set(0.5);
+      text.position.set(centroid.x, centroid.y);
+      this.provinceLabels.set(text, 14);
+      this.provinceLabelArea.set(text, labelArea(this.projected.get(def.id)));
+      this.provinceLabelLayer.addChild(text);
+    }
+    this.updateProvinceLabelScales();
+  }
+
+  private ensureLocalLabels(): void {
+    if (this.localLabelsDrawn || !this.state) return;
+    this.localLabelsDrawn = true;
+    for (const def of this.content.provinces.values()) {
+      const points = this.projected.get(def.id);
+      const centroid = this.centroids.get(def.id);
+      if (!points || !centroid || !def.name) continue;
+      let minX = Infinity;
+      let maxX = -Infinity;
+      for (let i = 0; i < points.length; i += 2) {
+        minX = Math.min(minX, points[i] ?? 0);
+        maxX = Math.max(maxX, points[i] ?? 0);
+      }
+      if (!Number.isFinite(minX) || maxX <= minX) continue;
+      const baseName = baseProvinceName(def.name);
+      const directions: Array<[string, number]> = [
+        ['', centroid.x],
+        ['东', centroid.x + (maxX - minX) * 0.23],
+        ['西', centroid.x - (maxX - minX) * 0.23],
+      ];
+      for (const [suffix, x] of directions) {
+        if (!pointInPolygon(x, centroid.y, points)) continue;
+        const text = new Text({
+          text: `${baseName}${suffix}`,
+          style: new TextStyle({
+            fontFamily: '"Noto Serif SC", "Songti SC", serif',
+            fontSize: 32,
+            fill: 0x5a4c38,
+            stroke: { color: 0xf2ead8, width: 2 },
+          }),
+        });
+        text.anchor.set(0.5);
+        text.position.set(x, centroid.y);
+        this.localLabels.set(text, 12);
+        this.localLabelArea.set(text, labelArea(points));
+        this.localLabelLayer.addChild(text);
+      }
+    }
+    this.updateProvinceLabelScales();
+  }
+
+  private updateProvinceLabelScales(): void {
+    const scale = this.world.scale.x || 1;
+    const used: Array<{ x: number; y: number }> = [];
+    const provinceCandidates = [...this.provinceLabels.entries()]
+      .sort((a, b) => (this.provinceLabelArea.get(b[0]) ?? 0) - (this.provinceLabelArea.get(a[0]) ?? 0));
+    const minProvinceDistance = 110 / scale;
+    for (const [label, target] of provinceCandidates) {
+      label.scale.set(target / (38 * scale));
+      label.visible = false;
+      if (scale < 17 || scale >= 120) continue;
+      const tooClose = used.some(point => Math.hypot(point.x - label.position.x, point.y - label.position.y) < minProvinceDistance);
+      if (tooClose) continue;
+      used.push({ x: label.position.x, y: label.position.y });
+      label.visible = true;
+    }
+    const usedLocal: Array<{ x: number; y: number }> = [];
+    const localCandidates = [...this.localLabels.entries()]
+      .sort((a, b) => (this.localLabelArea.get(b[0]) ?? 0) - (this.localLabelArea.get(a[0]) ?? 0));
+    const minLocalDistance = 55 / scale;
+    for (const [label, target] of localCandidates) {
+      label.scale.set(target / (32 * scale));
+      label.visible = false;
+      if (scale < 120) continue;
+      const tooClose = usedLocal.some(point => Math.hypot(point.x - label.position.x, point.y - label.position.y) < minLocalDistance);
+      if (tooClose) continue;
+      usedLocal.push({ x: label.position.x, y: label.position.y });
+      label.visible = true;
+    }
+  }
+
   private drawArmyTrails(): void {
     if (!this.state) return;
     this.trailLayer.clear();
@@ -979,26 +1096,28 @@ export class MapRenderer {
     for (const army of Object.values(this.state.armies)) {
       if (army.tag !== this.state.playerTag) continue;
       const selected = army.id === this.selectedArmy;
-      if (!selected && army.movePath.length === 0) continue;
       const color = this.colorOf(army.tag);
       const history = this.positions([...(army.history ?? []), army.province]);
       const planned = this.positions([army.province, ...army.movePath]);
-      if (selected && army.embarked && army.navalTarget) {
+      if (army.embarked && army.navalTarget) {
         const from = this.centroids.get(army.province);
         const to = this.centroids.get(army.navalTarget);
         if (from && to) {
-          this.strokeTrail([from, to], 0.24 * lf, 0x3f7f9a, 0.75);
-          this.trailLayer.circle(to.x, to.y, 0.1 * lf).fill({ color: 0x3f7f9a, alpha: 0.9 });
+          this.strokeTrail([from, to], (selected ? 0.24 : 0.12) * lf, 0x3f7f9a, selected ? 0.75 : 0.45);
+          this.trailLayer.circle(to.x, to.y, (selected ? 0.1 : 0.06) * lf).fill({ color: 0x3f7f9a, alpha: 0.8 });
         }
       }
-      if (selected && history.length > 1) {
-        this.strokeTrail(history, 0.18 * lf, 0x1f1c18, 0.4);
-        this.strokeTrail(history, 0.1 * lf, 0xf2ead8, 0.7);
-        for (const point of history) {
-          this.trailLayer.circle(point.x, point.y, 0.06 * lf).fill({ color: 0xf2ead8, alpha: 0.8 });
+      if (history.length > 1) {
+        this.strokeTrail(history, (selected ? 0.18 : 0.06) * lf, 0x1f1c18, selected ? 0.4 : 0.18);
+        if (selected) {
+          this.strokeTrail(history, 0.1 * lf, 0xf2ead8, 0.7);
+          for (const point of history) {
+            this.trailLayer.circle(point.x, point.y, 0.06 * lf).fill({ color: 0xf2ead8, alpha: 0.8 });
+          }
         }
       }
       if (planned.length > 1) {
+        this.strokeTrail(planned, 0.07 * lf, color, selected ? 0.7 : 0.45);
         if (selected) {
           this.strokeTrail(planned, 0.42 * lf, 0x1f1c18, 0.55);
           this.strokeTrail(planned, 0.22 * lf, 0xffd27a, 1);
@@ -1009,7 +1128,9 @@ export class MapRenderer {
               .stroke({ width: 0.04 * lf, color: 0x1f1c18, alpha: 0.9 });
           }
         } else {
-          this.strokeTrail(planned, 0.07 * lf, color, 0.35);
+          this.strokeTrailArrows(planned, color, 0x1f1c18, lf * 0.65);
+          this.trailLayer.circle(planned[0]!.x, planned[0]!.y, 0.055 * lf)
+            .fill({ color, alpha: 0.8 });
         }
       }
     }
@@ -1224,6 +1345,27 @@ export class MapRenderer {
   }
 }
 
+function baseProvinceName(name: string): string {
+  return name.replace(/[东西南北中]$/, '') || name;
+}
+
+function labelArea(points: number[] | undefined): number {
+  if (!points || points.length < 6) return 0;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (let i = 0; i < points.length; i += 2) {
+    const x = points[i] ?? 0;
+    const y = points[i + 1] ?? 0;
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+  }
+  return Math.max(0, (maxX - minX) * (maxY - minY));
+}
+
 function hashString(text: string): number {
   let hash = 2166136261;
   for (let i = 0; i < text.length; i += 1) {
@@ -1233,7 +1375,8 @@ function hashString(text: string): number {
   return hash >>> 0;
 }
 
-function strengthText(strength: number): string {  if (strength >= 10000) return `${(strength / 1000).toFixed(0)}k`;
+function strengthText(strength: number): string {
+  if (strength >= 10000) return `${(strength / 1000).toFixed(0)}k`;
   if (strength >= 1000) return `${(strength / 1000).toFixed(1)}k`;
   return String(Math.max(0, Math.round(strength)));
 }

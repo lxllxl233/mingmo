@@ -108,6 +108,7 @@ export interface ArmyState {
   history: string[];
   movePath: string[];
   moveProgress: number;
+  templateId: string;
   embarked: boolean;
   navalTarget: string | null;
   navalProgress: number;
@@ -134,6 +135,7 @@ export interface WarState {
   startDay: number;
   warGoal: string;
   exhaustion: Record<string, number>;
+  casualties: Record<string, number>;
 }
 
 export interface QueuedEvent {
@@ -202,6 +204,8 @@ export interface GameState {
   training: TrainingItem[];
   wars: WarState[];
   truces: Record<string, number>;
+  vassals: Record<string, string>;
+  lastTribute: Record<string, number>;
   relations: Record<string, number>;
   eventQueue: QueuedEvent[];
   pendingEvents: PendingEvent[];

@@ -9,6 +9,7 @@ export const MODIFIER_KEYS = new Set([
   'siege_speed_pct', 'fort_defense_pct', 'morale_add', 'discipline_pct',
   'research_speed_pct', 'focus_speed_pct', 'unrest_add', 'devastation_add',
   'supply_limit_add', 'naval_attack_pct', 'army_upkeep_pct', 'inflation_add',
+  'movement_speed_pct',
 ]);
 
 const TRIGGER_KEYS = new Set([

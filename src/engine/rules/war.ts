@@ -47,6 +47,7 @@ export function declareWar(
 ): WarState | null {
   if (!content.countries.has(attacker) || !content.countries.has(defender)) return null;
   if (attacker === defender || areAtWar(state, attacker, defender)) return null;
+  if (state.vassals[defender] === attacker || state.vassals[attacker] === defender) return null;
   if (truceDays(state, attacker, defender) > 0) return null;
   const war: WarState = {
     id: `war_${state.nextWarId}`,
@@ -55,6 +56,7 @@ export function declareWar(
     startDay: state.day,
     warGoal: goal,
     exhaustion: { [attacker]: 0, [defender]: 0 },
+    casualties: { [attacker]: 0, [defender]: 0 },
   };
   state.nextWarId += 1;
   state.wars.push(war);
@@ -148,4 +150,18 @@ export function makePeace(
 
 export function warsOf(state: GameState, tag: string): WarState[] {
   return state.wars.filter(war => war.attacker === tag || war.defender === tag);
+}
+
+export function surrenderTendency(state: GameState, war: WarState, tag: string): number {
+  const score = warScore(state, war);
+  const mine = tag === war.attacker ? score.attacker : score.defender;
+  const enemy = tag === war.attacker ? score.defender : score.attacker;
+  const country = state.countries[tag];
+  if (!country) return 50;
+  const exhaustion = country.warExhaustion;
+  const capital = state.provinces[country.capital];
+  const capitalLost = capital ? capital.controller !== tag : false;
+  const armies = Object.values(state.armies).filter(army => army.tag === tag).length;
+  const raw = 42 - (mine - enemy) * 7 + exhaustion * 0.45 + (capitalLost ? 28 : 0) + (armies <= 1 ? 10 : 0);
+  return Math.max(0, Math.min(100, Math.round(raw)));
 }

@@ -2,6 +2,7 @@ import type { ContentIndex } from '../content/types';
 import { evaluateTrigger } from './rules/triggers';
 import { applyEffects } from './rules/effects';
 import { declareWar, makePeace } from './rules/war';
+import { demandTribute } from './rules/vassals';
 import type { GameState } from './state/types';
 import { startFocus } from './systems/focus';
 import { startResearch } from './systems/research';
@@ -22,6 +23,7 @@ export type Command =
   | { type: 'army.stop'; armyId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
+  | { type: 'diplomacy.demandTribute'; vassal: string }
   | { type: 'diplomacy.makePeace'; warId: string; terms?: 'white' | 'status' | 'demand' };
 
 export class CommandError extends Error {
@@ -173,6 +175,11 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
         throw new CommandError('cannot make peace');
       }
       break;
+    case 'diplomacy.demandTribute': {
+      const result = demandTribute(state, content, tag, command.vassal);
+      if (!result.ok) throw new CommandError(result.reason);
+      break;
+    }
     default: {
       const exhaustive: never = command;
       throw new CommandError(`unknown command ${String(exhaustive)}`);

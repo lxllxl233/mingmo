@@ -442,3 +442,30 @@ input, select {
 .sidebar-country-name { font-size: 10px; color: var(--red); letter-spacing: .08em; }
 .sidebar-leader { display: block; line-height: 0; opacity: .94; }
 .sidebar .sidebar-country > svg { flex: 0 0 auto; }
+
+.vassal-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 12px; }
+.vassal-row b { color: var(--red); }
+
+.training-option { flex-direction: row; align-items: center; }
+.training-option-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.training-option.foreign { border-color: #9a7b4f; background: rgba(184,137,46,.06); }
+.training-option.foreign:disabled { opacity: .55; }
+.training-foreign-head { margin-top: 16px; }
+
+.focus-head-panel { border-bottom: none; }
+.focus-summary { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 8px 0; padding: 6px 8px; border: 1px solid var(--line); background: rgba(255,255,255,.26); font-size: 12px; color: var(--ink-soft); }
+.focus-summary b { color: var(--red); }
+.focus-progress-label { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; margin-top: 7px; }
+.focus-progress { width: 100%; height: 7px; accent-color: var(--red-soft); }
+
+.research-summary { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 8px 0; padding: 6px 8px; border: 1px solid var(--line); background: rgba(255,255,255,.26); font-size: 12px; color: var(--ink-soft); }
+.research-summary b { color: var(--red); }
+.research-slot { margin: 8px 0; }
+.research-slot progress { width: 100%; height: 6px; accent-color: var(--blue, #3f6f9a); }
+
+.decision-summary { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 8px 0; padding: 6px 8px; border: 1px solid var(--line); background: rgba(255,255,255,.26); font-size: 12px; color: var(--ink-soft); }
+.decision-summary b { color: var(--red); }
+.decision-card { margin-bottom: 8px; }
+.decision-ready { color: #3f6f46; font-size: 11px; }
+.decision-cost { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; }
+.decision-cost span { padding: 2px 6px; border: 1px solid var(--line); background: rgba(184,137,46,.08); font-size: 11px; color: #6b4f2a; }

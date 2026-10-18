@@ -1,6 +1,7 @@
 import type { ContentIndex } from '../../content/types';
 import type { ArmyState, GameState } from '../state/types';
 import { pickGeneral } from './military';
+import { FOREIGN_TRAINING_LIMIT, isForeignTemplate } from '../rules/armyTemplates';
 
 const SILVER_PER_SIZE = 5000;
 const FOOD_PER_SIZE = 600;
@@ -30,6 +31,7 @@ function createArmy(
     history: [],
     movePath: [],
     moveProgress: 0,
+    templateId,
     embarked: false,
     navalTarget: null,
     navalProgress: 0,
@@ -70,6 +72,12 @@ export function enqueueTraining(
   const manpower = size * MANPOWER_PER_SIZE;
   if (nation.treasury < costSilver || nation.food < costFood || nation.manpower < manpower) {
     return false;
+  }
+  if (isForeignTemplate(tag, templateId)) {
+    const foreignQueued = state.training.filter(entry => entry.tag === tag && isForeignTemplate(tag, entry.templateId)).length;
+    const foreignActive = Object.values(state.armies).filter(army =>
+      army.tag === tag && isForeignTemplate(tag, army.templateId)).length;
+    if (foreignQueued + foreignActive >= FOREIGN_TRAINING_LIMIT) return false;
   }
   nation.manpower -= manpower;
   const totalDays = size * DAYS_PER_SIZE + BASE_DAYS;

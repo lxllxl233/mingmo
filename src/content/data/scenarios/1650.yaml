@@ -1,4 +1,4 @@
-id: "1650"
+﻿id: "1650"
 name: 永历播迁
 start_date: 1650-01-01
 description: 清已据天下大半、南明据西南、郑氏据海岛、三藩未起。以弱搏强的极限。
@@ -87,7 +87,7 @@ armies:
   - { tag: RUSSIA, template: russia_cossack, province: albazin, size: 2 }
   - { tag: RUSSIA, template: russia_cossack, province: nerchinsk, size: 1 }
   - { tag: RUSSIA, template: russia_cossack, province: okhotsk, size: 1 }
-  - { tag: NEU, template: neutrals_tribal, province: ava, size: 2 }
+  - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
   - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
 initial_wars:
   - { attacker: QING, defender: SMING, goal: 一统 }

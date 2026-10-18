@@ -18,19 +18,29 @@ export function FocusPanel() {
     branches.set(focus.branch, list);
   }
   const active = country.focus ? content.focuses.get(country.focus.id) : null;
+  const completedCount = focuses.filter(focus => country.completedFocuses.includes(focus.id)).length;
+  const activeProgress = active ? Math.min(1, (country.focus?.progress ?? 0) / Math.max(1, active.costDays)) : 0;
 
   return (
     <div>
-      <div className="panel" style={{ paddingBottom: 0 }}>
+      <div className="panel focus-head-panel" style={{ paddingBottom: 0 }}>
         <h2>国策 · {content.countries.get(country.tag)?.name}</h2>
         <p className="muted">
           同时只能推进一条国策。国策是史观选择：剿/抚、战/和、迁都/死守、开海/海禁。
         </p>
+        <div className="focus-summary">
+          <span>已完成 <b>{completedCount}</b> / {focuses.length}</span>
+          <span>分支 <b>{branches.size}</b></span>
+          <span>{active ? `进行中 ${active.name}` : '当前未选择国策'}</span>
+        </div>
         {active && (
-          <div className="row">
-            <span>进行中：{active.name}</span>
-            <b>{Math.floor(country.focus?.progress ?? 0)} / {active.costDays} 日</b>
-          </div>
+          <>
+            <div className="focus-progress-label">
+              <span>{active.name}</span>
+              <b>{Math.floor(country.focus?.progress ?? 0)} / {active.costDays} 日</b>
+            </div>
+            <progress className="focus-progress" value={activeProgress} max={1} />
+          </>
         )}
       </div>
       <div className="focus-branches" style={{ padding: '0 16px 24px' }}>

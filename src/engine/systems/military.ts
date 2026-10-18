@@ -67,6 +67,30 @@ function defenseValue(
     * (1 + ((modifiers['army_defense_pct'] ?? 0) + traits.defensePct) / 100);
 }
 
+function movementFactor(
+  army: ArmyState,
+  nation: GameState['countries'][string],
+  content: ContentIndex,
+  terrain: string,
+): number {
+  const total = Math.max(1, compositionTotal(army));
+  const cavalryShare = army.composition.cavalry / total;
+  const artilleryShare = army.composition.artillery / total;
+  let factor = 1 + Math.min(0.15, nation.completedTechs.length * 0.004);
+  const modifiers = aggregateModifiers(nation, content);
+  factor *= 1 + (modifiers['movement_speed_pct'] ?? 0) / 100;
+  if ((terrain === 'steppe' || terrain === 'plains' || terrain === 'desert') && cavalryShare > 0.3) {
+    factor *= 1.16;
+  }
+  if ((terrain === 'mountains' || terrain === 'hills' || terrain === 'wetland' || terrain === 'jungle')
+    && artilleryShare > 0.08) {
+    factor *= 0.8;
+  }
+  if (terrain === 'mountains' && cavalryShare > 0.35) factor *= 0.88;
+  if ((terrain === 'jungle' || terrain === 'wetland') && cavalryShare > 0.35) factor *= 0.9;
+  return clamp(factor, 0.55, 1.45);
+}
+
 function friendlyRetreat(state: GameState, content: ContentIndex, army: ArmyState): string | null {
   const def = content.provinces.get(army.province);
   if (!def) return null;
@@ -97,10 +121,19 @@ function resolveBattleRound(state: GameState, content: ContentIndex, a: ArmyStat
 
   const orgDamageB = (attackA / (defenseB + 100)) * 6;
   const strengthDamageB = attackA * 0.0006;
+  const beforeA = compositionTotal(a);
+  const beforeB = compositionTotal(b);
   b.organization = clamp(b.organization - orgDamageB, 0, 100);
   loseStrength(b, strengthDamageB);
   a.organization = clamp(a.organization - (attackB / (defenseA + 100)) * 3, 0, 100);
   loseStrength(a, attackB * 0.0003);
+  const war = state.wars.find(entry =>
+    (entry.attacker === a.tag && entry.defender === b.tag)
+    || (entry.attacker === b.tag && entry.defender === a.tag));
+  if (war) {
+    war.casualties[a.tag] = (war.casualties[a.tag] ?? 0) + Math.max(0, Math.round(beforeA - compositionTotal(a)));
+    war.casualties[b.tag] = (war.casualties[b.tag] ?? 0) + Math.max(0, Math.round(beforeB - compositionTotal(b)));
+  }
 
   if (a.stance !== 'battle' || b.stance !== 'battle') {
     state.stats.battles += 1;
@@ -269,8 +302,9 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       const traits = generalTraitBonus(general?.traits ?? []);
       const cost = (content.balance.military.movementCost[nextDef?.terrain ?? 'plains'] ?? 1)
         * Math.max(0.55, 1 - traits.movePct / 100);
+      const terrainFactor = movementFactor(army, nation, content, nextDef?.terrain ?? 'plains');
       army.stance = 'move';
-      army.moveProgress += 1 / (2 * cost);
+      army.moveProgress += terrainFactor / (2 * cost);
       if (army.moveProgress >= 1) {
         army.history = [...army.history, army.province].slice(-8);
         army.province = next;
@@ -344,6 +378,7 @@ export function recruitArmy(
     history: [],
     movePath: [],
     moveProgress: 0,
+    templateId,
     embarked: false,
     navalTarget: null,
     navalProgress: 0,

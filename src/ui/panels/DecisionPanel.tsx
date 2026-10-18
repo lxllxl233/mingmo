@@ -10,10 +10,20 @@ export function DecisionPanel() {
   const country = game.countries[game.playerTag];
   if (!country) return null;
   const decisions = [...content.decisions.values()].filter(decision => decision.country === country.tag);
+  const visibleDecisions = decisions.filter(decision =>
+    !decision.visible || evaluateTrigger(decision.visible, { state: game, content, country: country.tag }));
+  const readyCount = visibleDecisions.filter(decision =>
+    (country.cooldowns[decision.id] ?? 0) <= 0).length;
   return (
     <div className="panel">
       <h2>决议</h2>
       <p className="muted">主动施政：有成本、有冷却、有可见条件。</p>
+      <div className="decision-summary">
+        <span>可见决议 <b>{visibleDecisions.length}</b></span>
+        <span>当前可用 <b>{readyCount}</b></span>
+        <span>国库 <b>{Math.round(country.treasury).toLocaleString()}</b> 两</span>
+        <span>政治 <b>{Math.round(country.politicalPower)}</b></span>
+      </div>
       {decisions.length === 0 && <p className="muted">暂无可用的决议。</p>}
       {decisions.map(decision => {
         const cooldown = country.cooldowns[decision.id] ?? 0;
@@ -24,14 +34,14 @@ export function DecisionPanel() {
           && (decision.cost.food ?? 0) <= country.food;
         if (!visible) return null;
         return (
-          <div className="estate-card" key={decision.id}>
-            <div className="head"><span className="name">{decision.name}</span><span className="muted">{cooldown > 0 ? `冷却 ${cooldown} 日` : '可用'}</span></div>
+          <div className="estate-card decision-card" key={decision.id}>
+            <div className="head"><span className="name">{decision.name}</span><span className={cooldown > 0 ? 'muted' : 'decision-ready'}>{cooldown > 0 ? `冷却 ${cooldown} 日` : '可执行'}</span></div>
             <div className="muted">{decision.desc}</div>
-            <div className="law">
-              成本：{decision.cost.treasury ? `银 ${decision.cost.treasury} ` : ''}
-              {decision.cost.politicalPower ? `政治 ${decision.cost.politicalPower} ` : ''}
-              {decision.cost.food ? `粮 ${decision.cost.food}` : ''}
-              {!decision.cost.treasury && !decision.cost.politicalPower && !decision.cost.food ? '无' : ''}
+            <div className="decision-cost">
+              {decision.cost.treasury ? <span>银 {decision.cost.treasury.toLocaleString()}</span> : null}
+              {decision.cost.politicalPower ? <span>政治 {decision.cost.politicalPower}</span> : null}
+              {decision.cost.food ? <span>粮 {decision.cost.food.toLocaleString()}</span> : null}
+              {!decision.cost.treasury && !decision.cost.politicalPower && !decision.cost.food ? <span>无成本</span> : null}
             </div>
             <div className="law">效果：{effectsSummary(decision.effect)}</div>
             <button

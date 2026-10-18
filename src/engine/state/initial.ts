@@ -164,6 +164,7 @@ export function createInitialState(
       history: [],
       movePath: [],
       moveProgress: 0,
+      templateId: template.id,
       embarked: false,
       navalTarget: null,
       navalProgress: 0,
@@ -210,6 +211,7 @@ export function createInitialState(
       startDay,
       warGoal: war.goal ?? '',
       exhaustion: { [war.attacker]: 0, [war.defender]: 0 },
+      casualties: { [war.attacker]: 0, [war.defender]: 0 },
     };
   });
 
@@ -225,6 +227,10 @@ export function createInitialState(
     training: [],
     wars,
     truces: {},
+    vassals: scenario.id === '1627'
+      ? { JOSEON: 'MING', NEU: 'MING' }
+      : { JOSEON: 'QING', NEU: 'QING' },
+    lastTribute: {},
     relations,
     eventQueue: scenario.initialEvents.map(eventId => ({ eventId, country: playerTag, dueDay: startDay })),
     pendingEvents: [],

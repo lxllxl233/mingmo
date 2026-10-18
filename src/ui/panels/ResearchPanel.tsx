@@ -18,18 +18,29 @@ export function ResearchPanel() {
   if (!game) return null;
   const country = game.countries[game.playerTag];
   if (!country) return null;
+  const totalTechs = content.techs.size;
+  const completedCount = country.completedTechs.length;
 
   return (
     <div className="panel">
       <h2>科研</h2>
       <p className="muted">研究槽 {country.research.length} / {country.researchSlots}。同一科技完成后才会解锁后继。</p>
+      <div className="research-summary">
+        <span>已完成 <b>{completedCount}</b> / {totalTechs}</span>
+        <span>进行中 <b>{country.research.length}</b></span>
+        <span>可用槽 <b>{Math.max(0, country.researchSlots - country.research.length)}</b></span>
+      </div>
       {country.research.map(slot => {
         const tech = content.techs.get(slot.techId);
         if (!tech) return null;
+        const progress = Math.min(1, slot.progress / Math.max(1, tech.costDays));
         return (
-          <div className="row" key={slot.techId}>
-            <span>{tech.name}</span>
-            <b>{Math.floor(slot.progress)} / {tech.costDays} 日</b>
+          <div className="research-slot" key={slot.techId}>
+            <div className="row">
+              <span>{tech.name}</span>
+              <b>{Math.floor(slot.progress)} / {tech.costDays} 日</b>
+            </div>
+            <progress value={progress} max={1} />
           </div>
         );
       })}

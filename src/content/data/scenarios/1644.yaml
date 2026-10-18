@@ -1,4 +1,4 @@
-id: "1644"
+﻿id: "1644"
 name: 甲申
 start_date: 1644-01-01
 description: 大顺据关中、大明据北方残局、清在关外、南明未立。三周之内决定天下。
@@ -92,7 +92,7 @@ armies:
   - { tag: RUSSIA, template: russia_cossack, province: albazin, size: 2 }
   - { tag: RUSSIA, template: russia_cossack, province: nerchinsk, size: 1 }
   - { tag: RUSSIA, template: russia_cossack, province: okhotsk, size: 1 }
-  - { tag: NEU, template: neutrals_tribal, province: ava, size: 2 }
+  - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
   - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
 initial_wars:
   - { attacker: SHUN, defender: MING, goal: 顺天 }

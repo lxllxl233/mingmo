@@ -324,15 +324,15 @@ countries:
     unique_mechanic: tributary
     goal: 保境中立，周旋大国
     starting:
-      treasury: 80000
-      food: 500000
-      manpower: 30000
+      treasury: 40000
+      food: 250000
+      manpower: 15000
       political_power: 0
-      stability: 50
-      mandate: 10
-      corruption: 35
-      authority: 40
-      army_loyalty: 55
+      stability: 45
+      mandate: 8
+      corruption: 40
+      authority: 35
+      army_loyalty: 50
       inflation: 5
       research_slots: 1
       currency: 两

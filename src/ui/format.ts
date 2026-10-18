@@ -8,6 +8,36 @@ export function formatNumber(value: number, digits = 0): string {
   return value.toFixed(digits);
 }
 
+const MODIFIER_LABELS: Record<string, string> = {
+  tax_efficiency_pct: '税收效率',
+  stability_monthly: '稳定/月',
+  corruption_drift: '腐败/月',
+  corruption_monthly: '腐败/月',
+  mandate_monthly: '天命/月',
+  army_attack_pct: '陆军攻击',
+  army_defense_pct: '陆军防御',
+  cavalry_attack_pct: '骑兵攻击',
+  artillery_attack_pct: '炮兵攻击',
+  naval_attack_pct: '水师攻击',
+  siege_speed_pct: '围城速度',
+  fort_defense_pct: '城防',
+  morale_add: '士气',
+  discipline_pct: '纪律',
+  research_speed_pct: '研究速度',
+  focus_speed_pct: '国策速度',
+  supply_limit_add: '补给上限',
+  manpower_add: '兵源',
+  pop_growth_pct: '人口增长',
+  food_output_pct: '粮食产出',
+  famine_resistance: '抗灾',
+  unrest_add: '动乱',
+  unrest_monthly: '动乱/月',
+  trade_efficiency_pct: '贸易效率',
+  inflation_add: '通胀',
+  movement_speed_pct: '行军速度',
+  army_upkeep_pct: '军费',
+};
+
 export function effectSummary(effect: Effect): string {
   if ('addStability' in effect) return `稳定 ${effect.addStability > 0 ? '+' : ''}${effect.addStability}`;
   if ('addMandate' in effect) return `天命 ${effect.addMandate > 0 ? '+' : ''}${effect.addMandate}`;
@@ -20,7 +50,11 @@ export function effectSummary(effect: Effect): string {
   if ('addEstateLoyalty' in effect) return `${effect.addEstateLoyalty.estate} 忠诚 ${effect.addEstateLoyalty.value}`;
   if ('addEstateInfluence' in effect) return `${effect.addEstateInfluence.estate} 影响 ${effect.addEstateInfluence.value}`;
   if ('addModifier' in effect) {
-    return Object.entries(effect.addModifier).slice(0, 3).map(([key, value]) => `${key} ${value > 0 ? '+' : ''}${value}`).join('，');
+    return Object.entries(effect.addModifier).slice(0, 4).map(([key, value]) => {
+      const label = MODIFIER_LABELS[key] ?? key;
+      const suffix = key.endsWith('_pct') ? '%' : '';
+      return `${label} ${value > 0 ? '+' : ''}${value}${suffix}`;
+    }).join('，');
   }
   if ('setFlag' in effect) return `flag: ${effect.setFlag}`;
   if ('setTaxLaw' in effect) return `税制: ${effect.setTaxLaw.law}`;
