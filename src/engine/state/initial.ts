@@ -131,6 +131,7 @@ export function createInitialState(
       armyLoyalty: clamp(starting.armyLoyalty, 0, 100),
       inflation: clamp(starting.inflation, 0, 100),
       warExhaustion: 0,
+      economicMomentum: 0,
       fiscalCrisisDays: 0,
       foodCrisisDays: 0,
       estates,

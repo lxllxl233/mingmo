@@ -23,6 +23,7 @@ export function BudgetPanel() {
         </p>
       )}
       <div className="row"><span>通胀 / 腐败</span><b>{country.inflation.toFixed(0)} / {country.corruption.toFixed(0)}</b></div>
+      <div className="row"><span>经济势头</span><b className={country.economicMomentum >= 0 ? 'good' : 'danger'}>{country.economicMomentum >= 0 ? '+' : ''}{(country.economicMomentum * 100).toFixed(0)}%</b></div>
       {!report && <p className="muted">尚未结算。按 1x 推进到下个月。</p>}
       {report && (
         <>

@@ -265,6 +265,7 @@ export interface Focus {
   aiWillDo: AiWeight;
   historicalContext?: string;
   grants?: ProvinceId[];
+  annexes?: ProvinceId[];
   repeatable?: boolean;
 }
 
@@ -276,6 +277,7 @@ export interface FocusPackFocus {
   tier: number;
   desc?: string;
   grants?: ProvinceId[];
+  annexes?: ProvinceId[];
 }
 
 export interface FocusPackBranch {

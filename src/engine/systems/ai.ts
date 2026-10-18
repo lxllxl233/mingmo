@@ -213,7 +213,7 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
     }
     return;
   }
-  if (state.day - nation.ai.lastWarDay < profile.warDelay) return;
+  if (state.day - nation.ai.lastWarDay < (state.spectator ? Math.min(240, profile.warDelay) : profile.warDelay)) return;
   if (nation.treasury < profile.minTreasury || nation.stability < profile.minStability) return;
   const scripted = historicalWarTarget(state, tag);
   if (scripted && !areAtWar(state, tag, scripted)) {
@@ -227,7 +227,10 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
   const neighbors = neighborsOf(state, content, tag);
   const ownStrength = Math.max(1, armyStrengthOf(state, tag));
   const aggression = content.balance.ai.aggression * personalityFactor(def.aiPersonality, 'war');
-  const requiredRatio = profile.strengthRatio / Math.max(0.35, aggression);
+  const requiredRatio = state.spectator
+    ? 0.45
+    : profile.strengthRatio / Math.max(0.35, aggression);
+  const relationLimit = state.spectator ? 60 : -20;
   const candidates = neighbors
     .filter(target => target !== 'NEU')
     .map(target => ({
@@ -236,7 +239,7 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
       strength: Math.max(1, armyStrengthOf(state, target)),
       atWar: areAtWar(state, tag, target),
     }))
-    .filter(entry => entry.relation <= -20 && !entry.atWar)
+    .filter(entry => entry.relation <= relationLimit && !entry.atWar)
     .filter(entry => ownStrength / entry.strength >= requiredRatio);
   candidates.sort((a, b) => a.strength - b.strength);
   const target = candidates[0];

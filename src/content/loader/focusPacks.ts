@@ -42,6 +42,13 @@ function parseFocus(raw: unknown, path: string): FocusPackFocus {
     }
     focus.grants = grants as string[];
   }
+  const annexes = object['annexes'];
+  if (annexes !== undefined) {
+    if (!Array.isArray(annexes) || annexes.some(value => typeof value !== 'string')) {
+      throw new ContentError('focus_packs', `${path}.annexes`, 'expected an array of province ids');
+    }
+    focus.annexes = annexes as string[];
+  }
   return focus;
 }
 
@@ -190,8 +197,12 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
               { addCore: province },
               { addClaim: province },
             ]),
+            ...(entry.annexes ?? []).map(province => ({
+              annexProvince: { province, requireControl: true },
+            })),
           ],
           ...(entry.grants ? { grants: entry.grants } : {}),
+          ...(entry.annexes ? { annexes: entry.annexes } : {}),
           aiWillDo: {
             base: 40 + tier * 5,
             modifier: [

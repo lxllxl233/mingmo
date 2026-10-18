@@ -57,6 +57,7 @@ export function decodeSave(text: string): GameState {
   for (const nation of Object.values(parsed.state.countries)) {
     if (typeof nation.fiscalCrisisDays !== 'number') nation.fiscalCrisisDays = 0;
     if (typeof nation.foodCrisisDays !== 'number') nation.foodCrisisDays = 0;
+    if (typeof nation.economicMomentum !== 'number') nation.economicMomentum = 0;
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (!Array.isArray(parsed.state.battles)) parsed.state.battles = [];

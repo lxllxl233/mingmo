@@ -126,6 +126,7 @@ export interface CountryState {
   armyLoyalty: number;
   inflation: number;
   warExhaustion: number;
+  economicMomentum: number;
   fiscalCrisisDays: number;
   foodCrisisDays: number;
   estates: Record<string, EstateState>;

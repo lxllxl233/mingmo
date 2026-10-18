@@ -12,6 +12,39 @@ export function coreResourceFactor(state: GameState, tag: string, provinceId: st
   return province.cores.includes(tag) ? 1 : 0.15;
 }
 
+function governmentProfile(government: string): {
+  tax: number;
+  trade: number;
+  food: number;
+  manpower: number;
+  stability: number;
+} {
+  switch (government) {
+    case 'merchant_republic':
+    case 'maritime':
+    case 'company':
+      return { tax: 0.82, trade: 1.28, food: 0.9, manpower: 0.85, stability: 0.95 };
+    case 'rebel':
+      return { tax: 0.78, trade: 0.75, food: 1.12, manpower: 1.2, stability: 0.9 };
+    case 'khanate':
+    case 'tribal_confederation':
+    case 'cossack_host':
+      return { tax: 0.65, trade: 0.8, food: 0.82, manpower: 1.3, stability: 0.9 };
+    case 'shogunate':
+      return { tax: 0.95, trade: 0.86, food: 1.04, manpower: 1.0, stability: 1.05 };
+    case 'theocracy':
+      return { tax: 0.88, trade: 0.82, food: 0.96, manpower: 0.95, stability: 1.12 };
+    case 'bureaucratic_monarchy':
+      return { tax: 0.92, trade: 0.9, food: 0.98, manpower: 0.95, stability: 1.02 };
+    case 'tributary':
+      return { tax: 0.8, trade: 0.92, food: 1.0, manpower: 0.9, stability: 0.95 };
+    case 'military_junta':
+      return { tax: 0.9, trade: 0.75, food: 0.92, manpower: 1.15, stability: 0.88 };
+    default:
+      return { tax: 1, trade: 1, food: 1, manpower: 1, stability: 1 };
+  }
+}
+
 export function countryProvinceList(
   state: GameState,
   content: ContentIndex,
@@ -63,8 +96,10 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     if (!nation.alive) continue;
     const provinces = countryProvinceList(state, content, nation.tag);
     const modifiers = aggregateModifiers(nation, content);
-    const taxEfficiency = 1 + (modifiers['tax_efficiency_pct'] ?? 0) / 100;
-    const tradeEfficiency = 1 + (modifiers['trade_efficiency_pct'] ?? 0) / 100;
+    const government = governmentProfile(content.countries.get(nation.tag)?.government ?? 'monarchy');
+    const momentum = 1 + clamp(nation.economicMomentum, -1, 1) * 0.3;
+    const taxEfficiency = (1 + (modifiers['tax_efficiency_pct'] ?? 0) / 100) * government.tax * momentum;
+    const tradeEfficiency = (1 + (modifiers['trade_efficiency_pct'] ?? 0) / 100) * government.trade * momentum;
     const officials = nation.estates['officials'];
     const adminCapacity = content.balance.economy.adminCapacityBase + (officials?.influence ?? 0) * 0.6;
 
@@ -137,7 +172,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       nation.arrears = Math.max(0, nation.arrears - repayment);
     }
 
-    nation.food += foodIncome;
+    nation.food += foodIncome * government.food;
     const population = provinces.reduce((sum, entry) => sum + entry.state.population, 0);
     const civilianFood = population * content.balance.economy.foodPerPersonMonth;
     const foodNeed = civilianFood + armyFood;
@@ -151,7 +186,14 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
     nation.flags['food_shortage'] = foodShortage;
 
-    nation.manpower += weightedPopulation * content.balance.economy.manpowerRegenRate;
+    nation.manpower += weightedPopulation * content.balance.economy.manpowerRegenRate * government.manpower;
+    const momentumTrend = (nation.stability - 50) / 240
+      + (55 - nation.corruption) / 420
+      - nation.warExhaustion / 260
+      - (nation.fiscalCrisisDays > 0 ? 0.04 : 0)
+      + (nation.treasury > 150000 ? 0.01 : -0.01);
+    nation.economicMomentum = clamp(nation.economicMomentum * 0.985 + momentumTrend * 0.05, -1, 1);
+    nation.stability = clamp(nation.stability + (government.stability - 1) * 0.05, 0, 100);
 
     for (const estate of Object.values(nation.estates)) {
       const law = lawOf(content, nation, estate.key);
