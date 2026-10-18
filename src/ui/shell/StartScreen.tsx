@@ -1,5 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { hasLocal } from '../../app/save/save';
+import { sound } from '../../app/audio/sound';
+import { START_MUSIC } from '../../app/audio/music';
 import { createInitialState } from '../../engine/state/initial';
 import { controlledProvinceCount } from '../../engine/rules/geography';
 import { formatNumber } from '../format';
@@ -38,6 +40,20 @@ export function StartScreen() {
   const [scenarioId, setScenarioId] = useState('1627');
   const [tag, setTag] = useState('MING');
   const [seed, setSeed] = useState('42');
+  const [phase, setPhase] = useState<'scenario' | 'faction'>('scenario');
+
+  useEffect(() => {
+    const startMusic = () => {
+      sound.unlock();
+      sound.setMusicPlaylist(START_MUSIC);
+    };
+    window.addEventListener('pointerdown', startMusic, { once: true });
+    window.addEventListener('keydown', startMusic, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', startMusic);
+      window.removeEventListener('keydown', startMusic);
+    };
+  }, []);
 
   const scenario = content.scenarios.get(scenarioId);
   const tags = useMemo(() => {
@@ -83,9 +99,12 @@ export function StartScreen() {
         <p className="subtitle">1616–1683 · 明清易代 · 省份—地区级大战略</p>
       </header>
       <div className="start-grid">
-        <section className="start-column">
-          <h2>剧本 <small className="step-label">第一步</small></h2>
-          {[...content.scenarios.values()].map(entry => (
+        <section className={phase === 'scenario' ? 'start-column start-full' : 'start-column'}>
+          <h2>{phase === 'scenario' ? '剧本' : '已选剧本'} <small className="step-label">第一步</small></h2>
+          {phase === 'faction' && (
+            <button className="back-button" onClick={() => setPhase('scenario')}>← 返回剧本选择</button>
+          )}
+          {phase === 'scenario' && [...content.scenarios.values()].map(entry => (
             <div
               key={entry.id}
               className={`scenario-card${entry.id === scenarioId ? ' selected' : ''}`}
@@ -105,10 +124,15 @@ export function StartScreen() {
               {scenario.playerHints.map(hint => <div key={hint} className="scenario-hint">· {hint}</div>)}
             </div>
           )}
-          {previewCountry && (
+          {phase === 'scenario' && (
+            <button className="primary next-button" onClick={() => setPhase('faction')}>进入势力选择 →</button>
+          )}
+          {phase === 'faction' && previewCountry && (
             <div className="start-briefing">
               <h3>开局态势 · {previewDef?.name ?? selectedTag}</h3>
               {previewDef?.goal && <p className="briefing-goal">战略目标：{previewDef.goal}</p>}
+              {previewDef?.background && <p className="faction-history"><b>前因：</b>{previewDef.background}</p>}
+              {previewDef?.outcome && <p className="faction-history"><b>历史结局：</b>{previewDef.outcome}</p>}
               <div className="briefing-grid">
                 <span>领袖 <b>{previewLeader}</b></span>
                 <span>国库 <b>{formatNumber(previewCountry.treasury)}</b></span>
@@ -124,6 +148,7 @@ export function StartScreen() {
             </div>
           )}
         </section>
+        {phase === 'faction' && (
         <section className="start-column">
           <h2>势力 <small className="step-label">第二步</small></h2>
           <div className="faction-grid">
@@ -142,6 +167,7 @@ export function StartScreen() {
                   <h3>{country.name}</h3>
                   <p className="faction-leader">领袖：{leader?.name ?? '—'} · {MECHANIC_LABELS[country.uniqueMechanic] ?? country.uniqueMechanic} · {PERSONALITY_LABELS[country.aiPersonality] ?? country.aiPersonality}</p>
                   <p className="goal">{country.goal}</p>
+                  {country.background && <p className="faction-background">{country.background}</p>}
                 </div>
               );
             })}
@@ -151,14 +177,17 @@ export function StartScreen() {
             <input value={seed} onChange={event => setSeed(event.target.value.replace(/[^0-9]/g, ''))} style={{ width: 120 }} />
           </div>
         </section>
+        )}
       </div>
       <footer className="start-actions">
         <span className="hint">同一种子与同一串指令会得到逐日一致的结果。</span>
         {hasLocal('auto') && <button onClick={() => load('auto')}>读取自动存档</button>}
         {hasLocal('manual') && <button onClick={() => load('manual')}>读取手动存档</button>}
-        <button className="primary" onClick={() => start(scenarioId, selectedTag, Number(seed) || 42)}>
-          开始游戏
-        </button>
+        {phase === 'faction' && (
+          <button className="primary" onClick={() => start(scenarioId, selectedTag, Number(seed) || 42)}>
+            开始游戏
+          </button>
+        )}
       </footer>
     </div>
   );

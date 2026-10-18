@@ -5,6 +5,7 @@ balance:
     grain_price: 0.6
     admin_capacity_base: 50
     army_upkeep_per_man_month: 1.2
+    army_food_per_man_month: 1.5
     official_salary_per_province_month: 450
     dynasty_stipend_base_month: 100000
     disaster_relief_cost: 50000

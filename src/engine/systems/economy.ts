@@ -109,6 +109,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
 
     const armyPay = monthlyArmyPay(state, content, nation.tag);
+    const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth;
     const officialsPay = provinces.length * content.balance.economy.officialSalaryPerProvinceMonth;
     const dynastyEstate = nation.estates['dynasty'];
     const dynasty = dynastyEstate ? (dynastyEstate.income / 12) * 0.22 : 0;
@@ -128,7 +129,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     nation.food += foodIncome;
     const population = provinces.reduce((sum, entry) => sum + entry.state.population, 0);
-    const foodNeed = population * content.balance.economy.foodPerPersonMonth;
+    const civilianFood = population * content.balance.economy.foodPerPersonMonth;
+    const foodNeed = civilianFood + armyFood;
     let foodShortage = false;
     if (nation.food < foodNeed) {
       nation.food = 0;
@@ -203,6 +205,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       expenseOfficials: officialsPay,
       expenseDynasty: dynasty,
       expenseRelief: 0,
+      foodIncome,
+      foodArmy: armyFood,
+      foodCivilian: civilianFood,
       arrears: nation.arrears,
     };
     nation.lastReport = report;

@@ -7,8 +7,12 @@ const SILVER_PER_SIZE = 5000;
 const FOOD_PER_SIZE = 600;
 const MANPOWER_PER_SIZE = 1000;
 const TRAINING_RATIO = 0.6;
-const DAYS_PER_SIZE = 20;
-const BASE_DAYS = 10;
+const DAYS_PER_SIZE = 45;
+const BASE_DAYS = 30;
+
+export function trainingDaysFor(size: number): number {
+  return size * DAYS_PER_SIZE + BASE_DAYS;
+}
 
 function createArmy(
   state: GameState,
@@ -43,6 +47,8 @@ function createArmy(
       naval: template.composition.naval * size,
     },
     organization: content.balance.military.baseOrganization,
+    maxStrength: (template.composition.infantry + template.composition.firearm
+      + template.composition.cavalry + template.composition.artillery + template.composition.naval) * size,
     training: template.training,
     equipment: template.equipment,
     supply: 100,
@@ -80,7 +86,7 @@ export function enqueueTraining(
     if (foreignQueued + foreignActive >= FOREIGN_TRAINING_LIMIT) return false;
   }
   nation.manpower -= manpower;
-  const totalDays = size * DAYS_PER_SIZE + BASE_DAYS;
+  const totalDays = trainingDaysFor(size);
   const id = `training_${state.nextTrainingId}`;
   state.nextTrainingId += 1;
   state.training.push({

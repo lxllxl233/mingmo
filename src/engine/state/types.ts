@@ -63,6 +63,9 @@ export interface MonthlyReport {
   expenseOfficials: number;
   expenseDynasty: number;
   expenseRelief: number;
+  foodIncome?: number;
+  foodArmy?: number;
+  foodCivilian?: number;
   arrears: number;
 }
 
@@ -119,6 +122,7 @@ export interface ArmyState {
     artillery: number;
     naval: number;
   };
+  maxStrength: number;
   organization: number;
   training: number;
   equipment: number;

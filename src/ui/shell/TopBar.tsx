@@ -3,6 +3,7 @@ import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { controlledProvinceCount } from '../../engine/rules/geography';
 import { useGameStore } from '../state/store';
+import { MusicControl } from './MusicControl';
 
 function number(value: number, digits = 0): string {
   if (!Number.isFinite(value)) return '—';
@@ -59,6 +60,11 @@ export function TopBar() {
     + army.composition.artillery + army.composition.naval, 0);
   const provinces = Object.values(game.provinces).filter(province => province.controller === game.playerTag).length;
   const provinceGroups = controlledProvinceCount(game, content, game.playerTag);
+  const playerTraining = game.training.filter(entry => entry.tag === game.playerTag);
+  const trainingSilverDay = playerTraining.reduce((sum, entry) =>
+    sum + (entry.totalDays > 0 ? entry.costSilver / entry.totalDays : 0), 0);
+  const trainingFoodDay = playerTraining.reduce((sum, entry) =>
+    sum + (entry.totalDays > 0 ? entry.costFood / entry.totalDays : 0), 0);
 
   return (
     <header className="topbar">
@@ -74,6 +80,8 @@ export function TopBar() {
             <span>本月收入 {number(report?.income ?? 0)} 两</span>
             <span>本月支出 {number(report?.expense ?? 0)} 两</span>
             <span>本月净额 <i className={(report?.net ?? 0) >= 0 ? 'good' : 'danger'}>{number(report?.net ?? 0)}</i> 两</span>
+            <span>军饷 {number(report?.expenseArmy ?? 0)} · 官俸 {number(report?.expenseOfficials ?? 0)} · 宗禄 {number(report?.expenseDynasty ?? 0)}</span>
+            <span>训练日耗 {number(trainingSilverDay)} 两</span>
             <span>欠饷 {number(country?.arrears ?? 0)} 两 · {arrearsMonths.toFixed(1)} 个月</span>
             <small>收入由各阶级按税法与征收效率计算；支出含军饷、官俸、宗禄与赈济。</small>
           </>
@@ -86,9 +94,13 @@ export function TopBar() {
         tooltip={
           <>
             <b>粮储 {number(country?.food ?? 0)} 石</b>
+            <span>本月粮入 {number(report?.foodIncome ?? 0)} 石</span>
+            <span>军队口粮 {number(report?.foodArmy ?? 0)} 石</span>
+            <span>民用口粮 {number(report?.foodCivilian ?? 0)} 石</span>
+            <span>训练日耗 {number(trainingFoodDay)} 石</span>
             <span>粮价系数 {content.balance.economy.grainPrice.toFixed(2)}</span>
             <span>控制省份 {provinceGroups} / {content.prefectures.size} · 地区 {provinces} / {content.provinces.size}</span>
-            <small>饥荒会降低稳定并引发民变；粮储过低时顶栏变为警示色。</small>
+            <small>军队规模越大，每月军饷和口粮越高；粮储过低会降低稳定。</small>
           </>
         }
       />
@@ -144,6 +156,7 @@ export function TopBar() {
       />
       {pending > 0 && <span className="danger">待决事件 {pending}</span>}
       <span className="spacer" />
+      <MusicControl />
       <button
         title={muted ? '打开音效' : '关闭音效'}
         onClick={() => {

@@ -190,6 +190,8 @@ export interface CountryDef {
   factions: string[];
   uniqueMechanic: string;
   goal: string;
+  background: string;
+  outcome: string;
   starting: CountryStarting;
   leader?: LeaderDef;
   leadersByScenario?: Record<string, LeaderDef>;
@@ -403,6 +405,7 @@ export interface Balance {
     grainPrice: number;
     adminCapacityBase: number;
     armyUpkeepPerManMonth: number;
+    armyFoodPerManMonth: number;
     officialSalaryPerProvinceMonth: number;
     dynastyStipendBaseMonth: number;
     disasterReliefCost: number;

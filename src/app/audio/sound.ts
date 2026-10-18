@@ -1,4 +1,14 @@
+import type { MusicTrack } from './music';
+
 type SoundKind = 'click' | 'command' | 'event' | 'choice' | 'battle' | 'save' | 'error';
+type MusicLoop = 'off' | 'list' | 'single';
+
+export interface MusicState {
+  tracks: MusicTrack[];
+  index: number;
+  loop: MusicLoop;
+  playing: boolean;
+}
 
 const STORAGE_KEY = 'jiashen.muted';
 
@@ -6,6 +16,11 @@ class SoundEngine {
   private context: AudioContext | null = null;
   private noiseBuffer: AudioBuffer | null = null;
   private muted = false;
+  private musicTracks: MusicTrack[] = [];
+  private musicIndex = 0;
+  private musicLoop: MusicLoop = 'list';
+  private musicTimer: number | null = null;
+  private musicPlaying = false;
 
   constructor() {
     try {
@@ -21,6 +36,8 @@ class SoundEngine {
 
   setMuted(muted: boolean): void {
     this.muted = muted;
+    if (muted) this.stopMusic();
+    else if (this.musicTracks.length > 0) this.restartMusic();
     try {
       localStorage.setItem(STORAGE_KEY, muted ? '1' : '0');
     } catch {
@@ -42,7 +59,81 @@ class SoundEngine {
         return;
       }
     }
-    if (this.context.state === 'suspended') void this.context.resume();
+    if (this.context.state === 'suspended') {
+      void this.context.resume().then(() => {
+        if (this.musicPlaying) this.playMusicPhrase();
+      });
+    }
+  }
+
+  getMusicState(): MusicState {
+    return {
+      tracks: this.musicTracks,
+      index: this.musicIndex,
+      loop: this.musicLoop,
+      playing: this.musicPlaying && !this.muted,
+    };
+  }
+
+  setMusicPlaylist(tracks: MusicTrack[], index = 0): void {
+    this.musicTracks = [...tracks];
+    this.musicIndex = Math.max(0, Math.min(index, this.musicTracks.length - 1));
+    this.musicLoop = 'list';
+    if (this.muted) {
+      this.musicPlaying = false;
+      return;
+    }
+    this.unlock();
+    this.restartMusic();
+  }
+
+  selectMusic(index: number): void {
+    if (index < 0 || index >= this.musicTracks.length) return;
+    this.musicIndex = index;
+    this.restartMusic();
+  }
+
+  setMusicLoop(loop: MusicLoop): void {
+    this.musicLoop = loop;
+    if (loop === 'off') this.stopMusic();
+    else this.restartMusic();
+  }
+
+  stopMusic(): void {
+    this.musicPlaying = false;
+    if (this.musicTimer !== null) {
+      window.clearInterval(this.musicTimer);
+      this.musicTimer = null;
+    }
+  }
+
+  private restartMusic(): void {
+    this.stopMusic();
+    if (this.muted || this.musicLoop === 'off' || this.musicTracks.length === 0) return;
+    this.musicPlaying = true;
+    this.playMusicPhrase();
+    this.musicTimer = window.setInterval(() => this.nextMusicPhrase(), 7200);
+  }
+
+  private nextMusicPhrase(): void {
+    if (!this.musicPlaying || this.muted) return;
+    if (this.musicLoop === 'list' && this.musicTracks.length > 1) {
+      this.musicIndex = (this.musicIndex + 1) % this.musicTracks.length;
+    }
+    this.playMusicPhrase();
+  }
+
+  private playMusicPhrase(): void {
+    if (this.muted || this.context?.state !== 'running') return;
+    const track = this.musicTracks[this.musicIndex];
+    if (!track) return;
+    const notes = track.notes;
+    for (let i = 0; i < notes.length; i += 1) {
+      const frequency = notes[i];
+      if (frequency === undefined) continue;
+      this.tone(frequency, 0.9, 'sine', 0.012, frequency * 0.998, i * 0.72);
+      if (i % 4 === 0) this.tone(frequency / 2, 1.6, 'triangle', 0.006, frequency / 2, i * 0.72);
+    }
   }
 
   play(kind: SoundKind): void {

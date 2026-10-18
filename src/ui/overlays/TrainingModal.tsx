@@ -1,12 +1,13 @@
-﻿import type { ArmyTemplate } from '../../content/types';
+import type { ArmyTemplate } from '../../content/types';
 import { FOREIGN_TRAINING_LIMIT, isForeignTemplate } from '../../engine/rules/armyTemplates';
+import { trainingDaysFor } from '../../engine/systems/training';
 import { useGameStore } from '../state/store';
 import { ArmyIcon } from '../panels/ArmyIcon';
 
 function costOf(template: ArmyTemplate): string {
   const total = template.composition.infantry + template.composition.firearm
     + template.composition.cavalry + template.composition.artillery + template.composition.naval;
-  return `${total.toLocaleString()} 人/营 · 训练 50 日 · 银 ${Math.round(2 * 5000 * 0.6).toLocaleString()} / 粮 ${Math.round(2 * 600 * 0.6).toLocaleString()}`;
+  return `${total.toLocaleString()} 人/营 · 训练 ${trainingDaysFor(2)} 日 · 银 ${Math.round(2 * 5000 * 0.6).toLocaleString()} / 粮 ${Math.round(2 * 600 * 0.6).toLocaleString()}`;
 }
 
 export function TrainingModal() {

@@ -136,6 +136,9 @@ export class MapRenderer {
   private terrainSymbolLayer = new Container();
   private terrainSymbols: Graphics[] = [];
   private terrainDetailLayer = new Graphics();
+  private deployLayer = new Graphics();
+  private deploymentKind: 'land' | 'navy' | null = null;
+  private deploymentTag: string | null = null;
   private selectionLayer = new Graphics();
   private provinceBorderLayer = new Graphics();
   private prefectureBorderLayer = new Graphics();
@@ -217,6 +220,7 @@ export class MapRenderer {
       this.terrainLayer,
       this.terrainSymbolLayer,
       this.terrainDetailLayer,
+      this.deployLayer,
       this.provinceBorderLayer,
       this.prefectureBorderLayer,
       this.countryBorderLayer,
@@ -798,13 +802,34 @@ export class MapRenderer {
     return 0x8a8578;
   }
 
-  setMapMode(mode: MapMode, anchor: string | null): void {
-    const nextAnchor = mode === 'diplomacy' ? anchor ?? this.state?.playerTag ?? null : null;
+  setMapMode(mode: MapMode, anchor: string | null): void {    const nextAnchor = mode === 'diplomacy' ? anchor ?? this.state?.playerTag ?? null : null;
     if (this.mapMode === mode && this.diplomaticAnchor === nextAnchor) return;
     this.mapMode = mode;
     this.diplomaticAnchor = nextAnchor;
     this.ownerSignature = '';
     if (this.state) this.redrawMap();
+  }
+
+  setDeploymentTargets(kind: 'land' | 'navy' | null, tag: string | null): void {
+    if (this.deploymentKind === kind && this.deploymentTag === tag) return;
+    this.deploymentKind = kind;
+    this.deploymentTag = tag;
+    this.drawDeploymentTargets();
+  }
+
+  private drawDeploymentTargets(): void {
+    this.deployLayer.clear();
+    if (!this.state || !this.deploymentKind || !this.deploymentTag) return;
+    for (const [id, points] of this.projected) {
+      const province = this.state.provinces[id];
+      const def = this.content.provinces.get(id);
+      if (!province || !def) continue;
+      if (province.controller !== this.deploymentTag) continue;
+      if (this.deploymentKind === 'navy' && !def.isPort) continue;
+      this.deployLayer.poly(points)
+        .fill({ color: 0x3f9a62, alpha: 0.36 })
+        .stroke({ width: Math.max(0.04, 0.9 / this.world.scale.x), color: 0x1e6b3a, alpha: 0.85 });
+    }
   }
 
   setState(state: GameState, selectedProvince: string | null, selectedArmy: string | null): void {
@@ -842,6 +867,7 @@ export class MapRenderer {
     this.drawBorders();
 
     this.drawCities();
+    this.drawDeploymentTargets();
     this.drawProvinceLabels();
     this.drawCountryLabels();
     this.hasDrawn = true;

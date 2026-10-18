@@ -51,6 +51,8 @@ function spawnArmy(
       naval: template.composition.naval * size,
     },
     organization: content.balance.military.baseOrganization,
+    maxStrength: (template.composition.infantry + template.composition.firearm
+      + template.composition.cavalry + template.composition.artillery + template.composition.naval) * size,
     training: template.training,
     equipment: template.equipment,
     supply: 100,

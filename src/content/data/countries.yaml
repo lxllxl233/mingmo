@@ -11,6 +11,8 @@ countries:
     factions: [donglin, eunuch, imperial, military, royal_clan, gentry, merchants, farmers]
     unique_mechanic: party_strife
     goal: 守辽东、平流寇、续国祚
+    background: 崇祯即位时明朝仍控制关内大部，但辽东战事、陕西旱灾、党争与欠饷同时发作，太仓和边军都被拖入长期失血。
+    outcome: 1644 年北京陷落，崇祯自缢；宗室在南京建立弘光，此后南明政权一路南退，至 1662 年永历被俘，明统基本终结。
     starting:
       treasury: 1200000
       food: 8000000
@@ -37,6 +39,8 @@ countries:
     factions: [manchu, han_official, green_standard, imperial, banners]
     unique_mechanic: banner_system
     goal: 入关定鼎，混一华夷
+    background: 建州女真在努尔哈赤、皇太极两代完成八旗与盟旗整合，先统一辽东，再寻找越过长城的机会。
+    outcome: 1644 年借吴三桂开关入主北京，随后用数十年平定南明、大顺、大西与三藩，确立清朝对东亚大陆的统治。
     starting:
       treasury: 300000
       food: 1500000
@@ -63,6 +67,8 @@ countries:
     factions: [farmers, military, gentry, merchants]
     unique_mechanic: confiscation
     goal: 均田免赋，取代明朝
+    background: 李自成从驿卒起兵，靠流民与追赃助饷扩张，先后破洛阳、襄阳、西安，建立大顺政权。
+    outcome: 1644 年攻入北京，但在山海关败于清军，退出北京后一路败亡；大顺余部后来与南明联合抗清。
     starting:
       treasury: 200000
       food: 1000000
@@ -89,6 +95,8 @@ countries:
     factions: [military, farmers, nobles]
     unique_mechanic: terror
     goal: 据蜀称帝，割据西南
+    background: 张献忠率大西军入川，在成都建立政权，试图以四川的粮仓与山川为割据根基。
+    outcome: 1646 年张献忠战死，大西余部由孙可望、李定国率领转入云贵，与南明合流抗清。
     starting:
       treasury: 150000
       food: 800000
@@ -115,6 +123,8 @@ countries:
     factions: [donglin, military, royal_clan, merchants, gentry]
     unique_mechanic: legitimacy_contest
     goal: 恢复南京，延续明统
+    background: 1644 年北京陷落后，明廷在南京拥立福王，试图以江南财赋和长江天险延续明统。
+    outcome: 弘光、隆武、绍武、永历等政权内斗不断，虽一度依赖大西余部与郑氏支撑，最终在 1662 年覆亡。
     starting:
       treasury: 400000
       food: 2000000
@@ -141,6 +151,8 @@ countries:
     factions: [merchants, military, royal_clan, gentry]
     unique_mechanic: maritime_network
     goal: 保海疆，取台湾，通东西洋
+    background: 郑芝龙以海商武装控制福建沿海，郑成功继承其舰队与贸易网络，在明清之间选择抗清。
+    outcome: 1661 年郑成功攻取台湾，建立明郑政权；1683 年施琅攻台，郑克塽降清，明郑结束。
     starting:
       treasury: 500000
       food: 600000
@@ -167,6 +179,8 @@ countries:
     factions: [nobles, clergy, military, merchants]
     unique_mechanic: banner_league
     goal: 统一蒙古，重现汗权
+    background: 林丹汗试图重振察哈尔汗权，但蒙古诸部各自为政，后金又不断联姻、征讨与招降。
+    outcome: 林丹汗西走青海病逝，其子额哲降清；蒙古诸部逐步纳入清朝盟旗体系，汗权不复。
     starting:
       treasury: 100000
       food: 700000
@@ -193,6 +207,8 @@ countries:
     factions: [nobles, officials, royal_clan, military, clergy]
     unique_mechanic: tribute
     goal: 保境安民，北伐雪耻
+    background: 朝鲜在明清之间奉行事大外交，丙子之役后被迫臣服清朝，但内部仍保留尊明与北伐情绪。
+    outcome: 朝鲜未能在明清战争中翻盘，却保住了王朝与疆域，直到近代仍在清廷朝贡体系内。
     starting:
       treasury: 300000
       food: 1500000
@@ -219,6 +235,8 @@ countries:
     factions: [nobles, military, merchants, clergy, imperial]
     unique_mechanic: sakoku
     goal: 锁国自守，窥伺大陆
+    background: 德川幕府完成统一后推行锁国与禁教，只保留长崎等窗口，对大陆局势保持警惕与有限接触。
+    outcome: 日本未卷入明清易代，维持和平与幕藩体制；直到 19 世纪黑船来航才被迫重新打开国门。
     starting:
       treasury: 800000
       food: 3000000
@@ -245,6 +263,8 @@ countries:
     factions: [clergy, nobles, military, merchants]
     unique_mechanic: theocracy
     goal: 护法安藏，控制高原
+    background: 和硕特部固始汗入藏，与格鲁派结盟，建立以拉萨为中心的政教秩序。
+    outcome: 和硕特汗廷与清朝、准噶尔周旋，最终在 18 世纪被清朝直接纳入驻藏体系。
     starting:
       treasury: 80000
       food: 400000
@@ -271,6 +291,8 @@ countries:
     factions: [shareholders, merchants, military, officials]
     unique_mechanic: company_dividend
     goal: 垄断海贸，据守台湾
+    background: 荷兰东印度公司以巴达维亚为总部，占据台湾南部，把台湾纳入东亚海上贸易网络。
+    outcome: 1662 年热兰遮城向郑成功投降，荷兰失去台湾；公司仍在东南亚维持贸易，但东亚优势逐渐衰退。
     starting:
       treasury: 600000
       food: 500000
@@ -297,6 +319,8 @@ countries:
     factions: [nobles, military, merchants, clergy, officials]
     unique_mechanic: cossack_host
     goal: 东进黑龙江，取得毛皮
+    background: 沙俄哥萨克越过乌拉尔山，沿黑龙江流域筑城、征毛皮，与清朝和当地部族发生冲突。
+    outcome: 雅克萨之战后，1689 年《尼布楚条约》划定中俄东段边界，沙俄保住远东据点，清朝取得黑龙江流域主权。
     starting:
       treasury: 200000
       food: 600000
@@ -323,6 +347,8 @@ countries:
     factions: [nobles, clergy]
     unique_mechanic: tributary
     goal: 保境中立，周旋大国
+    background: 中南半岛诸邦在明清、暹罗、缅甸与西洋势力之间求存，名义朝贡，实际保持高度自治。
+    outcome: 诸邦未被明清直接吞并，但在 19 世纪逐渐沦为殖民体系的一部分。
     starting:
       treasury: 40000
       food: 250000

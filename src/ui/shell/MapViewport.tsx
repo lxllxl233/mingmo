@@ -97,6 +97,13 @@ export function MapViewport() {
     rendererRef.current?.setMapMode(mapMode, mapAnchor);
   }, [mapMode, mapAnchor]);
 
+  useEffect(() => {
+    rendererRef.current?.setDeploymentTargets(
+      trainingRequest?.kind ?? null,
+      trainingRequest ? game?.playerTag ?? null : null,
+    );
+  }, [trainingRequest, game?.playerTag]);
+
   return (
     <div className="map-host" ref={hostRef}>
       <div className="map-grain" />

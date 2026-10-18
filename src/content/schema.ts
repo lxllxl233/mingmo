@@ -99,6 +99,8 @@ export const countrySchema = z.object({
   factions: z.array(z.string()).default([]),
   uniqueMechanic: z.string(),
   goal: z.string().max(80).default(''),
+  background: z.string().max(240).default(''),
+  outcome: z.string().max(240).default(''),
   starting: countryStartingSchema,
   leader: leaderSchema.optional(),
   leadersByScenario: z.record(z.string(), leaderSchema).optional(),

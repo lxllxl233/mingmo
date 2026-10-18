@@ -23,6 +23,7 @@ export type Command =
   | { type: 'army.move'; armyId: string; path: string[] }
   | { type: 'army.navalMove'; armyId: string; portId: string }
   | { type: 'army.stop'; armyId: string }
+  | { type: 'army.disband'; armyId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.demandTribute'; vassal: string }
@@ -171,6 +172,19 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       army.navalTarget = null;
       army.navalProgress = 0;
       army.stance = 'hold';
+      break;
+    }
+    case 'army.disband': {
+      const army = state.armies[command.armyId];
+      if (!army || army.tag !== tag) throw new CommandError('army not found');
+      delete state.armies[command.armyId];
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: tag,
+        text: `解散军团：${army.name}`,
+        severity: 'info',
+      });
       break;
     }
     case 'diplomacy.declareWar':

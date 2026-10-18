@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
+import { musicForFaction } from '../../app/audio/music';
 import { useGameStore, type PanelKey } from '../state/store';
 import { TopBar } from './TopBar';
 import { MapViewport } from './MapViewport';
@@ -53,6 +54,11 @@ export function GameShell() {
     window.addEventListener('pointerdown', unlock, { once: true });
     return () => window.removeEventListener('pointerdown', unlock);
   }, []);
+
+  useEffect(() => {
+    if (!game) return;
+    sound.setMusicPlaylist(musicForFaction(game.playerTag, game.scenarioId));
+  }, [game?.playerTag, game?.scenarioId]);
 
   useEffect(() => {
     const total = game?.stats.battles ?? 0;

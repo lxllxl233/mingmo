@@ -523,3 +523,24 @@ input, select {
 .scenario-detail h3 { margin: 0 0 6px; color: var(--red); font-size: 14px; }
 .scenario-detail p { margin: 0 0 8px; font-size: 12px; line-height: 1.7; color: var(--ink); }
 .scenario-hint { font-size: 12px; line-height: 1.65; color: var(--ink-soft); }
+
+.music-control { position: relative; display: inline-flex; }
+.music-popover { position: absolute; right: 0; top: 34px; z-index: 30; width: 240px; padding: 9px; border: 1px solid var(--line); background: var(--paper); box-shadow: 0 10px 28px rgba(31,28,24,.25); }
+.music-head { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; border-bottom: 1px solid var(--line); padding-bottom: 5px; }
+.music-head b { color: var(--red); }
+.music-head span { color: var(--ink-soft); font-size: 11px; }
+.music-tracks { display: flex; flex-direction: column; gap: 3px; margin: 6px 0; }
+.music-tracks button { text-align: left; padding: 4px 6px; font-size: 12px; border: 1px solid transparent; background: transparent; }
+.music-tracks button:hover { border-color: var(--line); }
+.music-tracks button.active { color: var(--red); background: rgba(184,137,46,.12); }
+.music-modes { display: flex; gap: 4px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 6px; }
+.music-modes button { font-size: 11px; padding: 3px 6px; }
+.music-modes button.active { border-color: var(--red); color: var(--red); background: rgba(184,137,46,.12); }
+
+.start-full { grid-column: 1 / -1; max-width: 860px; width: 100%; justify-self: center; }
+.back-button { margin: 0 0 10px; padding: 4px 9px; font-size: 12px; }
+.next-button { margin-top: 14px; padding: 8px 18px; }
+
+.faction-history { margin: 6px 0; font-size: 11px; line-height: 1.65; color: var(--ink-soft); }
+.faction-history b { color: var(--red); }
+.faction-background { margin-top: 4px; font-size: 10px; line-height: 1.5; color: var(--ink-soft); }

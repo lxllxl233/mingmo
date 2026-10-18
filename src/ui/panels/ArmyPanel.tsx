@@ -116,7 +116,7 @@ export function ArmyPanel() {
       </label>
 
       <section className="country-grid">
-        <div className="country-stat"><span>兵力</span><strong>{formatNumber(strength)}</strong></div>
+        <div className="country-stat"><span>兵力</span><strong>{formatNumber(strength)} / {formatNumber(army.maxStrength)}</strong></div>
         <div className="country-stat"><span>组织 / 补给</span><strong>{army.organization.toFixed(0)} / {army.supply.toFixed(0)}</strong></div>
         <div className="country-stat"><span>训练 / 装备</span><strong>{army.training.toFixed(0)} / {army.equipment.toFixed(0)}</strong></div>
         <div className="country-stat"><span>行军目标</span><strong>{target ?? '驻扎'}</strong></div>
@@ -173,6 +173,9 @@ export function ArmyPanel() {
       <footer className="panel-actions">
         <button className="primary" onClick={() => openPanel('military')}>军事列表</button>
         <button onClick={() => command({ type: 'army.stop', armyId: army.id })}>停止</button>
+        <button className="danger" onClick={() => {
+          if (command({ type: 'army.disband', armyId: army.id })) selectArmy(null);
+        }}>解散军团</button>
         <button className="ghost" onClick={() => selectArmy(null)}>取消选择</button>
       </footer>
     </div>

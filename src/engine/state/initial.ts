@@ -176,6 +176,8 @@ export function createInitialState(
         naval: template.composition.naval * entry.size,
       },
       organization: content.balance.military.baseOrganization,
+      maxStrength: (template.composition.infantry + template.composition.firearm
+        + template.composition.cavalry + template.composition.artillery + template.composition.naval) * entry.size,
       training: template.training,
       equipment: template.equipment,
       supply: 100,

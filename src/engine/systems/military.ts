@@ -316,7 +316,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
         * Math.max(0.55, 1 - traits.movePct / 100);
       const terrainFactor = movementFactor(army, nation, content, nextDef?.terrain ?? 'plains');
       army.stance = 'move';
-      army.moveProgress += terrainFactor / (2 * cost);
+      army.moveProgress += terrainFactor / (4 * cost);
       if (army.moveProgress >= 1) {
         army.history = [...army.history, army.province].slice(-8);
         army.province = next;
@@ -402,6 +402,8 @@ export function recruitArmy(
       naval: template.composition.naval * size,
     },
     organization: content.balance.military.baseOrganization,
+    maxStrength: (template.composition.infantry + template.composition.firearm
+      + template.composition.cavalry + template.composition.artillery + template.composition.naval) * size,
     training: template.training,
     equipment: template.equipment,
     supply: 100,
@@ -420,6 +422,41 @@ export function recruitArmy(
   });
   return true;
 }
+
+export function replenishArmies(state: GameState, content: ContentIndex): void {
+  for (const army of Object.values(state.armies)) {
+    const nation = state.countries[army.tag];
+    if (!nation?.alive || nation.manpower <= 0) continue;
+    if (army.stance === 'battle' || army.embarked || army.movePath.length > 0) continue;
+    if (army.supply < 20 || army.organization < 20) continue;
+    const total = compositionTotal(army);
+    const missing = Math.max(0, (army.maxStrength ?? total) - total);
+    if (missing <= 0) continue;
+    const template = content.armyTemplates.get(army.templateId);
+    if (!template) continue;
+    const templateTotal = template.composition.infantry + template.composition.firearm
+      + template.composition.cavalry + template.composition.artillery + template.composition.naval;
+    if (templateTotal <= 0) continue;
+    const amount = Math.min(missing, Math.max(1, Math.ceil(army.maxStrength * 0.008)), Math.floor(nation.manpower));
+    if (amount <= 0) continue;
+    const ratios = {
+      infantry: template.composition.infantry / templateTotal,
+      firearm: template.composition.firearm / templateTotal,
+      cavalry: template.composition.cavalry / templateTotal,
+      artillery: template.composition.artillery / templateTotal,
+      naval: template.composition.naval / templateTotal,
+    };
+    army.composition.infantry += Math.floor(amount * ratios.infantry);
+    army.composition.firearm += Math.floor(amount * ratios.firearm);
+    army.composition.cavalry += Math.floor(amount * ratios.cavalry);
+    army.composition.artillery += Math.floor(amount * ratios.artillery);
+    army.composition.naval += Math.floor(amount * ratios.naval);
+    const added = compositionTotal(army) - total;
+    if (added < amount) army.composition.infantry += amount - added;
+    nation.manpower = Math.max(0, nation.manpower - amount);
+  }
+}
+
 
 export function setArmyPath(
   state: GameState,
