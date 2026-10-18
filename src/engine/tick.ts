@@ -1,6 +1,7 @@
 import type { ContentIndex } from '../content/types';
 import { LAST_DAY_INDEX, isMonthStart, isQuarterStart, isYearStart } from './core/clock';
 import { advanceArmies } from './systems/military';
+import { advanceTraining } from './systems/training';
 import { advanceFocus } from './systems/focus';
 import { advanceResearch } from './systems/research';
 import { advanceTaxReforms } from './systems/tax';
@@ -67,6 +68,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   advanceFocus(state, content);
   advanceResearch(state, content);
   advanceArmies(state, content);
+  advanceTraining(state, content);
   processEvents(state, content);
 
   if (isMonthStart(state.day)) {

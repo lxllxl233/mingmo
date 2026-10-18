@@ -66,14 +66,25 @@ armies:
   - { tag: MING, template: ming_guard, province: xian, size: 2 }
   - { tag: MING, template: ming_guard, province: suzhou, size: 2 }
   - { tag: MING, template: ming_guard, province: chengdu, size: 1 }
+  - { tag: MING, template: ming_guard, province: datong, size: 2 }
+  - { tag: MING, template: ming_guard, province: taiyuan, size: 1 }
+  - { tag: MING, template: ming_guard, province: nanjing, size: 2 }
+  - { tag: MING, template: ming_guard, province: wuchang, size: 1 }
+  - { tag: MING, template: ming_guard, province: guangzhou, size: 1 }
+  - { tag: MING, template: ming_guard, province: jinan, size: 1 }
+  - { tag: MING, template: ming_navy, province: fuzhou, size: 2 }
   - { tag: QING, template: qing_banner, province: shenyang, size: 4 }
   - { tag: QING, template: qing_banner, province: liaoyang, size: 2 }
+  - { tag: QING, template: qing_banner, province: jinzhou, size: 2 }
   - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 3 }
   - { tag: MONGOL, template: mongol_cavalry, province: ordos, size: 2 }
+  - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 1 }
   - { tag: JOSEON, template: joseon_army, province: hanseong, size: 3 }
   - { tag: JOSEON, template: joseon_army, province: pyongyang, size: 1 }
+  - { tag: JOSEON, template: joseon_army, province: uiju, size: 1 }
   - { tag: JAPAN, template: japan_samurai, province: edo, size: 3 }
   - { tag: JAPAN, template: japan_samurai, province: osaka, size: 2 }
+  - { tag: JAPAN, template: japan_samurai, province: sendai, size: 1 }
   - { tag: JAPAN, template: japan_navy, province: nagasaki, size: 1 }
   - { tag: TIBET, template: tibet_army, province: lhasa, size: 2 }
   - { tag: TIBET, template: tibet_army, province: qinghai, size: 1 }
@@ -81,11 +92,14 @@ armies:
   - { tag: VOC, template: voc_fleet, province: penghu, size: 1 }
   - { tag: RUSSIA, template: russia_cossack, province: albazin, size: 2 }
   - { tag: RUSSIA, template: russia_cossack, province: nerchinsk, size: 1 }
-  - { tag: SHUN, template: shun_rebel, province: yanan, size: 1 }
+  - { tag: RUSSIA, template: russia_cossack, province: okhotsk, size: 1 }
+  - { tag: SHUN, template: shun_rebel, province: yanan, size: 2 }
   - { tag: XI, template: xi_army, province: chengdu, size: 1 }
   - { tag: SMING, template: sming_army, province: nanjing, size: 1 }
+  - { tag: SMING, template: sming_army, province: suzhou, size: 1 }
   - { tag: ZHENG, template: zheng_navy, province: anping, size: 1 }
-  - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
+  - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 1 }
+  - { tag: NEU, template: neutrals_tribal, province: ava, size: 2 }
   - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
 initial_wars:
   - { attacker: QING, defender: MING, goal: 辽东 }

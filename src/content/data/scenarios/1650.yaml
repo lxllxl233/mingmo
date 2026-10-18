@@ -63,20 +63,31 @@ armies:
   - { tag: QING, template: qing_green, province: guangzhou, size: 2 }
   - { tag: QING, template: qing_green, province: xian, size: 2 }
   - { tag: QING, template: qing_green, province: wuchang, size: 2 }
+  - { tag: QING, template: qing_green, province: hangzhou, size: 1 }
   - { tag: SMING, template: sming_army, province: kunming, size: 3 }
   - { tag: SMING, template: sming_army, province: guilin, size: 2 }
   - { tag: XI, template: xi_army, province: chengdu, size: 2 }
+  - { tag: XI, template: xi_army, province: chongqing, size: 1 }
   - { tag: ZHENG, template: zheng_navy, province: anping, size: 3 }
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 2 }
+  - { tag: ZHENG, template: zheng_navy, province: penghu, size: 1 }
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 2 }
+  - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 1 }
   - { tag: JOSEON, template: joseon_army, province: hanseong, size: 3 }
+  - { tag: JOSEON, template: joseon_army, province: pyongyang, size: 1 }
+  - { tag: JOSEON, template: joseon_army, province: uiju, size: 1 }
   - { tag: JAPAN, template: japan_samurai, province: edo, size: 3 }
+  - { tag: JAPAN, template: japan_samurai, province: osaka, size: 2 }
+  - { tag: JAPAN, template: japan_samurai, province: sendai, size: 1 }
   - { tag: JAPAN, template: japan_navy, province: nagasaki, size: 1 }
   - { tag: TIBET, template: tibet_army, province: lhasa, size: 2 }
-  - { tag: VOC, template: voc_fleet, province: penghu, size: 2 }
+  - { tag: TIBET, template: tibet_army, province: qinghai, size: 1 }
+  - { tag: VOC, template: voc_company, province: anping, size: 2 }
+  - { tag: VOC, template: voc_fleet, province: penghu, size: 1 }
   - { tag: RUSSIA, template: russia_cossack, province: albazin, size: 2 }
   - { tag: RUSSIA, template: russia_cossack, province: nerchinsk, size: 1 }
-  - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
+  - { tag: RUSSIA, template: russia_cossack, province: okhotsk, size: 1 }
+  - { tag: NEU, template: neutrals_tribal, province: ava, size: 2 }
   - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
 initial_wars:
   - { attacker: QING, defender: SMING, goal: 一统 }

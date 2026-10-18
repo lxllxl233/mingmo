@@ -306,14 +306,22 @@ export class MapRenderer {
     for (const [id, centroid] of this.centroids) {
       const def = this.content.provinces.get(id);
       if (!def?.isPort) continue;
-      this.portLayer.circle(centroid.x, centroid.y, 0.19)
-        .fill({ color: 0xf2ead8, alpha: 0.95 })
-        .stroke({ width: 0.06, color: 0x2b4a6f, alpha: 0.95 });
-      this.portLayer.moveTo(centroid.x, centroid.y - 0.13)
-        .lineTo(centroid.x, centroid.y + 0.13)
+      this.portLayer.circle(centroid.x, centroid.y, 0.25)
+        .fill({ color: 0xf2ead8, alpha: 0.8 })
+        .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 0.95 });
+      this.portLayer.circle(centroid.x, centroid.y - 0.18, 0.07)
         .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 1 });
-      this.portLayer.moveTo(centroid.x - 0.12, centroid.y - 0.03)
-        .lineTo(centroid.x + 0.12, centroid.y - 0.03)
+      this.portLayer.moveTo(centroid.x, centroid.y - 0.11)
+        .lineTo(centroid.x, centroid.y + 0.17)
+        .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 1 });
+      this.portLayer.moveTo(centroid.x - 0.17, centroid.y + 0.02)
+        .lineTo(centroid.x + 0.17, centroid.y + 0.02)
+        .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 1 });
+      this.portLayer.moveTo(centroid.x - 0.17, centroid.y + 0.02)
+        .lineTo(centroid.x - 0.24, centroid.y + 0.13)
+        .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 1 });
+      this.portLayer.moveTo(centroid.x + 0.17, centroid.y + 0.02)
+        .lineTo(centroid.x + 0.24, centroid.y + 0.13)
         .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 1 });
       const text = new Text({
         text: '港',

@@ -5,7 +5,8 @@ import { armyStrengthOf } from './economy';
 import { availableFocuses, startFocus } from './focus';
 import { availableTechs, startResearch } from './research';
 import { startTaxReform } from './tax';
-import { recruitArmy, setArmyPath } from './military';
+import { enqueueTraining } from './training';
+import { setArmyPath } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { evaluateTrigger } from '../rules/triggers';
 
@@ -104,7 +105,7 @@ function manageArmy(state: GameState, content: ContentIndex, tag: string): void 
   if (armyStrengthOf(state, tag) >= target) return;
   if (nation.treasury < 120000 || nation.manpower < 2000) return;
   const template = AI_TEMPLATES[tag] ?? 'ming_guard';
-  recruitArmy(state, content, tag, nation.capital, template, 2);
+  enqueueTraining(state, content, tag, nation.capital, template, 2);
 }
 
 function neighborsOf(state: GameState, content: ContentIndex, tag: string): string[] {

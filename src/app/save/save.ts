@@ -10,7 +10,7 @@ export interface SaveFile {
   checksum: string;
 }
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 
 export function encodeSave(state: GameState): string {
   const payload = {
@@ -31,7 +31,7 @@ export function decodeSave(text: string): GameState {
   } catch {
     throw new Error('存档不是合法 JSON');
   }
-  if (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== SAVE_VERSION) {
+  if (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== 3 && parsed.version !== SAVE_VERSION) {
     throw new Error(`存档版本 ${parsed.version} 与当前版本 ${SAVE_VERSION} 不兼容`);
   }
   const checksum = hashState(parsed.state);
@@ -45,6 +45,10 @@ export function decodeSave(text: string): GameState {
       if (army.navalTarget === undefined) army.navalTarget = null;
       if (typeof army.navalProgress !== 'number') army.navalProgress = 0;
     }
+  }
+  if (parsed.version <= 3) {
+    if (!Array.isArray(parsed.state.training)) parsed.state.training = [];
+    if (typeof parsed.state.nextTrainingId !== 'number') parsed.state.nextTrainingId = 0;
   }
   return parsed.state;
 }

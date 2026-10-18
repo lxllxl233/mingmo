@@ -176,6 +176,20 @@ export interface VictoryResult {
   breakdown: Record<string, number>;
 }
 
+export interface TrainingItem {
+  id: string;
+  tag: string;
+  province: string;
+  templateId: string;
+  size: number;
+  daysLeft: number;
+  totalDays: number;
+  costSilver: number;
+  costFood: number;
+  paidSilver: number;
+  paidFood: number;
+}
+
 export interface GameState {
   version: number;
   seed: number;
@@ -185,6 +199,7 @@ export interface GameState {
   countries: Record<string, CountryState>;
   provinces: Record<string, ProvinceState>;
   armies: Record<string, ArmyState>;
+  training: TrainingItem[];
   wars: WarState[];
   relations: Record<string, number>;
   eventQueue: QueuedEvent[];
@@ -192,6 +207,7 @@ export interface GameState {
   firedEvents: Record<string, number>;
   log: LogEntry[];
   nextArmyId: number;
+  nextTrainingId: number;
   nextWarId: number;
   stats: GameStats;
   ended: boolean;

@@ -7,7 +7,8 @@ import { startFocus } from './systems/focus';
 import { startResearch } from './systems/research';
 import { startTaxReform } from './systems/tax';
 import { chooseEventOption } from './systems/events';
-import { recruitArmy, setArmyPath } from './systems/military';
+import { setArmyPath } from './systems/military';
+import { enqueueTraining } from './systems/training';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -91,8 +92,8 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       if (template && template.composition.naval > 0 && !province?.isPort) {
         throw new CommandError('warships require a port');
       }
-      if (!recruitArmy(state, content, tag, command.province, command.template, command.size)) {
-        throw new CommandError('recruitment failed');
+      if (!enqueueTraining(state, content, tag, command.province, command.template, command.size)) {
+        throw new CommandError('training queue failed');
       }
       break;
     }

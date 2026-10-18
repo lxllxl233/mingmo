@@ -35,12 +35,24 @@ export function MilitaryPanel() {
   const country = game.countries[game.playerTag];
   if (!country) return null;
   const armies = Object.values(game.armies).filter(army => army.tag === game.playerTag);
+  const landArmies = armies.filter(army => army.composition.naval === 0);
+  const navyArmies = armies.filter(army => army.composition.naval > 0);
+  const totalStrength = armies.reduce((sum, entry) => sum
+    + entry.composition.infantry + entry.composition.firearm + entry.composition.cavalry
+    + entry.composition.artillery + entry.composition.naval, 0);
+  const training = game.training.filter(entry => entry.tag === game.playerTag);
   const army = selectedArmy ? game.armies[selectedArmy] : null;
 
   return (
     <div className="panel">
       <h2>军事</h2>
       <p className="muted">军队按省移动，逐日结算战斗与围城。欠饷会先打募兵，再打家丁。</p>
+      <div className="military-summary">
+        <span>陆军 <b>{landArmies.length}</b> 支</span>
+        <span>水军 <b>{navyArmies.length}</b> 支</span>
+        <span>总兵力 <b>{formatNumber(totalStrength)}</b></span>
+        <span>训练中 <b>{training.length}</b></span>
+      </div>
       <div className="panel-actions">
         <select value={template} onChange={event => setTemplate(event.target.value)}>
           {[...content.armyTemplates.values()].map(entry => (
@@ -51,9 +63,27 @@ export function MilitaryPanel() {
           className="primary"
           onClick={() => command({ type: 'army.recruit', province: country.capital, template, size: 2 })}
         >
-          在京师征募 2 营
+          加入训练队列（2 营）
         </button>
       </div>
+      <h3>训练队列</h3>
+      {training.length === 0 && <p className="muted">无。新兵需训练后才会成军，训练期间按 60% 钱粮逐日扣除。</p>}
+      {training.map(entry => {
+        const templateDef = content.armyTemplates.get(entry.templateId);
+        const progress = entry.totalDays > 0 ? (entry.totalDays - entry.daysLeft) / entry.totalDays : 0;
+        return (
+          <div className="training-row" key={entry.id}>
+            <div className="head">
+              <span>{templateDef?.name ?? entry.templateId} × {entry.size}</span>
+              <span className="muted">{entry.daysLeft} 日</span>
+            </div>
+            <progress value={Math.max(0, Math.min(1, progress))} max={1} />
+            <div className="muted">
+              {content.provinces.get(entry.province)?.name ?? entry.province} · 已耗银 {formatNumber(entry.paidSilver)} / {formatNumber(entry.costSilver)} · 粮 {formatNumber(entry.paidFood)} / {formatNumber(entry.costFood)}
+            </div>
+          </div>
+        );
+      })}
       <h3>军团</h3>
       {armies.length === 0 && <p className="muted">无</p>}
       {armies.map(entry => {

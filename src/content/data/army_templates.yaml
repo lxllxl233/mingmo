@@ -23,6 +23,14 @@ army_templates:
     training: 55
     equipment: 70
     movement: 2
+  - id: ming_navy
+    name: 大明水师
+    composition: { infantry: 200, firearm: 100, cavalry: 0, artillery: 100, naval: 600 }
+    source_estate: merchants
+    upkeep: 1.4
+    training: 55
+    equipment: 60
+    movement: 4
   - id: qing_banner
     name: 八旗
     composition: { infantry: 400, firearm: 200, cavalry: 400, artillery: 0, naval: 0 }
