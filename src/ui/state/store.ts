@@ -63,6 +63,7 @@ interface UiStore {
   selectedProvince: string | null;
   selectedArmy: string | null;
   armyStack: string[] | null;
+  selectedBattle: string | null;
   message: string | null;
   start: (scenarioId: string, tag: string, seed?: number, difficulty?: Difficulty) => void;
   startSpectator: (scenarioId: string, seed?: number, difficulty?: Difficulty) => void;
@@ -73,6 +74,8 @@ interface UiStore {
   selectArmy: (armyId: string | null) => void;
   openArmyStack: (armyIds: string[]) => void;
   closeArmyStack: () => void;
+  openBattle: (battleId: string) => void;
+  closeBattle: () => void;
   openCountry: (tag: string) => void;
   moveArmyTo: (provinceId: string) => boolean;
   appendArmyWaypoint: (provinceId: string) => boolean;
@@ -105,6 +108,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   selectedProvince: null,
   selectedArmy: null,
   armyStack: null,
+  selectedBattle: null,
   message: null,
 
   start: (scenarioId, tag, seed = 42, difficulty = 'normal') => {
@@ -126,6 +130,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       selectedProvince: game.countries[tag]?.capital ?? null,
       selectedArmy: null,
       armyStack: null,
+      selectedBattle: null,
       message: null,
     });
   },
@@ -149,6 +154,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       selectedProvince: null,
       selectedArmy: null,
       armyStack: null,
+      selectedBattle: null,
       message: '看海模式：全图视野，所有势力由 AI 推演。',
     });
   },
@@ -250,6 +256,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
     set({ armyStack: [...armyIds], selectedArmy: null, panel: null });
   },
   closeArmyStack: () => set({ armyStack: null }),
+  openBattle: battleId => set({ selectedBattle: battleId, armyStack: null }),
+  closeBattle: () => set({ selectedBattle: null }),
   openCountry: tag => {
     sound.play('click');
     set({
@@ -387,5 +395,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, message: null }),
+  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, message: null }),
 }));

@@ -106,6 +106,7 @@ const SEA_ROUTES = [
   { from: 'quanzhou', to: 'penghu', name: '泉州—澎湖' },
   { from: 'penghu', to: 'anping', name: '澎湖—安平' },
   { from: 'tamsui', to: 'fuzhou', name: '淡水—福州' },
+  { from: 'fuzhou_a', to: 'tamsui', name: '福州东—淡水' },
   { from: 'osaka', to: 'hakata', name: '濑户内海' },
   { from: 'hakata', to: 'nagasaki', name: '九州西海' },
   { from: 'nagasaki', to: 'nagasaki_a', name: '长崎湾' },

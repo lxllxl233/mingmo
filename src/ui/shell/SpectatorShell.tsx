@@ -4,6 +4,7 @@ import { useGameStore } from '../state/store';
 import { MapViewport } from './MapViewport';
 import { MusicControl } from './MusicControl';
 import { CountryFlag } from '../panels/CountryFlag';
+import { BattleModal } from '../panels/BattleModal';
 
 export function SpectatorShell() {
   const game = useGameStore(state => state.game);
@@ -88,6 +89,7 @@ export function SpectatorShell() {
         <span className="spacer" />
         <span className="muted">日 {game.day}</span>
       </footer>
+      <BattleModal />
     </div>
   );
 }

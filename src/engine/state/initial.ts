@@ -198,6 +198,7 @@ export function createInitialState(
       templateId: template.id,
       embarked: false,
       navalTarget: null,
+      navalOrigin: null,
       navalProgress: 0,
       composition: {
         infantry: template.composition.infantry * entry.size,
@@ -262,6 +263,7 @@ export function createInitialState(
     armies,
     training: [],
     wars,
+    battles: [],
     truces: {},
     vassals: scenario.id === '1627'
       ? { JOSEON: 'MING', NEU: 'MING' }

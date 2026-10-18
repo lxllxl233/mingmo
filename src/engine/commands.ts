@@ -132,6 +132,7 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       if (!fleet) throw new CommandError('no warships in port');
       army.embarked = true;
       army.navalTarget = command.portId;
+      army.navalOrigin = army.province;
       army.navalProgress = 0;
       army.movePath = [];
       army.stance = 'move';
@@ -172,6 +173,7 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       army.movePath = [];
       army.embarked = false;
       army.navalTarget = null;
+      army.navalOrigin = null;
       army.navalProgress = 0;
       army.stance = 'hold';
       break;

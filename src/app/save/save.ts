@@ -59,6 +59,7 @@ export function decodeSave(text: string): GameState {
     if (typeof nation.foodCrisisDays !== 'number') nation.foodCrisisDays = 0;
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
+  if (!Array.isArray(parsed.state.battles)) parsed.state.battles = [];
   if (parsed.version <= 4 && !parsed.state.truces) parsed.state.truces = {};
   if (parsed.version <= 5) {
     if (!parsed.state.vassals) parsed.state.vassals = {};
@@ -67,6 +68,7 @@ export function decodeSave(text: string): GameState {
   for (const army of Object.values(parsed.state.armies)) {
     if (typeof army.templateId !== 'string') army.templateId = '';
     if (typeof army.entrenchment !== 'number') army.entrenchment = 0;
+    if (army.navalOrigin === undefined) army.navalOrigin = null;
     if (typeof army.maxStrength !== 'number') {
       army.maxStrength = army.composition.infantry + army.composition.firearm
         + army.composition.cavalry + army.composition.artillery + army.composition.naval;

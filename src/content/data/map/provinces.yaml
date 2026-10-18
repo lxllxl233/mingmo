@@ -1658,6 +1658,7 @@ provinces:
       - fuzhou
       - quanzhou
       - quanzhou_b
+      - tamsui
   - id: fuzhou_b
     name: 福州西
     prefecture: pref_fuzhou
@@ -7840,6 +7841,7 @@ provinces:
     supply_limit: 4363
     neighbors:
       - fuzhou
+      - fuzhou_a
       - keelung
       - keelung_a
       - keelung_b

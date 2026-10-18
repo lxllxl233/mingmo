@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { MapRenderer } from '../../map/render/MapRenderer';
 import { useGameStore } from '../state/store';
+import { BattleBubble } from '../panels/BattleBubble';
 
 export function MapViewport() {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -113,6 +114,7 @@ export function MapViewport() {
   return (
     <div className="map-host" ref={hostRef}>
       <div className="map-grain" />
+      <BattleBubble />
       {trainingRequest && (
         <div className="deploy-banner">
           <b>{trainingRequest.kind === 'navy' ? '部署水军' : '部署陆军'}</b>

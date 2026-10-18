@@ -72,6 +72,19 @@ export interface WarAlert {
   day: number;
 }
 
+export interface BattleState {
+  id: string;
+  provinceId: string;
+  attacker: string;
+  defender: string;
+  startDay: number;
+  days: number;
+  attackerStrength: number;
+  defenderStrength: number;
+  attackerOrganization: number;
+  defenderOrganization: number;
+}
+
 export interface MonthlyReport {
   day: number;
   income: number;
@@ -136,6 +149,7 @@ export interface ArmyState {
   templateId: string;
   embarked: boolean;
   navalTarget: string | null;
+  navalOrigin: string | null;
   navalProgress: number;
   composition: {
     infantry: number;
@@ -232,6 +246,7 @@ export interface GameState {
   armies: Record<string, ArmyState>;
   training: TrainingItem[];
   wars: WarState[];
+  battles: BattleState[];
   truces: Record<string, number>;
   vassals: Record<string, string>;
   lastTribute: Record<string, number>;

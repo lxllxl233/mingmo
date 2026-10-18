@@ -11,6 +11,7 @@ import { WarDock } from '../panels/WarDock';
 import { ProvincePanel } from '../panels/ProvincePanel';
 import { CountryPanel } from '../panels/CountryPanel';
 import { ArmyPanel } from '../panels/ArmyPanel';
+import { BattleModal } from '../panels/BattleModal';
 import { ArmyStackPanel } from '../panels/ArmyStackPanel';
 import { EstatesPanel } from '../panels/EstatesPanel';
 import { CorePanel } from '../panels/CorePanel';
@@ -203,6 +204,7 @@ export function GameShell() {
       )}
       {pending.length > 0 && <EventModal />}
       <WarAlertModal />
+      <BattleModal />
       <ArmyStackPanel />
       <TrainingModal />
       {game.ended && <EndModal />}

@@ -1344,7 +1344,9 @@ export class MapRenderer {
       marker.armyIds = ordered.map(army => army.id);
       const nextId = representative.movePath[0];
       const nextCentroid = nextId ? this.centroids.get(nextId) : null;
-      const travel = nextCentroid ? Math.min(0.82, Math.max(0, representative.moveProgress)) : 0;
+      const travel = ordered.length === 1 && nextCentroid
+        ? Math.min(0.82, Math.max(0, representative.moveProgress))
+        : 0;
       marker.targetX = centroid.x + (nextCentroid ? (nextCentroid.x - centroid.x) * travel : 0);
       marker.targetY = centroid.y + (nextCentroid ? (nextCentroid.y - centroid.y) * travel : 0);
       if (!marker.positioned) {

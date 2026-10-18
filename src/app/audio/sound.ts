@@ -167,14 +167,26 @@ class SoundEngine {
     this.unlock();
     const total = composition.infantry + composition.firearm + composition.cavalry
       + composition.artillery + composition.naval;
+    const factionVoice: Record<string, string> = {
+      MING: 'ming_line.mp3',
+      QING: 'qing_array.mp3',
+      SHUN: 'ming_line.mp3',
+      XI: 'ming_line.mp3',
+      SMING: 'ming_line.mp3',
+      ZHENG: 'ming_line.mp3',
+      MONGOL: 'mongol_line.mp3',
+      JOSEON: 'joseon_line.mp3',
+      JAPAN: 'japan_dress.mp3',
+      TIBET: 'ming_line.mp3',
+      VOC: 'voc_line.mp3',
+      RUSSIA: 'russia_line.mp3',
+    };
     let phrase = '集合！';
-    let file = 'default_assemble.mp3';
-    if (total > 0 && composition.naval / total >= 0.35) { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
-    else if (total > 0 && composition.cavalry / total >= 0.3) { phrase = '上马！'; file = 'cavalry_mount.mp3'; }
-    else if (tag === 'QING') { phrase = '列阵！'; file = 'qing_array.mp3'; }
-    else if (tag === 'MING') { phrase = '列队！'; file = 'ming_line.mp3'; }
-    else if (tag === 'JAPAN') { phrase = '整列！'; file = 'japan_dress.mp3'; }
-    else if (tag === 'ZHENG') { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
+    let file = factionVoice[tag] ?? 'default_assemble.mp3';
+    const chineseFaction = ['MING', 'QING', 'SHUN', 'XI', 'SMING', 'ZHENG', 'TIBET'].includes(tag);
+    if (chineseFaction && total > 0 && composition.naval / total >= 0.35) { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
+    else if (chineseFaction && total > 0 && composition.cavalry / total >= 0.3) { phrase = '上马！'; file = 'cavalry_mount.mp3'; }
+    else if (tag === 'ZHENG' && total > 0 && composition.naval / total >= 0.25) { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
     this.playVoice(file, phrase);
     this.tone(96, 0.1, 'triangle', 0.025, 64);
   }

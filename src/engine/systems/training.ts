@@ -38,6 +38,7 @@ function createArmy(
     templateId,
     embarked: false,
     navalTarget: null,
+    navalOrigin: null,
     navalProgress: 0,
     composition: {
       infantry: template.composition.infantry * size,

@@ -221,6 +221,27 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
       }
     }
     state.stats.battles += 1;
+    const battle = state.battles.find(entry => entry.provinceId === provinceId)
+      ?? {
+        id: `battle_${provinceId}`,
+        provinceId,
+        attacker: frontAttackers[0]?.tag ?? '',
+        defender: province.controller,
+        startDay: state.day,
+        days: 0,
+        attackerStrength: 0,
+        defenderStrength: 0,
+        attackerOrganization: 0,
+        defenderOrganization: 0,
+      };
+    battle.attacker = frontAttackers[0]?.tag ?? battle.attacker;
+    battle.defender = province.controller;
+    battle.days = state.day - battle.startDay + 1;
+    battle.attackerStrength = frontAttackers.reduce((sum, army) => sum + compositionTotal(army), 0);
+    battle.defenderStrength = frontDefenders.reduce((sum, army) => sum + compositionTotal(army), 0);
+    battle.attackerOrganization = frontAttackers.reduce((sum, army) => sum + army.organization, 0) / Math.max(1, frontAttackers.length);
+    battle.defenderOrganization = frontDefenders.reduce((sum, army) => sum + army.organization, 0) / Math.max(1, frontDefenders.length);
+    if (!state.battles.includes(battle)) state.battles.push(battle);
     state.log.push({
       day: state.day,
       category: 'military',
@@ -228,6 +249,17 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
       severity: 'warning',
     });
   }
+  state.battles = state.battles.filter(battle => {
+    const province = state.provinces[battle.provinceId];
+    if (!province) return false;
+    return Object.values(state.armies).some(army =>
+      army.tag === battle.attacker
+      && army.province === battle.provinceId
+      && Object.values(state.armies).some(other =>
+        other.tag === province.controller
+        && other.province === battle.provinceId
+        && areAtWar(state, army.tag, other.tag)));
+  });
   for (const army of Object.values(state.armies)) {
     if (army.stance !== 'battle') continue;
     const hasEnemy = Object.values(state.armies).some(other =>
@@ -317,12 +349,23 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       army.navalProgress = (army.navalProgress ?? 0) + 1 / 3;
       if (army.navalProgress >= 1) {
         const target = army.navalTarget;
-        if (target && state.provinces[target]) {
+        const targetProvince = target ? state.provinces[target] : undefined;
+        if (target && targetProvince && targetProvince.controller === army.tag) {
           army.history = [...army.history, army.province].slice(-8);
           army.province = target;
+        } else if (army.navalOrigin && state.provinces[army.navalOrigin]?.controller === army.tag) {
+          army.province = army.navalOrigin;
+          state.log.push({
+            day: state.day,
+            category: 'military',
+            country: army.tag,
+            text: `${army.name} 登陆受阻，撤回 ${content.provinces.get(army.navalOrigin)?.name ?? army.navalOrigin}`,
+            severity: 'warning',
+          });
         }
         army.embarked = false;
         army.navalTarget = null;
+        army.navalOrigin = null;
         army.navalProgress = 0;
         army.stance = 'hold';
       }
@@ -385,6 +428,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       && other.tag !== army.tag
       && areAtWar(state, army.tag, other.tag));
     if (enemiesHere) continue;
+    if (province.controller !== 'NEU' && !areAtWar(state, army.tag, province.controller)) continue;
     if (currentDef.isFort) {
       const siege = province.siege?.attacker === army.tag
         ? province.siege
@@ -448,6 +492,7 @@ export function recruitArmy(
     templateId,
     embarked: false,
     navalTarget: null,
+    navalOrigin: null,
     navalProgress: 0,
     composition: {
       infantry: template.composition.infantry * size,
