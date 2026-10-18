@@ -133,6 +133,9 @@ export class MapRenderer {
   private shadowLayer = new Graphics();
   private fillLayer = new Graphics();
   private terrainLayer = new Graphics();
+  private terrainSymbolLayer = new Container();
+  private terrainSymbols: Graphics[] = [];
+  private terrainDetailLayer = new Graphics();
   private selectionLayer = new Graphics();
   private provinceBorderLayer = new Graphics();
   private countryBorderLayer = new Graphics();
@@ -204,6 +207,8 @@ export class MapRenderer {
       this.shadowLayer,
       this.fillLayer,
       this.terrainLayer,
+      this.terrainSymbolLayer,
+      this.terrainDetailLayer,
       this.provinceBorderLayer,
       this.countryBorderLayer,
       this.seaRouteLayer,
@@ -312,13 +317,106 @@ export class MapRenderer {
 
   private drawTerrain(): void {
     this.terrainLayer.clear();
+    this.terrainSymbolLayer.removeChildren();
+    for (const symbol of this.terrainSymbols) symbol.destroy();
+    this.terrainSymbols = [];
     for (const [id, points] of this.projected) {
       const terrain = this.content.provinces.get(id)?.terrain ?? 'plains';
       const tint = TERRAIN_TINT[terrain] ?? TERRAIN_TINT.plains;
       if (tint) this.terrainLayer.poly(points).fill({ color: tint.color, alpha: tint.alpha });
       const centroid = this.centroids.get(id);
-      if (centroid) this.drawTerrainSymbol(centroid.x, centroid.y, terrain);
+      if (centroid) {
+        const symbol = new Graphics();
+        this.drawTerrainSymbol(symbol, 0, 0, terrain);
+        symbol.position.set(centroid.x, centroid.y);
+        this.terrainSymbols.push(symbol);
+        this.terrainSymbolLayer.addChild(symbol);
+      }
     }
+    this.updateTerrainScale();
+    this.drawTerrainDetail();
+  }
+
+  private updateTerrainScale(): void {
+    const scale = this.world.scale.x || 1;
+    const targetPixels = 6 + Math.min(10, scale / 20);
+    const symbolScale = targetPixels / (0.55 * scale);
+    for (const symbol of this.terrainSymbols) symbol.scale.set(symbolScale);
+  }
+
+  private drawTerrainDetail(): void {
+    this.terrainDetailLayer.clear();
+    const scale = this.world.scale.x;
+    if (scale < 30) return;
+    const count = Math.min(30, Math.max(2, Math.floor(scale / 10)));
+    const size = 12 / scale;
+    for (const [id, points] of this.projected) {
+      const terrain = this.content.provinces.get(id)?.terrain ?? 'plains';
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      for (let i = 0; i < points.length; i += 2) {
+        const x = points[i] ?? 0;
+        const y = points[i + 1] ?? 0;
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+      if (!Number.isFinite(minX) || maxX <= minX || maxY <= minY) continue;
+      for (let index = 0; index < count; index += 1) {
+        const seed = hashString(`${id}:${index}`);
+        const x = minX + ((seed & 0xffff) / 0xffff) * (maxX - minX);
+        const y = minY + (((seed >>> 16) & 0xffff) / 0xffff) * (maxY - minY);
+        if (!pointInPolygon(x, y, points)) continue;
+        this.drawTerrainDetailMark(x, y, terrain, size);
+      }
+    }
+  }
+
+  private drawTerrainDetailMark(x: number, y: number, terrain: string, size: number): void {
+    const g = this.terrainDetailLayer;
+    if (terrain === 'mountains') {
+      for (const scale of [0.62, 1, 1.38]) {
+        g.moveTo(x - size * scale, y + size * 0.55 * scale)
+          .lineTo(x, y - size * 0.55 * scale)
+          .lineTo(x + size * scale, y + size * 0.55 * scale)
+          .stroke({ width: Math.max(0.02, size * 0.13), color: 0x3a3226, alpha: 0.3 });
+      }
+      return;
+    }
+    if (terrain === 'hills') {
+      g.poly([x - size, y + size * 0.5, x, y - size * 0.4, x + size, y + size * 0.5])
+        .fill({ color: 0x5a4a32, alpha: 0.24 });
+      g.moveTo(x - size * 0.55, y + size * 0.22)
+        .lineTo(x + size * 0.2, y + size * 0.22)
+        .stroke({ width: Math.max(0.02, size * 0.1), color: 0x5a4a32, alpha: 0.2 });
+      return;
+    }
+    if (terrain === 'jungle' || terrain === 'steppe') {
+      for (const offset of [-0.4, 0, 0.4]) {
+        g.circle(x + size * offset, y - size * 0.1, size * 0.28)
+          .fill({ color: terrain === 'jungle' ? 0x2f5b32 : 0x77703a, alpha: 0.25 });
+      }
+      g.moveTo(x, y + size * 0.2).lineTo(x, y + size * 0.7)
+        .stroke({ width: Math.max(0.02, size * 0.13), color: 0x3a3226, alpha: 0.25 });
+      return;
+    }
+    if (terrain === 'desert') {
+      g.moveTo(x - size, y).lineTo(x + size, y)
+        .stroke({ width: Math.max(0.02, size * 0.12), color: 0x9a7430, alpha: 0.26 });
+      return;
+    }
+    if (terrain === 'wetland') {
+      g.moveTo(x - size * 0.7, y - size * 0.12).lineTo(x + size * 0.7, y - size * 0.12)
+        .stroke({ width: Math.max(0.02, size * 0.12), color: 0x3f6f6a, alpha: 0.3 });
+      g.moveTo(x - size * 0.45, y + size * 0.3).lineTo(x + size * 0.55, y + size * 0.3)
+        .stroke({ width: Math.max(0.02, size * 0.12), color: 0x3f6f6a, alpha: 0.24 });
+      return;
+    }
+    g.moveTo(x - size * 0.7, y + size * 0.25).lineTo(x + size * 0.5, y + size * 0.25)
+      .stroke({ width: Math.max(0.02, size * 0.1), color: 0x5f6b3a, alpha: 0.22 });
   }
 
   private drawSeaRoutes(): void {
@@ -383,20 +481,20 @@ export class MapRenderer {
     }
   }
 
-  private drawTerrainSymbol(x: number, y: number, terrain: string): void {
+  private drawTerrainSymbol(target: Graphics, x: number, y: number, terrain: string): void {
     const ink = 0x4a4034;
     const green = 0x3f6b3a;
     const lake = 0x3f6f6a;
     if (terrain === 'mountains') {
       for (const offset of [-0.42, 0, 0.42]) {
-        this.terrainLayer.poly([x + offset - 0.28, y + 0.24, x + offset, y - 0.28, x + offset + 0.28, y + 0.24])
+        target.poly([x + offset - 0.28, y + 0.24, x + offset, y - 0.28, x + offset + 0.28, y + 0.24])
           .fill({ color: ink, alpha: 0.32 });
       }
       return;
     }
     if (terrain === 'hills') {
       for (const offset of [-0.3, 0.3]) {
-        this.terrainLayer.poly([
+        target.poly([
           x + offset - 0.28, y + 0.18,
           x + offset - 0.14, y - 0.12,
           x + offset + 0.02, y + 0.18,
@@ -405,29 +503,29 @@ export class MapRenderer {
       return;
     }
     if (terrain === 'desert') {
-      this.terrainLayer.rect(x - 0.38, y + 0.04, 0.38, 0.05).fill({ color: 0x9e7a3a, alpha: 0.4 });
-      this.terrainLayer.rect(x + 0.02, y + 0.18, 0.36, 0.05).fill({ color: 0x9e7a3a, alpha: 0.35 });
-      this.terrainLayer.circle(x + 0.28, y - 0.08, 0.04).fill({ color: 0x9e7a3a, alpha: 0.4 });
+      target.rect(x - 0.38, y + 0.04, 0.38, 0.05).fill({ color: 0x9e7a3a, alpha: 0.4 });
+      target.rect(x + 0.02, y + 0.18, 0.36, 0.05).fill({ color: 0x9e7a3a, alpha: 0.35 });
+      target.circle(x + 0.28, y - 0.08, 0.04).fill({ color: 0x9e7a3a, alpha: 0.4 });
       return;
     }
     if (terrain === 'wetland') {
       for (const offset of [-0.22, 0.04, 0.28]) {
-        this.terrainLayer.rect(x - 0.36, y + offset, 0.72, 0.045).fill({ color: lake, alpha: 0.4 });
+        target.rect(x - 0.36, y + offset, 0.72, 0.045).fill({ color: lake, alpha: 0.4 });
       }
       return;
     }
     if (terrain === 'jungle' || terrain === 'steppe') {
       const color = terrain === 'jungle' ? green : 0x8a843a;
       for (const offset of [-0.34, 0, 0.34]) {
-        this.terrainLayer.poly([x + offset - 0.18, y + 0.18, x + offset, y - 0.18, x + offset + 0.18, y + 0.18])
+        target.poly([x + offset - 0.18, y + 0.18, x + offset, y - 0.18, x + offset + 0.18, y + 0.18])
           .fill({ color, alpha: 0.32 });
-        this.terrainLayer.rect(x + offset - 0.03, y + 0.16, 0.06, 0.16).fill({ color: ink, alpha: 0.3 });
+        target.rect(x + offset - 0.03, y + 0.16, 0.06, 0.16).fill({ color: ink, alpha: 0.3 });
       }
       return;
     }
     if (terrain === 'plains') {
-      this.terrainLayer.rect(x - 0.3, y + 0.06, 0.36, 0.04).fill({ color: 0x6b7a42, alpha: 0.26 });
-      this.terrainLayer.rect(x + 0.04, y + 0.2, 0.3, 0.04).fill({ color: 0x6b7a42, alpha: 0.22 });
+      target.rect(x - 0.3, y + 0.06, 0.36, 0.04).fill({ color: 0x6b7a42, alpha: 0.26 });
+      target.rect(x + 0.04, y + 0.2, 0.3, 0.04).fill({ color: 0x6b7a42, alpha: 0.22 });
     }
   }
 
@@ -510,6 +608,7 @@ export class MapRenderer {
     );
     this.clampWorld();
     this.updateZoomScales();
+    this.drawTerrainDetail();
   }
 
   private clampWorld(): void {
@@ -553,7 +652,7 @@ export class MapRenderer {
     }
     this.portLayer.visible = scale < 60;
     this.cityLayer.visible = scale < 80;
-    this.terrainLayer.visible = scale < 50;
+    this.updateTerrainScale();
     this.landLayer.visible = scale < 80;
     this.shadowLayer.visible = scale < 40;
     this.otherLayer.visible = scale < 60;
@@ -614,6 +713,7 @@ export class MapRenderer {
       this.drawSelection();
       this.drawHover();
       this.drawSeaRoutes();
+      this.drawTerrainDetail();
     };
     app.canvas.addEventListener('wheel', this.wheelHandler, { passive: false });
     this.contextHandler = (event: MouseEvent) => {
@@ -1124,8 +1224,16 @@ export class MapRenderer {
   }
 }
 
-function strengthText(strength: number): string {
-  if (strength >= 10000) return `${(strength / 1000).toFixed(0)}k`;
+function hashString(text: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function strengthText(strength: number): string {  if (strength >= 10000) return `${(strength / 1000).toFixed(0)}k`;
   if (strength >= 1000) return `${(strength / 1000).toFixed(1)}k`;
   return String(Math.max(0, Math.round(strength)));
 }
