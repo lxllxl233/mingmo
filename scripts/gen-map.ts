@@ -8,13 +8,16 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import polygonClipping from 'polygon-clipping';
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml';
 import { hashSeed, mulberry32 } from '../src/engine/core/rng';
 import {
-  HAINAN,
-  JAPAN,
-  MAINLAND,
-  TAIWAN,
+  OTHER_ATLAS,
+  PLAYABLE_LAND,
+  PLAYABLE_MULTI,
+} from './atlas-land';
+import {
+  SEA_LABELS,
   isCoastal,
   isLand,
   isRiver,
@@ -25,6 +28,31 @@ import {
   type Point,
   type Poly,
 } from './map-geometry';
+
+function closeRing(poly: Poly): Array<[number, number]> {
+  const ring: Array<[number, number]> = poly.map(([x, y]) => [x, y]);
+  const first = ring[0];
+  const last = ring[ring.length - 1];
+  if (first && last && (first[0] !== last[0] || first[1] !== last[1])) ring.push(first);
+  return ring;
+}
+
+function clipCell(cell: Poly, land: Array<Array<Array<[number, number]>>>): Poly {
+  const clipped = polygonClipping.intersection([closeRing(cell)], land);
+  let best: Poly = [];
+  let bestArea = 0;
+  for (const polygon of clipped) {
+    const ring = polygon[0];
+    if (!ring || ring.length < 3) continue;
+    const poly: Poly = ring.map(pair => [pair[0], pair[1]]);
+    const area = Math.abs(polygonArea(poly));
+    if (area > bestArea) {
+      best = poly;
+      bestArea = area;
+    }
+  }
+  return best;
+}
 
 interface Region {
   id: string;
@@ -192,49 +220,11 @@ function main(): void {
   if (ids.size !== 480) throw new Error('duplicate province id');
 
   const landAnchors = seeds.map(seed => seed.point);
-  const seaAnchors: Point[] = [];
-  const seenSea = new Set<string>();
-  const addSea = (point: Point): void => {
-    const key = keyOf(point);
-    if (seenSea.has(key) || isLand(point)) return;
-    seenSea.add(key);
-    seaAnchors.push([Number(point[0].toFixed(3)), Number(point[1].toFixed(3))]);
-  };
-  for (let lon = 69.4; lon <= 150.6; lon += 0.9) {
-    for (let lat = 14.4; lat <= 55.6; lat += 0.9) addSea([lon, lat]);
-  }
-  for (const polygon of [MAINLAND, JAPAN, TAIWAN, HAINAN]) {
-    for (let i = 0; i < polygon.length; i += 1) {
-      const a = polygon[i];
-      const b = polygon[(i + 1) % polygon.length];
-      if (!a || !b) continue;
-      const steps = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 0.55));
-      const dx = b[0] - a[0];
-      const dy = b[1] - a[1];
-      const length = Math.hypot(dx, dy) || 1;
-      const nx = -dy / length;
-      const ny = dx / length;
-      for (let s = 0; s <= steps; s += 1) {
-        const t = s / steps;
-        addSea([a[0] + dx * t + nx * 0.30, a[1] + dy * t + ny * 0.30]);
-      }
-    }
-  }
-
-  // 只保留靠近陆省的的海锚点：远处海点不会切到陆省，白算。
-  const nearSeed = (point: Point): boolean => {
-    for (const seed of seeds) {
-      if (Math.hypot(seed.point[0] - point[0], seed.point[1] - point[1]) < 2.6) return true;
-    }
-    return false;
-  };
-  const localSea = seaAnchors.filter(nearSeed);
-  const allAnchors = [...landAnchors, ...localSea];
-
   const cells = new Map<string, Poly>();
   for (const seed of seeds) {
-    const cell = voronoiCell(seed.point, allAnchors);
-    cells.set(seed.id, cell.length >= 3 && polygonArea(cell) > 1e-7 ? cell : [
+    const cell = voronoiCell(seed.point, landAnchors);
+    const clipped = clipCell(cell.length >= 3 ? cell : [], PLAYABLE_MULTI);
+    cells.set(seed.id, clipped.length >= 3 ? clipped : [
       [seed.point[0] - 0.04, seed.point[1] - 0.04],
       [seed.point[0] + 0.04, seed.point[1] - 0.04],
       [seed.point[0] + 0.04, seed.point[1] + 0.04],
@@ -335,11 +325,32 @@ function main(): void {
     row.landholding = Math.round(row.population / 1000);
   }
 
+  const otherRegions = OTHER_ATLAS.map(region => {
+    let best = region.polygons[0];
+    let bestArea = 0;
+    for (const polygon of region.polygons) {
+      const ring = polygon[0];
+      if (!ring) continue;
+      const area = Math.abs(polygonArea(ring));
+      if (area > bestArea) {
+        best = polygon;
+        bestArea = area;
+      }
+    }
+    return { name: region.name, points: best ? best[0] ?? [] : [] };
+  }).filter(region => region.points.length >= 3);
+  otherRegions.push({
+    name: '西伯利亚',
+    points: [[69, 55], [151, 55], [151, 56], [69, 56]],
+  });
+
   const geo = {
     version: 1,
     generatedBy: 'scripts/gen-map.ts',
     bounds: [69, 14, 151, 56],
-    land: [MAINLAND, JAPAN, TAIWAN, HAINAN].map(polygon => polygon.map(([lon, lat]) => [lon, lat])),
+    land: PLAYABLE_LAND,
+    otherRegions,
+    seaLabels: SEA_LABELS,
     provinces: Object.fromEntries(
       seeds.map(seed => [
         seed.id,
@@ -352,7 +363,7 @@ function main(): void {
   writeFileSync(join(MAP_DIR, 'provinces.geo.json'), `${JSON.stringify(geo)}\n`, 'utf8');
   const totalNeighbors = rows.reduce((sum, row) => sum + row.neighbors.length, 0) / 2;
   console.log(`regions=${regions.length} prefectures=${prefs.length} provinces=${rows.length} edges=${totalNeighbors}`);
-  console.log(`seaAnchors=${localSea.length} population=${rows.reduce((sum, row) => sum + row.population, 0)}`);
+  console.log(`clipped=${rows.length} population=${rows.reduce((sum, row) => sum + row.population, 0)}`);
   console.log(`wrote ${join(MAP_DIR, 'provinces.yaml')}`);
   console.log(`wrote ${join(MAP_DIR, 'provinces.geo.json')}`);
 }

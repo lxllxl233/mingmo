@@ -100,8 +100,25 @@ input, select {
 .game-main { display: grid; grid-template-columns: 62px 1fr minmax(320px, 380px); min-height: 0; }
 .sidebar { border-right: 1px solid var(--line); background: var(--paper-deep); display: flex; flex-direction: column; gap: 4px; padding: 6px; }
 .sidebar button { writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 0.18em; padding: 8px 5px; font-size: 13px; }
-.map-host { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #d6ded5; }
-.map-host canvas { display: block; position: absolute; inset: 0; z-index: 1; }
+.map-host {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #cfd9d2;
+}
+.map-host canvas {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100%;
+  max-height: 100%;
+}
 .map-grain {
   position: absolute;
   inset: 0;
@@ -248,3 +265,15 @@ input, select {
 .war-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed rgba(31, 28, 24, 0.12); font-size: 12px; }
 .war-row button { margin-left: auto; }
 .panel-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line); }
+
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #8a8578; flex: 0 0 auto; }
+.dot.war { background: #a33a32; }
+.dot.friendly { background: #3f6f9a; }
+.dot.neutral { background: #8a8578; }
+.diplo-self { display: flex; align-items: center; gap: 7px; margin: 10px 0 4px; padding: 7px 8px; border: 1px solid var(--line); background: rgba(255,255,255,.25); font-size: 12px; }
+.diplo-legend { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 11px; color: var(--ink-soft); margin-bottom: 4px; }
+.diplo-legend > span { display: inline-flex; align-items: center; gap: 4px; }
+.diplo-row { display: flex; align-items: center; gap: 7px; width: 100%; padding: 5px 4px; border: 0; border-bottom: 1px dashed rgba(31,28,24,.12); background: transparent; text-align: left; font-size: 12px; color: var(--ink); }
+.diplo-row:hover, .diplo-row.active { background: rgba(184,137,46,.12); }
+.diplo-row .muted { margin-left: auto; }
+.diplo-row b { min-width: 28px; text-align: right; font-weight: 600; }

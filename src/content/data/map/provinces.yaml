@@ -4,7 +4,7 @@ provinces:
     prefecture: pref_albazin
     region: reg_russia_far
     terrain: wetland
-    coastal: true
+    coastal: false
     river: false
     fort: true
     fort_level: 7
@@ -16,12 +16,13 @@ provinces:
     neighbors:
       - albazin_a
       - albazin_b
+      - heilongjiang_b
   - id: albazin_a
     name: 雅克萨东
     prefecture: pref_albazin
     region: reg_russia_far
     terrain: wetland
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -33,7 +34,11 @@ provinces:
     neighbors:
       - albazin
       - albazin_b
+      - heilongjiang
+      - heilongjiang_a
       - heilongjiang_b
+      - okhotsk_a
+      - okhotsk_b
   - id: albazin_b
     name: 雅克萨西
     prefecture: pref_albazin
@@ -53,12 +58,14 @@ provinces:
       - albazin_a
       - heilongjiang_b
       - horqin_a
+      - nerchinsk_a
+      - nerchinsk_b
   - id: anping
     name: 安平
     prefecture: pref_anping
     region: reg_taiwan
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: true
     fort_level: 5
@@ -70,7 +77,7 @@ provinces:
     neighbors:
       - anping_a
       - anping_b
-      - penghu_a
+      - penghu
   - id: anping_a
     name: 安平东
     prefecture: pref_anping
@@ -87,14 +94,17 @@ provinces:
     supply_limit: 2796
     neighbors:
       - anping
-      - penghu
+      - anping_b
+      - keelung_a
+      - keelung_b
       - penghu_a
+      - penghu_b
   - id: anping_b
     name: 安平西
     prefecture: pref_anping
     region: reg_taiwan
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -105,12 +115,11 @@ provinces:
     supply_limit: 4121
     neighbors:
       - anping
+      - anping_a
       - keelung_a
       - keelung_b
       - penghu_a
       - penghu_b
-      - tamsui_a
-      - tamsui_b
   - id: anqing
     name: 安庆
     prefecture: pref_anqing
@@ -434,7 +443,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 8744
     neighbors:
-      - bhamo_b
+      - bhamo_a
   - id: bhamo_a
     name: 八莫东
     prefecture: pref_bhamo
@@ -450,9 +459,9 @@ provinces:
     dominant_estate: nobles
     supply_limit: 6040
     neighbors:
+      - bhamo
       - bhamo_b
       - tengyue
-      - tengyue_a
       - tengyue_b
   - id: bhamo_b
     name: 八莫西
@@ -469,52 +478,49 @@ provinces:
     dominant_estate: nobles
     supply_limit: 6446
     neighbors:
-      - bhamo
       - bhamo_a
-      - tengyue_a
-      - tengyue_b
+      - tengyue
   - id: caobang
     name: 高平
     prefecture: pref_caobang
     region: reg_annam
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
     population: 211866
     landholding: 212
     development: 29
-    dominant_estate: peasants
+    dominant_estate: merchants
     supply_limit: 9953
     neighbors:
       - caobang_a
       - caobang_b
-      - dongkinh_b
-      - taiping
-      - taiping_a
+      - taiping_b
   - id: caobang_a
     name: 高平东
     prefecture: pref_caobang
     region: reg_annam
     terrain: plains
-    coastal: false
+    coastal: true
     river: true
     fort: false
     fort_level: 0
     population: 225986
     landholding: 226
     development: 28
-    dominant_estate: peasants
+    dominant_estate: merchants
     supply_limit: 9854
     neighbors:
       - caobang
       - caobang_b
       - guiyang_a
-      - linan_a
+      - liuzhou_a
       - nanning_b
       - qujing_a
       - taiping_a
+      - taiping_b
   - id: caobang_b
     name: 高平西
     prefecture: pref_caobang
@@ -532,8 +538,8 @@ provinces:
     neighbors:
       - caobang
       - caobang_a
-      - dongkinh_b
       - linan_a
+      - qujing_a
   - id: chahar
     name: 察哈尔
     prefecture: pref_chahar
@@ -616,6 +622,7 @@ provinces:
       - chamdo_a
       - chamdo_b
       - dali_b
+      - tengyue_a
   - id: chamdo_a
     name: 昌都东
     prefecture: pref_chamdo
@@ -658,6 +665,8 @@ provinces:
       - hesute_a
       - lhasa_b
       - qaidam_a
+      - shannan_b
+      - tengyue_a
   - id: changsha
     name: 长沙
     prefecture: pref_changsha
@@ -779,9 +788,7 @@ provinces:
     supply_limit: 20764
     neighbors:
       - changzhou
-      - huzhou_a
-      - suzhou
-      - suzhou_b
+      - songjiang_a
       - yangzhou_b
   - id: chaozhou
     name: 潮州
@@ -800,12 +807,13 @@ provinces:
     neighbors:
       - chaozhou_a
       - chaozhou_b
+      - zhangzhou_b
   - id: chaozhou_a
     name: 潮州东
     prefecture: pref_chaozhou
     region: reg_guangdong
     terrain: plains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -821,7 +829,6 @@ provinces:
       - huizhou_gd_a
       - shaozhou_a
       - tingzhou_a
-      - zhangzhou_a
       - zhangzhou_b
   - id: chaozhou_b
     name: 潮州西
@@ -880,6 +887,7 @@ provinces:
       - guihua_a
       - kulun
       - kulun_a
+      - nerchinsk_a
       - ordos_b
       - tusheet_a
       - tusheet_b
@@ -901,6 +909,10 @@ provinces:
       - chechen
       - chechen_a
       - kulun_a
+      - kulun_b
+      - nerchinsk
+      - nerchinsk_a
+      - nerchinsk_b
   - id: chengdu
     name: 成都
     prefecture: pref_chengdu
@@ -1108,6 +1120,8 @@ provinces:
     neighbors:
       - dali_a
       - dali_b
+      - tengyue_a
+      - tengyue_b
   - id: dali_a
     name: 大理东
     prefecture: pref_dali
@@ -1127,6 +1141,8 @@ provinces:
       - dali_b
       - kunming_a
       - kunming_b
+      - linan_b
+      - tengyue_b
       - xuzhou_sichuan_b
   - id: dali_b
     name: 大理西
@@ -1149,7 +1165,6 @@ provinces:
       - dali
       - dali_a
       - tengyue_a
-      - tengyue_b
       - xuzhou_sichuan_b
   - id: datong
     name: 大同
@@ -1230,7 +1245,8 @@ provinces:
     dominant_estate: merchants
     supply_limit: 19541
     neighbors:
-      - dengzhou_b
+      - guangning_b
+      - ningyuan
   - id: dengzhou_a
     name: 登州东
     prefecture: pref_dengzhou
@@ -1246,7 +1262,7 @@ provinces:
     dominant_estate: merchants
     supply_limit: 18031
     neighbors:
-      - qingzhou_a
+      - dengzhou_b
   - id: dengzhou_b
     name: 登州西
     prefecture: pref_dengzhou
@@ -1262,10 +1278,8 @@ provinces:
     dominant_estate: peasants
     supply_limit: 16859
     neighbors:
-      - dengzhou
-      - shanhaiguan
-      - tianjin_b
-      - yongping_b
+      - dengzhou_a
+      - qingzhou_a
   - id: dongkinh
     name: 升龙
     prefecture: pref_dongkinh
@@ -1281,7 +1295,7 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10054
     neighbors:
-      - dongkinh_a
+      - thanhhoa_a
   - id: dongkinh_a
     name: 升龙东
     prefecture: pref_dongkinh
@@ -1297,10 +1311,9 @@ provinces:
     dominant_estate: peasants
     supply_limit: 12119
     neighbors:
-      - dongkinh
       - dongkinh_b
-      - taiping_b
-      - thanhhoa_a
+      - nanning
+      - taiping
   - id: dongkinh_b
     name: 升龙西
     prefecture: pref_dongkinh
@@ -1316,8 +1329,6 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10180
     neighbors:
-      - caobang
-      - caobang_b
       - dongkinh_a
       - taiping
       - taiping_b
@@ -1390,7 +1401,7 @@ provinces:
     prefecture: pref_edo
     region: reg_japan_east
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: true
     fort_level: 7
@@ -1402,7 +1413,6 @@ provinces:
     neighbors:
       - edo_a
       - edo_b
-      - sunpu_b
   - id: edo_a
     name: 江户东
     prefecture: pref_edo
@@ -1420,7 +1430,7 @@ provinces:
     neighbors:
       - edo
       - edo_b
-      - sunpu_b
+      - sendai_b
   - id: edo_b
     name: 江户西
     prefecture: pref_edo
@@ -1438,6 +1448,9 @@ provinces:
     neighbors:
       - edo
       - edo_a
+      - sendai_b
+      - sunpu
+      - sunpu_a
       - sunpu_b
   - id: fenzhou
     name: 汾州
@@ -1520,6 +1533,8 @@ provinces:
     neighbors:
       - fuzhou_a
       - fuzhou_b
+      - quanzhou_b
+      - yanping_b
   - id: fuzhou_a
     name: 福州东
     prefecture: pref_fuzhou
@@ -1536,9 +1551,8 @@ provinces:
     supply_limit: 14184
     neighbors:
       - fuzhou
-      - fuzhou_b
+      - quanzhou
       - quanzhou_b
-      - yanping_b
   - id: fuzhou_b
     name: 福州西
     prefecture: pref_fuzhou
@@ -1555,7 +1569,6 @@ provinces:
     supply_limit: 14559
     neighbors:
       - fuzhou
-      - fuzhou_a
       - jianning
       - jianning_a
       - jianning_b
@@ -1791,7 +1804,7 @@ provinces:
     prefecture: pref_guangning
     region: reg_liaodong
     terrain: mountains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -1801,6 +1814,7 @@ provinces:
     dominant_estate: soldiers
     supply_limit: 12040
     neighbors:
+      - dengzhou
       - guangning
       - guangning_a
       - jinzhou
@@ -1808,7 +1822,7 @@ provinces:
       - liaoyang
       - liaoyang_a
       - liaoyang_b
-      - ningyuan_b
+      - ningyuan
   - id: guangxin
     name: 广信
     prefecture: pref_guangxin
@@ -1877,7 +1891,7 @@ provinces:
     prefecture: pref_guangzhou
     region: reg_guangdong
     terrain: hills
-    coastal: false
+    coastal: true
     river: true
     fort: true
     fort_level: 5
@@ -1889,7 +1903,6 @@ provinces:
     neighbors:
       - guangzhou_a
       - guangzhou_b
-      - huizhou_gd_b
       - shaozhou_b
       - zhaoqing_a
   - id: guangzhou_a
@@ -1897,7 +1910,7 @@ provinces:
     prefecture: pref_guangzhou
     region: reg_guangdong
     terrain: hills
-    coastal: false
+    coastal: true
     river: true
     fort: false
     fort_level: 0
@@ -1908,7 +1921,6 @@ provinces:
     supply_limit: 15741
     neighbors:
       - guangzhou
-      - huizhou_gd_b
       - zhaoqing
       - zhaoqing_a
       - zhaoqing_b
@@ -2164,7 +2176,6 @@ provinces:
       - caobang_a
       - guiyang
       - liuzhou_a
-      - nanning_b
       - qujing_a
       - zhenyuan_a
   - id: guiyang_b
@@ -2282,9 +2293,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 14006
     neighbors:
-      - hakata_b
-      - nagasaki_a
-      - nagasaki_b
+      - hanseong_b
   - id: hakata_b
     name: 博多西
     prefecture: pref_hakata
@@ -2300,15 +2309,13 @@ provinces:
     dominant_estate: nobles
     supply_limit: 15556
     neighbors:
-      - hakata_a
-      - nagasaki_a
-      - nagasaki_b
+      - osaka_b
   - id: hamhung
     name: 咸兴
     prefecture: pref_hamhung
     region: reg_joseon
     terrain: mountains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -2322,8 +2329,7 @@ provinces:
       - hamhung_b
       - jianzhou
       - jianzhou_a
-      - jianzhou_b
-      - pyongyang_b
+      - uiju_a
   - id: hamhung_a
     name: 咸兴东
     prefecture: pref_hamhung
@@ -2342,12 +2348,13 @@ provinces:
       - haixi_a
       - hamhung
       - jianzhou_a
+      - ningguta_a
   - id: hamhung_b
     name: 咸兴西
     prefecture: pref_hamhung
     region: reg_joseon
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -2361,12 +2368,13 @@ provinces:
       - kaesong_b
       - pyongyang_a
       - pyongyang_b
+      - uiju_a
   - id: hangzhou
     name: 杭州
     prefecture: pref_hangzhou
     region: reg_zhejiang
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: true
     fort_level: 7
@@ -2379,7 +2387,6 @@ provinces:
       - hangzhou_a
       - hangzhou_b
       - huzhou_b
-      - jiaxing
       - shaoxing
       - shaoxing_a
   - id: hangzhou_a
@@ -2407,7 +2414,7 @@ provinces:
     prefecture: pref_hangzhou
     region: reg_zhejiang
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -2418,16 +2425,16 @@ provinces:
     supply_limit: 19833
     neighbors:
       - hangzhou
+      - huzhou
+      - huzhou_b
       - jiaxing
-      - ningbo_a
-      - shaoxing
-      - shaoxing_b
+      - jiaxing_b
   - id: hanseong
     name: 汉城
     prefecture: pref_hanseong
     region: reg_joseon
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: true
     fort_level: 8
@@ -2439,14 +2446,13 @@ provinces:
     neighbors:
       - hanseong_a
       - hanseong_b
-      - kaesong_a
       - kaesong_b
   - id: hanseong_a
     name: 汉城东
     prefecture: pref_hanseong
     region: reg_joseon
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -2458,14 +2464,13 @@ provinces:
     neighbors:
       - hanseong
       - kaesong
-      - kaesong_a
       - kaesong_b
   - id: hanseong_b
     name: 汉城西
     prefecture: pref_hanseong
     region: reg_joseon
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -2475,7 +2480,9 @@ provinces:
     dominant_estate: nobles
     supply_limit: 13989
     neighbors:
+      - hakata_a
       - hanseong
+      - kaesong_b
   - id: hanyang
     name: 汉阳
     prefecture: pref_hanyang
@@ -2614,6 +2621,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 4885
     neighbors:
+      - albazin_a
       - haixi_a
       - heilongjiang_a
       - heilongjiang_b
@@ -2632,11 +2640,14 @@ provinces:
     dominant_estate: nobles
     supply_limit: 3178
     neighbors:
+      - albazin_a
       - haixi_a
       - heilongjiang
       - ningguta
       - ningguta_a
       - ningguta_b
+      - okhotsk_a
+      - okhotsk_b
   - id: heilongjiang_b
     name: 黑龙江西
     prefecture: pref_heilongjiang
@@ -2652,6 +2663,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 3155
     neighbors:
+      - albazin
       - albazin_a
       - albazin_b
       - haixi
@@ -2761,6 +2773,7 @@ provinces:
       - liaoyang_b
       - shenyang
       - shenyang_b
+      - uiju_a
       - uiju_b
   - id: hetuala_b
     name: 赫图阿拉西
@@ -2848,6 +2861,7 @@ provinces:
       - horqin_a
       - jinzhou_a
       - kaizhou_b
+      - ningyuan_b
       - shenyang_a
       - yongping_a
   - id: huaian
@@ -3127,7 +3141,7 @@ provinces:
     prefecture: pref_huizhou_gd
     region: reg_guangdong
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -3137,8 +3151,6 @@ provinces:
     dominant_estate: merchants
     supply_limit: 17811
     neighbors:
-      - guangzhou
-      - guangzhou_a
       - guangzhou_b
       - huizhou_gd
   - id: huzhou
@@ -3156,9 +3168,9 @@ provinces:
     dominant_estate: gentry
     supply_limit: 20566
     neighbors:
+      - hangzhou_b
       - huzhou_a
       - huzhou_b
-      - jiaxing
       - jiaxing_b
       - suzhou
       - suzhou_a
@@ -3178,7 +3190,6 @@ provinces:
     supply_limit: 21579
     neighbors:
       - changzhou
-      - changzhou_b
       - huzhou
       - suzhou
       - suzhou_a
@@ -3188,7 +3199,7 @@ provinces:
     prefecture: pref_huzhou
     region: reg_zhejiang
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -3200,8 +3211,8 @@ provinces:
     neighbors:
       - hangzhou
       - hangzhou_a
+      - hangzhou_b
       - huzhou
-      - jiaxing
       - suzhou_a
   - id: ili
     name: 伊犁
@@ -3218,7 +3229,6 @@ provinces:
     dominant_estate: nobles
     supply_limit: 4825
     neighbors:
-      - ili_a
       - ili_b
       - urumqi_a
   - id: ili_a
@@ -3236,8 +3246,8 @@ provinces:
     dominant_estate: nobles
     supply_limit: 4081
     neighbors:
-      - ili
-      - ili_b
+      - shigatse_a
+      - shigatse_b
       - urumqi
       - urumqi_a
   - id: ili_b
@@ -3245,7 +3255,7 @@ provinces:
     prefecture: pref_ili
     region: reg_weilate
     terrain: steppe
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -3256,7 +3266,6 @@ provinces:
     supply_limit: 4991
     neighbors:
       - ili
-      - ili_a
   - id: jian
     name: 吉安
     prefecture: pref_jian
@@ -3401,6 +3410,7 @@ provinces:
       - hetuala_b
       - jianzhou_a
       - jianzhou_b
+      - uiju_a
   - id: jianzhou_a
     name: 建州东
     prefecture: pref_jianzhou
@@ -3439,20 +3449,17 @@ provinces:
     dominant_estate: nobles
     supply_limit: 3594
     neighbors:
-      - hamhung
       - hetuala
       - hetuala_a
       - hetuala_b
       - jianzhou
-      - pyongyang_b
       - uiju_a
-      - uiju_b
   - id: jiaxing
     name: 嘉兴
     prefecture: pref_jiaxing
     region: reg_zhejiang
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -3462,13 +3469,8 @@ provinces:
     dominant_estate: gentry
     supply_limit: 20770
     neighbors:
-      - hangzhou
       - hangzhou_b
-      - huzhou
-      - huzhou_b
-      - jiaxing_a
       - jiaxing_b
-      - ningbo_a
       - songjiang
   - id: jiaxing_a
     name: 嘉兴东
@@ -3485,10 +3487,10 @@ provinces:
     dominant_estate: gentry
     supply_limit: 19535
     neighbors:
-      - jiaxing
+      - ningbo
       - ningbo_a
-      - songjiang
-      - songjiang_b
+      - shaoxing
+      - shaoxing_b
   - id: jiaxing_b
     name: 嘉兴西
     prefecture: pref_jiaxing
@@ -3504,6 +3506,7 @@ provinces:
     dominant_estate: gentry
     supply_limit: 19170
     neighbors:
+      - hangzhou_b
       - huzhou
       - jiaxing
       - songjiang
@@ -3706,7 +3709,7 @@ provinces:
     prefecture: pref_jinzhou
     region: reg_liaodong
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: true
     fort_level: 6
@@ -3719,9 +3722,7 @@ provinces:
       - guangning_b
       - jinzhou_a
       - jinzhou_b
-      - ningyuan_a
       - ningyuan_b
-      - shanhaiguan_b
   - id: jinzhou_a
     name: 锦州东
     prefecture: pref_jinzhou
@@ -3742,15 +3743,13 @@ provinces:
       - guangning_b
       - horqin_b
       - jinzhou
-      - ningyuan_a
-      - shanhaiguan_b
-      - yongping_a
+      - ningyuan_b
   - id: jinzhou_b
     name: 锦州西
     prefecture: pref_jinzhou
     region: reg_liaodong
     terrain: wetland
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -3761,8 +3760,6 @@ provinces:
     supply_limit: 10826
     neighbors:
       - jinzhou
-      - ningyuan
-      - ningyuan_a
       - ningyuan_b
   - id: jiujiang
     name: 九江
@@ -3830,7 +3827,7 @@ provinces:
     prefecture: pref_kaesong
     region: reg_joseon
     terrain: mountains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -3843,7 +3840,6 @@ provinces:
       - hanseong_a
       - kaesong_a
       - kaesong_b
-      - pyongyang_a
   - id: kaesong_a
     name: 开城东
     prefecture: pref_kaesong
@@ -3859,9 +3855,9 @@ provinces:
     dominant_estate: nobles
     supply_limit: 11028
     neighbors:
-      - hanseong
-      - hanseong_a
       - kaesong
+      - kaesong_b
+      - pyongyang
       - pyongyang_a
   - id: kaesong_b
     name: 开城西
@@ -3881,7 +3877,9 @@ provinces:
       - hamhung_b
       - hanseong
       - hanseong_a
+      - hanseong_b
       - kaesong
+      - kaesong_a
       - pyongyang_a
   - id: kaifeng
     name: 开封
@@ -4019,8 +4017,6 @@ provinces:
     dominant_estate: merchants
     supply_limit: 5413
     neighbors:
-      - keelung_a
-      - keelung_b
       - tamsui
   - id: keelung_a
     name: 鸡笼东
@@ -4037,9 +4033,11 @@ provinces:
     dominant_estate: merchants
     supply_limit: 3042
     neighbors:
+      - anping_a
       - anping_b
-      - keelung
       - keelung_b
+      - penghu_a
+      - penghu_b
       - tamsui
       - tamsui_a
       - tamsui_b
@@ -4058,9 +4056,11 @@ provinces:
     dominant_estate: merchants
     supply_limit: 5362
     neighbors:
+      - anping_a
       - anping_b
-      - keelung
       - keelung_a
+      - penghu_a
+      - penghu_b
       - tamsui
       - tamsui_a
       - tamsui_b
@@ -4184,10 +4184,12 @@ provinces:
     dominant_estate: nobles
     supply_limit: 2220
     neighbors:
+      - chechen_b
       - kulun
       - kulun_a
       - tusheet
       - tusheet_a
+      - zhasaketu_a
   - id: kyoto
     name: 京都
     prefecture: pref_kyoto
@@ -4206,15 +4208,15 @@ provinces:
       - kyoto_a
       - kyoto_b
       - nagoya_a
+      - nagoya_b
       - osaka
-      - osaka_a
       - osaka_b
   - id: kyoto_a
     name: 京都东
     prefecture: pref_kyoto
     region: reg_japan_west
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -4226,15 +4228,17 @@ provinces:
     neighbors:
       - kyoto
       - kyoto_b
+      - nagoya
       - nagoya_a
       - nagoya_b
+      - osaka
       - osaka_a
   - id: kyoto_b
     name: 京都西
     prefecture: pref_kyoto
     region: reg_japan_west
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
     fort: true
     fort_level: 3
@@ -4246,8 +4250,10 @@ provinces:
     neighbors:
       - kyoto
       - kyoto_a
+      - nagoya
       - nagoya_a
       - nagoya_b
+      - osaka
       - osaka_a
   - id: leizhou
     name: 雷州
@@ -4265,7 +4271,6 @@ provinces:
     supply_limit: 17320
     neighbors:
       - leizhou_b
-      - nanning_a
   - id: leizhou_a
     name: 雷州东
     prefecture: pref_leizhou
@@ -4298,6 +4303,7 @@ provinces:
     supply_limit: 17381
     neighbors:
       - leizhou
+      - nanning
       - nanning_a
       - wuzhou
       - wuzhou_a
@@ -4308,7 +4314,7 @@ provinces:
     prefecture: pref_lhasa
     region: reg_xizang
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: true
     fort_level: 7
@@ -4321,12 +4327,13 @@ provinces:
       - lhasa_a
       - lhasa_b
       - shannan_a
+      - shigatse_b
   - id: lhasa_a
     name: 拉萨东
     prefecture: pref_lhasa
     region: reg_xizang
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -4337,8 +4344,7 @@ provinces:
     supply_limit: 3924
     neighbors:
       - lhasa
-      - lhasa_b
-      - qaidam_a
+      - shannan_a
       - shigatse_b
   - id: lhasa_b
     name: 拉萨西
@@ -4357,11 +4363,11 @@ provinces:
     neighbors:
       - chamdo_b
       - lhasa
-      - lhasa_a
       - qaidam_a
       - shannan
       - shannan_a
       - shannan_b
+      - shigatse_b
   - id: liangzhou
     name: 凉州
     prefecture: pref_liangzhou
@@ -4482,6 +4488,7 @@ provinces:
       - hetuala_a
       - liaoyang
       - shenyang_b
+      - uiju
       - uiju_b
   - id: linan
     name: 临安
@@ -4518,7 +4525,6 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10518
     neighbors:
-      - caobang_a
       - caobang_b
       - linan
       - linan_b
@@ -4539,9 +4545,11 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10498
     neighbors:
+      - dali_a
       - kunming_a
       - linan
       - linan_a
+      - tengyue_b
   - id: linqing
     name: 临清
     prefecture: pref_linqing
@@ -4640,6 +4648,7 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10573
     neighbors:
+      - caobang_a
       - guiyang_a
       - liuzhou
       - liuzhou_b
@@ -4765,8 +4774,6 @@ provinces:
     dominant_estate: nobles
     supply_limit: 15673
     neighbors:
-      - hakata_a
-      - hakata_b
       - nagasaki_b
   - id: nagasaki_b
     name: 长崎西
@@ -4783,15 +4790,13 @@ provinces:
     dominant_estate: nobles
     supply_limit: 15958
     neighbors:
-      - hakata_a
-      - hakata_b
       - nagasaki_a
   - id: nagoya
     name: 名古屋
     prefecture: pref_nagoya
     region: reg_japan_east
     terrain: plains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -4801,15 +4806,19 @@ provinces:
     dominant_estate: nobles
     supply_limit: 16004
     neighbors:
+      - kyoto_a
+      - kyoto_b
       - nagoya_a
       - nagoya_b
+      - sunpu
       - sunpu_a
+      - sunpu_b
   - id: nagoya_a
     name: 名古屋东
     prefecture: pref_nagoya
     region: reg_japan_east
     terrain: mountains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -4825,6 +4834,7 @@ provinces:
       - nagoya
       - nagoya_b
       - sunpu_a
+      - sunpu_b
   - id: nagoya_b
     name: 名古屋西
     prefecture: pref_nagoya
@@ -4840,10 +4850,13 @@ provinces:
     dominant_estate: nobles
     supply_limit: 13399
     neighbors:
+      - kyoto
       - kyoto_a
       - kyoto_b
       - nagoya
       - nagoya_a
+      - sunpu_a
+      - sunpu_b
   - id: nanchang
     name: 南昌
     prefecture: pref_nanchang
@@ -4988,11 +5001,12 @@ provinces:
     dominant_estate: peasants
     supply_limit: 11125
     neighbors:
+      - dongkinh_a
+      - leizhou_b
       - nanning_a
       - nanning_b
       - taiping
       - taiping_a
-      - thanhhoa_a
   - id: nanning_a
     name: 南宁东
     prefecture: pref_nanning
@@ -5008,7 +5022,6 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10809
     neighbors:
-      - leizhou
       - leizhou_b
       - liuzhou_a
       - nanning
@@ -5030,7 +5043,6 @@ provinces:
     supply_limit: 11005
     neighbors:
       - caobang_a
-      - guiyang_a
       - liuzhou_a
       - nanning
       - nanning_a
@@ -5115,6 +5127,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 1907
     neighbors:
+      - chechen_b
       - nerchinsk_a
       - nerchinsk_b
   - id: nerchinsk_a
@@ -5132,9 +5145,13 @@ provinces:
     dominant_estate: nobles
     supply_limit: 3456
     neighbors:
+      - albazin_b
       - chahar_b
+      - chechen_a
+      - chechen_b
       - horqin_a
       - nerchinsk
+      - nerchinsk_b
   - id: nerchinsk_b
     name: 尼布楚西
     prefecture: pref_nerchinsk
@@ -5150,7 +5167,10 @@ provinces:
     dominant_estate: nobles
     supply_limit: 878
     neighbors:
+      - albazin_b
+      - chechen_b
       - nerchinsk
+      - nerchinsk_a
   - id: ningbo
     name: 宁波
     prefecture: pref_ningbo
@@ -5166,7 +5186,10 @@ provinces:
     dominant_estate: merchants
     supply_limit: 21222
     neighbors:
+      - jiaxing_a
       - ningbo_a
+      - ningbo_b
+      - taizhou_b
   - id: ningbo_a
     name: 宁波东
     prefecture: pref_ningbo
@@ -5182,11 +5205,10 @@ provinces:
     dominant_estate: gentry
     supply_limit: 20998
     neighbors:
-      - hangzhou_b
-      - jiaxing
       - jiaxing_a
       - ningbo
       - shaoxing_b
+      - taizhou_b
   - id: ningbo_b
     name: 宁波西
     prefecture: pref_ningbo
@@ -5202,7 +5224,7 @@ provinces:
     dominant_estate: gentry
     supply_limit: 21937
     neighbors:
-      - taizhou
+      - ningbo
       - taizhou_b
   - id: ningguta
     name: 宁古塔
@@ -5238,6 +5260,7 @@ provinces:
     supply_limit: 4753
     neighbors:
       - haixi_a
+      - hamhung_a
       - heilongjiang_a
       - ningguta
   - id: ningguta_b
@@ -5257,6 +5280,8 @@ provinces:
     neighbors:
       - heilongjiang_a
       - ningguta
+      - okhotsk_a
+      - okhotsk_b
   - id: ningxia
     name: 宁夏
     prefecture: pref_ningxia
@@ -5326,7 +5351,7 @@ provinces:
     prefecture: pref_ningyuan
     region: reg_liaodong
     terrain: mountains
-    coastal: false
+    coastal: true
     river: false
     fort: true
     fort_level: 7
@@ -5336,16 +5361,14 @@ provinces:
     dominant_estate: soldiers
     supply_limit: 12976
     neighbors:
-      - jinzhou_b
-      - ningyuan_a
-      - ningyuan_b
-      - shanhaiguan_a
+      - dengzhou
+      - guangning_b
   - id: ningyuan_a
     name: 宁远东
     prefecture: pref_ningyuan
     region: reg_liaodong
     terrain: mountains
-    coastal: false
+    coastal: true
     river: false
     fort: true
     fort_level: 3
@@ -5355,13 +5378,9 @@ provinces:
     dominant_estate: soldiers
     supply_limit: 12337
     neighbors:
-      - jinzhou
-      - jinzhou_a
-      - jinzhou_b
-      - ningyuan
+      - ningyuan_b
       - shanhaiguan
       - shanhaiguan_a
-      - shanhaiguan_b
   - id: ningyuan_b
     name: 宁远西
     prefecture: pref_ningyuan
@@ -5377,10 +5396,14 @@ provinces:
     dominant_estate: soldiers
     supply_limit: 11072
     neighbors:
-      - guangning_b
+      - horqin_b
       - jinzhou
+      - jinzhou_a
       - jinzhou_b
-      - ningyuan
+      - ningyuan_a
+      - shanhaiguan_a
+      - shanhaiguan_b
+      - yongping_a
   - id: okhotsk
     name: 鄂霍次克
     prefecture: pref_okhotsk
@@ -5397,7 +5420,6 @@ provinces:
     supply_limit: 3463
     neighbors:
       - okhotsk_a
-      - okhotsk_b
   - id: okhotsk_a
     name: 鄂霍次克东
     prefecture: pref_okhotsk
@@ -5413,7 +5435,11 @@ provinces:
     dominant_estate: nobles
     supply_limit: 1392
     neighbors:
+      - albazin_a
+      - heilongjiang_a
+      - ningguta_b
       - okhotsk
+      - okhotsk_b
   - id: okhotsk_b
     name: 鄂霍次克西
     prefecture: pref_okhotsk
@@ -5429,7 +5455,10 @@ provinces:
     dominant_estate: nobles
     supply_limit: 2699
     neighbors:
-      - okhotsk
+      - albazin_a
+      - heilongjiang_a
+      - ningguta_b
+      - okhotsk_a
   - id: ordos
     name: 鄂尔多斯
     prefecture: pref_ordos
@@ -5511,6 +5540,8 @@ provinces:
     supply_limit: 16778
     neighbors:
       - kyoto
+      - kyoto_a
+      - kyoto_b
       - osaka_a
       - osaka_b
   - id: osaka_a
@@ -5528,7 +5559,6 @@ provinces:
     dominant_estate: nobles
     supply_limit: 16357
     neighbors:
-      - kyoto
       - kyoto_a
       - kyoto_b
       - osaka
@@ -5547,6 +5577,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 16186
     neighbors:
+      - hakata_b
       - kyoto
       - osaka
   - id: pegu
@@ -5613,9 +5644,7 @@ provinces:
     dominant_estate: merchants
     supply_limit: 5944
     neighbors:
-      - anping_a
-      - penghu_a
-      - penghu_b
+      - anping
   - id: penghu_a
     name: 澎湖东
     prefecture: pref_penghu
@@ -5631,11 +5660,13 @@ provinces:
     dominant_estate: merchants
     supply_limit: 4324
     neighbors:
-      - anping
       - anping_a
       - anping_b
-      - penghu
+      - keelung_a
+      - keelung_b
       - penghu_b
+      - tamsui_a
+      - tamsui_b
   - id: penghu_b
     name: 澎湖西
     prefecture: pref_penghu
@@ -5651,8 +5682,10 @@ provinces:
     dominant_estate: merchants
     supply_limit: 3842
     neighbors:
+      - anping_a
       - anping_b
-      - penghu
+      - keelung_a
+      - keelung_b
       - penghu_a
       - tamsui_a
       - tamsui_b
@@ -5852,7 +5885,7 @@ provinces:
     prefecture: pref_pyongyang
     region: reg_joseon
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -5862,6 +5895,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10841
     neighbors:
+      - kaesong_a
       - pyongyang_a
       - pyongyang_b
   - id: pyongyang_a
@@ -5880,7 +5914,6 @@ provinces:
     supply_limit: 12013
     neighbors:
       - hamhung_b
-      - kaesong
       - kaesong_a
       - kaesong_b
       - pyongyang
@@ -5890,7 +5923,7 @@ provinces:
     prefecture: pref_pyongyang
     region: reg_joseon
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -5900,9 +5933,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 12996
     neighbors:
-      - hamhung
       - hamhung_b
-      - jianzhou_b
       - pyongyang
       - pyongyang_a
       - uiju_a
@@ -5941,11 +5972,9 @@ provinces:
     neighbors:
       - chamdo_b
       - hesute_a
-      - lhasa_a
       - lhasa_b
       - qaidam
       - qaidam_b
-      - shigatse_a
       - shigatse_b
       - urumqi_b
   - id: qaidam_b
@@ -6117,7 +6146,7 @@ provinces:
     prefecture: pref_qingzhou
     region: reg_shandong
     terrain: plains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -6127,7 +6156,7 @@ provinces:
     dominant_estate: peasants
     supply_limit: 18027
     neighbors:
-      - dengzhou_a
+      - dengzhou_b
       - qingzhou
       - qingzhou_b
   - id: qingzhou_b
@@ -6169,7 +6198,9 @@ provinces:
     dominant_estate: merchants
     supply_limit: 17776
     neighbors:
+      - fuzhou_a
       - quanzhou_a
+      - quanzhou_b
   - id: quanzhou_a
     name: 泉州东
     prefecture: pref_quanzhou
@@ -6187,17 +6218,13 @@ provinces:
     neighbors:
       - quanzhou
       - quanzhou_b
-      - tingzhou_a
-      - yanping_a
-      - zhangzhou
       - zhangzhou_a
-      - zhangzhou_b
   - id: quanzhou_b
     name: 泉州西
     prefecture: pref_quanzhou
     region: reg_fujian
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -6207,11 +6234,15 @@ provinces:
     dominant_estate: merchants
     supply_limit: 15667
     neighbors:
+      - fuzhou
       - fuzhou_a
+      - quanzhou
       - quanzhou_a
+      - tingzhou_a
       - yanping
       - yanping_a
       - yanping_b
+      - zhangzhou_a
   - id: qujing
     name: 曲靖
     prefecture: pref_qujing
@@ -6249,6 +6280,7 @@ provinces:
     supply_limit: 9705
     neighbors:
       - caobang_a
+      - caobang_b
       - guiyang
       - guiyang_a
       - guiyang_b
@@ -6354,8 +6386,8 @@ provinces:
     dominant_estate: nobles
     supply_limit: 15797
     neighbors:
-      - sendai_a
       - sendai_b
+      - sendai_a
   - id: sendai_a
     name: 仙台东
     prefecture: pref_sendai
@@ -6387,6 +6419,8 @@ provinces:
     dominant_estate: nobles
     supply_limit: 15646
     neighbors:
+      - edo_a
+      - edo_b
       - sendai
   - id: shahukou
     name: 杀虎口
@@ -6454,7 +6488,7 @@ provinces:
     prefecture: pref_shanhaiguan
     region: reg_liaodong
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: true
     fort_level: 8
@@ -6464,7 +6498,6 @@ provinces:
     dominant_estate: soldiers
     supply_limit: 9922
     neighbors:
-      - dengzhou_b
       - ningyuan_a
       - shanhaiguan_a
       - shanhaiguan_b
@@ -6475,7 +6508,7 @@ provinces:
     prefecture: pref_shanhaiguan
     region: reg_liaodong
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -6485,9 +6518,10 @@ provinces:
     dominant_estate: soldiers
     supply_limit: 9750
     neighbors:
-      - ningyuan
       - ningyuan_a
+      - ningyuan_b
       - shanhaiguan
+      - shanhaiguan_b
   - id: shanhaiguan_b
     name: 山海关西
     prefecture: pref_shanhaiguan
@@ -6503,10 +6537,9 @@ provinces:
     dominant_estate: soldiers
     supply_limit: 12635
     neighbors:
-      - jinzhou
-      - jinzhou_a
-      - ningyuan_a
+      - ningyuan_b
       - shanhaiguan
+      - shanhaiguan_a
       - yongping
       - yongping_a
   - id: shannan
@@ -6514,7 +6547,7 @@ provinces:
     prefecture: pref_shannan
     region: reg_xizang
     terrain: steppe
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -6532,7 +6565,7 @@ provinces:
     prefecture: pref_shannan
     region: reg_xizang
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: true
     fort_level: 3
@@ -6543,14 +6576,16 @@ provinces:
     supply_limit: 1743
     neighbors:
       - lhasa
+      - lhasa_a
       - lhasa_b
       - shannan
+      - shannan_b
   - id: shannan_b
     name: 山南西
     prefecture: pref_shannan
     region: reg_xizang
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -6560,8 +6595,10 @@ provinces:
     dominant_estate: clergy
     supply_limit: 5001
     neighbors:
+      - chamdo_b
       - lhasa_b
       - shannan
+      - shannan_a
   - id: shaoxing
     name: 绍兴
     prefecture: pref_shaoxing
@@ -6578,7 +6615,7 @@ provinces:
     supply_limit: 20123
     neighbors:
       - hangzhou
-      - hangzhou_b
+      - jiaxing_a
       - shaoxing_a
       - shaoxing_b
   - id: shaoxing_a
@@ -6622,7 +6659,7 @@ provinces:
     dominant_estate: gentry
     supply_limit: 19109
     neighbors:
-      - hangzhou_b
+      - jiaxing_a
       - ningbo_a
       - shaoxing
       - shaoxing_a
@@ -6762,7 +6799,7 @@ provinces:
     prefecture: pref_shigatse
     region: reg_xizang
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -6772,13 +6809,14 @@ provinces:
     dominant_estate: clergy
     supply_limit: 4706
     neighbors:
+      - shigatse_a
       - shigatse_b
   - id: shigatse_a
     name: 日喀则东
     prefecture: pref_shigatse
     region: reg_xizang
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -6788,14 +6826,15 @@ provinces:
     dominant_estate: clergy
     supply_limit: 2680
     neighbors:
-      - qaidam_a
+      - ili_a
+      - shigatse
       - shigatse_b
   - id: shigatse_b
     name: 日喀则西
     prefecture: pref_shigatse
     region: reg_xizang
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -6805,10 +6844,15 @@ provinces:
     dominant_estate: clergy
     supply_limit: 4414
     neighbors:
+      - ili_a
+      - lhasa
       - lhasa_a
+      - lhasa_b
       - qaidam_a
       - shigatse
       - shigatse_a
+      - urumqi
+      - urumqi_b
   - id: shunqing
     name: 顺庆
     prefecture: pref_shunqing
@@ -6941,7 +6985,7 @@ provinces:
     prefecture: pref_songjiang
     region: reg_nanzhili
     terrain: hills
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -6952,9 +6996,7 @@ provinces:
     supply_limit: 21271
     neighbors:
       - jiaxing
-      - jiaxing_a
       - jiaxing_b
-      - songjiang_a
       - songjiang_b
       - suzhou_b
   - id: songjiang_a
@@ -6972,9 +7014,7 @@ provinces:
     dominant_estate: gentry
     supply_limit: 22026
     neighbors:
-      - songjiang
-      - songjiang_b
-      - suzhou_b
+      - changzhou_b
   - id: songjiang_b
     name: 松江西
     prefecture: pref_songjiang
@@ -6990,9 +7030,7 @@ provinces:
     dominant_estate: gentry
     supply_limit: 20978
     neighbors:
-      - jiaxing_a
       - songjiang
-      - songjiang_a
   - id: sunpu
     name: 骏府
     prefecture: pref_sunpu
@@ -7008,6 +7046,8 @@ provinces:
     dominant_estate: nobles
     supply_limit: 14485
     neighbors:
+      - edo_b
+      - nagoya
       - sunpu_a
       - sunpu_b
   - id: sunpu_a
@@ -7025,8 +7065,10 @@ provinces:
     dominant_estate: nobles
     supply_limit: 14377
     neighbors:
+      - edo_b
       - nagoya
       - nagoya_a
+      - nagoya_b
       - sunpu
       - sunpu_b
   - id: sunpu_b
@@ -7044,9 +7086,10 @@ provinces:
     dominant_estate: nobles
     supply_limit: 14518
     neighbors:
-      - edo
-      - edo_a
       - edo_b
+      - nagoya
+      - nagoya_a
+      - nagoya_b
       - sunpu
       - sunpu_a
   - id: suzhou
@@ -7064,7 +7107,6 @@ provinces:
     dominant_estate: gentry
     supply_limit: 23517
     neighbors:
-      - changzhou_b
       - huzhou
       - huzhou_a
       - jiaxing_b
@@ -7106,10 +7148,8 @@ provinces:
     dominant_estate: gentry
     supply_limit: 22320
     neighbors:
-      - changzhou_b
       - jiaxing_b
       - songjiang
-      - songjiang_a
       - suzhou
   - id: suzhou_hexi
     name: 肃州
@@ -7189,12 +7229,11 @@ provinces:
     dominant_estate: peasants
     supply_limit: 9965
     neighbors:
-      - caobang
+      - dongkinh_a
       - dongkinh_b
       - nanning
       - taiping_a
       - taiping_b
-      - thanhhoa_a
   - id: taiping_a
     name: 太平东
     prefecture: pref_taiping
@@ -7210,17 +7249,17 @@ provinces:
     dominant_estate: peasants
     supply_limit: 9527
     neighbors:
-      - caobang
       - caobang_a
       - nanning
       - nanning_b
       - taiping
+      - taiping_b
   - id: taiping_b
     name: 太平西
     prefecture: pref_taiping
     region: reg_guangxi
     terrain: jungle
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -7230,10 +7269,11 @@ provinces:
     dominant_estate: peasants
     supply_limit: 8974
     neighbors:
-      - dongkinh_a
+      - caobang
+      - caobang_a
       - dongkinh_b
       - taiping
-      - thanhhoa_a
+      - taiping_a
   - id: taiyuan
     name: 太原
     prefecture: pref_taiyuan
@@ -7316,7 +7356,6 @@ provinces:
     dominant_estate: gentry
     supply_limit: 22277
     neighbors:
-      - ningbo_b
       - taizhou_a
       - taizhou_b
       - wenzhou_b
@@ -7352,6 +7391,8 @@ provinces:
     dominant_estate: gentry
     supply_limit: 21566
     neighbors:
+      - ningbo
+      - ningbo_a
       - ningbo_b
       - shaoxing_a
       - shaoxing_b
@@ -7375,6 +7416,8 @@ provinces:
       - keelung
       - keelung_a
       - keelung_b
+      - tamsui_a
+      - tamsui_b
   - id: tamsui_a
     name: 淡水东
     prefecture: pref_tamsui
@@ -7390,10 +7433,11 @@ provinces:
     dominant_estate: merchants
     supply_limit: 3835
     neighbors:
-      - anping_b
       - keelung_a
       - keelung_b
+      - penghu_a
       - penghu_b
+      - tamsui
       - tamsui_b
   - id: tamsui_b
     name: 淡水西
@@ -7410,17 +7454,18 @@ provinces:
     dominant_estate: merchants
     supply_limit: 4868
     neighbors:
-      - anping_b
       - keelung_a
       - keelung_b
+      - penghu_a
       - penghu_b
+      - tamsui
       - tamsui_a
   - id: tengyue
     name: 腾越
     prefecture: pref_tengyue
     region: reg_yunnan
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
     fort: true
     fort_level: 5
@@ -7431,6 +7476,7 @@ provinces:
     supply_limit: 7655
     neighbors:
       - bhamo_a
+      - bhamo_b
       - tengyue_a
       - tengyue_b
   - id: tengyue_a
@@ -7438,7 +7484,7 @@ provinces:
     prefecture: pref_tengyue
     region: reg_yunnan
     terrain: jungle
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -7448,8 +7494,9 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10050
     neighbors:
-      - bhamo_a
-      - bhamo_b
+      - chamdo
+      - chamdo_b
+      - dali
       - dali_b
       - tengyue
       - tengyue_b
@@ -7469,8 +7516,9 @@ provinces:
     supply_limit: 10918
     neighbors:
       - bhamo_a
-      - bhamo_b
-      - dali_b
+      - dali
+      - dali_a
+      - linan_b
       - tengyue
       - tengyue_a
   - id: thanhhoa
@@ -7488,6 +7536,7 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10481
     neighbors:
+      - thanhhoa_a
       - thanhhoa_b
   - id: thanhhoa_a
     name: 清化东
@@ -7504,10 +7553,8 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10214
     neighbors:
-      - dongkinh_a
-      - nanning
-      - taiping
-      - taiping_b
+      - dongkinh
+      - thanhhoa
   - id: thanhhoa_b
     name: 清化西
     prefecture: pref_thanhhoa
@@ -7571,7 +7618,7 @@ provinces:
     prefecture: pref_tianjin
     region: reg_beizhili
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -7581,7 +7628,6 @@ provinces:
     dominant_estate: peasants
     supply_limit: 19461
     neighbors:
-      - dengzhou_b
       - hejian
       - hejian_b
       - jinan_b
@@ -7625,9 +7671,10 @@ provinces:
     neighbors:
       - chaozhou_a
       - ganzhou_a
-      - quanzhou_a
+      - quanzhou_b
       - tingzhou
       - yanping_a
+      - zhangzhou
       - zhangzhou_a
       - zhangzhou_b
   - id: tingzhou_b
@@ -7846,6 +7893,7 @@ provinces:
       - kulun_b
       - tusheet_a
       - tusheet_b
+      - zhasaketu_a
   - id: tusheet_a
     name: 土谢图东
     prefecture: pref_tusheet
@@ -7904,6 +7952,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 12993
     neighbors:
+      - liaoyang_b
       - uiju_a
       - uiju_b
   - id: uiju_a
@@ -7921,6 +7970,10 @@ provinces:
     dominant_estate: nobles
     supply_limit: 11524
     neighbors:
+      - hamhung
+      - hamhung_b
+      - hetuala_a
+      - jianzhou
       - jianzhou_b
       - pyongyang_b
       - uiju
@@ -7941,7 +7994,6 @@ provinces:
     supply_limit: 13710
     neighbors:
       - hetuala_a
-      - jianzhou_b
       - liaoyang_b
       - uiju
       - uiju_a
@@ -7961,6 +8013,7 @@ provinces:
     supply_limit: 4043
     neighbors:
       - ili_a
+      - shigatse_b
       - urumqi_a
       - urumqi_b
   - id: urumqi_a
@@ -8001,6 +8054,7 @@ provinces:
       - qaidam
       - qaidam_a
       - qaidam_b
+      - shigatse_b
       - suzhou_hexi_b
       - urumqi
       - urumqi_a
@@ -8794,7 +8848,6 @@ provinces:
       - guangxin_a
       - jianning
       - jianning_a
-      - quanzhou_a
       - quanzhou_b
       - tingzhou
       - tingzhou_a
@@ -8815,7 +8868,7 @@ provinces:
     dominant_estate: merchants
     supply_limit: 17046
     neighbors:
-      - fuzhou_a
+      - fuzhou
       - fuzhou_b
       - jianning_a
       - quanzhou_b
@@ -8920,7 +8973,7 @@ provinces:
     neighbors:
       - dushikou_a
       - horqin_b
-      - jinzhou_a
+      - ningyuan_b
       - shanhaiguan_b
       - tianjin_a
       - yongping
@@ -8929,7 +8982,7 @@ provinces:
     prefecture: pref_yongping
     region: reg_beizhili
     terrain: plains
-    coastal: false
+    coastal: true
     river: false
     fort: false
     fort_level: 0
@@ -8939,7 +8992,6 @@ provinces:
     dominant_estate: peasants
     supply_limit: 19535
     neighbors:
-      - dengzhou_b
       - shanhaiguan
       - tianjin_a
       - tianjin_b
@@ -9269,7 +9321,7 @@ provinces:
     dominant_estate: merchants
     supply_limit: 16709
     neighbors:
-      - quanzhou_a
+      - tingzhou_a
       - zhangzhou_a
       - zhangzhou_b
   - id: zhangzhou_a
@@ -9287,17 +9339,16 @@ provinces:
     dominant_estate: merchants
     supply_limit: 17425
     neighbors:
-      - chaozhou_a
       - quanzhou_a
+      - quanzhou_b
       - tingzhou_a
       - zhangzhou
-      - zhangzhou_b
   - id: zhangzhou_b
     name: 漳州西
     prefecture: pref_zhangzhou
     region: reg_fujian
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
     fort: false
     fort_level: 0
@@ -9307,11 +9358,10 @@ provinces:
     dominant_estate: merchants
     supply_limit: 16355
     neighbors:
+      - chaozhou
       - chaozhou_a
-      - quanzhou_a
       - tingzhou_a
       - zhangzhou
-      - zhangzhou_a
   - id: zhaoqing
     name: 肇庆
     prefecture: pref_zhaoqing
@@ -9405,6 +9455,8 @@ provinces:
     dominant_estate: nobles
     supply_limit: 3921
     neighbors:
+      - kulun_b
+      - tusheet
       - tusheet_b
       - zhasaketu
       - zhasaketu_b

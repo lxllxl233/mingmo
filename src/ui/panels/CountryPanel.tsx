@@ -1,4 +1,6 @@
 import type { LeaderDef } from '../../content/types';
+import { areAtWar } from '../../engine/rules/war';
+import { relationKey } from '../../engine/state/types';
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 import { LeaderPortrait } from './LeaderPortrait';
@@ -87,6 +89,31 @@ export function CountryPanel() {
   const wars = Object.values(game.wars).filter(war => war.attacker === tag || war.defender === tag);
   const playerWar = wars.find(war => war.attacker === game.playerTag || war.defender === game.playerTag);
   const isPlayer = tag === game.playerTag;
+  const relationToPlayer = tag === game.playerTag
+    ? 100
+    : game.relations[relationKey(game.playerTag, tag)] ?? 0;
+  const atWarWithPlayer = !isPlayer && areAtWar(game, game.playerTag, tag);
+  const statusToPlayer = atWarWithPlayer ? '交战' : relationToPlayer >= 20 ? '友好' : '中立';
+  const statusColor = isPlayer
+    ? '#e0c26a'
+    : atWarWithPlayer
+      ? '#a33a32'
+      : relationToPlayer >= 20 ? '#3f6f9a' : '#8a8578';
+  const diplomacy = Object.values(game.countries)
+    .filter(country => country.alive && country.tag !== game.playerTag)
+    .map(country => {
+      const relation = game.relations[relationKey(game.playerTag, country.tag)] ?? 0;
+      const war = areAtWar(game, game.playerTag, country.tag);
+      return {
+        tag: country.tag,
+        name: content.countries.get(country.tag)?.name ?? country.tag,
+        relation,
+        war,
+        status: war ? '交战' : relation >= 20 ? '友好' : '中立',
+        color: war ? '#a33a32' : relation >= 20 ? '#3f6f9a' : '#8a8578',
+      };
+    })
+    .sort((a, b) => Number(b.war) - Number(a.war) || b.relation - a.relation);
 
   return (
     <div className="panel country-panel">
@@ -117,6 +144,33 @@ export function CountryPanel() {
         <div className="country-stat"><span>腐败 / 皇权</span><strong>{Math.round(country.corruption)} / {Math.round(country.authority)}</strong></div>
         <div className="country-stat"><span>军心 / 战争疲劳</span><strong>{Math.round(country.armyLoyalty)} / {Math.round(country.warExhaustion)}</strong></div>
         <div className="country-stat"><span>军队 / 兵力</span><strong>{armies.length} 支 / {formatNumber(strength)}</strong></div>
+      </section>
+
+      <div className="diplo-self">
+        <span className="dot" style={{ background: statusColor }} />
+        <span>{isPlayer ? '我国' : `对我国：${statusToPlayer}（关系 ${relationToPlayer}）`}</span>
+      </div>
+      <div className="diplo-legend">
+        <span><i className="dot war" />交战</span>
+        <span><i className="dot friendly" />友好</span>
+        <span><i className="dot neutral" />中立</span>
+        <span className="muted">地图按对我国关系着色</span>
+      </div>
+
+      <section>
+        <h3 className="section-title">外交态势</h3>
+        {diplomacy.map(row => (
+          <button
+            className={`diplo-row${row.tag === tag ? ' active' : ''}`}
+            key={row.tag}
+            onClick={() => openCountry(row.tag)}
+          >
+            <i className="dot" style={{ background: row.color }} />
+            <span>{row.name}</span>
+            <span className="muted">{row.status}</span>
+            <b>{row.relation}</b>
+          </button>
+        ))}
       </section>
 
       <section>

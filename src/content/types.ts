@@ -436,6 +436,8 @@ export interface MapGeo {
   bounds: [number, number, number, number];
   provinces: Record<ProvinceId, Array<[number, number]>>;
   land: Array<Array<[number, number]>>;
+  otherRegions: Array<{ name: string; points: Array<[number, number]> }>;
+  seaLabels: Array<{ name: string; lon: number; lat: number }>;
 }
 
 export interface ContentIndex {

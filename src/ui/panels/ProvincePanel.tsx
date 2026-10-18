@@ -1,5 +1,18 @@
 import { useGameStore } from '../state/store';
 
+const TERRAIN_NAMES: Record<string, string> = {
+  plains: '平原',
+  hills: '丘陵',
+  mountains: '山地',
+  wetland: '水网',
+  desert: '荒漠',
+  steppe: '草原',
+  jungle: '丛林',
+  urban: '城市',
+};
+
+
+
 export function ProvincePanel() {
   const game = useGameStore(state => state.game);
   const content = useGameStore(state => state.content);
@@ -21,7 +34,7 @@ export function ProvincePanel() {
     <div className="panel">
       <button className="close" onClick={closePanel}>关闭</button>
       <h2>{def.name}</h2>
-      <p className="muted">{region?.name} · {prefecture?.name} · {def.terrain}</p>
+      <p className="muted">{region?.name} · {prefecture?.name} · {TERRAIN_NAMES[def.terrain] ?? def.terrain}</p>
       <div className="row"><span>所有者</span><b style={{ color: owner?.color }}>{owner?.name ?? province.owner}</b></div>
       <div className="row"><span>控制者</span><b style={{ color: controller?.color }}>{controller?.name ?? province.controller}</b></div>
       <div className="row"><span>人口 / 田亩</span><b>{province.population.toLocaleString()} / {def.landholding.toLocaleString()} 万亩</b></div>

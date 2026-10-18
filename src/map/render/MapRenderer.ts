@@ -1,6 +1,8 @@
 import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
 import type { ContentIndex, MapGeo } from '../../content/types';
 import type { ArmyState, GameState } from '../../engine/state/types';
+import { relationKey } from '../../engine/state/types';
+import { areAtWar } from '../../engine/rules/war';
 
 type SelectProvinceHandler = (provinceId: string) => void;
 type SelectArmyHandler = (armyId: string) => void;
@@ -20,7 +22,22 @@ interface ArmyMarker {
   body: Graphics;
   selection: Graphics;
   label: Text;
+  stackScale: number;
 }
+
+const CANVAS_WIDTH = 1000;
+const CANVAS_HEIGHT = 800;
+
+const TERRAIN_TINT: Record<string, { color: number; alpha: number }> = {
+  plains: { color: 0x8a9a5a, alpha: 0.05 },
+  hills: { color: 0x8a7444, alpha: 0.12 },
+  mountains: { color: 0x665748, alpha: 0.2 },
+  wetland: { color: 0x3f6f6a, alpha: 0.16 },
+  desert: { color: 0xc8a45a, alpha: 0.2 },
+  steppe: { color: 0xa3a05a, alpha: 0.14 },
+  jungle: { color: 0x2f6b3a, alpha: 0.18 },
+  urban: { color: 0x7a6a58, alpha: 0.06 },
+};
 
 const MAJOR_CITIES = new Set([
   'beijing', 'nanjing', 'xian', 'shenyang', 'suzhou', 'hangzhou', 'wuchang',
@@ -68,8 +85,12 @@ function edgeKey(x1: number, y1: number, x2: number, y2: number): string {
 export class MapRenderer {
   private app: Application | null = null;
   private world = new Container();
+  private otherLayer = new Graphics();
+  private seaLabelLayer = new Container();
+  private otherLabelLayer = new Container();
   private shadowLayer = new Graphics();
   private fillLayer = new Graphics();
+  private terrainLayer = new Graphics();
   private selectionLayer = new Graphics();
   private provinceBorderLayer = new Graphics();
   private countryBorderLayer = new Graphics();
@@ -82,11 +103,14 @@ export class MapRenderer {
   private centroids = new Map<string, { x: number; y: number }>();
   private edges: EdgeRecord[] = [];
   private countryLabels = new Map<string, Text>();
+  private smallLabels = new Set<Text>();
   private armyMarkers = new Map<string, ArmyMarker>();
   private state: GameState | null = null;
   private selectedProvince: string | null = null;
   private selectedArmy: string | null = null;
   private hoveredProvince: string | null = null;
+  private diplomaticMode = false;
+  private fitScale = 1;
   private ownerSignature = '';
   private hasDrawn = false;
   private dragging = false;
@@ -109,7 +133,8 @@ export class MapRenderer {
     const app = new Application();
     await app.init({
       background: 0xd6ded5,
-      resizeTo: this.host,
+      width: CANVAS_WIDTH,
+      height: CANVAS_HEIGHT,
       antialias: true,
       autoDensity: true,
       resolution: Math.min(2, window.devicePixelRatio || 1),
@@ -125,21 +150,146 @@ export class MapRenderer {
 
     this.armyLayer.sortableChildren = true;
     this.world.addChild(
+      this.otherLayer,
+      this.seaLabelLayer,
+      this.otherLabelLayer,
       this.shadowLayer,
       this.fillLayer,
+      this.terrainLayer,
       this.provinceBorderLayer,
       this.countryBorderLayer,
-      this.trailLayer,
       this.selectionLayer,
       this.hoverLayer,
       this.cityLayer,
+      this.trailLayer,
       this.armyLayer,
       this.countryLabelLayer,
     );
     app.stage.addChild(this.world);
     this.prepareGeometry();
+    this.drawOtherRegions();
+    this.drawTerrain();
     this.fit();
     this.bindPointer();
+  }
+
+  private projectPoint(lon: number, lat: number): { x: number; y: number } {
+    const minLon = this.geo.bounds[0];
+    const maxLat = this.geo.bounds[3];
+    return { x: lon - minLon, y: maxLat - lat };
+  }
+
+  private drawOtherRegions(): void {
+    this.otherLayer.clear();
+    for (const region of this.geo.otherRegions) {
+      const points: number[] = [];
+      let x = 0;
+      let y = 0;
+      for (const [lon, lat] of region.points) {
+        const projected = this.projectPoint(lon, lat);
+        points.push(projected.x, projected.y);
+        x += projected.x;
+        y += projected.y;
+      }
+      if (points.length < 6) continue;
+      this.otherLayer.poly(points)
+        .fill({ color: 0xd9d4c8, alpha: 1 })
+        .stroke({ width: 0.09, color: 0x9b9588, alpha: 0.9 });
+      const text = new Text({
+        text: region.name,
+        style: new TextStyle({
+          fontFamily: '"Noto Serif SC", "Songti SC", serif',
+          fontSize: 48,
+          fill: 0x6f6a60,
+          letterSpacing: 4,
+        }),
+      });
+      text.anchor.set(0.5);
+      text.scale.set(0.9 / 48);
+      text.position.set(x / (points.length / 2), y / (points.length / 2));
+      text.alpha = 0.7;
+      text.eventMode = 'none';
+      this.otherLabelLayer.addChild(text);
+    }
+
+    for (const sea of this.geo.seaLabels) {
+      const point = this.projectPoint(sea.lon, sea.lat);
+      const text = new Text({
+        text: sea.name,
+        style: new TextStyle({
+          fontFamily: '"Noto Serif SC", "Songti SC", serif',
+          fontStyle: 'italic',
+          fontSize: 48,
+          fill: 0x6d8183,
+          letterSpacing: 5,
+        }),
+      });
+      text.anchor.set(0.5);
+      text.scale.set(0.9 / 48);
+      text.position.set(point.x, point.y);
+      text.alpha = 0.5;
+      text.eventMode = 'none';
+      this.seaLabelLayer.addChild(text);
+    }
+  }
+
+  private drawTerrain(): void {
+    this.terrainLayer.clear();
+    for (const [id, points] of this.projected) {
+      const terrain = this.content.provinces.get(id)?.terrain ?? 'plains';
+      const tint = TERRAIN_TINT[terrain] ?? TERRAIN_TINT.plains;
+      if (tint) this.terrainLayer.poly(points).fill({ color: tint.color, alpha: tint.alpha });
+      const centroid = this.centroids.get(id);
+      if (centroid) this.drawTerrainSymbol(centroid.x, centroid.y, terrain);
+    }
+  }
+
+  private drawTerrainSymbol(x: number, y: number, terrain: string): void {
+    const ink = 0x4a4034;
+    const green = 0x3f6b3a;
+    const lake = 0x3f6f6a;
+    if (terrain === 'mountains') {
+      for (const offset of [-0.42, 0, 0.42]) {
+        this.terrainLayer.poly([x + offset - 0.28, y + 0.24, x + offset, y - 0.28, x + offset + 0.28, y + 0.24])
+          .fill({ color: ink, alpha: 0.32 });
+      }
+      return;
+    }
+    if (terrain === 'hills') {
+      for (const offset of [-0.3, 0.3]) {
+        this.terrainLayer.poly([
+          x + offset - 0.28, y + 0.18,
+          x + offset - 0.14, y - 0.12,
+          x + offset + 0.02, y + 0.18,
+        ]).fill({ color: 0x6b5a3a, alpha: 0.28 });
+      }
+      return;
+    }
+    if (terrain === 'desert') {
+      this.terrainLayer.rect(x - 0.38, y + 0.04, 0.38, 0.05).fill({ color: 0x9e7a3a, alpha: 0.4 });
+      this.terrainLayer.rect(x + 0.02, y + 0.18, 0.36, 0.05).fill({ color: 0x9e7a3a, alpha: 0.35 });
+      this.terrainLayer.circle(x + 0.28, y - 0.08, 0.04).fill({ color: 0x9e7a3a, alpha: 0.4 });
+      return;
+    }
+    if (terrain === 'wetland') {
+      for (const offset of [-0.22, 0.04, 0.28]) {
+        this.terrainLayer.rect(x - 0.36, y + offset, 0.72, 0.045).fill({ color: lake, alpha: 0.4 });
+      }
+      return;
+    }
+    if (terrain === 'jungle' || terrain === 'steppe') {
+      const color = terrain === 'jungle' ? green : 0x8a843a;
+      for (const offset of [-0.34, 0, 0.34]) {
+        this.terrainLayer.poly([x + offset - 0.18, y + 0.18, x + offset, y - 0.18, x + offset + 0.18, y + 0.18])
+          .fill({ color, alpha: 0.32 });
+        this.terrainLayer.rect(x + offset - 0.03, y + 0.16, 0.06, 0.16).fill({ color: ink, alpha: 0.3 });
+      }
+      return;
+    }
+    if (terrain === 'plains') {
+      this.terrainLayer.rect(x - 0.3, y + 0.06, 0.36, 0.04).fill({ color: 0x6b7a42, alpha: 0.26 });
+      this.terrainLayer.rect(x + 0.04, y + 0.2, 0.3, 0.04).fill({ color: 0x6b7a42, alpha: 0.22 });
+    }
   }
 
   private prepareGeometry(): void {
@@ -213,18 +363,44 @@ export class MapRenderer {
     const width = this.app.screen.width;
     const height = this.app.screen.height;
     const scale = Math.min(width / this.mapWidth(), height / this.mapHeight()) * 0.94;
+    this.fitScale = scale;
     this.world.scale.set(scale);
     this.world.position.set(
       (width - this.mapWidth() * scale) / 2,
       (height - this.mapHeight() * scale) / 2,
     );
+    this.clampWorld();
     this.updateZoomScales();
+  }
+
+  private clampWorld(): void {
+    if (!this.app) return;
+    const width = this.app.screen.width;
+    const height = this.app.screen.height;
+    const scale = this.world.scale.x;
+    const mapWidth = this.mapWidth() * scale;
+    const mapHeight = this.mapHeight() * scale;
+    if (mapWidth <= width) {
+      this.world.position.x = (width - mapWidth) / 2;
+    } else {
+      this.world.position.x = Math.min(0, Math.max(width - mapWidth, this.world.position.x));
+    }
+    if (mapHeight <= height) {
+      this.world.position.y = (height - mapHeight) / 2;
+    } else {
+      this.world.position.y = Math.min(0, Math.max(height - mapHeight, this.world.position.y));
+    }
   }
 
   private updateZoomScales(): void {
     const scale = this.world.scale.x;
     const markerScale = Math.max(0.5, 9 / scale);
-    for (const marker of this.armyMarkers.values()) marker.container.scale.set(markerScale);
+    for (const marker of this.armyMarkers.values()) {
+      marker.container.scale.set(markerScale * marker.stackScale);
+    }
+    for (const label of this.smallLabels) {
+      label.visible = scale >= 13.5;
+    }
   }
 
   private bindPointer(): void {
@@ -247,6 +423,7 @@ export class MapRenderer {
       if (Math.abs(dx) + Math.abs(dy) > 3) this.moved = true;
       this.world.position.x += dx;
       this.world.position.y += dy;
+      this.clampWorld();
       this.lastPointer = { x: event.global.x, y: event.global.y };
     });
     stage.on('pointerup', (event) => {
@@ -262,15 +439,18 @@ export class MapRenderer {
       event.preventDefault();
       if (!this.app) return;
       const rect = this.app.canvas.getBoundingClientRect();
-      const px = event.clientX - rect.left;
-      const py = event.clientY - rect.top;
+      const scaleX = this.app.screen.width / rect.width;
+      const scaleY = this.app.screen.height / rect.height;
+      const px = (event.clientX - rect.left) * scaleX;
+      const py = (event.clientY - rect.top) * scaleY;
       const before = this.world.toLocal(new Point(px, py));
       const factor = event.deltaY < 0 ? 1.18 : 1 / 1.18;
-      const nextScale = Math.max(2, Math.min(60, this.world.scale.x * factor));
+      const nextScale = Math.max(this.fitScale, Math.min(60, this.world.scale.x * factor));
       this.world.scale.set(nextScale);
       const after = this.world.toLocal(new Point(px, py));
       this.world.position.x += (after.x - before.x) * nextScale;
       this.world.position.y += (after.y - before.y) * nextScale;
+      this.clampWorld();
       this.updateZoomScales();
     };
     app.canvas.addEventListener('wheel', this.wheelHandler, { passive: false });
@@ -278,11 +458,15 @@ export class MapRenderer {
       event.preventDefault();
       if (!this.app) return;
       const rect = this.app.canvas.getBoundingClientRect();
-      const province = this.provinceAt(event.clientX - rect.left, event.clientY - rect.top);
+      const scaleX = this.app.screen.width / rect.width;
+      const scaleY = this.app.screen.height / rect.height;
+      const province = this.provinceAt(
+        (event.clientX - rect.left) * scaleX,
+        (event.clientY - rect.top) * scaleY,
+      );
       if (province) this.onContextProvince(province);
     };
     app.canvas.addEventListener('contextmenu', this.contextHandler);
-    app.renderer.on('resize', () => this.fit());
   }
 
   private provinceAt(screenX: number, screenY: number): string | null {
@@ -311,6 +495,22 @@ export class MapRenderer {
     return hexToNumber(color);
   }
 
+  private fillColor(tag: string): number {
+    if (!this.diplomaticMode || !this.state) return this.colorOf(tag);
+    if (tag === this.state.playerTag) return 0xe0c26a;
+    if (areAtWar(this.state, this.state.playerTag, tag)) return 0xa33a32;
+    const relation = this.state.relations[relationKey(this.state.playerTag, tag)] ?? 0;
+    if (relation >= 20) return 0x3f6f9a;
+    return 0x8a8578;
+  }
+
+  setDiplomaticMode(enabled: boolean): void {
+    if (this.diplomaticMode === enabled) return;
+    this.diplomaticMode = enabled;
+    this.ownerSignature = '';
+    if (this.state) this.redrawMap();
+  }
+
   setState(state: GameState, selectedProvince: string | null, selectedArmy: string | null): void {
     this.state = state;
     this.selectedProvince = selectedProvince;
@@ -334,7 +534,7 @@ export class MapRenderer {
     this.fillLayer.clear();
     for (const [id, points] of this.projected) {
       const province = this.state.provinces[id];
-      const color = this.colorOf(province?.controller ?? 'NEU');
+      const color = this.fillColor(province?.controller ?? 'NEU');
       this.shadowLayer.poly(points.map((value, index) => value + (index % 2 === 0 ? 0.12 : 0.18)))
         .fill({ color: 0x2a241c, alpha: 0.13 });
       this.fillLayer.poly(points)
@@ -350,13 +550,13 @@ export class MapRenderer {
       const b = this.state.provinces[edge.b];
       if (!b) continue;
       if (a.controller !== b.controller) {
-        this.countryBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2);
+        this.countryBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
+          .stroke({ width: 0.28, color: 0x1f1913, alpha: 1 });
       } else {
-        this.provinceBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2);
+        this.provinceBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
+          .stroke({ width: 0.045, color: 0x5a5040, alpha: 0.6 });
       }
     }
-    this.provinceBorderLayer.stroke({ width: 0.045, color: 0x5a5040, alpha: 0.6 });
-    this.countryBorderLayer.stroke({ width: 0.28, color: 0x1f1913, alpha: 1 });
 
     this.drawCities();
     this.drawCountryLabels();
@@ -414,6 +614,7 @@ export class MapRenderer {
     if (!this.state) return;
     for (const label of this.countryLabels.values()) label.destroy();
     this.countryLabels.clear();
+    this.smallLabels.clear();
     this.countryLabelLayer.removeChildren();
 
     for (const country of Object.values(this.state.countries)) {
@@ -451,7 +652,10 @@ export class MapRenderer {
       const def = this.content.countries.get(country.tag);
       const color = hexToNumber(def?.color ?? '#7a7468');
       const lightText = colorLuma(color) < 0.52;
-      const fontSize = Math.max(1.15, Math.min(3.0, 1.15 + Math.sqrt(controlled.length) * 0.11));
+      const small = controlled.length <= 14;
+      const fontSize = small
+        ? 0.7
+        : Math.max(1.25, Math.min(2.8, 1.15 + Math.sqrt(controlled.length) * 0.11));
       const baseSize = 64;
       const text = new Text({
         text: def?.name ?? country.tag,
@@ -467,10 +671,12 @@ export class MapRenderer {
       text.anchor.set(0.5);
       text.scale.set(fontSize / baseSize);
       text.position.set(x, y - 0.15);
-      text.alpha = 0.94;
+      text.alpha = small ? 0.82 : 0.94;
+      text.visible = !small || this.world.scale.x >= 13.5;
       text.eventMode = 'none';
       this.countryLabelLayer.addChild(text);
       this.countryLabels.set(country.tag, text);
+      if (small) this.smallLabels.add(text);
     }
   }
 
@@ -557,6 +763,33 @@ export class MapRenderer {
     }
   }
 
+  private separateMarkers(): void {
+    const markers = [...this.armyMarkers.values()];
+    for (let pass = 0; pass < 3; pass += 1) {
+      let moved = false;
+      for (let i = 0; i < markers.length; i += 1) {
+        const a = markers[i];
+        if (!a) continue;
+        for (let j = i + 1; j < markers.length; j += 1) {
+          const b = markers[j];
+          if (!b) continue;
+          const dx = b.container.position.x - a.container.position.x;
+          const dy = b.container.position.y - a.container.position.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance >= 2.5) continue;
+          const angle = distance > 0.001 ? Math.atan2(dy, dx) : ((i + j) % 7) * 0.9;
+          const push = (2.5 - distance) / 2 + 0.01;
+          a.container.position.x -= Math.cos(angle) * push;
+          a.container.position.y -= Math.sin(angle) * push;
+          b.container.position.x += Math.cos(angle) * push;
+          b.container.position.y += Math.sin(angle) * push;
+          moved = true;
+        }
+      }
+      if (!moved) break;
+    }
+  }
+
   private ensureArmyMarker(id: string, tag: string, army: ArmyState): ArmyMarker {
     const existing = this.armyMarkers.get(id);
     if (existing) return existing;
@@ -603,28 +836,39 @@ export class MapRenderer {
       this.onSelectArmy(id);
     });
     this.armyLayer.addChild(container);
-    const marker: ArmyMarker = { container, body, selection, label };
+    const marker: ArmyMarker = { container, body, selection, label, stackScale: 1 };
     this.armyMarkers.set(id, marker);
     return marker;
   }
 
   private updateArmies(): void {
     if (!this.state) return;
-    const byProvince = new Map<string, number>();
+    const byProvince = new Map<string, ArmyState[]>();
     const alive = new Set<string>();
     for (const army of Object.values(this.state.armies)) {
-      const centroid = this.centroids.get(army.province);
-      if (!centroid) continue;
+      if (!this.centroids.get(army.province)) continue;
       alive.add(army.id);
-      const marker = this.ensureArmyMarker(army.id, army.tag, army);
-      const index = byProvince.get(army.province) ?? 0;
-      byProvince.set(army.province, index + 1);
-      const offset = index * 1.3;
-      marker.container.position.set(centroid.x + offset, centroid.y - offset);
-      marker.container.zIndex = this.selectedArmy === army.id ? 10 : 0;
-      marker.selection.visible = this.selectedArmy === army.id;
-      marker.label.text = strengthLabel(army);
+      const list = byProvince.get(army.province) ?? [];
+      list.push(army);
+      byProvince.set(army.province, list);
     }
+    for (const [province, armies] of byProvince) {
+      const centroid = this.centroids.get(province);
+      if (!centroid) continue;
+      const ordered = [...armies].sort((a, b) => a.id.localeCompare(b.id));
+      const offsets = stackOffsets(ordered.length);
+      ordered.forEach((army, index) => {
+        const marker = this.ensureArmyMarker(army.id, army.tag, army);
+        const offset = offsets[index] ?? { x: 0, y: 0 };
+        marker.container.position.set(centroid.x + offset.x, centroid.y + offset.y);
+        marker.container.zIndex = this.selectedArmy === army.id ? 10 : 0;
+        marker.selection.visible = this.selectedArmy === army.id;
+        marker.stackScale = ordered.length > 4 ? 0.78 : 1;
+        marker.label.text = strengthLabel(army);
+      });
+    }
+    this.separateMarkers();
+    this.updateZoomScales();
     this.armyLayer.sortChildren();
     for (const [id, marker] of this.armyMarkers) {
       if (!alive.has(id)) {
@@ -653,6 +897,21 @@ function strengthLabel(army: ArmyState): string {
   if (strength >= 10000) return `${(strength / 1000).toFixed(0)}k`;
   if (strength >= 1000) return `${(strength / 1000).toFixed(1)}k`;
   return String(Math.max(0, Math.round(strength)));
+}
+
+function stackOffsets(count: number): Array<{ x: number; y: number }> {
+  if (count <= 1) return [{ x: 0, y: 0 }];
+  if (count === 2) return [{ x: -1.8, y: 0 }, { x: 1.8, y: 0 }];
+  if (count === 3) return [{ x: -1.7, y: 1.0 }, { x: 1.7, y: 1.0 }, { x: 0, y: -1.4 }];
+  if (count === 4) return [
+    { x: -1.6, y: 1.0 }, { x: 1.6, y: 1.0 },
+    { x: -1.6, y: -1.0 }, { x: 1.6, y: -1.0 },
+  ];
+  const radius = 2.1 + (count - 4) * 0.1;
+  return Array.from({ length: count }, (_, index) => {
+    const angle = -Math.PI / 2 + (index * Math.PI * 2) / count;
+    return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
+  });
 }
 
 function drawUnitIcon(graphics: Graphics, composition: ArmyState['composition'], iconColor: number): void {

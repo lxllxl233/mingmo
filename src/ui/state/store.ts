@@ -48,6 +48,7 @@ interface UiStore {
   speed: 0 | 1 | 2 | 4;
   panel: PanelKey | null;
   countryFocus: string | null;
+  diplomaticMode: boolean;
   selectedProvince: string | null;
   selectedArmy: string | null;
   message: string | null;
@@ -74,6 +75,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   speed: 0,
   panel: null,
   countryFocus: null,
+  diplomaticMode: false,
   selectedProvince: null,
   selectedArmy: null,
   message: null,
@@ -87,6 +89,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       speed: 0,
       panel: null,
       countryFocus: null,
+      diplomaticMode: false,
       selectedProvince: game.countries[tag]?.capital ?? null,
       selectedArmy: null,
       message: null,
@@ -140,15 +143,15 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ selectedProvince: provinceId });
       return;
     }
-    set({ selectedProvince: provinceId, selectedArmy: null, countryFocus: null, panel: provinceId ? 'province' : null });
+    set({ selectedProvince: provinceId, selectedArmy: null, countryFocus: null, diplomaticMode: false, panel: provinceId ? 'province' : null });
   },
   selectArmy: armyId => {
     sound.play('click');
-    set({ selectedArmy: armyId, panel: 'military', countryFocus: null });
+    set({ selectedArmy: armyId, panel: 'military', countryFocus: null, diplomaticMode: false });
   },
   openCountry: tag => {
     sound.play('click');
-    set({ countryFocus: tag, panel: 'country', selectedArmy: null });
+    set({ countryFocus: tag, diplomaticMode: true, panel: 'country', selectedArmy: null });
   },
   moveArmyTo: provinceId => {
     const { game, selectedArmy } = get();
@@ -167,8 +170,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
     }
     return get().command({ type: 'army.move', armyId: selectedArmy, path });
   },
-  openPanel: panel => set({ panel }),
-  closePanel: () => set({ panel: null }),
+  openPanel: panel => set({ panel, diplomaticMode: false }),
+  closePanel: () => set({ panel: null, diplomaticMode: false }),
   dismissMessage: () => set({ message: null }),
   save: slot => {
     const { game } = get();
@@ -192,6 +195,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
         speed: 0,
         panel: null,
         countryFocus: null,
+        diplomaticMode: false,
         selectedProvince: game.countries[game.playerTag]?.capital ?? null,
         selectedArmy: null,
         message: `已读取 ${slot}`,
@@ -201,5 +205,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, panel: null, countryFocus: null, selectedProvince: null, selectedArmy: null, message: null }),
+  reset: () => set({ game: null, speed: 0, panel: null, countryFocus: null, diplomaticMode: false, selectedProvince: null, selectedArmy: null, message: null }),
 }));

@@ -5,6 +5,8 @@ export interface RawMapGeo {
   bounds: number[];
   provinces: Record<string, number[][]>;
   land?: number[][][];
+  otherRegions?: Array<{ name: string; points: number[][] }>;
+  seaLabels?: Array<{ name: string; lon: number; lat: number }>;
 }
 
 export function toMapGeo(raw: RawMapGeo): MapGeo {
@@ -27,5 +29,21 @@ export function toMapGeo(raw: RawMapGeo): MapGeo {
     if (lon === undefined || lat === undefined) throw new Error('invalid land polygon point');
     return [lon, lat] as [number, number];
   }));
-  return { version: raw.version, bounds: [minLon, minLat, maxLon, maxLat], provinces, land };
+  const otherRegions = (raw.otherRegions ?? []).map(region => ({
+    name: region.name,
+    points: region.points.map(point => {
+      const lon = point[0];
+      const lat = point[1];
+      if (lon === undefined || lat === undefined) throw new Error('invalid other region point');
+      return [lon, lat] as [number, number];
+    }),
+  }));
+  return {
+    version: raw.version,
+    bounds: [minLon, minLat, maxLon, maxLat],
+    provinces,
+    land,
+    otherRegions,
+    seaLabels: raw.seaLabels ?? [],
+  };
 }

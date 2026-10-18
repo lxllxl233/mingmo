@@ -10,6 +10,7 @@ export function MapViewport() {
   const version = useGameStore(state => state.version);
   const selectedProvince = useGameStore(state => state.selectedProvince);
   const selectedArmy = useGameStore(state => state.selectedArmy);
+  const diplomaticMode = useGameStore(state => state.diplomaticMode);
   const selectProvince = useGameStore(state => state.selectProvince);
   const selectArmy = useGameStore(state => state.selectArmy);
 
@@ -37,6 +38,7 @@ export function MapViewport() {
       const state = useGameStore.getState().game;
       if (state) {
         renderer.setState(state, useGameStore.getState().selectedProvince, useGameStore.getState().selectedArmy);
+        renderer.setDiplomaticMode(useGameStore.getState().diplomaticMode);
       }
     });
     return () => {
@@ -51,6 +53,10 @@ export function MapViewport() {
       rendererRef.current.setState(game, selectedProvince, selectedArmy);
     }
   }, [game, version, selectedProvince, selectedArmy]);
+
+  useEffect(() => {
+    rendererRef.current?.setDiplomaticMode(diplomaticMode);
+  }, [diplomaticMode]);
 
   return (
     <div className="map-host" ref={hostRef}>
