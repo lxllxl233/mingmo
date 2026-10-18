@@ -170,6 +170,8 @@ function historicalWarTarget(state: GameState, tag: string): string | null {
   if (state.scenarioId === '1627') {
     if (tag === 'QING' && alive('MING')) return 'MING';
     if (tag === 'MING' && alive('QING')) return 'QING';
+    if (tag === 'SHUN' && alive('MING')) return 'MING';
+    if (tag === 'XI' && alive('MING')) return 'MING';
   }
   if (state.scenarioId === '1644') {
     if (tag === 'QING') return alive('SHUN') ? 'SHUN' : alive('MING') ? 'MING' : null;
@@ -320,7 +322,9 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
   if (warsOf(state, tag).length === 0) return;
 
   const atCapital = armies.find(army => army.province === nation.capital);
-  const attackers = armies.filter(army => army.id !== atCapital?.id);
+  const attackers = armies.length > 1
+    ? armies.filter(army => army.id !== atCapital?.id)
+    : armies;
   if (!atCapital && attackers.length > 1) {
     const strongest = [...attackers].sort((a, b) => armyStrength(b) - armyStrength(a))[0];
     if (strongest) {
@@ -335,6 +339,34 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
   }
 }
 
+function manageRebelGrowth(state: GameState, content: ContentIndex, tag: string): void {
+  const nation = state.countries[tag];
+  const def = content.countries.get(tag);
+  if (!nation || !def || def.government !== 'rebel') return;
+  if (warsOf(state, tag).length === 0) return;
+  const provinces = Object.values(state.provinces).filter(province => province.controller === tag).length;
+  const target = 2500 + provinces * 900;
+  const current = armyStrengthOf(state, tag);
+  if (current >= target) return;
+  const armies = Object.values(state.armies).filter(army => army.tag === tag);
+  const army = armies.sort((a, b) => armyStrength(b) - armyStrength(a))[0];
+  if (!army || nation.manpower < 150 || nation.food < 10000) return;
+  const recruits = Math.min(1000, Math.ceil(target - current), Math.floor(nation.manpower));
+  if (recruits <= 0) return;
+  army.composition.infantry += recruits;
+  nation.manpower -= recruits;
+  nation.food = Math.max(0, nation.food - recruits * 0.5);
+  if (state.day % 90 === 0) {
+    state.log.push({
+      day: state.day,
+      category: 'military',
+      country: tag,
+      text: `${def.name} 饥民来投，${army.name} 补充 ${recruits} 人`,
+      severity: 'info',
+    });
+  }
+}
+
 export function runMonthlyAi(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive || (!state.spectator && nation.tag === state.playerTag)) continue;
@@ -342,6 +374,7 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageResearch(state, content, nation.tag);
     manageTax(state, content, nation.tag);
     manageArmy(state, content, nation.tag);
+    manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);
     manageWar(state, content, nation.tag);
     manageMovement(state, content, nation.tag);

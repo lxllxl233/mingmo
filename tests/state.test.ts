@@ -29,8 +29,8 @@ describe('initial state', () => {
       expect(Number.isFinite(country.stability), country.tag).toBe(true);
     }
     expect(Object.keys(state.armies).length).toBeGreaterThan(20);
-    expect(state.wars.length).toBe(1);
-    expect(state.wars[0]?.attacker).toBe('QING');
+    expect(state.wars.length).toBe(3);
+    expect(state.wars.map(war => war.attacker)).toEqual(expect.arrayContaining(['QING', 'SHUN', 'XI']));
   });
 
   it('keeps the Ming state above water at the start', () => {

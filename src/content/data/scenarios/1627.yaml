@@ -140,6 +140,8 @@ armies:
   - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
 initial_wars:
   - { attacker: QING, defender: MING, goal: 辽东 }
+  - { attacker: SHUN, defender: MING, goal: 陕西民变 }
+  - { attacker: XI, defender: MING, goal: 四川割据 }
 initial_events: []
 
 
