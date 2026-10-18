@@ -4,6 +4,8 @@ import { sound } from '../../app/audio/sound';
 import { useGameStore, type PanelKey } from '../state/store';
 import { TopBar } from './TopBar';
 import { MapViewport } from './MapViewport';
+import { CountryFlag } from '../panels/CountryFlag';
+import { LeaderPortrait } from '../panels/LeaderPortrait';
 import { ProvincePanel } from '../panels/ProvincePanel';
 import { CountryPanel } from '../panels/CountryPanel';
 import { ArmyPanel } from '../panels/ArmyPanel';
@@ -17,6 +19,7 @@ import { DecisionPanel } from '../panels/DecisionPanel';
 import { LogPanel } from '../panels/LogPanel';
 import { EventModal } from '../overlays/EventModal';
 import { EndModal } from '../overlays/EndModal';
+import { TrainingModal } from '../overlays/TrainingModal';
 
 const SIDEBAR: Array<{ key: PanelKey; label: string }> = [
   { key: 'focus', label: '国策' },
@@ -36,6 +39,7 @@ export function GameShell() {
   const panel = useGameStore(state => state.panel);
   const openPanel = useGameStore(state => state.openPanel);
   const closePanel = useGameStore(state => state.closePanel);
+  const openCountry = useGameStore(state => state.openCountry);
   const tick = useGameStore(state => state.tick);
   const message = useGameStore(state => state.message);
   const dismissMessage = useGameStore(state => state.dismissMessage);
@@ -71,6 +75,8 @@ export function GameShell() {
   if (!game) return null;
   const country = game.countries[game.playerTag];
   const activeFocus = country?.focus ? content.focuses.get(country.focus.id) : null;
+  const playerDef = content.countries.get(game.playerTag);
+  const playerLeader = playerDef?.leadersByScenario?.[game.scenarioId] ?? playerDef?.leader;
   const pending = game.pendingEvents.filter(event => event.country === game.playerTag);
 
   return (
@@ -84,6 +90,13 @@ export function GameShell() {
       <TopBar />
       <div className="game-main">
         <nav className="sidebar">
+          {playerDef && (
+            <button className="sidebar-country" onClick={() => openCountry(game.playerTag)} title="查看本国详情">
+              <CountryFlag country={playerDef} width={44} />
+              <span className="sidebar-country-name">{playerDef.name}</span>
+              {playerLeader && <span className="sidebar-leader"><LeaderPortrait leader={playerLeader} size={34} /></span>}
+            </button>
+          )}
           {SIDEBAR.map(entry => (
             <button
               key={entry.key}
@@ -154,6 +167,7 @@ export function GameShell() {
         </div>
       )}
       {pending.length > 0 && <EventModal />}
+      <TrainingModal />
       {game.ended && <EndModal />}
       {message && <div className="toast">{message}</div>}
     </div>

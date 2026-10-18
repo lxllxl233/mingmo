@@ -8,6 +8,7 @@ import { dispatch, type Command } from '../../engine/commands';
 import type { GameState } from '../../engine/state/types';
 import { loadLocal, saveLocal } from '../../app/save/save';
 import { sound } from '../../app/audio/sound';
+import { canMarchThrough } from '../../engine/rules/access';
 
 export type PanelKey =
   | 'province'
@@ -22,7 +23,9 @@ export type PanelKey =
   | 'decisions'
   | 'log';
 
-function findPath(content: ContentIndex, from: string, to: string): string[] | null {
+let suppressArmySelectionUntil = 0;
+
+function findPath(content: ContentIndex, state: GameState, from: string, to: string, tag: string): string[] | null {
   if (from === to) return [];
   const queue: Array<{ id: string; path: string[] }> = [{ id: from, path: [] }];
   const seen = new Set([from]);
@@ -33,6 +36,7 @@ function findPath(content: ContentIndex, from: string, to: string): string[] | n
     if (!def) continue;
     for (const next of def.neighbors) {
       if (seen.has(next)) continue;
+      if (!canMarchThrough(state, tag, next)) continue;
       seen.add(next);
       const path = [...current.path, next];
       if (next === to) return path;
@@ -52,6 +56,8 @@ interface UiStore {
   countryFocus: string | null;
   diplomaticMode: boolean;
   diplomaticAnchor: string | null;
+  trainingPicker: 'land' | 'navy' | null;
+  trainingRequest: { kind: 'land' | 'navy'; templateId: string } | null;
   selectedProvince: string | null;
   selectedArmy: string | null;
   message: string | null;
@@ -63,6 +69,11 @@ interface UiStore {
   selectArmy: (armyId: string | null) => void;
   openCountry: (tag: string) => void;
   moveArmyTo: (provinceId: string) => boolean;
+  openTrainingPicker: (kind: 'land' | 'navy') => void;
+  chooseTrainingTemplate: (templateId: string) => void;
+  closeTrainingPicker: () => void;
+  cancelTrainingRequest: () => void;
+  deployTraining: (provinceId: string) => boolean;
   openPanel: (panel: PanelKey) => void;
   closePanel: () => void;
   dismissMessage: () => void;
@@ -81,6 +92,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
   countryFocus: null,
   diplomaticMode: false,
   diplomaticAnchor: null,
+  trainingPicker: null,
+  trainingRequest: null,
   selectedProvince: null,
   selectedArmy: null,
   message: null,
@@ -97,6 +110,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
       countryFocus: null,
       diplomaticMode: false,
       diplomaticAnchor: null,
+      trainingPicker: null,
+      trainingRequest: null,
       selectedProvince: game.countries[tag]?.capital ?? null,
       selectedArmy: null,
       message: null,
@@ -167,6 +182,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     set({ selectedProvince: provinceId, selectedArmy: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, panel: provinceId ? 'province' : null });
   },
   selectArmy: armyId => {
+    if (armyId && Date.now() < suppressArmySelectionUntil) return;
     const { game } = get();
     if (armyId && (!game || game.armies[armyId]?.tag !== game.playerTag)) {
       sound.play('error');
@@ -201,13 +217,52 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: '军团已在目标省份' });
       return false;
     }
-    const path = findPath(content, army.province, provinceId);
+    const path = findPath(content, game, army.province, provinceId, army.tag);
     if (!path || path.length === 0) {
       sound.play('error');
       set({ message: '没有可通行的行军路线' });
       return false;
     }
     return get().command({ type: 'army.move', armyId: selectedArmy, path });
+  },
+  openTrainingPicker: kind => {
+    sound.play('click');
+    set({ trainingPicker: kind, trainingRequest: null, panel: 'military', diplomaticMode: false, diplomaticAnchor: null });
+  },
+  chooseTrainingTemplate: templateId => {
+    const kind = get().trainingPicker;
+    if (!kind) return;
+    set({
+      trainingPicker: null,
+      trainingRequest: { kind, templateId },
+      message: '请在地图上选择部署省份：陆军选我方省份，水军选我方港口。',
+      panel: null,
+    });
+  },
+  closeTrainingPicker: () => set({ trainingPicker: null }),
+  cancelTrainingRequest: () => set({ trainingRequest: null, message: null }),
+  deployTraining: provinceId => {
+    const { trainingRequest, game } = get();
+    if (!game || !trainingRequest) return false;
+    const template = content.armyTemplates.get(trainingRequest.templateId);
+    const province = content.provinces.get(provinceId);
+    const provinceState = game.provinces[provinceId];
+    if (!template || !province || !provinceState) return false;
+    if (provinceState.controller !== game.playerTag) {
+      set({ message: '只能部署到本国控制的省份' });
+      return false;
+    }
+    if (trainingRequest.kind === 'navy' && !province.isPort) {
+      set({ message: '水军只能部署到我方港口' });
+      sound.play('error');
+      return false;
+    }
+    const ok = get().command({ type: 'army.recruit', province: provinceId, template: trainingRequest.templateId, size: 2 });
+    if (ok) {
+      suppressArmySelectionUntil = Date.now() + 700;
+      set({ trainingRequest: null, panel: 'military', message: '已加入训练队列，完成后在此省份成军。' });
+    }
+    return ok;
   },
   openPanel: panel => set({ panel, diplomaticMode: false, diplomaticAnchor: null }),
   closePanel: () => set({ panel: null, diplomaticMode: false, diplomaticAnchor: null }),
@@ -237,6 +292,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
         countryFocus: null,
         diplomaticMode: false,
         diplomaticAnchor: null,
+        trainingPicker: null,
+        trainingRequest: null,
         selectedProvince: game.countries[game.playerTag]?.capital ?? null,
         selectedArmy: null,
         message: `已读取 ${slot}`,
@@ -246,5 +303,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, selectedProvince: null, selectedArmy: null, message: null }),
+  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, message: null }),
 }));

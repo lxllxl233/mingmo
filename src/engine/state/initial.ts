@@ -224,6 +224,7 @@ export function createInitialState(
     armies,
     training: [],
     wars,
+    truces: {},
     relations,
     eventQueue: scenario.initialEvents.map(eventId => ({ eventId, country: playerTag, dueDay: startDay })),
     pendingEvents: [],

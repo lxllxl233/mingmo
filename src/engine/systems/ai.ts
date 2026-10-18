@@ -8,6 +8,7 @@ import { startTaxReform } from './tax';
 import { enqueueTraining } from './training';
 import { setArmyPath } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
+import { canMarchThrough } from '../rules/access';
 import { evaluateTrigger } from '../rules/triggers';
 
 const AI_TEMPLATES: Record<string, string> = {
@@ -166,6 +167,7 @@ function findPathToEnemy(state: GameState, content: ContentIndex, tag: string, s
       visited.add(neighborId);
       const province = state.provinces[neighborId];
       if (!province) continue;
+      if (!canMarchThrough(state, tag, neighborId)) continue;
       const nextPath = [...current.path, neighborId];
       if (province.controller !== tag && areAtWar(state, tag, province.controller)) return nextPath;
       if (nextPath.length < 24) queue.push({ id: neighborId, path: nextPath });
@@ -174,7 +176,7 @@ function findPathToEnemy(state: GameState, content: ContentIndex, tag: string, s
   return null;
 }
 
-function findPathToProvince(content: ContentIndex, from: string, to: string): string[] | null {
+function findPathToProvince(state: GameState, content: ContentIndex, tag: string, from: string, to: string): string[] | null {
   if (from === to) return [];
   const queue: Array<{ id: string; path: string[] }> = [{ id: from, path: [] }];
   const seen = new Set([from]);
@@ -185,6 +187,7 @@ function findPathToProvince(content: ContentIndex, from: string, to: string): st
     if (!def) continue;
     for (const neighborId of def.neighbors) {
       if (seen.has(neighborId)) continue;
+      if (!canMarchThrough(state, tag, neighborId)) continue;
       seen.add(neighborId);
       const path = [...current.path, neighborId];
       if (neighborId === to) return path;
@@ -203,7 +206,7 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
 
   if (capital && capital.controller !== tag) {
     for (const army of armies) {
-      const path = findPathToProvince(content, army.province, nation.capital);
+      const path = findPathToProvince(state, content, tag, army.province, nation.capital);
       if (path) setArmyPath(state, content, army.id, path);
     }
     return;
@@ -215,7 +218,7 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
   if (!atCapital && attackers.length > 1) {
     const strongest = [...attackers].sort((a, b) => armyStrength(b) - armyStrength(a))[0];
     if (strongest) {
-      const path = findPathToProvince(content, strongest.province, nation.capital);
+      const path = findPathToProvince(state, content, tag, strongest.province, nation.capital);
       if (path) setArmyPath(state, content, strongest.id, path);
     }
   }

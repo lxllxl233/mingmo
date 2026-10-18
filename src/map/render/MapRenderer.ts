@@ -49,6 +49,8 @@ interface ArmyMarker {
   selection: Graphics;
   label: Text;
   stackScale: number;
+  armyId: string;
+  armyIds: string[];
 }
 
 const TERRAIN_TINT: Record<string, { color: number; alpha: number }> = {
@@ -535,7 +537,7 @@ export class MapRenderer {
 
   private updateZoomScales(): void {
     const scale = this.world.scale.x;
-    const markerScale = Math.max(0.02, 9 / scale);
+    const markerScale = Math.max(0.02, 14 / scale);
     for (const marker of this.armyMarkers.values()) {
       marker.container.scale.set(markerScale * marker.stackScale);
     }
@@ -965,7 +967,7 @@ export class MapRenderer {
 
   private separateMarkers(): void {
     const markers = [...this.armyMarkers.values()];
-    const minDistance = 2.5 * Math.min(1, 12 / this.world.scale.x);
+    const minDistance = 3.4 * Math.min(1, 12 / this.world.scale.x);
     for (let pass = 0; pass < 3; pass += 1) {
       let moved = false;
       for (let i = 0; i < markers.length; i += 1) {
@@ -991,8 +993,8 @@ export class MapRenderer {
     }
   }
 
-  private ensureArmyMarker(id: string, tag: string, army: ArmyState): ArmyMarker {
-    const existing = this.armyMarkers.get(id);
+  private ensureArmyMarker(key: string, tag: string, army: ArmyState): ArmyMarker {
+    const existing = this.armyMarkers.get(key);
     if (existing) return existing;
     const color = this.colorOf(tag);
     const light = colorLuma(color) > 0.55;
@@ -1025,7 +1027,7 @@ export class MapRenderer {
       }),
     });
     label.anchor.set(0.5);
-    label.scale.set(0.78 / 48);
+    label.scale.set(0.92 / 48);
     label.position.set(0, 0.78);
 
     const faction = new Text({
@@ -1039,7 +1041,7 @@ export class MapRenderer {
       }),
     });
     faction.anchor.set(0.5);
-    faction.scale.set(0.5 / 28);
+    faction.scale.set(0.7 / 28);
     faction.position.set(0.72, -0.48);
 
     container.addChild(shadow, body, selection, label, faction);
@@ -1048,50 +1050,63 @@ export class MapRenderer {
     container.on('pointertap', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       event.stopPropagation();
-      this.onSelectArmy(id);
+      const marker = this.armyMarkers.get(key);
+      if (!marker) return;
+      const ids = marker.armyIds;
+      const index = ids.indexOf(marker.armyId);
+      const next = ids[(index + 1) % Math.max(1, ids.length)] ?? marker.armyId;
+      if (next) this.onSelectArmy(next);
     });
     this.armyLayer.addChild(container);
-    const marker: ArmyMarker = { container, body, selection, label, stackScale: 1 };
-    this.armyMarkers.set(id, marker);
+    const marker: ArmyMarker = {
+      container, body, selection, label, stackScale: 1,
+      armyId: army.id, armyIds: [army.id],
+    };
+    this.armyMarkers.set(key, marker);
     return marker;
   }
 
   private updateArmies(): void {
     if (!this.state) return;
-    const byProvince = new Map<string, ArmyState[]>();
-    const alive = new Set<string>();
+    const groups = new Map<string, ArmyState[]>();
     for (const army of Object.values(this.state.armies)) {
       if (!this.centroids.get(army.province)) continue;
-      alive.add(army.id);
-      const list = byProvince.get(army.province) ?? [];
+      const key = `${army.province}:${army.tag}`;
+      const list = groups.get(key) ?? [];
       list.push(army);
-      byProvince.set(army.province, list);
+      groups.set(key, list);
     }
-    for (const [province, armies] of byProvince) {
-      const centroid = this.centroids.get(province);
+    const alive = new Set<string>(groups.keys());
+    for (const [key, armies] of groups) {
+      const centroid = this.centroids.get(armies[0]?.province ?? '');
       if (!centroid) continue;
       const ordered = [...armies].sort((a, b) => a.id.localeCompare(b.id));
-      const offsets = stackOffsets(ordered.length);
-      const offsetFactor = Math.min(1, 12 / this.world.scale.x);
-      ordered.forEach((army, index) => {
-        const marker = this.ensureArmyMarker(army.id, army.tag, army);
-        const offset = offsets[index] ?? { x: 0, y: 0 };
-        marker.container.position.set(centroid.x + offset.x * offsetFactor, centroid.y + offset.y * offsetFactor);
-        marker.container.zIndex = this.selectedArmy === army.id ? 10 : 0;
-        marker.container.eventMode = army.tag === this.state?.playerTag ? 'static' : 'none';
-        marker.container.cursor = army.tag === this.state?.playerTag ? 'pointer' : 'default';
-        marker.selection.visible = this.selectedArmy === army.id;
-        marker.stackScale = ordered.length > 4 ? 0.78 : 1;
-        marker.label.text = strengthLabel(army);
-      });
+      const representative = ordered.find(army => army.id === this.selectedArmy) ?? ordered[0];
+      if (!representative) continue;
+      const marker = this.ensureArmyMarker(key, representative.tag, representative);
+      const count = ordered.length;
+      let total = 0;
+      for (const army of ordered) {
+        total += army.composition.infantry + army.composition.firearm
+          + army.composition.cavalry + army.composition.artillery + army.composition.naval;
+      }
+      marker.armyId = representative.id;
+      marker.armyIds = ordered.map(army => army.id);
+      marker.container.position.set(centroid.x, centroid.y);
+      marker.container.zIndex = this.selectedArmy === representative.id ? 10 : 0;
+      marker.container.eventMode = representative.tag === this.state.playerTag ? 'static' : 'none';
+      marker.container.cursor = representative.tag === this.state.playerTag ? 'pointer' : 'default';
+      marker.selection.visible = ordered.some(army => army.id === this.selectedArmy);
+      marker.stackScale = 1 + Math.min(0.4, Math.max(0, count - 1) * 0.08);
+      marker.label.text = `${strengthText(total)}${count > 1 ? ` ×${count}` : ''}`;
     }
     this.separateMarkers();
     this.updateZoomScales();
     this.armyLayer.sortChildren();
-    for (const [id, marker] of this.armyMarkers) {
-      if (!alive.has(id)) {
+    for (const [key, marker] of this.armyMarkers) {
+      if (!alive.has(key)) {
         marker.container.destroy({ children: true });
-        this.armyMarkers.delete(id);
+        this.armyMarkers.delete(key);
       }
     }
   }
@@ -1109,27 +1124,10 @@ export class MapRenderer {
   }
 }
 
-function strengthLabel(army: ArmyState): string {
-  const strength = army.composition.infantry + army.composition.firearm
-    + army.composition.cavalry + army.composition.artillery + army.composition.naval;
+function strengthText(strength: number): string {
   if (strength >= 10000) return `${(strength / 1000).toFixed(0)}k`;
   if (strength >= 1000) return `${(strength / 1000).toFixed(1)}k`;
   return String(Math.max(0, Math.round(strength)));
-}
-
-function stackOffsets(count: number): Array<{ x: number; y: number }> {
-  if (count <= 1) return [{ x: 0, y: 0 }];
-  if (count === 2) return [{ x: -1.8, y: 0 }, { x: 1.8, y: 0 }];
-  if (count === 3) return [{ x: -1.7, y: 1.0 }, { x: 1.7, y: 1.0 }, { x: 0, y: -1.4 }];
-  if (count === 4) return [
-    { x: -1.6, y: 1.0 }, { x: 1.6, y: 1.0 },
-    { x: -1.6, y: -1.0 }, { x: 1.6, y: -1.0 },
-  ];
-  const radius = 2.1 + (count - 4) * 0.1;
-  return Array.from({ length: count }, (_, index) => {
-    const angle = -Math.PI / 2 + (index * Math.PI * 2) / count;
-    return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
-  });
 }
 
 function drawUnitIcon(graphics: Graphics, composition: ArmyState['composition'], iconColor: number): void {

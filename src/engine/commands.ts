@@ -22,7 +22,7 @@ export type Command =
   | { type: 'army.stop'; armyId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
-  | { type: 'diplomacy.makePeace'; warId: string };
+  | { type: 'diplomacy.makePeace'; warId: string; terms?: 'white' | 'status' | 'demand' };
 
 export class CommandError extends Error {
   constructor(message: string) {
@@ -111,6 +111,9 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       if (!origin?.isPort || !target?.isPort || command.portId === army.province) {
         throw new CommandError('naval move requires two ports');
       }
+      if (state.provinces[command.portId]?.controller !== tag) {
+        throw new CommandError('naval move requires a friendly port');
+      }
       const fleet = Object.values(state.armies).some(entry =>
         entry.tag === tag && entry.province === army.province && entry.composition.naval > 0);
       if (!fleet) throw new CommandError('no warships in port');
@@ -166,7 +169,9 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       }
       break;
     case 'diplomacy.makePeace':
-      if (!makePeace(state, command.warId, content)) throw new CommandError('cannot make peace');
+      if (!makePeace(state, command.warId, content, command.terms ?? 'status')) {
+        throw new CommandError('cannot make peace');
+      }
       break;
     default: {
       const exhaustive: never = command;

@@ -10,6 +10,7 @@ countries:
     ai_personality: bureaucratic
     factions: [donglin, eunuch, imperial, military, royal_clan, gentry, merchants, farmers]
     unique_mechanic: party_strife
+    goal: 守辽东、平流寇、续国祚
     starting:
       treasury: 1200000
       food: 8000000
@@ -35,6 +36,7 @@ countries:
     ai_personality: aggressive
     factions: [manchu, han_official, green_standard, imperial, banners]
     unique_mechanic: banner_system
+    goal: 入关定鼎，混一华夷
     starting:
       treasury: 300000
       food: 1500000
@@ -60,6 +62,7 @@ countries:
     ai_personality: opportunistic
     factions: [farmers, military, gentry, merchants]
     unique_mechanic: confiscation
+    goal: 均田免赋，取代明朝
     starting:
       treasury: 200000
       food: 1000000
@@ -85,6 +88,7 @@ countries:
     ai_personality: aggressive
     factions: [military, farmers, nobles]
     unique_mechanic: terror
+    goal: 据蜀称帝，割据西南
     starting:
       treasury: 150000
       food: 800000
@@ -110,6 +114,7 @@ countries:
     ai_personality: defensive
     factions: [donglin, military, royal_clan, merchants, gentry]
     unique_mechanic: legitimacy_contest
+    goal: 恢复南京，延续明统
     starting:
       treasury: 400000
       food: 2000000
@@ -135,6 +140,7 @@ countries:
     ai_personality: mercantile
     factions: [merchants, military, royal_clan, gentry]
     unique_mechanic: maritime_network
+    goal: 保海疆，取台湾，通东西洋
     starting:
       treasury: 500000
       food: 600000
@@ -160,6 +166,7 @@ countries:
     ai_personality: opportunistic
     factions: [nobles, clergy, military, merchants]
     unique_mechanic: banner_league
+    goal: 统一蒙古，重现汗权
     starting:
       treasury: 100000
       food: 700000
@@ -185,6 +192,7 @@ countries:
     ai_personality: defensive
     factions: [nobles, officials, royal_clan, military, clergy]
     unique_mechanic: tribute
+    goal: 保境安民，北伐雪耻
     starting:
       treasury: 300000
       food: 1500000
@@ -210,6 +218,7 @@ countries:
     ai_personality: mercantile
     factions: [nobles, military, merchants, clergy, imperial]
     unique_mechanic: sakoku
+    goal: 锁国自守，窥伺大陆
     starting:
       treasury: 800000
       food: 3000000
@@ -235,6 +244,7 @@ countries:
     ai_personality: defensive
     factions: [clergy, nobles, military, merchants]
     unique_mechanic: theocracy
+    goal: 护法安藏，控制高原
     starting:
       treasury: 80000
       food: 400000
@@ -260,6 +270,7 @@ countries:
     ai_personality: mercantile
     factions: [shareholders, merchants, military, officials]
     unique_mechanic: company_dividend
+    goal: 垄断海贸，据守台湾
     starting:
       treasury: 600000
       food: 500000
@@ -285,6 +296,7 @@ countries:
     ai_personality: aggressive
     factions: [nobles, military, merchants, clergy, officials]
     unique_mechanic: cossack_host
+    goal: 东进黑龙江，取得毛皮
     starting:
       treasury: 200000
       food: 600000
@@ -310,6 +322,7 @@ countries:
     ai_personality: defensive
     factions: [nobles, clergy]
     unique_mechanic: tributary
+    goal: 保境中立，周旋大国
     starting:
       treasury: 80000
       food: 500000

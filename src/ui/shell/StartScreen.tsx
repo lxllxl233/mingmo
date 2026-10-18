@@ -100,6 +100,7 @@ export function StartScreen() {
           {previewCountry && (
             <div className="start-briefing">
               <h3>开局态势 · {previewDef?.name ?? selectedTag}</h3>
+              {previewDef?.goal && <p className="briefing-goal">战略目标：{previewDef.goal}</p>}
               <div className="briefing-grid">
                 <span>领袖 <b>{previewLeader}</b></span>
                 <span>国库 <b>{formatNumber(previewCountry.treasury)}</b></span>
@@ -125,6 +126,7 @@ export function StartScreen() {
               >
                 <h3><span className="faction-dot" style={{ background: country.color }} />{country.name}</h3>
                 <p>{MECHANIC_LABELS[country.uniqueMechanic] ?? country.uniqueMechanic} · {PERSONALITY_LABELS[country.aiPersonality] ?? country.aiPersonality}</p>
+                <p className="goal">目标：{country.goal}</p>
               </div>
             ))}
           </div>

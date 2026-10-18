@@ -1,0 +1,228 @@
+events:
+  - id: hist_ningjin_1627
+    title: 宁锦大捷
+    desc: 后金再攻宁远、锦州，关宁军凭坚城红夷炮拒敌。是趁胜固守，还是见好就收？
+    historical_context: 1627 年皇太极攻宁锦，袁崇焕坚守，后金受挫；明廷却因党争未能扩大战果。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1627-05-01, before: 1627-12-31 }
+    fire_once: true
+    options:
+      - id: hold
+        name: 固守宁锦
+        tooltip: 耗银八万，稳定与军心上升。
+        ai_chance: 60
+        effect:
+          - add_treasury: -80000
+          - add_stability: 5
+          - add_army_loyalty: 5
+      - id: negotiate
+        name: 遣使议和
+        tooltip: 暂缓兵戈，但被士林视为示弱。
+        ai_chance: 40
+        effect:
+          - add_treasury: -30000
+          - add_stability: -3
+          - add_relation: { target: QING, value: 10 }
+
+  - id: hist_shaanxi_famine_1628
+    title: 陕西大旱
+    desc: 陕北连年不雨，颗粒无收。赈济要掏空太仓，不赈则流民四起。
+    historical_context: 1628—1630 年华北特大旱灾，陕西流民成为明末民变的直接燃料。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1630-12-31 }
+    fire_once: true
+    options:
+      - id: relief
+        name: 发帑赈灾
+        tooltip: 国库与粮储受损，稳定与农民忠诚上升。
+        ai_chance: 50
+        effect:
+          - add_treasury: -100000
+          - add_food: -150000
+          - add_stability: 6
+          - add_estate_loyalty: { estate: peasants, value: 8 }
+      - id: ignore
+        name: 严催如故
+        tooltip: 保住税入，但民怨与流寇风险上升。
+        ai_chance: 50
+        effect:
+          - add_treasury: 50000
+          - add_stability: -8
+          - add_estate_loyalty: { estate: peasants, value: -12 }
+          - set_flag: shaanxi_famine
+
+  - id: hist_kong_youde_1631
+    title: 吴桥兵变
+    desc: 孔有德部因欠饷哗变，据登州反明。是招抚还是剿灭？
+    historical_context: 1631 年吴桥兵变，孔有德降后金，带去红夷炮与工匠，改变辽东军力对比。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1631-01-01, before: 1633-12-31 }
+    fire_once: true
+    options:
+      - id: amnesty
+        name: 招抚乱军
+        tooltip: 耗银十万，军心上升，但地方不满。
+        ai_chance: 45
+        effect:
+          - add_treasury: -100000
+          - add_army_loyalty: 8
+          - add_stability: -2
+      - id: suppress
+        name: 发兵进剿
+        tooltip: 耗兵源，稳定受损，但震慑诸军。
+        ai_chance: 55
+        effect:
+          - add_manpower: -15000
+          - add_treasury: -50000
+          - add_stability: -3
+          - add_army_loyalty: 2
+
+  - id: hist_xiangyang_1643
+    title: 襄阳建制
+    desc: 李自成破襄阳，诸将劝进。是立国建制，还是继续流动作战？
+    historical_context: 1643 年李自成在襄阳称新顺王，开始建立政权与官制。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1643-01-01, before: 1644-06-30 }
+    fire_once: true
+    options:
+      - id: found_state
+        name: 立国建制
+        tooltip: 天命与稳定上升，行政开支增加。
+        ai_chance: 65
+        effect:
+          - add_mandate: 5
+          - add_stability: 4
+          - add_treasury: -60000
+          - set_flag: shun_state
+      - id: mobile
+        name: 继续流动作战
+        tooltip: 保持机动力，军心上升，稳定略降。
+        ai_chance: 35
+        effect:
+          - add_army_loyalty: 6
+          - add_stability: -2
+
+  - id: hist_yangzhou_1645
+    title: 扬州十日
+    desc: 清军南下，扬州城破。如何处置这座江南重镇，将决定江南士绅的态度。
+    historical_context: 1645 年扬州陷落，清军屠城，江南抵抗与降附的分化由此加剧。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1645-01-01, before: 1646-12-31 }
+    fire_once: true
+    options:
+      - id: harsh
+        name: 以威压城
+        tooltip: 掠夺银两，但稳定与士绅忠诚下降。
+        ai_chance: 40
+        effect:
+          - add_treasury: 100000
+          - add_stability: -6
+          - add_estate_loyalty: { estate: gentry, value: -10 }
+      - id: restrain
+        name: 约束军纪
+        tooltip: 放弃部分战利品，稳定与士绅忠诚上升。
+        ai_chance: 60
+        effect:
+          - add_treasury: -50000
+          - add_stability: 5
+          - add_estate_loyalty: { estate: gentry, value: 6 }
+
+  - id: hist_guilin_1652
+    title: 桂林大捷
+    desc: 李定国在桂林大败清军，南明士气复振。是乘胜东进，还是固守广西？
+    historical_context: 1652 年李定国取得桂林、衡州大捷，南明一度出现中兴希望。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1652-01-01, before: 1653-12-31 }
+    fire_once: true
+    options:
+      - id: advance
+        name: 乘胜东进
+        tooltip: 军心大振，但粮饷消耗巨大。
+        ai_chance: 55
+        effect:
+          - add_army_loyalty: 10
+          - add_treasury: -80000
+          - add_food: -80000
+          - add_stability: 3
+      - id: hold
+        name: 固守广西
+        tooltip: 稳住阵脚，天命上升。
+        ai_chance: 45
+        effect:
+          - add_stability: 4
+          - add_mandate: 4
+          - add_treasury: -30000
+
+  - id: hist_zeelandia_1661
+    title: 围热兰遮
+    desc: 郑成功大军登陆台湾，热兰遮城被围。是强攻，还是长期封锁？
+    historical_context: 1661 年郑成功围热兰遮，1662 年荷兰守军投降，郑氏据台。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1661-01-01, before: 1662-12-31 }
+    fire_once: true
+    options:
+      - id: assault
+        name: 强攻城堡
+        tooltip: 军心上升，但耗银耗粮。
+        ai_chance: 45
+        effect:
+          - add_army_loyalty: 8
+          - add_treasury: -80000
+          - add_food: -100000
+      - id: blockade
+        name: 长期封锁
+        tooltip: 减少损失，但战事拖延。
+        ai_chance: 55
+        effect:
+          - add_treasury: -30000
+          - add_stability: 3
+          - add_mandate: 3
+
+  - id: hist_nerchinsk_1650
+    title: 黑龙江边务
+    desc: 哥萨克在黑龙江立足，清廷与沙俄尚未正式划界。是筑城备战，还是遣使通商？
+    historical_context: 1650 年代沙俄势力进入黑龙江流域，与清朝发生雅克萨等冲突。
+    scope: country
+    country: RUSSIA
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1655-12-31 }
+    fire_once: true
+    options:
+      - id: fortify
+        name: 筑城备战
+        tooltip: 耗银，但军心与稳定上升。
+        ai_chance: 55
+        effect:
+          - add_treasury: -60000
+          - add_army_loyalty: 5
+          - add_stability: 2
+      - id: trade
+        name: 遣使通商
+        tooltip: 关系改善，但边疆威慑下降。
+        ai_chance: 45
+        effect:
+          - add_treasury: 30000
+          - add_relation: { target: QING, value: 10 }
+          - add_stability: -1

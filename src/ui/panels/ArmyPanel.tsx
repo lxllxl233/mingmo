@@ -32,7 +32,7 @@ export function ArmyPanel() {
   const def = content.countries.get(army.tag);
   const province = content.provinces.get(army.province);
   const ports = [...content.provinces.values()].filter(entry =>
-    entry.isPort && entry.id !== army.province);
+    entry.isPort && entry.id !== army.province && game.provinces[entry.id]?.controller === army.tag);
   const fleetPresent = Object.values(game.armies).some(entry =>
     entry.tag === army.tag && entry.province === army.province && entry.composition.naval > 0);
   const general = army.general ? content.generals.get(army.general) ?? null : null;

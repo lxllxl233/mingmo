@@ -1,9 +1,10 @@
-import { useState } from 'react';
 import type { ContentIndex } from '../../content/types';
+import type { GameState } from '../../engine/state/types';
+import { canMarchThrough } from '../../engine/rules/access';
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 
-function findPath(content: ContentIndex, from: string, to: string): string[] | null {
+function findPath(content: ContentIndex, state: GameState, from: string, to: string, tag: string): string[] | null {
   if (from === to) return [];
   const queue: Array<{ id: string; path: string[] }> = [{ id: from, path: [] }];
   const seen = new Set([from]);
@@ -14,6 +15,7 @@ function findPath(content: ContentIndex, from: string, to: string): string[] | n
     if (!def) continue;
     for (const next of def.neighbors) {
       if (seen.has(next)) continue;
+      if (!canMarchThrough(state, tag, next)) continue;
       seen.add(next);
       const path = [...current.path, next];
       if (next === to) return path;
@@ -30,10 +32,9 @@ export function MilitaryPanel() {
   const selectedArmy = useGameStore(state => state.selectedArmy);
   const selectArmy = useGameStore(state => state.selectArmy);
   const selectedProvince = useGameStore(state => state.selectedProvince);
-  const [template, setTemplate] = useState('ming_guard');
+  const openTrainingPicker = useGameStore(state => state.openTrainingPicker);
   if (!game) return null;
-  const country = game.countries[game.playerTag];
-  if (!country) return null;
+  if (!game.countries[game.playerTag]) return null;
   const armies = Object.values(game.armies).filter(army => army.tag === game.playerTag);
   const landArmies = armies.filter(army => army.composition.naval === 0);
   const navyArmies = armies.filter(army => army.composition.naval > 0);
@@ -54,17 +55,8 @@ export function MilitaryPanel() {
         <span>训练中 <b>{training.length}</b></span>
       </div>
       <div className="panel-actions">
-        <select value={template} onChange={event => setTemplate(event.target.value)}>
-          {[...content.armyTemplates.values()].map(entry => (
-            <option key={entry.id} value={entry.id}>{entry.name} · {entry.composition.infantry + entry.composition.firearm + entry.composition.cavalry + entry.composition.artillery + entry.composition.naval} 人/营</option>
-          ))}
-        </select>
-        <button
-          className="primary"
-          onClick={() => command({ type: 'army.recruit', province: country.capital, template, size: 2 })}
-        >
-          加入训练队列（2 营）
-        </button>
+        <button className="primary" onClick={() => openTrainingPicker('land')}>⚔ 训练陆军</button>
+        <button onClick={() => openTrainingPicker('navy')}>⚓ 训练水军</button>
       </div>
       <h3>训练队列</h3>
       {training.length === 0 && <p className="muted">无。新兵需训练后才会成军，训练期间按 60% 钱粮逐日扣除。</p>}
@@ -126,7 +118,7 @@ export function MilitaryPanel() {
               disabled={!selectedProvince}
               onClick={() => {
                 if (!selectedProvince) return;
-                const path = findPath(content, army.province, selectedProvince);
+                const path = findPath(content, game, army.province, selectedProvince, army.tag);
                 if (!path) {
                   useGameStore.setState({ message: '没有可通行路径' });
                   return;

@@ -201,6 +201,7 @@ export interface GameState {
   armies: Record<string, ArmyState>;
   training: TrainingItem[];
   wars: WarState[];
+  truces: Record<string, number>;
   relations: Record<string, number>;
   eventQueue: QueuedEvent[];
   pendingEvents: PendingEvent[];

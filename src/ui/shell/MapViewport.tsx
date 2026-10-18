@@ -25,6 +25,32 @@ export function MapViewport() {
   const mapAnchor = panel === 'diplomacy' ? game?.playerTag ?? null : diplomaticAnchor;
   const selectProvince = useGameStore(state => state.selectProvince);
   const selectArmy = useGameStore(state => state.selectArmy);
+  const trainingRequest = useGameStore(state => state.trainingRequest);
+  const cancelTrainingRequest = useGameStore(state => state.cancelTrainingRequest);
+
+  const lastArmyClickRef = useRef<{ id: string; at: number }>({ id: '', at: 0 });
+
+  const handleSelectArmy = useCallback((armyId: string) => {
+    const now = performance.now();
+    if (lastArmyClickRef.current.id === armyId && now - lastArmyClickRef.current.at < 150) return;
+    lastArmyClickRef.current = { id: armyId, at: now };
+    const state = useGameStore.getState();
+    if (state.trainingRequest) {
+      const army = state.game?.armies[armyId];
+      if (army) state.deployTraining(army.province);
+      return;
+    }
+    state.selectArmy(armyId);
+  }, []);
+
+  const handleSelectProvince = useCallback((provinceId: string) => {
+    const state = useGameStore.getState();
+    if (state.trainingRequest) {
+      state.deployTraining(provinceId);
+      return;
+    }
+    state.selectProvince(provinceId);
+  }, []);
 
   const handleContextProvince = useCallback((provinceId: string) => {
     const state = useGameStore.getState();
@@ -42,7 +68,7 @@ export function MapViewport() {
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const renderer = new MapRenderer(host, content.geo, content, selectProvince, selectArmy, handleContextProvince);
+    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleContextProvince);
     rendererRef.current = renderer;
     let cancelled = false;
     void renderer.init().then(() => {
@@ -58,7 +84,7 @@ export function MapViewport() {
       renderer.destroy();
       rendererRef.current = null;
     };
-  }, [content, selectProvince, selectArmy, handleContextProvince]);
+  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy]);
 
   useEffect(() => {
     if (game && rendererRef.current) {
@@ -73,6 +99,13 @@ export function MapViewport() {
   return (
     <div className="map-host" ref={hostRef}>
       <div className="map-grain" />
+      {trainingRequest && (
+        <div className="deploy-banner">
+          <b>{trainingRequest.kind === 'navy' ? '部署水军' : '部署陆军'}</b>
+          <span>点击地图上的{trainingRequest.kind === 'navy' ? '我方港口' : '我方省份'}开始训练</span>
+          <button onClick={cancelTrainingRequest}>取消</button>
+        </div>
+      )}
       {mapMode !== 'normal' && (
         <div className="map-mode-legend">
           <b>

@@ -4,6 +4,7 @@ import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { generalTraitBonus } from '../rules/generalTraits';
+import { canMarchThrough } from '../rules/access';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -391,6 +392,7 @@ export function setArmyPath(
   for (const next of path) {
     const currentDef = content.provinces.get(current);
     if (!currentDef || !currentDef.neighbors.includes(next)) return false;
+    if (!canMarchThrough(state, army.tag, next)) return false;
     current = next;
   }
   army.movePath = [...path];

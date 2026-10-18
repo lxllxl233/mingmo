@@ -188,6 +188,7 @@ export interface CountryDef {
   aiPersonality: 'aggressive' | 'defensive' | 'opportunistic' | 'mercantile' | 'bureaucratic';
   factions: string[];
   uniqueMechanic: string;
+  goal: string;
   starting: CountryStarting;
   leader?: LeaderDef;
   leadersByScenario?: Record<string, LeaderDef>;

@@ -98,6 +98,7 @@ export const countrySchema = z.object({
   aiPersonality: z.enum(['aggressive', 'defensive', 'opportunistic', 'mercantile', 'bureaucratic']),
   factions: z.array(z.string()).default([]),
   uniqueMechanic: z.string(),
+  goal: z.string().max(80).default(''),
   starting: countryStartingSchema,
   leader: leaderSchema.optional(),
   leadersByScenario: z.record(z.string(), leaderSchema).optional(),

@@ -134,6 +134,7 @@ export function CountryPanel() {
         </div>
         <button onClick={closePanel}>关闭</button>
       </header>
+      {def.goal && <p className="briefing-goal">战略目标：{def.goal}</p>}
 
       <section className="leader-card">
         <LeaderPortrait leader={leader} size={112} />
