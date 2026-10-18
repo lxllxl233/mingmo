@@ -1,4 +1,4 @@
-﻿id: "1627"
+id: "1627"
 name: 崇祯元年
 start_date: 1627-10-01
 description: 阉党初败，辽东糜烂，陕西饥民方起。大明仍有牌可打。
@@ -43,10 +43,12 @@ province_overrides:
   liaoyang: QING
   guangning: QING
   kaizhou: QING
+  jinzhou: MING
+  ningyuan: MING
   yanan: SHUN
   chengdu: XI
   nanjing: SMING
-  anping: ZHENG
+  quanzhou: ZHENG
 country_overrides:
   MING: { stability: 45, treasury: 1200000, food: 8000000, manpower: 200000, mandate: 65, corruption: 55, authority: 50, army_loyalty: 55 }
   QING: { stability: 60, treasury: 300000, food: 1200000, manpower: 80000, mandate: 40, corruption: 30, authority: 70, army_loyalty: 80 }
@@ -72,10 +74,12 @@ armies:
   - { tag: MING, template: ming_guard, province: wuchang, size: 1 }
   - { tag: MING, template: ming_guard, province: guangzhou, size: 1 }
   - { tag: MING, template: ming_guard, province: jinan, size: 1 }
+  - { tag: MING, template: guanning_army, province: jinzhou, size: 2 }
+  - { tag: MING, template: guanning_army, province: ningyuan, size: 1 }
   - { tag: MING, template: ming_navy, province: fuzhou, size: 2 }
   - { tag: QING, template: qing_banner, province: shenyang, size: 4 }
   - { tag: QING, template: qing_banner, province: liaoyang, size: 2 }
-  - { tag: QING, template: qing_banner, province: jinzhou, size: 2 }
+  - { tag: QING, template: qing_banner, province: guangning, size: 2 }
   - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 3 }
   - { tag: MONGOL, template: mongol_cavalry, province: ordos, size: 2 }
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 1 }
@@ -96,11 +100,13 @@ armies:
   - { tag: SHUN, template: shun_rebel, province: yanan, size: 2 }
   - { tag: XI, template: xi_army, province: chengdu, size: 1 }
   - { tag: SMING, template: sming_army, province: nanjing, size: 1 }
-  - { tag: SMING, template: sming_army, province: suzhou, size: 1 }
-  - { tag: ZHENG, template: zheng_navy, province: anping, size: 1 }
+  - { tag: ZHENG, template: zheng_navy, province: quanzhou, size: 1 }
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 1 }
   - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
   - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
 initial_wars:
   - { attacker: QING, defender: MING, goal: 辽东 }
 initial_events: []
+
+
+

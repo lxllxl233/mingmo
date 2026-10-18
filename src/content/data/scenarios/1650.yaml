@@ -1,4 +1,4 @@
-﻿id: "1650"
+id: "1650"
 name: 永历播迁
 start_date: 1650-01-01
 description: 清已据天下大半、南明据西南、郑氏据海岛、三藩未起。以弱搏强的极限。
@@ -41,7 +41,6 @@ region_owners:
 province_overrides:
   kunming: SMING
   guilin: SMING
-  anping: ZHENG
   quanzhou: ZHENG
   penghu: VOC
   chengdu: XI
@@ -68,9 +67,9 @@ armies:
   - { tag: SMING, template: sming_army, province: guilin, size: 2 }
   - { tag: XI, template: xi_army, province: chengdu, size: 2 }
   - { tag: XI, template: xi_army, province: chongqing, size: 1 }
-  - { tag: ZHENG, template: zheng_navy, province: anping, size: 3 }
+  - { tag: ZHENG, template: zheng_navy, province: quanzhou, size: 3 }
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 2 }
-  - { tag: ZHENG, template: zheng_navy, province: penghu, size: 1 }
+
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 2 }
   - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 1 }
   - { tag: JOSEON, template: joseon_army, province: hanseong, size: 3 }
@@ -94,3 +93,5 @@ initial_wars:
   - { attacker: QING, defender: ZHENG, goal: 海疆 }
   - { attacker: QING, defender: XI, goal: 四川 }
 initial_events: []
+
+

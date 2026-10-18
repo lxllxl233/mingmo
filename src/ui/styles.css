@@ -498,3 +498,16 @@ input, select {
 .country-focus-head span { font-size: 11px; color: var(--ink-soft); }
 .country-focus-card progress { width: 100%; height: 7px; accent-color: var(--red-soft); margin: 5px 0; }
 .country-focus-effect { margin: 5px 0; font-size: 11px; color: #4f6b42; line-height: 1.6; }
+
+.focus-branch-desc { margin: 0 0 12px; padding: 7px 10px; border-left: 3px solid var(--gold); background: rgba(255,255,255,.28); font-size: 12px; line-height: 1.7; color: var(--ink-soft); }
+
+.war-dock { position: sticky; top: 0; z-index: 3; margin: 0; padding: 7px 9px; background: #efe4cd; border-bottom: 1px solid var(--line); box-shadow: 0 3px 8px rgba(31,28,24,.08); }
+.war-dock-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.war-dock-head b { color: var(--red); letter-spacing: .1em; font-size: 13px; }
+.war-dock-head button { padding: 2px 7px; font-size: 11px; }
+.war-dock-row { padding: 4px 0; border-top: 1px dashed var(--line); font-size: 11px; }
+.war-dock-title { display: flex; justify-content: space-between; gap: 6px; }
+.war-dock-title b { color: var(--ink); }
+.war-dock-title span { color: var(--ink-soft); }
+.war-dock-stats { display: flex; justify-content: space-between; gap: 6px; margin-top: 2px; color: var(--ink-soft); }
+.war-dock-stats b { color: var(--red); }

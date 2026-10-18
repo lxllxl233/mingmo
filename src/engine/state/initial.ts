@@ -212,6 +212,7 @@ export function createInitialState(
       warGoal: war.goal ?? '',
       exhaustion: { [war.attacker]: 0, [war.defender]: 0 },
       casualties: { [war.attacker]: 0, [war.defender]: 0 },
+      attrition: { [war.attacker]: 0, [war.defender]: 0 },
     };
   });
 

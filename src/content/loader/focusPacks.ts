@@ -12,6 +12,16 @@ import { ContentError, asArray, asRecord } from './errors';
 
 const KINDS: FocusKind[] = ['court', 'economy', 'military', 'diplomacy', 'reform', 'navy', 'unique'];
 
+const KIND_DETAIL: Record<FocusKind, string> = {
+  court: '这条路线直接影响朝议效率、皇权与腐败；越往后越会触及既得利益。',
+  economy: '这条路线改变税基、商税与田赋；收益较大，但会触动士绅与宗室。',
+  military: '这条路线决定军费、兵源与边防；短期见效，长期依赖财政。',
+  diplomacy: '这条路线改变对外关系与战争窗口；每一次选择都会留下新的敌友。',
+  reform: '这条路线重建议政与行政流程；阻力很大，成功后可提高征收与稳定。',
+  navy: '这条路线围绕海贸、港口与水师；收益来自关税，风险来自海疆。',
+  unique: '这条路线是本势力独有的历史选择，往往决定政权性格。',
+};
+
 function parseFocus(raw: unknown, path: string): FocusPackFocus {
   const object = asRecord(raw, 'focus_packs', path);
   const id = object['id'];
@@ -175,7 +185,7 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
               { factor: 1.15, if: { isAtWar: true } },
             ],
           },
-          historicalContext: branch.desc,
+          historicalContext: `${branch.desc} ${KIND_DETAIL[branch.kind]}`,
         };
         focuses.push(focus);
         byId.set(focus.id, focus);

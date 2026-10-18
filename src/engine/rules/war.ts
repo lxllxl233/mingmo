@@ -1,4 +1,4 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
 import { relationKey } from '../state/types';
 
@@ -57,6 +57,7 @@ export function declareWar(
     warGoal: goal,
     exhaustion: { [attacker]: 0, [defender]: 0 },
     casualties: { [attacker]: 0, [defender]: 0 },
+    attrition: { [attacker]: 0, [defender]: 0 },
   };
   state.nextWarId += 1;
   state.wars.push(war);

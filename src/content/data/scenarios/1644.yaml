@@ -1,4 +1,4 @@
-﻿id: "1644"
+id: "1644"
 name: 甲申
 start_date: 1644-01-01
 description: 大顺据关中、大明据北方残局、清在关外、南明未立。三周之内决定天下。
@@ -40,7 +40,8 @@ region_owners:
   reg_russia_far: RUSSIA
 province_overrides:
   nanjing: SMING
-  anping: ZHENG
+  suzhou: SMING
+  penghu: ZHENG
   quanzhou: ZHENG
   chengdu: XI
   chongqing: XI
@@ -61,10 +62,11 @@ armies:
   - { tag: QING, template: qing_banner, province: shenyang, size: 5 }
   - { tag: QING, template: qing_banner, province: liaoyang, size: 2 }
   - { tag: QING, template: qing_banner, province: jinzhou, size: 2 }
+  - { tag: QING, template: qing_banner, province: guangning, size: 2 }
   - { tag: SHUN, template: shun_rebel, province: beijing, size: 4 }
   - { tag: SHUN, template: shun_cavalry, province: xian, size: 3 }
   - { tag: SHUN, template: shun_rebel, province: kaifeng, size: 2 }
-  - { tag: MING, template: ming_guard, province: suzhou, size: 2 }
+  - { tag: MING, template: ming_guard, province: hangzhou, size: 2 }
   - { tag: MING, template: ming_guard, province: wuchang, size: 2 }
   - { tag: MING, template: ming_guard, province: guangzhou, size: 1 }
   - { tag: MING, template: ming_guard, province: nanjing, size: 1 }
@@ -73,7 +75,7 @@ armies:
   - { tag: XI, template: xi_army, province: chongqing, size: 2 }
   - { tag: SMING, template: sming_army, province: nanjing, size: 2 }
   - { tag: SMING, template: sming_army, province: suzhou, size: 1 }
-  - { tag: ZHENG, template: zheng_navy, province: anping, size: 2 }
+  - { tag: ZHENG, template: zheng_navy, province: penghu, size: 2 }
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 1 }
   - { tag: ZHENG, template: zheng_navy, province: penghu, size: 1 }
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 2 }
@@ -88,7 +90,7 @@ armies:
   - { tag: TIBET, template: tibet_army, province: lhasa, size: 2 }
   - { tag: TIBET, template: tibet_army, province: qinghai, size: 1 }
   - { tag: VOC, template: voc_company, province: anping, size: 2 }
-  - { tag: VOC, template: voc_fleet, province: penghu, size: 1 }
+  - { tag: VOC, template: voc_fleet, province: anping, size: 1 }
   - { tag: RUSSIA, template: russia_cossack, province: albazin, size: 2 }
   - { tag: RUSSIA, template: russia_cossack, province: nerchinsk, size: 1 }
   - { tag: RUSSIA, template: russia_cossack, province: okhotsk, size: 1 }
@@ -98,3 +100,4 @@ initial_wars:
   - { attacker: SHUN, defender: MING, goal: 顺天 }
   - { attacker: QING, defender: MING, goal: 入关 }
 initial_events: []
+

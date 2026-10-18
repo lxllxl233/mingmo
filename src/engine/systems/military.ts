@@ -33,6 +33,14 @@ function loseStrength(army: ArmyState, losses: number): void {
   army.composition.naval = Math.max(0, Math.round(army.composition.naval * (1 - ratio)));
 }
 
+function recordAttrition(state: GameState, tag: string, losses: number): void {
+  if (losses <= 0) return;
+  for (const war of state.wars) {
+    if (war.attacker !== tag && war.defender !== tag) continue;
+    war.attrition[tag] = (war.attrition[tag] ?? 0) + losses;
+  }
+}
+
 function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<string, number>): number {
   const c = army.composition;
   const base = c.infantry * content.balance.military.baseAttack
@@ -284,6 +292,10 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       army.supply = clamp(army.supply + content.balance.military.supplyRecovery, 0, 100);
     } else {
       army.supply = clamp(army.supply - content.balance.military.supplyDecay, 0, 100);
+      const before = compositionTotal(army);
+      const attrition = Math.max(1, Math.round(before * 0.001));
+      loseStrength(army, attrition);
+      recordAttrition(state, army.tag, Math.max(0, before - compositionTotal(army)));
     }
     if (army.supply < 20) army.organization = clamp(army.organization - 0.5, 0, 100);
     if (army.stance !== 'battle' && army.supply > 40) {

@@ -60,6 +60,7 @@ export function decodeSave(text: string): GameState {
   }
   for (const war of parsed.state.wars) {
     if (!war.casualties) war.casualties = { [war.attacker]: 0, [war.defender]: 0 };
+    if (!war.attrition) war.attrition = { [war.attacker]: 0, [war.defender]: 0 };
   }
   return parsed.state;
 }

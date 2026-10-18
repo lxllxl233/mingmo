@@ -39,6 +39,19 @@ const MODIFIER_LABELS: Record<string, string> = {
   army_upkeep_pct: '军费',
 };
 
+const ESTATE_LABELS: Record<string, string> = {
+  nobles: '宗室贵族',
+  officials: '官僚',
+  gentry: '士绅',
+  merchants: '商人',
+  peasants: '农民',
+  soldiers: '军人',
+  clergy: '僧道',
+  scholars: '士人',
+  natives: '土司',
+  dynasty: '皇室',
+};
+
 export function effectSummary(effect: Effect): string {
   if ('addStability' in effect) return `稳定 ${effect.addStability > 0 ? '+' : ''}${effect.addStability}`;
   if ('addMandate' in effect) return `天命 ${effect.addMandate > 0 ? '+' : ''}${effect.addMandate}`;
@@ -48,25 +61,32 @@ export function effectSummary(effect: Effect): string {
   if ('addCorruption' in effect) return `腐败 ${effect.addCorruption > 0 ? '+' : ''}${effect.addCorruption}`;
   if ('addAuthority' in effect) return `皇权 ${effect.addAuthority > 0 ? '+' : ''}${effect.addAuthority}`;
   if ('addArmyLoyalty' in effect) return `军心 ${effect.addArmyLoyalty > 0 ? '+' : ''}${effect.addArmyLoyalty}`;
-  if ('addEstateLoyalty' in effect) return `${effect.addEstateLoyalty.estate} 忠诚 ${effect.addEstateLoyalty.value}`;
-  if ('addEstateInfluence' in effect) return `${effect.addEstateInfluence.estate} 影响 ${effect.addEstateInfluence.value}`;
-  if ('addModifier' in effect) {
-    return Object.entries(effect.addModifier).slice(0, 4).map(([key, value]) => {
-      const label = MODIFIER_LABELS[key] ?? key;
-      const suffix = key.endsWith('_pct') ? '%' : '';
-      return `${label} ${value > 0 ? '+' : ''}${value}${suffix}`;
-    }).join('，');
+  if ('addEstateLoyalty' in effect) {
+    return `${ESTATE_LABELS[effect.addEstateLoyalty.estate] ?? effect.addEstateLoyalty.estate} 忠诚 ${effect.addEstateLoyalty.value > 0 ? '+' : ''}${effect.addEstateLoyalty.value}`;
   }
-  if ('setFlag' in effect) return `flag: ${effect.setFlag}`;
-  if ('setTaxLaw' in effect) return `税制: ${effect.setTaxLaw.law}`;
+  if ('addEstateInfluence' in effect) {
+    return `${ESTATE_LABELS[effect.addEstateInfluence.estate] ?? effect.addEstateInfluence.estate} 影响 ${effect.addEstateInfluence.value > 0 ? '+' : ''}${effect.addEstateInfluence.value}`;
+  }
+  if ('addModifier' in effect) {
+    return Object.entries(effect.addModifier)
+      .filter(([key]) => MODIFIER_LABELS[key] !== undefined)
+      .slice(0, 4)
+      .map(([key, value]) => {
+        const label = MODIFIER_LABELS[key];
+        const suffix = key.endsWith('_pct') ? '%' : '';
+        return `${label} ${value > 0 ? '+' : ''}${value}${suffix}`;
+      }).join('，');
+  }
+  if ('setFlag' in effect) return '';
+  if ('setTaxLaw' in effect) return '变更税法';
   if ('unlockDecision' in effect) return '解锁决议';
   if ('unlockUnit' in effect) return '解锁单位';
   if ('triggerEvent' in effect) return '触发后续事件';
   if ('if' in effect) return '条件效果';
   if ('randomList' in effect) return '随机效果';
-  return Object.keys(effect)[0] ?? '效果';
+  return '';
 }
 
 export function effectsSummary(effects: Effect[]): string {
-  return effects.slice(0, 4).map(effectSummary).join('；');
+  return effects.map(effectSummary).filter(Boolean).slice(0, 4).join('；');
 }

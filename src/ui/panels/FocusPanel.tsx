@@ -25,6 +25,12 @@ export function FocusPanel() {
   const branchEntries = [...branches.entries()];
   const selectedBranch = branchChoice && branches.has(branchChoice) ? branchChoice : branchEntries[0]?.[0] ?? null;
   const selectedNodes = selectedBranch ? branches.get(selectedBranch) ?? [] : [];
+  const branchIntro = selectedNodes[0]?.historicalContext
+    ?? selectedNodes.find(node => node.desc.startsWith(`${node.name}。`))?.desc.slice(
+      (selectedNodes.find(node => node.desc.startsWith(`${node.name}。`))?.name.length ?? 0) + 1,
+    )
+    ?? selectedNodes[0]?.desc
+    ?? '';
 
   return (
     <div>
@@ -66,6 +72,7 @@ export function FocusPanel() {
       </div>
       <div className="focus-branch-panel">
         <h3>{selectedBranch ?? '国策'}</h3>
+        {branchIntro && <p className="focus-branch-desc">{branchIntro}</p>}
         <div className="focus-card-grid">
           {selectedNodes.sort((a, b) => a.y - b.y).map(focus => {
             const completed = country.completedFocuses.includes(focus.id);
@@ -87,12 +94,12 @@ export function FocusPanel() {
                     {completed ? '已完成' : current ? `进行中 ${Math.floor(country.focus?.progress ?? 0)}/${focus.costDays}` : `${focus.costDays} 日`}
                   </span>
                 </div>
-                {focus.desc && <div className="focus-card-desc">{focus.desc}</div>}
+                <div className="focus-card-meta">路线：{focus.branch} · 阶段 {focus.y + 1} / 7</div>
                 {missing.length > 0 && <div className="focus-card-meta">前置：{missing.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>}
                 {focus.mutuallyExclusive.length > 0 && (
                   <div className="focus-card-meta">互斥：{focus.mutuallyExclusive.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>
                 )}
-                <div className="focus-card-effect">{effectsSummary(focus.completionEffect)}</div>
+                <div className="focus-card-effect">完成效果：{effectsSummary(focus.completionEffect) || '无直接数值效果'}</div>
                 {current && (
                   <button className="focus-cancel" onClick={event => {
                     event.stopPropagation();

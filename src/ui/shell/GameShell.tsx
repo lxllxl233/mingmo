@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { useGameStore, type PanelKey } from '../state/store';
@@ -6,6 +6,7 @@ import { TopBar } from './TopBar';
 import { MapViewport } from './MapViewport';
 import { CountryFlag } from '../panels/CountryFlag';
 import { LeaderPortrait } from '../panels/LeaderPortrait';
+import { WarDock } from '../panels/WarDock';
 import { ProvincePanel } from '../panels/ProvincePanel';
 import { CountryPanel } from '../panels/CountryPanel';
 import { ArmyPanel } from '../panels/ArmyPanel';
@@ -109,6 +110,7 @@ export function GameShell() {
         </nav>
         <MapViewport />
         <aside className="right-panel">
+          <WarDock />
           {panel === 'province' && <ProvincePanel />}
           {panel === 'country' && <CountryPanel />}
           {panel === 'army' && <ArmyPanel />}

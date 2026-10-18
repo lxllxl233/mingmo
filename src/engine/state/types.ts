@@ -136,6 +136,7 @@ export interface WarState {
   warGoal: string;
   exhaustion: Record<string, number>;
   casualties: Record<string, number>;
+  attrition: Record<string, number>;
 }
 
 export interface QueuedEvent {

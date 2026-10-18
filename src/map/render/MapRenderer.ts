@@ -873,9 +873,9 @@ export class MapRenderer {
     this.prefectureBorderLayer.clear();
     this.countryBorderLayer.clear();
     const scale = this.world.scale.x || 1;
-    const countryWidth = Math.max(0.1, 3.4 / scale);
-    const prefectureWidth = Math.max(0.06, 2.4 / scale);
-    const provinceWidth = Math.max(0.025, 0.38 / scale);
+    const countryWidth = Math.max(0.1, 3 / scale);
+    const prefectureWidth = Math.max(0.04, 1.3 / scale);
+    const provinceWidth = Math.max(0.02, 0.28 / scale);
     for (const edge of this.edges) {
       const a = this.state.provinces[edge.a];
       if (!a || edge.b === null) continue;
@@ -886,10 +886,10 @@ export class MapRenderer {
           .stroke({ width: countryWidth, color: 0x1f1913, alpha: 1 });
       } else if (this.content.provinces.get(edge.a)?.prefectureId !== this.content.provinces.get(edge.b)?.prefectureId) {
         this.prefectureBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: prefectureWidth, color: 0x2f2418, alpha: 0.92 });
+          .stroke({ width: prefectureWidth, color: 0x6b5a44, alpha: 0.55 });
       } else {
         this.provinceBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: provinceWidth, color: 0x6a5b48, alpha: 0.32 });
+          .stroke({ width: provinceWidth, color: 0x7a6b56, alpha: 0.22 });
       }
     }
   }
@@ -1193,6 +1193,8 @@ export class MapRenderer {
   }
 
   private separateMarkers(): void {
+    // 深度放大时保持兵模严格落在省份质心，避免为了避让而漂到邻省。
+    if (this.world.scale.x >= 25) return;
     const markers = [...this.armyMarkers.values()];
     const minDistance = 3.4 * Math.min(1, 12 / this.world.scale.x);
     for (let pass = 0; pass < 3; pass += 1) {

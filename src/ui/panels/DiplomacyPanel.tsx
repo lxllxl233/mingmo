@@ -63,6 +63,8 @@ export function DiplomacyPanel() {
         const enemyTag = isAttacker ? war.defender : war.attacker;
         const myCasualties = war.casualties[player] ?? 0;
         const enemyCasualties = war.casualties[enemyTag] ?? 0;
+        const myAttrition = war.attrition[player] ?? 0;
+        const enemyAttrition = war.attrition[enemyTag] ?? 0;
         const mySurrender = surrenderTendency(game, war, player);
         const enemySurrender = surrenderTendency(game, war, enemyTag);
         return (
@@ -78,6 +80,7 @@ export function DiplomacyPanel() {
             </div>
             <div className="war-score">
               <span>伤亡：我 <b>{myCasualties.toLocaleString()}</b> · 敌 <b>{enemyCasualties.toLocaleString()}</b></span>
+              <span>非战斗减员：我 <b>{myAttrition.toLocaleString()}</b> · 敌 <b>{enemyAttrition.toLocaleString()}</b></span>
               <span>投降倾向：我 <b>{mySurrender}%</b> · 敌 <b>{enemySurrender}%</b></span>
             </div>
             <div className="panel-actions">
