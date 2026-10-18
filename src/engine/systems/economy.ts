@@ -158,7 +158,12 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const officialsPay = provinces.length * content.balance.economy.officialSalaryPerProvinceMonth;
     const dynastyEstate = nation.estates['dynasty'];
     const dynasty = dynastyEstate ? (dynastyEstate.income / 12) * 0.22 : 0;
-    const expense = armyPay + officialsPay + dynasty;
+    const hoardCap = 500000 + provinces.length * 4000;
+    const hoardLoss = nation.treasury > hoardCap
+      ? (nation.treasury - hoardCap) * 0.08
+      : 0;
+    const imperialBurden = nation.tag === 'MING' ? provinces.length * 650 : 0;
+    const expense = armyPay + officialsPay + dynasty + hoardLoss + imperialBurden;
     const net = silverIncome - expense;
     nation.treasury += net;
 
@@ -191,9 +196,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       + (55 - nation.corruption) / 420
       - nation.warExhaustion / 260
       - (nation.fiscalCrisisDays > 0 ? 0.04 : 0)
-      + (nation.treasury > 150000 ? 0.01 : -0.01);
-    nation.economicMomentum = clamp(nation.economicMomentum * 0.985 + momentumTrend * 0.05, -1, 1);
-    nation.stability = clamp(nation.stability + (government.stability - 1) * 0.05, 0, 100);
+      + (nation.treasury > hoardCap ? -0.03 : nation.treasury > 150000 ? 0.01 : -0.01);
+    nation.economicMomentum = clamp(nation.economicMomentum * 0.985 + momentumTrend * 0.08, -1, 1);
+    nation.stability = clamp(nation.stability + (government.stability - 1) * 0.08, 0, 100);
 
     for (const estate of Object.values(nation.estates)) {
       const law = lawOf(content, nation, estate.key);
@@ -257,6 +262,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       expenseOfficials: officialsPay,
       expenseDynasty: dynasty,
       expenseRelief: 0,
+      expenseHoard: hoardLoss,
+      expenseCourt: imperialBurden,
       foodIncome,
       foodArmy: armyFood,
       foodCivilian: civilianFood,

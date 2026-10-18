@@ -3,6 +3,7 @@ import type { ContentIndex, Focus } from '../../content/types';
 import type { GameState } from '../../engine/state/types';
 import { isFocusAvailable } from '../../engine/systems/focus';
 import { effectsSummary } from '../format';
+import { isHistoricalFocus } from '../../content/historical';
 import { FocusImage } from './FocusImage';
 import { useGameStore } from '../state/store';
 
@@ -106,10 +107,11 @@ export function FocusTree({ game, content, focuses, country }: {
             const available = isFocusAvailable(game, content, country.tag, focus);
             const status = completed ? 'completed' : current ? 'active' : available ? 'available' : 'locked';
             const exclusive = focus.mutuallyExclusive.length > 0;
+            const historical = isHistoricalFocus(focus.id);
             return (
               <button
                 key={focus.id}
-                className={`focus-tree-node ${status}${exclusive ? ' exclusive' : ''}${selected?.id === focus.id ? ' selected' : ''}`}
+                className={`focus-tree-node ${status}${exclusive ? ' exclusive' : ''}${historical ? ' historical' : ''}${selected?.id === focus.id ? ' selected' : ''}`}
                 style={{ left: pos.x, top: pos.y, width: NODE_WIDTH, minHeight: NODE_HEIGHT }}
                 onClick={() => setSelectedId(focus.id)}
                 onMouseEnter={event => setHovered({ id: focus.id, x: event.clientX, y: event.clientY })}
@@ -123,6 +125,7 @@ export function FocusTree({ game, content, focuses, country }: {
                   <small>{completed ? '已完成' : current ? `进行中 ${Math.floor(country.focus?.progress ?? 0)}/${focus.costDays} 日` : `${focus.costDays} 日`}</small>
                 </span>
                 {exclusive && <i className="focus-tree-exclusive">互斥</i>}
+                {historical && <i className="focus-tree-historical">史实</i>}
               </button>
             );
           })}
@@ -137,7 +140,7 @@ export function FocusTree({ game, content, focuses, country }: {
           }}
         >
           <b>{hoverFocus.name}</b>
-          <small>{hoverFocus.branch} · 阶段 {hoverFocus.y + 1} / 7 · {hoverFocus.costDays} 日</small>
+          <small>{hoverFocus.branch} · 阶段 {hoverFocus.y + 1} / 7 · {hoverFocus.costDays} 日{isHistoricalFocus(hoverFocus.id) ? ' · 史实路线' : ''}</small>
           {hoverFocus.historicalContext && <p>{hoverFocus.historicalContext}</p>}
           <p>{hoverFocus.desc}</p>
           {hoverFocus.mutuallyExclusive.length > 0 && (
@@ -150,7 +153,7 @@ export function FocusTree({ game, content, focuses, country }: {
         <div className="focus-tree-detail">
           <div className="focus-tree-detail-head">
             <div>
-              <span className="eyebrow">{selected.branch} · 阶段 {selected.y + 1} / 7</span>
+              <span className="eyebrow">{selected.branch} · 阶段 {selected.y + 1} / 7{isHistoricalFocus(selected.id) ? ' · 史实路线' : ''}</span>
               <h3>{selected.name}</h3>
             </div>
             <span className="focus-card-status">

@@ -2438,6 +2438,7 @@ provinces:
     supply_limit: 14006
     neighbors:
       - hanseong_b
+      - nagasaki_a
   - id: hakata_b
     name: 博多西
     prefecture: pref_hakata
@@ -5057,6 +5058,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 15673
     neighbors:
+      - hakata_a
       - nagasaki
       - nagasaki_b
   - id: nagasaki_b

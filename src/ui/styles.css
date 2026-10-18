@@ -726,3 +726,6 @@ button:active { transform: translateY(1px); }
 
 .spectator-country { width: 390px; min-width: 320px; overflow-y: auto; background: #f1e7d2; border-left: 1px solid var(--line); }
 .spectator-country .panel { padding: 10px 12px 24px; }
+
+.focus-tree-node.historical { border-top: 3px solid #b8892e; }
+.focus-tree-historical { position: absolute; right: 3px; bottom: 2px; padding: 0 3px; font-size: 8px; color: #7a5a1e; background: rgba(184,137,46,.16); font-style: normal; letter-spacing: .04em; }

@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 import type { ContentIndex } from '../../content/types';
 import { content } from '../../content/browser';
 import { createInitialState } from '../../engine/state/initial';
@@ -53,8 +53,8 @@ interface UiStore {
   content: ContentIndex;
   game: GameState | null;
   version: number;
-  speed: 0 | 1 | 2 | 4 | 8 | 16;
-  speedBeforeEvent: 0 | 1 | 2 | 4 | 8 | 16;
+  speed: 0 | 1 | 2 | 4 | 8 | 16 | 32;
+  speedBeforeEvent: 0 | 1 | 2 | 4 | 8 | 16 | 32;
   panel: PanelKey | null;
   countryFocus: string | null;
   diplomaticMode: boolean;
@@ -71,7 +71,7 @@ interface UiStore {
   startSpectator: (scenarioId: string, seed?: number, difficulty?: Difficulty) => void;
   command: (command: Command) => boolean;
   tick: () => void;
-  setSpeed: (speed: 0 | 1 | 2 | 4 | 8 | 16) => void;
+  setSpeed: (speed: 0 | 1 | 2 | 4 | 8 | 16 | 32) => void;
   selectProvince: (provinceId: string | null) => void;
   selectArmy: (armyId: string | null) => void;
   openArmyStack: (armyIds: string[]) => void;
@@ -423,4 +423,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
   },
   reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, peaceWarId: null, message: null }),
 }));
+
 

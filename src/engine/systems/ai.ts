@@ -11,6 +11,7 @@ import { setArmyPath } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { canMarchThrough } from '../rules/access';
 import { evaluateTrigger } from '../rules/triggers';
+import { isHistoricalFocus } from '../../content/historical';
 
 const AI_TEMPLATES: Record<string, string> = {
   MING: 'ming_guard',
@@ -94,7 +95,8 @@ function manageFocus(state: GameState, content: ContentIndex, tag: string): void
   let best: { id: string; score: number } | null = null;
   for (const focus of focuses) {
     const score = focusScore(state, content, tag, focus.id, focus.aiWillDo.base)
-      + historicalFocusBonus(state, tag, focus.id);
+      + historicalFocusBonus(state, tag, focus.id)
+      + (isHistoricalFocus(focus.id) ? 30 : 0);
     if (!best || score > best.score) best = { id: focus.id, score };
   }
   if (best) startFocus(state, content, tag, best.id);

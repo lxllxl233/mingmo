@@ -111,6 +111,7 @@ const SEA_ROUTES = [
   { from: 'hakata', to: 'nagasaki', name: '九州西海' },
   { from: 'nagasaki', to: 'nagasaki_a', name: '长崎湾' },
   { from: 'nagasaki_a', to: 'nagasaki_b', name: '长崎外海' },
+  { from: 'nagasaki_a', to: 'hakata_a', name: '长崎东—博多东' },
   { from: 'nagasaki', to: 'ningbo', name: '中日航线' },
 ];
 

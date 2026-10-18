@@ -34,6 +34,8 @@ export function BudgetPanel() {
               <tr><td>军饷</td><td>-{formatNumber(report.expenseArmy)}</td></tr>
               <tr><td>官俸</td><td>-{formatNumber(report.expenseOfficials)}</td></tr>
               <tr><td>宗禄</td><td>-{formatNumber(report.expenseDynasty)}</td></tr>
+              {(report.expenseHoard ?? 0) > 0 && <tr><td>库藏积压/火耗</td><td>-{formatNumber(report.expenseHoard ?? 0)}</td></tr>}
+              {(report.expenseCourt ?? 0) > 0 && <tr><td>宗藩/河工/卫所</td><td>-{formatNumber(report.expenseCourt ?? 0)}</td></tr>}
               <tr><td>净额</td><td className={report.net < 0 ? 'danger' : ''}>{report.net > 0 ? '+' : ''}{formatNumber(report.net)}</td></tr>
             </tbody>
           </table>

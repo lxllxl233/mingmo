@@ -104,6 +104,8 @@ export interface MonthlyReport {
   expenseOfficials: number;
   expenseDynasty: number;
   expenseRelief: number;
+  expenseHoard?: number;
+  expenseCourt?: number;
   foodIncome?: number;
   foodArmy?: number;
   foodCivilian?: number;
