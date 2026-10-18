@@ -47,6 +47,7 @@ interface UiStore {
   game: GameState | null;
   version: number;
   speed: 0 | 1 | 2 | 4;
+  speedBeforeEvent: 0 | 1 | 2 | 4;
   panel: PanelKey | null;
   countryFocus: string | null;
   diplomaticMode: boolean;
@@ -75,6 +76,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   game: null,
   version: 0,
   speed: 0,
+  speedBeforeEvent: 0,
   panel: null,
   countryFocus: null,
   diplomaticMode: false,
@@ -90,6 +92,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       game,
       version: 0,
       speed: 0,
+      speedBeforeEvent: 0,
       panel: null,
       countryFocus: null,
       diplomaticMode: false,
@@ -108,8 +111,11 @@ export const useGameStore = create<UiStore>((set, get) => ({
       const next = { ...game };
       set({ game: next, version: get().version + 1, message: null });
       sound.play('command');
-      if (next.pendingEvents.some(event => event.country === next.playerTag) && get().speed !== 0) {
-        set({ speed: 0 });
+      const pending = next.pendingEvents.some(event => event.country === next.playerTag);
+      if (pending && get().speed !== 0) {
+        set({ speedBeforeEvent: get().speed, speed: 0 });
+      } else if (!pending && get().speed === 0 && get().speedBeforeEvent !== 0 && !next.ended) {
+        set({ speed: get().speedBeforeEvent, speedBeforeEvent: 0 });
       }
       return true;
     } catch (error) {
@@ -123,7 +129,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     const { game, speed } = get();
     if (!game || speed === 0 || game.ended) return;
     if (game.pendingEvents.some(event => event.country === game.playerTag)) {
-      set({ speed: 0 });
+      set({ speedBeforeEvent: speed, speed: 0 });
       return;
     }
     advanceDay(game, content);
@@ -139,7 +145,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     if (next.ended) set({ speed: 0 });
   },
 
-  setSpeed: speed => set({ speed }),
+  setSpeed: speed => set({ speed, speedBeforeEvent: speed === 0 ? get().speedBeforeEvent : 0 }),
   selectProvince: provinceId => {
     const state = get();
     sound.play('click');
@@ -226,6 +232,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
         game,
         version: get().version + 1,
         speed: 0,
+        speedBeforeEvent: 0,
         panel: null,
         countryFocus: null,
         diplomaticMode: false,
@@ -239,5 +246,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, selectedProvince: null, selectedArmy: null, message: null }),
+  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, selectedProvince: null, selectedArmy: null, message: null }),
 }));

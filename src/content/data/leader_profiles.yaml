@@ -1,0 +1,161 @@
+leader_profiles:
+  - name: 朱由检
+    effects: { tax_efficiency_pct: -6, stability_monthly: -0.15, corruption_monthly: 0.08 }
+    timeline:
+      - { year: 1611, text: 封信王，出居信邸。 }
+      - { year: 1627, text: 兄熹宗崩，即位，改元崇祯。 }
+      - { year: 1628, text: 铲除魏忠贤阉党，起用东林旧臣。 }
+      - { year: 1629, text: 己巳之变，后金兵临北京；袁崇焕下狱。 }
+      - { year: 1644, text: 李自成破北京，自缢煤山。 }
+
+  - name: 皇太极
+    effects: { army_attack_pct: 5, tax_efficiency_pct: 4, stability_monthly: 0.05 }
+    timeline:
+      - { year: 1626, text: 努尔哈赤崩，继后金汗位。 }
+      - { year: 1635, text: 改族名为满洲，统一女真诸部。 }
+      - { year: 1636, text: 称帝，改国号大清，改元崇德。 }
+      - { year: 1642, text: 松锦之战破明军，洪承畴降。 }
+      - { year: 1643, text: 崩于盛京，福临即位。 }
+
+  - name: 福临
+    effects: { stability_monthly: 0.03, corruption_monthly: -0.03 }
+    timeline:
+      - { year: 1643, text: 皇太极崩，六岁即位，多尔衮摄政。 }
+      - { year: 1644, text: 入关，定都北京。 }
+      - { year: 1650, text: 多尔衮卒，亲政在即。 }
+
+  - name: 李自成
+    effects: { army_attack_pct: 8, stability_monthly: -0.1, tax_efficiency_pct: -5 }
+    timeline:
+      - { year: 1629, text: 于陕西起义，投闯王高迎祥。 }
+      - { year: 1636, text: 继称闯王，转战中原。 }
+      - { year: 1643, text: 破襄阳，称新顺王。 }
+      - { year: 1644, text: 西安称帝，破北京，旋败于山海关。 }
+      - { year: 1645, text: 退至湖北九宫山，死。 }
+
+  - name: 张献忠
+    effects: { army_attack_pct: 8, stability_monthly: -0.2, tax_efficiency_pct: -8 }
+    timeline:
+      - { year: 1630, text: 于陕西起事，转战秦楚。 }
+      - { year: 1643, text: 取武昌，称大西王。 }
+      - { year: 1644, text: 入成都，建立大西政权。 }
+      - { year: 1647, text: 与清军战于西充，中箭死。 }
+
+  - name: 朱由崧
+    effects: { stability_monthly: -0.1, corruption_monthly: 0.12 }
+    timeline:
+      - { year: 1644, text: 南京诸臣拥立，改元弘光。 }
+      - { year: 1645, text: 清军南下，南京陷，被俘。 }
+
+  - name: 朱由榔
+    effects: { stability_monthly: -0.05, army_defense_pct: 3 }
+    timeline:
+      - { year: 1646, text: 于肇庆即位，改元永历。 }
+      - { year: 1652, text: 依靠大西余部孙可望、李定国支撑。 }
+      - { year: 1659, text: 退入缅甸。 }
+      - { year: 1662, text: 被吴三桂缢杀于昆明。 }
+
+  - name: 郑芝龙
+    effects: { trade_efficiency_pct: 10, tax_efficiency_pct: 3 }
+    timeline:
+      - { year: 1625, text: 受抚于明，任游击，据闽海。 }
+      - { year: 1628, text: 击败荷兰舰队，掌握东南海贸。 }
+      - { year: 1645, text: 拥立隆武，封平国公。 }
+      - { year: 1646, text: 降清，后被挟北上。 }
+
+  - name: 郑成功
+    effects: { army_defense_pct: 5, trade_efficiency_pct: 6 }
+    timeline:
+      - { year: 1646, text: 拒降清，起兵海上。 }
+      - { year: 1659, text: 北伐南京，失利。 }
+      - { year: 1661, text: 收复台湾，围热兰遮城。 }
+      - { year: 1662, text: 荷兰降，郑氏据台。 }
+
+  - name: 林丹汗
+    effects: { army_attack_pct: 5, stability_monthly: -0.05 }
+    timeline:
+      - { year: 1604, text: 继察哈尔汗位。 }
+      - { year: 1627, text: 西迁避后金锋芒。 }
+      - { year: 1634, text: 病死于青海。 }
+
+  - name: 额哲
+    effects: { army_defense_pct: 3 }
+    timeline:
+      - { year: 1634, text: 父林丹汗死，继汗位。 }
+      - { year: 1635, text: 降后金，献传国玉玺。 }
+      - { year: 1641, text: 尚皇太极女，编入满洲。 }
+
+  - name: 李倧
+    effects: { stability_monthly: 0.05, tax_efficiency_pct: -2 }
+    timeline:
+      - { year: 1623, text: 仁祖反正，即位。 }
+      - { year: 1627, text: 丁卯胡乱，与后金议和。 }
+      - { year: 1636, text: 丙子胡乱，被迫称臣。 }
+      - { year: 1649, text: 崩，子淏即位。 }
+
+  - name: 李淏
+    effects: { army_attack_pct: 3, stability_monthly: 0.03 }
+    timeline:
+      - { year: 1649, text: 继位，改元孝宗。 }
+      - { year: 1650, text: 暗中筹划北伐，扩军修城。 }
+      - { year: 1659, text: 崩，北伐未举。 }
+
+  - name: 德川家光
+    effects: { stability_monthly: 0.08, tax_efficiency_pct: 3 }
+    timeline:
+      - { year: 1623, text: 继任江户幕府将军。 }
+      - { year: 1635, text: 改订武家诸法度，强化参勤交代。 }
+      - { year: 1639, text: 完成锁国体制。 }
+      - { year: 1651, text: 卒，子家纲继。 }
+
+  - name: 德川家纲
+    effects: { stability_monthly: 0.05 }
+    timeline:
+      - { year: 1651, text: 继任将军，年幼，由保科正之辅政。 }
+      - { year: 1657, text: 明历大火，江户重建。 }
+      - { year: 1680, text: 卒。 }
+
+  - name: 固始汗
+    effects: { army_attack_pct: 4, stability_monthly: 0.04 }
+    timeline:
+      - { year: 1637, text: 入藏，控制卫藏。 }
+      - { year: 1642, text: 建立和硕特汗廷，护持格鲁派。 }
+      - { year: 1655, text: 卒于拉萨。 }
+
+  - name: 安东尼·范迪门
+    effects: { trade_efficiency_pct: 10, tax_efficiency_pct: 4 }
+    timeline:
+      - { year: 1636, text: 任东印度总督。 }
+      - { year: 1641, text: 攻占马六甲。 }
+      - { year: 1642, text: 发现塔斯马尼亚。 }
+      - { year: 1645, text: 卸任。 }
+
+  - name: 揆一
+    effects: { army_defense_pct: 4, trade_efficiency_pct: 4 }
+    timeline:
+      - { year: 1656, text: 任热兰遮城长官。 }
+      - { year: 1661, text: 郑成功围城。 }
+      - { year: 1662, text: 开城降，退出台湾。 }
+
+  - name: 米哈伊尔·罗曼诺夫
+    effects: { stability_monthly: 0.04, tax_efficiency_pct: 2 }
+    timeline:
+      - { year: 1613, text: 缙绅会议推举为沙皇，罗曼诺夫王朝始。 }
+      - { year: 1617, text: 与瑞典缔结斯托尔博沃和约。 }
+      - { year: 1632, text: 斯摩棱斯克战争爆发。 }
+      - { year: 1645, text: 卒，子阿列克谢继。 }
+
+  - name: 阿列克谢·罗曼诺夫
+    effects: { army_attack_pct: 3, tax_efficiency_pct: 3 }
+    timeline:
+      - { year: 1645, text: 继沙皇位。 }
+      - { year: 1649, text: 颁布《会议法典》。 }
+      - { year: 1654, text: 佩列亚斯拉夫协议，东乌克兰归俄。 }
+      - { year: 1667, text: 与波兰签订安德鲁索沃停战。 }
+
+  - name: 阿瓦王
+    effects: { stability_monthly: 0.03 }
+    timeline:
+      - { year: 1627, text: 继阿瓦王位。 }
+      - { year: 1635, text: 与东吁、暹罗周旋。 }
+      - { year: 1645, text: 卒。 }

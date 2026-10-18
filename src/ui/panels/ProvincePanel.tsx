@@ -18,6 +18,7 @@ export function ProvincePanel() {
   const content = useGameStore(state => state.content);
   const selected = useGameStore(state => state.selectedProvince);
   const closePanel = useGameStore(state => state.closePanel);
+  const command = useGameStore(state => state.command);
   if (!game || !selected) return null;
   const def = content.provinces.get(selected);
   const province = game.provinces[selected];
@@ -27,6 +28,8 @@ export function ProvincePanel() {
   const prefecture = content.prefectures.get(def.prefectureId);
   const region = content.regions.get(def.regionId);
   const armies = Object.values(game.armies).filter(army => army.province === selected);
+  const navalTemplates = [...content.armyTemplates.values()].filter(template => template.composition.naval > 0).slice(0, 3);
+  const fleets = armies.filter(army => army.tag === game.playerTag && army.composition.naval > 0);
   const ownerEstate = content.countryEstates.get(province.owner)?.find(estate => estate.key === def.dominantEstate);
   const estateName = ownerEstate?.name ?? content.estateDefs.get(def.dominantEstate)?.name ?? def.dominantEstate;
 
@@ -43,6 +46,23 @@ export function ProvincePanel() {
       <div className="row"><span>补给上限</span><b>{def.supplyLimit.toLocaleString()}</b></div>
       <div className="row"><span>要塞</span><b>{def.isFort ? `是（${def.fortLevel}）` : '无'}</b></div>
       <div className="row"><span>沿海 / 河流</span><b>{def.isCoastal ? '是' : '否'} / {def.isRiver ? '是' : '否'}</b></div>
+      <div className="row"><span>港口</span><b>{def.isPort ? '是' : '否'}</b></div>
+      {def.isPort && (
+        <section className="port-section">
+          <h3>港口</h3>
+          <p className="muted">
+            {fleets.length > 0 ? `本港有 ${fleets.length} 支舰队，可护送陆军海运。` : '本港暂无舰队；建造战船后可进行海运。'}
+          </p>
+          {province.controller === game.playerTag && navalTemplates.map(template => (
+            <button
+              key={template.id}
+              onClick={() => command({ type: 'army.recruit', province: selected, template: template.id, size: 1 })}
+            >
+              建造 {template.name}
+            </button>
+          ))}
+        </section>
+      )}
       <div className="row"><span>民怨 / 破坏</span><b className={province.unrest > 60 ? 'danger' : ''}>{province.unrest.toFixed(0)} / {province.devastation.toFixed(0)}</b></div>
       {province.siege && (
         <div className="row"><span>围城</span><b>{province.siege.progress.toFixed(0)} / {def.fortLevel * 100}（{province.siege.days} 日）</b></div>

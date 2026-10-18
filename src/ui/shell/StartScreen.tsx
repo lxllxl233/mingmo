@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { hasLocal } from '../../app/save/save';
+import { createInitialState } from '../../engine/state/initial';
+import { formatNumber } from '../format';
 import { useGameStore } from '../state/store';
 
 const MECHANIC_LABELS: Record<string, string> = {
@@ -47,6 +49,27 @@ export function StartScreen() {
 
   const selectedTag = tags.some(country => country.tag === tag) ? tag : (tags[0]?.tag ?? 'MING');
 
+  const preview = useMemo(() => {
+    if (!scenario) return null;
+    try {
+      return createInitialState(content, scenario.id, 42, selectedTag);
+    } catch {
+      return null;
+    }
+  }, [content, scenario, selectedTag]);
+  const previewCountry = preview?.countries[selectedTag];
+  const previewDef = content.countries.get(selectedTag);
+  const previewProvinces = preview
+    ? Object.values(preview.provinces).filter(province => province.controller === selectedTag).length
+    : 0;
+  const previewArmies = preview
+    ? Object.values(preview.armies).filter(army => army.tag === selectedTag).length
+    : 0;
+  const previewWars = preview
+    ? preview.wars.filter(war => war.attacker === selectedTag || war.defender === selectedTag).length
+    : 0;
+  const previewLeader = previewDef?.leadersByScenario?.[scenario?.id ?? '']?.name ?? previewDef?.leader?.name ?? '—';
+
   return (
     <div className="start">
       <header>
@@ -93,6 +116,22 @@ export function StartScreen() {
             <label className="muted">随机种子 </label>
             <input value={seed} onChange={event => setSeed(event.target.value.replace(/[^0-9]/g, ''))} style={{ width: 120 }} />
           </div>
+          {previewCountry && (
+            <div className="start-briefing">
+              <h3>开局态势 · {previewDef?.name ?? selectedTag}</h3>
+              <div className="briefing-grid">
+                <span>领袖 <b>{previewLeader}</b></span>
+                <span>国库 <b>{formatNumber(previewCountry.treasury)}</b></span>
+                <span>粮储 <b>{formatNumber(previewCountry.food)}</b></span>
+                <span>兵源 <b>{formatNumber(previewCountry.manpower)}</b></span>
+                <span>稳定 <b>{Math.round(previewCountry.stability)}</b></span>
+                <span>天命 <b>{Math.round(previewCountry.mandate)}</b></span>
+                <span>控制省份 <b>{previewProvinces}</b></span>
+                <span>军团 <b>{previewArmies}</b></span>
+                <span>战争 <b>{previewWars}</b></span>
+              </div>
+            </div>
+          )}
         </section>
       </div>
       <footer className="start-actions">

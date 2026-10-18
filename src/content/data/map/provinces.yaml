@@ -6,6 +6,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 7478
@@ -24,6 +25,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 6314
@@ -46,6 +48,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 8046
@@ -67,6 +70,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: true
     fort: true
     fort_level: 5
     population: 18024
@@ -77,6 +81,7 @@ provinces:
     neighbors:
       - anping_a
       - anping_b
+      - fuzhou
       - penghu
   - id: anping_a
     name: 安平东
@@ -85,6 +90,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 17228
@@ -106,6 +112,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 19364
@@ -127,6 +134,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 361428
@@ -148,6 +156,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 474903
@@ -170,6 +179,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 446940
@@ -192,8 +202,9 @@ provinces:
     prefecture: pref_ava
     region: reg_burma
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 109684
@@ -204,13 +215,15 @@ provinces:
     neighbors:
       - ava_a
       - ava_b
+      - toungoo_b
   - id: ava_a
     name: 阿瓦东
     prefecture: pref_ava
     region: reg_burma
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 106226
@@ -220,13 +233,17 @@ provinces:
     supply_limit: 6670
     neighbors:
       - ava
+      - toungoo
+      - toungoo_a
+      - toungoo_b
   - id: ava_b
     name: 阿瓦西
     prefecture: pref_ava
     region: reg_burma
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 119810
@@ -236,6 +253,12 @@ provinces:
     supply_limit: 8385
     neighbors:
       - ava
+      - bhamo
+      - bhamo_a
+      - bhamo_b
+      - linan_b
+      - tengyue_b
+      - toungoo_b
   - id: baoding
     name: 保定
     prefecture: pref_baoding
@@ -243,6 +266,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 248517
@@ -264,6 +288,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 349386
@@ -285,6 +310,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 322009
@@ -309,6 +335,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 249964
@@ -329,6 +356,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 319592
@@ -351,6 +379,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 335464
@@ -373,6 +402,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 8
     population: 679555
@@ -393,6 +423,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 311638
@@ -415,6 +446,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 280312
@@ -433,8 +465,9 @@ provinces:
     prefecture: pref_bhamo
     region: reg_burma
     terrain: mountains
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 128534
@@ -443,14 +476,19 @@ provinces:
     dominant_estate: nobles
     supply_limit: 8744
     neighbors:
+      - ava_b
       - bhamo_a
+      - bhamo_b
+      - tengyue
+      - tengyue_b
   - id: bhamo_a
     name: 八莫东
     prefecture: pref_bhamo
     region: reg_burma
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 96599
@@ -459,17 +497,17 @@ provinces:
     dominant_estate: nobles
     supply_limit: 6040
     neighbors:
+      - ava_b
       - bhamo
-      - bhamo_b
-      - tengyue
       - tengyue_b
   - id: bhamo_b
     name: 八莫西
     prefecture: pref_bhamo
     region: reg_burma
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 132252
@@ -478,56 +516,62 @@ provinces:
     dominant_estate: nobles
     supply_limit: 6446
     neighbors:
-      - bhamo_a
+      - ava_b
+      - bhamo
       - tengyue
+      - tengyue_a
   - id: caobang
     name: 高平
     prefecture: pref_caobang
     region: reg_annam
     terrain: plains
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 211866
     landholding: 212
     development: 29
-    dominant_estate: merchants
+    dominant_estate: peasants
     supply_limit: 9953
     neighbors:
       - caobang_a
       - caobang_b
+      - taiping
+      - taiping_a
       - taiping_b
   - id: caobang_a
     name: 高平东
     prefecture: pref_caobang
     region: reg_annam
     terrain: plains
-    coastal: true
+    coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 225986
     landholding: 226
     development: 28
-    dominant_estate: merchants
+    dominant_estate: peasants
     supply_limit: 9854
     neighbors:
       - caobang
       - caobang_b
       - guiyang_a
-      - liuzhou_a
+      - linan_a
       - nanning_b
       - qujing_a
       - taiping_a
-      - taiping_b
   - id: caobang_b
     name: 高平西
     prefecture: pref_caobang
     region: reg_annam
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 235844
@@ -538,8 +582,9 @@ provinces:
     neighbors:
       - caobang
       - caobang_a
+      - dongkinh_b
       - linan_a
-      - qujing_a
+      - taiping_b
   - id: chahar
     name: 察哈尔
     prefecture: pref_chahar
@@ -547,6 +592,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 122473
@@ -568,6 +614,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 126800
@@ -588,6 +635,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 119768
@@ -611,6 +659,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 62830
@@ -630,6 +679,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 78952
@@ -652,6 +702,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 76395
@@ -674,6 +725,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 362610
@@ -693,6 +745,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 280797
@@ -715,6 +768,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 336810
@@ -738,6 +792,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 381212
@@ -758,6 +813,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 441294
@@ -779,6 +835,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 384869
@@ -797,6 +854,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 210997
@@ -815,6 +873,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 253209
@@ -837,6 +896,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 194517
@@ -855,6 +915,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 55984
@@ -873,6 +934,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 70905
@@ -898,6 +960,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 77293
@@ -920,6 +983,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 5
     population: 257052
@@ -941,6 +1005,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 333733
@@ -963,6 +1028,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 279185
@@ -985,6 +1051,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 364396
@@ -1004,6 +1071,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 319423
@@ -1027,6 +1095,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 338409
@@ -1048,6 +1117,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 8
     population: 286790
@@ -1066,6 +1136,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 263132
@@ -1088,6 +1159,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 259590
@@ -1110,6 +1182,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 98253
@@ -1129,6 +1202,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 103487
@@ -1151,6 +1225,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 98895
@@ -1173,6 +1248,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 5
     population: 310557
@@ -1196,6 +1272,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 350492
@@ -1217,6 +1294,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 353752
@@ -1237,6 +1315,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 345943
@@ -1254,6 +1333,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 441671
@@ -1270,6 +1350,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 361610
@@ -1285,8 +1366,9 @@ provinces:
     prefecture: pref_dongkinh
     region: reg_annam
     terrain: plains
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 243529
@@ -1295,14 +1377,19 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10054
     neighbors:
-      - thanhhoa_a
+      - dongkinh_a
+      - dongkinh_b
+      - linan_a
+      - thanhhoa
+      - thanhhoa_b
   - id: dongkinh_a
     name: 升龙东
     prefecture: pref_dongkinh
     region: reg_annam
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 196559
@@ -1311,16 +1398,19 @@ provinces:
     dominant_estate: peasants
     supply_limit: 12119
     neighbors:
+      - dongkinh
       - dongkinh_b
-      - nanning
-      - taiping
+      - taiping_b
+      - thanhhoa
+      - thanhhoa_a
   - id: dongkinh_b
     name: 升龙西
     prefecture: pref_dongkinh
     region: reg_annam
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 254555
@@ -1329,8 +1419,10 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10180
     neighbors:
+      - caobang_b
+      - dongkinh
       - dongkinh_a
-      - taiping
+      - linan_a
       - taiping_b
   - id: dushikou
     name: 独石口
@@ -1339,6 +1431,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 49487
@@ -1359,6 +1452,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 38802
@@ -1382,6 +1476,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 39793
@@ -1403,6 +1498,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 1106062
@@ -1420,6 +1516,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 433324
@@ -1438,6 +1535,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 332916
@@ -1459,6 +1557,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 305921
@@ -1481,6 +1580,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 322845
@@ -1503,6 +1603,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 296084
@@ -1523,6 +1624,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: true
     fort: true
     fort_level: 8
     population: 203722
@@ -1531,9 +1633,11 @@ provinces:
     dominant_estate: merchants
     supply_limit: 14021
     neighbors:
+      - anping
       - fuzhou_a
       - fuzhou_b
       - quanzhou_b
+      - tamsui
       - yanping_b
   - id: fuzhou_a
     name: 福州东
@@ -1542,6 +1646,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 172399
@@ -1560,6 +1665,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 205363
@@ -1581,6 +1687,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 298646
@@ -1599,6 +1706,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 310575
@@ -1620,6 +1728,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 271864
@@ -1642,6 +1751,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 281770
@@ -1662,6 +1772,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 330252
@@ -1684,6 +1795,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 247300
@@ -1705,6 +1817,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 101519
@@ -1725,6 +1838,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 75602
@@ -1744,6 +1858,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 105531
@@ -1767,6 +1882,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 8
     population: 148852
@@ -1785,6 +1901,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 131523
@@ -1806,6 +1923,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 143928
@@ -1830,6 +1948,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 338182
@@ -1849,6 +1968,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 240910
@@ -1871,6 +1991,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 303267
@@ -1893,6 +2014,7 @@ provinces:
     terrain: hills
     coastal: true
     river: true
+    is_port: true
     fort: true
     fort_level: 5
     population: 190911
@@ -1912,6 +2034,7 @@ provinces:
     terrain: hills
     coastal: true
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 263419
@@ -1931,6 +2054,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 206386
@@ -1953,6 +2077,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 609741
@@ -1972,6 +2097,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 596334
@@ -1994,6 +2120,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 540903
@@ -2018,6 +2145,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 125111
@@ -2037,6 +2165,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 129767
@@ -2060,6 +2189,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 112255
@@ -2082,6 +2212,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 5
     population: 124427
@@ -2100,6 +2231,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 123171
@@ -2121,6 +2253,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 123512
@@ -2145,6 +2278,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 99527
@@ -2165,6 +2299,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 76086
@@ -2176,6 +2311,7 @@ provinces:
       - caobang_a
       - guiyang
       - liuzhou_a
+      - nanning_b
       - qujing_a
       - zhenyuan_a
   - id: guiyang_b
@@ -2185,6 +2321,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 85463
@@ -2207,6 +2344,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 103983
@@ -2226,6 +2364,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 99239
@@ -2248,6 +2387,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 122020
@@ -2269,6 +2409,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: true
     fort: false
     fort_level: 0
     population: 323504
@@ -2285,6 +2426,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 293771
@@ -2301,6 +2443,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 361320
@@ -2317,6 +2460,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 213240
@@ -2337,6 +2481,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 195481
@@ -2356,6 +2501,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 196586
@@ -2376,6 +2522,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 287568
@@ -2396,6 +2543,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 359972
@@ -2416,6 +2564,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 371604
@@ -2436,6 +2585,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 8
     population: 400352
@@ -2454,6 +2604,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 177993
@@ -2472,6 +2623,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 178095
@@ -2490,6 +2642,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 367829
@@ -2509,6 +2662,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 277931
@@ -2529,6 +2683,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 281262
@@ -2549,6 +2704,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 255072
@@ -2568,6 +2724,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 252503
@@ -2589,6 +2746,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 317758
@@ -2613,6 +2771,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 109270
@@ -2632,6 +2791,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 119201
@@ -2655,6 +2815,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 94380
@@ -2678,6 +2839,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 68509
@@ -2697,6 +2859,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 56800
@@ -2719,6 +2882,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 64862
@@ -2740,6 +2904,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 111291
@@ -2758,6 +2923,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 114388
@@ -2782,6 +2948,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 101045
@@ -2805,6 +2972,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 107028
@@ -2824,6 +2992,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 103953
@@ -2847,6 +3016,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 93909
@@ -2871,6 +3041,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 446014
@@ -2890,6 +3061,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 477949
@@ -2911,6 +3083,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 392621
@@ -2929,6 +3102,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 343721
@@ -2951,6 +3125,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 391571
@@ -2972,6 +3147,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 378971
@@ -2994,6 +3170,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 190650
@@ -3002,6 +3179,7 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10752
     neighbors:
+      - hue_a
       - hue_b
   - id: hue_a
     name: 顺化东
@@ -3010,6 +3188,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 195546
@@ -3018,7 +3197,10 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10547
     neighbors:
-      - leizhou_a
+      - hue
+      - hue_b
+      - pegu_a
+      - thanhhoa_b
   - id: hue_b
     name: 顺化西
     prefecture: pref_hue
@@ -3026,6 +3208,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 237091
@@ -3035,6 +3218,9 @@ provinces:
     supply_limit: 13361
     neighbors:
       - hue
+      - hue_a
+      - pegu_a
+      - thanhhoa_b
   - id: huizhou
     name: 徽州
     prefecture: pref_huizhou
@@ -3042,6 +3228,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 399224
@@ -3061,6 +3248,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 360170
@@ -3082,6 +3270,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 381864
@@ -3105,6 +3294,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 237016
@@ -3123,6 +3313,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 238694
@@ -3143,6 +3334,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 262617
@@ -3160,6 +3352,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 298991
@@ -3181,6 +3374,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 296619
@@ -3201,6 +3395,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 342310
@@ -3221,6 +3416,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 58410
@@ -3238,6 +3434,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 61518
@@ -3257,6 +3454,7 @@ provinces:
     terrain: steppe
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 72989
@@ -3273,6 +3471,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 338671
@@ -3293,6 +3492,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 276333
@@ -3315,6 +3515,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 316864
@@ -3337,6 +3538,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 173455
@@ -3357,6 +3559,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 156814
@@ -3377,6 +3580,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 177865
@@ -3398,6 +3602,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 117778
@@ -3418,6 +3623,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 108889
@@ -3441,6 +3647,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 110075
@@ -3461,6 +3668,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 316938
@@ -3479,6 +3687,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 299756
@@ -3498,6 +3707,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 336208
@@ -3519,6 +3729,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 357806
@@ -3539,6 +3750,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 393418
@@ -3561,6 +3773,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 379615
@@ -3584,6 +3797,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 337422
@@ -3604,6 +3818,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 289135
@@ -3625,6 +3840,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 333439
@@ -3648,6 +3864,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 350045
@@ -3667,6 +3884,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 404897
@@ -3688,6 +3906,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 358384
@@ -3711,6 +3930,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 6
     population: 142318
@@ -3730,6 +3950,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 147213
@@ -3751,6 +3972,7 @@ provinces:
     terrain: wetland
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 128725
@@ -3768,6 +3990,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 242618
@@ -3788,6 +4011,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 239661
@@ -3809,6 +4033,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 267509
@@ -3829,6 +4054,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 160193
@@ -3847,6 +4073,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 169223
@@ -3866,6 +4093,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 174182
@@ -3888,6 +4116,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 8
     population: 619882
@@ -3908,6 +4137,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 3
     population: 445975
@@ -3928,6 +4158,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 470777
@@ -3948,6 +4179,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 115593
@@ -3967,6 +4199,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 108200
@@ -3987,6 +4220,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 137173
@@ -4009,6 +4243,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 18676
@@ -4025,6 +4260,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 15969
@@ -4048,6 +4284,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 14229
@@ -4071,6 +4308,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 309920
@@ -4090,6 +4328,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 253267
@@ -4112,6 +4351,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 320088
@@ -4137,6 +4377,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 64606
@@ -4156,6 +4397,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 72628
@@ -4176,6 +4418,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 57938
@@ -4197,6 +4440,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 300825
@@ -4218,6 +4462,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 351670
@@ -4240,6 +4485,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 302042
@@ -4262,6 +4508,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 242313
@@ -4271,6 +4518,7 @@ provinces:
     supply_limit: 17320
     neighbors:
       - leizhou_b
+      - leizhou_a
   - id: leizhou_a
     name: 雷州东
     prefecture: pref_leizhou
@@ -4278,6 +4526,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 201534
@@ -4286,7 +4535,7 @@ provinces:
     dominant_estate: merchants
     supply_limit: 15816
     neighbors:
-      - hue_a
+      - leizhou
   - id: leizhou_b
     name: 雷州西
     prefecture: pref_leizhou
@@ -4294,6 +4543,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 224855
@@ -4316,6 +4566,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 161962
@@ -4335,6 +4586,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 70572
@@ -4353,6 +4605,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 59745
@@ -4375,6 +4628,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 92584
@@ -4393,6 +4647,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 88608
@@ -4413,6 +4668,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 98833
@@ -4436,6 +4692,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 146625
@@ -4455,6 +4712,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 124880
@@ -4476,6 +4734,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 148134
@@ -4497,6 +4756,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 101691
@@ -4517,6 +4777,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 78819
@@ -4525,11 +4786,16 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10518
     neighbors:
+      - caobang_a
       - caobang_b
+      - dongkinh
+      - dongkinh_b
       - linan
       - linan_b
       - qujing
       - qujing_a
+      - thanhhoa_b
+      - toungoo_b
   - id: linan_b
     name: 临安西
     prefecture: pref_linan
@@ -4537,6 +4803,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 99927
@@ -4545,11 +4812,13 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10498
     neighbors:
+      - ava_b
       - dali_a
       - kunming_a
       - linan
       - linan_a
       - tengyue_b
+      - toungoo_b
   - id: linqing
     name: 临清
     prefecture: pref_linqing
@@ -4557,6 +4826,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 412770
@@ -4576,6 +4846,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 414280
@@ -4598,6 +4869,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 357685
@@ -4621,6 +4893,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 132582
@@ -4640,6 +4913,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 106498
@@ -4648,7 +4922,6 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10573
     neighbors:
-      - caobang_a
       - guiyang_a
       - liuzhou
       - liuzhou_b
@@ -4663,6 +4936,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 103510
@@ -4684,6 +4958,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 311310
@@ -4706,6 +4981,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 279910
@@ -4727,6 +5003,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 332622
@@ -4750,6 +5027,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: true
     fort: false
     fort_level: 0
     population: 314243
@@ -4766,6 +5044,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 303104
@@ -4782,6 +5061,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 305365
@@ -4798,6 +5078,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 446309
@@ -4820,6 +5101,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 444647
@@ -4842,6 +5124,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 377439
@@ -4864,6 +5147,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 262987
@@ -4885,6 +5169,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 246234
@@ -4908,6 +5193,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 309550
@@ -4930,6 +5216,7 @@ provinces:
     terrain: urban
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 5
     population: 1114872
@@ -4951,6 +5238,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 424060
@@ -4972,6 +5260,7 @@ provinces:
     terrain: urban
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 479608
@@ -4993,6 +5282,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 132105
@@ -5001,7 +5291,6 @@ provinces:
     dominant_estate: peasants
     supply_limit: 11125
     neighbors:
-      - dongkinh_a
       - leizhou_b
       - nanning_a
       - nanning_b
@@ -5014,6 +5303,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 3
     population: 127161
@@ -5034,6 +5324,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 1
     population: 98789
@@ -5043,6 +5334,7 @@ provinces:
     supply_limit: 11005
     neighbors:
       - caobang_a
+      - guiyang_a
       - liuzhou_a
       - nanning
       - nanning_a
@@ -5054,6 +5346,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 609540
@@ -5074,6 +5367,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 497692
@@ -5096,6 +5390,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 474846
@@ -5119,6 +5414,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 7663
@@ -5137,6 +5433,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 6687
@@ -5159,6 +5456,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 8580
@@ -5178,6 +5476,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: true
     fort: false
     fort_level: 0
     population: 288112
@@ -5197,6 +5496,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 359729
@@ -5216,6 +5516,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 282397
@@ -5233,6 +5534,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 93585
@@ -5251,6 +5553,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 120557
@@ -5270,6 +5573,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 121086
@@ -5289,6 +5593,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 88707
@@ -5308,6 +5613,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 104831
@@ -5331,6 +5637,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 87720
@@ -5353,6 +5660,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 134831
@@ -5370,6 +5678,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 124369
@@ -5388,6 +5697,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 127464
@@ -5411,6 +5721,7 @@ provinces:
     terrain: wetland
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 7248
@@ -5427,6 +5738,7 @@ provinces:
     terrain: wetland
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 8057
@@ -5447,6 +5759,7 @@ provinces:
     terrain: steppe
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 8672
@@ -5466,6 +5779,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 105955
@@ -5484,6 +5798,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 127967
@@ -5506,6 +5821,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 107043
@@ -5531,6 +5847,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 377306
@@ -5551,6 +5868,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 294740
@@ -5569,6 +5887,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 371028
@@ -5587,6 +5906,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 106410
@@ -5597,6 +5917,7 @@ provinces:
     neighbors:
       - pegu_a
       - pegu_b
+      - toungoo_a
   - id: pegu_a
     name: 勃固东
     prefecture: pref_pegu
@@ -5604,6 +5925,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 103100
@@ -5612,14 +5934,19 @@ provinces:
     dominant_estate: nobles
     supply_limit: 7934
     neighbors:
+      - hue_a
+      - hue_b
       - pegu
+      - pegu_b
+      - thanhhoa_b
   - id: pegu_b
     name: 勃固西
     prefecture: pref_pegu
     region: reg_burma
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 113027
@@ -5629,6 +5956,11 @@ provinces:
     supply_limit: 8828
     neighbors:
       - pegu
+      - pegu_a
+      - thanhhoa_b
+      - toungoo
+      - toungoo_a
+      - toungoo_b
   - id: penghu
     name: 澎湖
     prefecture: pref_penghu
@@ -5636,6 +5968,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: true
     fort: true
     fort_level: 7
     population: 19640
@@ -5645,6 +5978,7 @@ provinces:
     supply_limit: 5944
     neighbors:
       - anping
+      - quanzhou
   - id: penghu_a
     name: 澎湖东
     prefecture: pref_penghu
@@ -5652,6 +5986,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 14404
@@ -5674,6 +6009,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 17716
@@ -5696,6 +6032,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 45474
@@ -5716,6 +6053,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 41137
@@ -5738,6 +6076,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 46833
@@ -5760,6 +6099,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 260949
@@ -5781,6 +6121,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 344793
@@ -5803,6 +6144,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 302320
@@ -5823,6 +6165,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 265019
@@ -5842,6 +6185,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 273301
@@ -5863,6 +6207,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 284475
@@ -5887,6 +6232,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 175681
@@ -5905,6 +6251,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 187282
@@ -5925,6 +6272,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 205064
@@ -5944,6 +6292,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 61811
@@ -5962,6 +6311,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 75897
@@ -5984,6 +6334,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 71763
@@ -6005,6 +6356,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 73219
@@ -6024,6 +6376,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 61837
@@ -6045,6 +6398,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 56978
@@ -6069,6 +6423,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 339261
@@ -6089,6 +6444,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 323263
@@ -6109,6 +6465,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 347184
@@ -6129,6 +6486,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 352706
@@ -6148,6 +6506,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 372798
@@ -6166,6 +6525,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 384330
@@ -6190,6 +6550,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: true
     fort: true
     fort_level: 7
     population: 213864
@@ -6199,6 +6560,7 @@ provinces:
     supply_limit: 17776
     neighbors:
       - fuzhou_a
+      - penghu
       - quanzhou_a
       - quanzhou_b
   - id: quanzhou_a
@@ -6208,6 +6570,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 219854
@@ -6226,6 +6589,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 188457
@@ -6250,6 +6614,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 81573
@@ -6271,6 +6636,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 98755
@@ -6280,7 +6646,6 @@ provinces:
     supply_limit: 9705
     neighbors:
       - caobang_a
-      - caobang_b
       - guiyang
       - guiyang_a
       - guiyang_b
@@ -6296,6 +6661,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 79390
@@ -6315,6 +6681,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 320303
@@ -6335,6 +6702,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 274741
@@ -6357,6 +6725,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 245912
@@ -6378,6 +6747,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 359709
@@ -6395,6 +6765,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 379952
@@ -6411,6 +6782,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 392023
@@ -6429,6 +6801,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 46989
@@ -6450,6 +6823,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 38338
@@ -6470,6 +6844,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 52993
@@ -6490,6 +6865,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: true
     fort_level: 8
     population: 140595
@@ -6510,6 +6886,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 148376
@@ -6529,6 +6906,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 150591
@@ -6549,6 +6927,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 79577
@@ -6567,6 +6946,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 61758
@@ -6587,6 +6967,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 73841
@@ -6606,6 +6987,7 @@ provinces:
     terrain: wetland
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 374204
@@ -6625,6 +7007,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 321197
@@ -6651,6 +7034,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 285200
@@ -6672,6 +7056,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 227183
@@ -6691,6 +7076,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 242664
@@ -6713,6 +7099,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 233868
@@ -6739,6 +7126,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 8
     population: 349985
@@ -6759,6 +7147,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 117272
@@ -6781,6 +7170,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 117786
@@ -6801,6 +7191,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 70784
@@ -6818,6 +7209,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 75459
@@ -6836,6 +7228,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 67953
@@ -6860,6 +7253,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 258902
@@ -6881,6 +7275,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 296802
@@ -6904,6 +7299,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 267956
@@ -6923,6 +7319,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 94533
@@ -6944,6 +7341,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 74487
@@ -6967,6 +7365,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 2
     population: 90664
@@ -6987,6 +7386,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: true
     fort: false
     fort_level: 0
     population: 452154
@@ -7006,6 +7406,7 @@ provinces:
     terrain: hills
     coastal: true
     river: true
+    is_port: false
     fort: true
     fort_level: 2
     population: 381552
@@ -7022,6 +7423,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 426441
@@ -7038,6 +7440,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 381397
@@ -7057,6 +7460,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 417569
@@ -7078,6 +7482,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 429984
@@ -7099,6 +7504,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 398264
@@ -7118,6 +7524,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 395861
@@ -7140,6 +7547,7 @@ provinces:
     terrain: urban
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 361671
@@ -7158,6 +7566,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 95501
@@ -7178,6 +7587,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 93287
@@ -7199,6 +7609,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 86103
@@ -7221,6 +7632,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 121546
@@ -7229,8 +7641,7 @@ provinces:
     dominant_estate: peasants
     supply_limit: 9965
     neighbors:
-      - dongkinh_a
-      - dongkinh_b
+      - caobang
       - nanning
       - taiping_a
       - taiping_b
@@ -7241,6 +7652,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 105977
@@ -7249,18 +7661,19 @@ provinces:
     dominant_estate: peasants
     supply_limit: 9527
     neighbors:
+      - caobang
       - caobang_a
       - nanning
       - nanning_b
       - taiping
-      - taiping_b
   - id: taiping_b
     name: 太平西
     prefecture: pref_taiping
     region: reg_guangxi
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 103093
@@ -7270,10 +7683,10 @@ provinces:
     supply_limit: 8974
     neighbors:
       - caobang
-      - caobang_a
+      - caobang_b
+      - dongkinh_a
       - dongkinh_b
       - taiping
-      - taiping_a
   - id: taiyuan
     name: 太原
     prefecture: pref_taiyuan
@@ -7281,6 +7694,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 286277
@@ -7303,6 +7717,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 357634
@@ -7323,6 +7738,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 357542
@@ -7348,6 +7764,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 312276
@@ -7366,6 +7783,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 358210
@@ -7383,6 +7801,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 363950
@@ -7405,6 +7824,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: true
     fort: false
     fort_level: 0
     population: 17803
@@ -7413,6 +7833,7 @@ provinces:
     dominant_estate: merchants
     supply_limit: 4363
     neighbors:
+      - fuzhou
       - keelung
       - keelung_a
       - keelung_b
@@ -7425,6 +7846,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 17155
@@ -7446,6 +7868,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 16480
@@ -7467,6 +7890,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 5
     population: 101400
@@ -7475,7 +7899,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 7655
     neighbors:
-      - bhamo_a
+      - bhamo
       - bhamo_b
       - tengyue_a
       - tengyue_b
@@ -7484,8 +7908,9 @@ provinces:
     prefecture: pref_tengyue
     region: reg_yunnan
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 83365
@@ -7494,6 +7919,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10050
     neighbors:
+      - bhamo_b
       - chamdo
       - chamdo_b
       - dali
@@ -7507,6 +7933,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 91096
@@ -7515,6 +7942,8 @@ provinces:
     dominant_estate: nobles
     supply_limit: 10918
     neighbors:
+      - ava_b
+      - bhamo
       - bhamo_a
       - dali
       - dali_a
@@ -7528,6 +7957,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 212552
@@ -7536,6 +7966,8 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10481
     neighbors:
+      - dongkinh
+      - dongkinh_a
       - thanhhoa_a
       - thanhhoa_b
   - id: thanhhoa_a
@@ -7545,6 +7977,7 @@ provinces:
     terrain: jungle
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 211958
@@ -7553,7 +7986,7 @@ provinces:
     dominant_estate: peasants
     supply_limit: 10214
     neighbors:
-      - dongkinh
+      - dongkinh_a
       - thanhhoa
   - id: thanhhoa_b
     name: 清化西
@@ -7562,6 +7995,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 240364
@@ -7570,7 +8004,14 @@ provinces:
     dominant_estate: peasants
     supply_limit: 12098
     neighbors:
+      - dongkinh
+      - hue_a
+      - hue_b
+      - linan_a
+      - pegu_a
+      - pegu_b
       - thanhhoa
+      - toungoo_b
   - id: tianjin
     name: 天津
     prefecture: pref_tianjin
@@ -7578,6 +8019,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 277062
@@ -7597,6 +8039,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 306055
@@ -7620,6 +8063,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 247684
@@ -7642,6 +8086,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 169066
@@ -7661,6 +8106,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 219299
@@ -7684,6 +8130,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 188325
@@ -7705,6 +8152,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 73687
@@ -7724,6 +8172,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 73292
@@ -7750,6 +8199,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 81859
@@ -7769,8 +8219,9 @@ provinces:
     prefecture: pref_toungoo
     region: reg_burma
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 123256
@@ -7779,6 +8230,8 @@ provinces:
     dominant_estate: nobles
     supply_limit: 6864
     neighbors:
+      - ava_a
+      - pegu_b
       - toungoo_a
       - toungoo_b
   - id: toungoo_a
@@ -7786,8 +8239,9 @@ provinces:
     prefecture: pref_toungoo
     region: reg_burma
     terrain: hills
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 98767
@@ -7796,14 +8250,18 @@ provinces:
     dominant_estate: nobles
     supply_limit: 7885
     neighbors:
+      - ava_a
+      - pegu
+      - pegu_b
       - toungoo
   - id: toungoo_b
     name: 东吁西
     prefecture: pref_toungoo
     region: reg_burma
     terrain: jungle
-    coastal: true
+    coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 124407
@@ -7812,6 +8270,13 @@ provinces:
     dominant_estate: nobles
     supply_limit: 7917
     neighbors:
+      - ava
+      - ava_a
+      - ava_b
+      - linan_a
+      - linan_b
+      - pegu_b
+      - thanhhoa_b
       - toungoo
   - id: tumote
     name: 土默特
@@ -7820,6 +8285,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 107895
@@ -7840,6 +8306,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 95186
@@ -7861,6 +8328,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 120411
@@ -7882,6 +8350,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 62152
@@ -7901,6 +8370,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 62421
@@ -7921,6 +8391,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 76692
@@ -7944,6 +8415,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 181950
@@ -7962,6 +8434,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 167190
@@ -7985,6 +8458,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 153587
@@ -8004,6 +8478,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 58218
@@ -8023,6 +8498,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 65108
@@ -8043,6 +8519,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 70217
@@ -8066,6 +8543,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 586732
@@ -8086,6 +8564,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 585833
@@ -8106,6 +8585,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 594395
@@ -8130,6 +8610,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 277201
@@ -8148,6 +8629,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 287142
@@ -8168,6 +8650,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 340254
@@ -8189,6 +8672,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 318084
@@ -8209,6 +8693,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 339578
@@ -8231,6 +8716,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 328030
@@ -8253,6 +8739,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 101025
@@ -8272,6 +8759,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 100133
@@ -8294,6 +8782,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 98631
@@ -8315,6 +8804,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 6
     population: 697025
@@ -8335,6 +8825,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 322563
@@ -8358,6 +8849,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 263904
@@ -8379,6 +8871,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 7
     population: 388739
@@ -8399,6 +8892,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 283058
@@ -8418,6 +8912,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 333712
@@ -8441,6 +8936,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 78338
@@ -8460,6 +8956,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 104258
@@ -8482,6 +8979,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 83447
@@ -8505,6 +9003,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 464833
@@ -8524,6 +9023,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 452111
@@ -8545,6 +9045,7 @@ provinces:
     terrain: urban
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 437166
@@ -8566,6 +9067,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 328743
@@ -8585,6 +9087,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 302860
@@ -8606,6 +9109,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 311441
@@ -8630,6 +9134,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 323669
@@ -8651,6 +9156,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 293582
@@ -8670,6 +9176,7 @@ provinces:
     terrain: desert
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 274178
@@ -8689,6 +9196,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 6
     population: 477806
@@ -8710,6 +9218,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 363538
@@ -8732,6 +9241,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 375091
@@ -8753,6 +9263,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 41489
@@ -8773,6 +9284,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 41007
@@ -8796,6 +9308,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 39949
@@ -8817,6 +9330,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 216518
@@ -8836,6 +9350,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 194687
@@ -8860,6 +9375,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 218202
@@ -8880,6 +9396,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 359412
@@ -8899,6 +9416,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 1
     population: 392507
@@ -8920,6 +9438,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 314078
@@ -8943,6 +9462,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 333181
@@ -8963,6 +9483,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 279643
@@ -8984,6 +9505,7 @@ provinces:
     terrain: plains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 276937
@@ -9003,6 +9525,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 399483
@@ -9022,6 +9545,7 @@ provinces:
     terrain: wetland
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 352429
@@ -9045,6 +9569,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 286379
@@ -9065,6 +9590,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 279369
@@ -9085,6 +9611,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 295751
@@ -9108,6 +9635,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 323475
@@ -9128,6 +9656,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 81231
@@ -9148,6 +9677,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 90721
@@ -9168,6 +9698,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 90108
@@ -9188,6 +9719,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 598477
@@ -9207,6 +9739,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 519671
@@ -9229,6 +9762,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 490466
@@ -9252,6 +9786,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 47708
@@ -9272,6 +9807,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 39459
@@ -9292,6 +9828,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 50432
@@ -9313,6 +9850,7 @@ provinces:
     terrain: hills
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 211438
@@ -9331,6 +9869,7 @@ provinces:
     terrain: mountains
     coastal: true
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 205906
@@ -9350,6 +9889,7 @@ provinces:
     terrain: mountains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 157571
@@ -9369,6 +9909,7 @@ provinces:
     terrain: plains
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 2
     population: 247489
@@ -9388,6 +9929,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 225421
@@ -9408,6 +9950,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 200160
@@ -9427,6 +9970,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 74900
@@ -9447,6 +9991,7 @@ provinces:
     terrain: desert
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 70297
@@ -9467,6 +10012,7 @@ provinces:
     terrain: steppe
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 70499
@@ -9489,6 +10035,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 289407
@@ -9510,6 +10057,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 349935
@@ -9531,6 +10079,7 @@ provinces:
     terrain: plains
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 352513
@@ -9556,6 +10105,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 479291
@@ -9574,6 +10124,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 1
     population: 461095
@@ -9597,6 +10148,7 @@ provinces:
     terrain: urban
     coastal: false
     river: true
+    is_port: false
     fort: true
     fort_level: 2
     population: 343463
@@ -9618,6 +10170,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: true
     fort_level: 3
     population: 79161
@@ -9639,6 +10192,7 @@ provinces:
     terrain: hills
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 77706
@@ -9661,6 +10215,7 @@ provinces:
     terrain: jungle
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 76546
@@ -9680,6 +10235,7 @@ provinces:
     terrain: hills
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 308781
@@ -9701,6 +10257,7 @@ provinces:
     terrain: urban
     coastal: false
     river: true
+    is_port: false
     fort: false
     fort_level: 0
     population: 354013
@@ -9721,6 +10278,7 @@ provinces:
     terrain: urban
     coastal: false
     river: false
+    is_port: false
     fort: false
     fort_level: 0
     population: 248667

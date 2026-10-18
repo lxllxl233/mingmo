@@ -12,6 +12,7 @@ import {
   focusSchema,
   generalSchema,
   leaderEntrySchema,
+  leaderProfileSchema,
   namedModifierSchema,
   prefectureSchema,
   privilegeSchema,
@@ -35,6 +36,7 @@ import type {
   General,
   LeaderDef,
   LeaderEntry,
+  LeaderProfile,
   MapGeo,
   NamedModifier,
   PrefectureDef,
@@ -79,6 +81,7 @@ interface Collections {
   armyTemplates: Collected[];
   generals: Collected[];
   leaders: Collected[];
+  leaderProfiles: Collected[];
   namedModifiers: Collected[];
   scenarios: Collected[];
 }
@@ -101,6 +104,7 @@ const EMPTY_COLLECTIONS: Collections = {
   armyTemplates: [],
   generals: [],
   leaders: [],
+  leaderProfiles: [],
   namedModifiers: [],
   scenarios: [],
 };
@@ -155,7 +159,7 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
     regions: [], prefectures: [], provinces: [], countries: [], estateDefs: [],
     countryEstates: [], taxLaws: [], privileges: [], focuses: [], focusPacks: [], events: [],
     eventChains: [], techs: [], decisions: [], armyTemplates: [], generals: [],
-    leaders: [], namedModifiers: [], scenarios: [],
+    leaders: [], leaderProfiles: [], namedModifiers: [], scenarios: [],
   };
   let balance: { file: string; value: unknown } | null = null;
 
@@ -228,6 +232,9 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
         case 'leaders':
           pushItems(collected.leaders, normalizeValue(value), file.path, 'leaders');
           break;
+        case 'leader_profiles':
+          pushItems(collected.leaderProfiles, normalizeValue(value), file.path, 'leader_profiles');
+          break;
         case 'named_modifiers':
           pushItems(collected.namedModifiers, normalizeValue(value), file.path, 'named_modifiers');
           break;
@@ -247,6 +254,15 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
   const prefectures: PrefectureDef[] = parseAll<PrefectureDef>(collected.prefectures, prefectureSchema);
   const provinces: ProvinceDef[] = parseAll<ProvinceDef>(collected.provinces, provinceSchema);
   const leaderEntries: LeaderEntry[] = parseAll<LeaderEntry>(collected.leaders, leaderEntrySchema);
+  const leaderProfiles: LeaderProfile[] = parseAll<LeaderProfile>(collected.leaderProfiles, leaderProfileSchema);
+  const profileByName = new Map(leaderProfiles.map(profile => [profile.name, profile]));
+  for (const entry of leaderEntries) {
+    const profile = profileByName.get(entry.name);
+    if (profile) {
+      entry.effects = profile.effects;
+      entry.timeline = profile.timeline;
+    }
+  }
   const countries: CountryDef[] = parseAll<CountryDef>(collected.countries, countrySchema);
   for (const country of countries) {
     const entries = leaderEntries.filter(entry => entry.tag === country.tag);

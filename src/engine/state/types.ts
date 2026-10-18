@@ -108,6 +108,9 @@ export interface ArmyState {
   history: string[];
   movePath: string[];
   moveProgress: number;
+  embarked: boolean;
+  navalTarget: string | null;
+  navalProgress: number;
   composition: {
     infantry: number;
     firearm: number;

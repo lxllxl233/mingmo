@@ -3,6 +3,7 @@ import { aggregateModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
+import { generalTraitBonus } from '../rules/generalTraits';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -40,7 +41,9 @@ function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<s
   const quality = (army.training / 100) * (army.equipment / 100);
   const general = army.general ? content.generals.get(army.general) : undefined;
   const command = 1 + (general?.attack ?? 0) * 0.015;
-  return base * quality * command * (1 + (modifiers['army_attack_pct'] ?? 0) / 100);
+  const traits = generalTraitBonus(general?.traits ?? []);
+  return base * quality * command
+    * (1 + ((modifiers['army_attack_pct'] ?? 0) + traits.attackPct) / 100);
 }
 
 function defenseValue(
@@ -58,7 +61,9 @@ function defenseValue(
   const terrainBonus = 1 + (content.balance.military.terrainDefense[terrain] ?? 0);
   const general = army.general ? content.generals.get(army.general) : undefined;
   const command = 1 + (general?.defense ?? 0) * 0.015;
-  return base * quality * terrainBonus * command * (1 + (modifiers['army_defense_pct'] ?? 0) / 100);
+  const traits = generalTraitBonus(general?.traits ?? []);
+  return base * quality * terrainBonus * command
+    * (1 + ((modifiers['army_defense_pct'] ?? 0) + traits.defensePct) / 100);
 }
 
 function friendlyRetreat(state: GameState, content: ContentIndex, army: ArmyState): string | null {
@@ -185,6 +190,34 @@ function captureProvince(state: GameState, content: ContentIndex, army: ArmyStat
   }
 }
 
+function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): boolean {
+  const current = state.provinces[army.province];
+  const def = content.provinces.get(army.province);
+  if (!current || !def) return false;
+  if (def.isPort && (current.controller === army.tag || current.owner === army.tag)) return true;
+  if (current.controller !== army.tag && current.owner !== army.tag) return false;
+  const capital = state.countries[army.tag]?.capital;
+  if (!capital) return false;
+  if (army.province === capital) return true;
+  const queue = [army.province];
+  const seen = new Set(queue);
+  while (queue.length > 0) {
+    const id = queue.shift();
+    if (!id) continue;
+    const provinceDef = content.provinces.get(id);
+    if (!provinceDef) continue;
+    for (const neighbor of provinceDef.neighbors) {
+      if (seen.has(neighbor)) continue;
+      const province = state.provinces[neighbor];
+      if (!province || (province.controller !== army.tag && province.owner !== army.tag)) continue;
+      if (neighbor === capital) return true;
+      seen.add(neighbor);
+      queue.push(neighbor);
+    }
+  }
+  return false;
+}
+
 export function advanceArmies(state: GameState, content: ContentIndex): void {
   for (const army of Object.values(state.armies)) {
     if (!state.armies[army.id]) continue;
@@ -192,17 +225,35 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
     if (!nation?.alive) continue;
     const currentDef = content.provinces.get(army.province);
     if (!currentDef) continue;
+    const armyGeneral = army.general ? content.generals.get(army.general) : undefined;
+    const armyTraits = generalTraitBonus(armyGeneral?.traits ?? []);
 
-    const friendly = state.provinces[army.province]?.controller === army.tag
-      || state.provinces[army.province]?.owner === army.tag;
-    if (friendly) {
+    if (army.embarked) {
+      army.stance = 'move';
+      army.navalProgress = (army.navalProgress ?? 0) + 1 / 3;
+      if (army.navalProgress >= 1) {
+        const target = army.navalTarget;
+        if (target && state.provinces[target]) {
+          army.history = [...army.history, army.province].slice(-8);
+          army.province = target;
+        }
+        army.embarked = false;
+        army.navalTarget = null;
+        army.navalProgress = 0;
+        army.stance = 'hold';
+      }
+      continue;
+    }
+
+    const supplied = isSupplied(state, content, army);
+    if (supplied) {
       army.supply = clamp(army.supply + content.balance.military.supplyRecovery, 0, 100);
     } else {
       army.supply = clamp(army.supply - content.balance.military.supplyDecay, 0, 100);
     }
     if (army.supply < 20) army.organization = clamp(army.organization - 0.5, 0, 100);
     if (army.stance !== 'battle' && army.supply > 40) {
-      army.organization = clamp(army.organization + 0.25, 0, 100);
+      army.organization = clamp(army.organization + 0.25 * (1 + armyTraits.organizationPct / 100), 0, 100);
     }
 
     if (army.movePath.length > 0) {
@@ -213,7 +264,10 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
         continue;
       }
       const nextDef = content.provinces.get(next);
-      const cost = content.balance.military.movementCost[nextDef?.terrain ?? 'plains'] ?? 1;
+      const general = army.general ? content.generals.get(army.general) : undefined;
+      const traits = generalTraitBonus(general?.traits ?? []);
+      const cost = (content.balance.military.movementCost[nextDef?.terrain ?? 'plains'] ?? 1)
+        * Math.max(0.55, 1 - traits.movePct / 100);
       army.stance = 'move';
       army.moveProgress += 1 / (2 * cost);
       if (army.moveProgress >= 1) {
@@ -246,7 +300,9 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
         : { attacker: army.tag, progress: 0, days: 0 };
       province.siege = siege;
       const artillery = army.composition.artillery;
-      const siegeSpeed = 8 + artillery / 120;
+      const general = army.general ? content.generals.get(army.general) : undefined;
+      const traits = generalTraitBonus(general?.traits ?? []);
+      const siegeSpeed = (8 + artillery / 120) * (1 + traits.siegePct / 100);
       siege.progress += siegeSpeed;
       siege.days += 1;
       if (siege.progress >= currentDef.fortLevel * 100) {
@@ -287,6 +343,9 @@ export function recruitArmy(
     history: [],
     movePath: [],
     moveProgress: 0,
+    embarked: false,
+    navalTarget: null,
+    navalProgress: 0,
     composition: {
       infantry: template.composition.infantry * size,
       firearm: template.composition.firearm * size,

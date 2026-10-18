@@ -51,6 +51,17 @@ const CULTURES: Record<string, string> = {
   jurchen: '女真',
 };
 
+const LEADER_EFFECTS: Record<string, string> = {
+  taxEfficiencyPct: '税收效率',
+  tradeEfficiencyPct: '贸易效率',
+  stabilityMonthly: '稳定',
+  corruptionMonthly: '腐败',
+  mandateMonthly: '天命',
+  armyAttackPct: '陆军攻击',
+  armyDefensePct: '陆军防御',
+  armyUpkeepPct: '军费',
+};
+
 function fallbackLeader(name: string, color: string): LeaderDef {
   return {
     name,
@@ -127,6 +138,25 @@ export function CountryPanel() {
           <h3>{leader.name}</h3>
           <p className="leader-trait">{leader.trait}</p>
           {leader.quote && <blockquote className="leader-quote">“{leader.quote}”</blockquote>}
+          {leader.effects && Object.keys(leader.effects).length > 0 && (
+            <div className="leader-effects">
+              {Object.entries(leader.effects).map(([key, value]) => (
+                <span key={key} className={value >= 0 ? 'good' : 'danger'}>
+                  {LEADER_EFFECTS[key] ?? key} {value >= 0 ? '+' : ''}{value}{key.endsWith('Monthly') ? '/月' : '%'}
+                </span>
+              ))}
+            </div>
+          )}
+          {leader.timeline && leader.timeline.length > 0 && (
+            <details className="leader-timeline">
+              <summary>生平时间线</summary>
+              <ol>
+                {leader.timeline.map(entry => (
+                  <li key={`${entry.year}-${entry.text}`}><b>{entry.year}</b><span>{entry.text}</span></li>
+                ))}
+              </ol>
+            </details>
+          )}
         </div>
       </section>
 

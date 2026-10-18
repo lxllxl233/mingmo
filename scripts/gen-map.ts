@@ -97,7 +97,16 @@ const KEY_FORTS = new Set([
 ]);
 
 const KEY_CAPITALS = new Set(['beijing', 'nanjing', 'xian', 'shenyang', 'edo', 'hanseong', 'lhasa']);
-const PORT_SEATS = new Set(['quanzhou', 'ningbo', 'guangzhou', 'nagasaki', 'hakata', 'anping', 'penghu', 'songjiang']);
+const PORT_SEATS = new Set([
+  'quanzhou', 'ningbo', 'guangzhou', 'nagasaki', 'hakata', 'anping', 'penghu',
+  'songjiang', 'fuzhou', 'tamsui',
+]);
+const SEA_ROUTES = [
+  { from: 'fuzhou', to: 'anping', name: '台湾海峡' },
+  { from: 'quanzhou', to: 'penghu', name: '泉州—澎湖' },
+  { from: 'penghu', to: 'anping', name: '澎湖—安平' },
+  { from: 'tamsui', to: 'fuzhou', name: '淡水—福州' },
+];
 
 function keyOf(point: Point): string {
   return `${point[0].toFixed(3)},${point[1].toFixed(3)}`;
@@ -248,6 +257,11 @@ function main(): void {
       }
     }
   }
+  for (const route of SEA_ROUTES) {
+    if (!neighbors.has(route.from) || !neighbors.has(route.to)) continue;
+    neighbors.get(route.from)?.push(route.to);
+    neighbors.get(route.to)?.push(route.from);
+  }
   for (const seed of seeds) {
     const list = neighbors.get(seed.id) ?? [];
     if (list.length === 0) {
@@ -307,6 +321,7 @@ function main(): void {
       terrain,
       coastal,
       river,
+      is_port: PORT_SEATS.has(seed.id),
       fort,
       fort_level: fortLevel,
       population,
@@ -339,10 +354,6 @@ function main(): void {
     }
     return { name: region.name, points: best ? best[0] ?? [] : [] };
   }).filter(region => region.points.length >= 3);
-  otherRegions.push({
-    name: '西伯利亚',
-    points: [[69, 55], [151, 55], [151, 56], [69, 56]],
-  });
 
   const geo = {
     version: 1,
@@ -351,6 +362,7 @@ function main(): void {
     land: PLAYABLE_LAND,
     otherRegions,
     seaLabels: SEA_LABELS,
+    seaRoutes: SEA_ROUTES,
     provinces: Object.fromEntries(
       seeds.map(seed => [
         seed.id,

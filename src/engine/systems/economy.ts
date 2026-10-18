@@ -153,6 +153,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     nation.corruption = clamp(
       nation.corruption + content.balance.economy.corruptionDrift
+      + (modifiers['corruption_monthly'] ?? 0)
       + ((officials?.loyalty ?? 50) < 30 ? 0.12 : 0)
       - nation.authority / 1000,
       0,
@@ -161,13 +162,18 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     nation.stability = clamp(
       nation.stability
       + content.balance.economy.stabilityDrift
+      + (modifiers['stability_monthly'] ?? 0)
       + (nation.treasury > 0 ? 0.03 : -0.12)
       + (foodShortage ? -0.2 : 0.01)
       - nation.warExhaustion / 800,
       0,
       100,
     );
-    nation.mandate = clamp(nation.mandate + (nation.stability - 50) / 500, 0, 100);
+    nation.mandate = clamp(
+      nation.mandate + (nation.stability - 50) / 500 + (modifiers['mandate_monthly'] ?? 0),
+      0,
+      100,
+    );
     nation.inflation = clamp(nation.inflation - 0.04, 0, 100);
 
     const arrearsMonths = armyPay > 0 ? nation.arrears / armyPay : 0;

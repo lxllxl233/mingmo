@@ -17,6 +17,7 @@ export type Command =
   | { type: 'decision.take'; decisionId: string }
   | { type: 'army.recruit'; province: string; template: string; size: number }
   | { type: 'army.move'; armyId: string; path: string[] }
+  | { type: 'army.navalMove'; armyId: string; portId: string }
   | { type: 'army.stop'; armyId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
@@ -84,17 +85,48 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     case 'decision.take':
       takeDecision(state, content, command.decisionId);
       break;
-    case 'army.recruit':
+    case 'army.recruit': {
+      const template = content.armyTemplates.get(command.template);
+      const province = content.provinces.get(command.province);
+      if (template && template.composition.naval > 0 && !province?.isPort) {
+        throw new CommandError('warships require a port');
+      }
       if (!recruitArmy(state, content, tag, command.province, command.template, command.size)) {
         throw new CommandError('recruitment failed');
       }
       break;
+    }
     case 'army.move':
       if (state.armies[command.armyId]?.tag !== tag) throw new CommandError('army not found');
       if (!setArmyPath(state, content, command.armyId, command.path)) {
         throw new CommandError('invalid army path');
       }
       break;
+    case 'army.navalMove': {
+      const army = state.armies[command.armyId];
+      if (!army || army.tag !== tag) throw new CommandError('army not found');
+      const origin = content.provinces.get(army.province);
+      const target = content.provinces.get(command.portId);
+      if (!origin?.isPort || !target?.isPort || command.portId === army.province) {
+        throw new CommandError('naval move requires two ports');
+      }
+      const fleet = Object.values(state.armies).some(entry =>
+        entry.tag === tag && entry.province === army.province && entry.composition.naval > 0);
+      if (!fleet) throw new CommandError('no warships in port');
+      army.embarked = true;
+      army.navalTarget = command.portId;
+      army.navalProgress = 0;
+      army.movePath = [];
+      army.stance = 'move';
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: tag,
+        text: `${army.name} 由 ${origin.name} 登船，驶向 ${target.name}`,
+        severity: 'info',
+      });
+      break;
+    }
     case 'army.assignGeneral': {
       const army = state.armies[command.armyId];
       if (!army || army.tag !== tag) throw new CommandError('army not found');
@@ -121,6 +153,9 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       const army = state.armies[command.armyId];
       if (!army || army.tag !== tag) throw new CommandError('army not found');
       army.movePath = [];
+      army.embarked = false;
+      army.navalTarget = null;
+      army.navalProgress = 0;
       army.stance = 'hold';
       break;
     }

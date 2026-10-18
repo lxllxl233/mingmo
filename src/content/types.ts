@@ -125,6 +125,7 @@ export interface ProvinceDef {
   terrain: Terrain;
   isCoastal: boolean;
   isRiver: boolean;
+  isPort: boolean;
   isFort: boolean;
   fortLevel: number;
   population: number;
@@ -160,11 +161,19 @@ export interface LeaderDef {
   hair: string;
   robe: string;
   accent: string;
+  effects?: Record<string, number>;
+  timeline?: Array<{ year: number; text: string }>;
 }
 
 export interface LeaderEntry extends LeaderDef {
   tag: CountryTag;
   scenario: string;
+}
+
+export interface LeaderProfile {
+  name: string;
+  effects: Record<string, number>;
+  timeline: Array<{ year: number; text: string }>;
 }
 
 export interface CountryDef {
@@ -439,6 +448,7 @@ export interface MapGeo {
   land: Array<Array<[number, number]>>;
   otherRegions: Array<{ name: string; points: Array<[number, number]> }>;
   seaLabels: Array<{ name: string; lon: number; lat: number }>;
+  seaRoutes: Array<{ from: ProvinceId; to: ProvinceId; name: string }>;
 }
 
 export interface ContentIndex {

@@ -56,34 +56,15 @@ const raw = JSON.parse(
 const collection = feature(raw, raw.objects.countries) as FeatureCollection;
 const features = collection.features;
 
-const PLAYABLE_NAMES = new Set(['China', 'Mongolia', 'North Korea', 'South Korea', 'Japan', 'Taiwan', 'Russia']);
-const OTHER_NAMES: Record<string, string> = {
-  India: '印度',
-  Vietnam: '越南',
-  Laos: '老挝',
-  Cambodia: '柬埔寨',
-  Thailand: '泰国',
-  Myanmar: '缅甸',
-  Malaysia: '马来亚',
-  Indonesia: '东印度群岛',
-  Philippines: '吕宋',
+const PLAYABLE_NAMES = new Set([
+  'China', 'Mongolia', 'North Korea', 'South Korea', 'Japan', 'Taiwan', 'Russia',
+  'Vietnam', 'Laos', 'Cambodia', 'Thailand', 'Myanmar',
+]);
+const OTHER_GROUPS: Record<string, string[]> = {
+  中亚: ['Kazakhstan', 'Uzbekistan', 'Turkmenistan', 'Kyrgyzstan', 'Tajikistan', 'Afghanistan'],
+  南亚: ['India', 'Pakistan', 'Bangladesh', 'Nepal', 'Bhutan', 'Sri Lanka'],
+  南洋: ['Malaysia', 'Indonesia', 'Philippines', 'Brunei'],
 };
-
-function featuresToRegions(names: Set<string> | null): AtlasRegion[] {
-  const regions: AtlasRegion[] = [];
-  for (const item of features) {
-    const name = typeof item.properties?.['name'] === 'string' ? item.properties['name'] : '';
-    if (!name) continue;
-    if (names && !names.has(name)) continue;
-    if (!names && !(name in OTHER_NAMES)) continue;
-    if (!item.geometry) continue;
-    const clipped = clipToBounds(geometryToMulti(item.geometry));
-    const polygons = clipped.filter(polygon => polygon[0] && Math.abs(polygonArea(polygon[0])) > 0.02);
-    if (polygons.length === 0) continue;
-    regions.push({ name: names ? name : OTHER_NAMES[name] ?? name, polygons });
-  }
-  return regions;
-}
 
 function polygonArea(ring: AtlasRing): number {
   let sum = 0;
@@ -96,8 +77,39 @@ function polygonArea(ring: AtlasRing): number {
   return sum / 2;
 }
 
+const countryGeometry = new Map<string, AtlasMultiPolygon>();
+for (const item of features) {
+  const name = typeof item.properties?.['name'] === 'string' ? item.properties['name'] : '';
+  if (!name || !item.geometry) continue;
+  countryGeometry.set(name, clipToBounds(geometryToMulti(item.geometry)));
+}
+
+function featuresToRegions(names: Set<string>): AtlasRegion[] {
+  const regions: AtlasRegion[] = [];
+  for (const name of names) {
+    const polygons = (countryGeometry.get(name) ?? [])
+      .filter(polygon => polygon[0] && Math.abs(polygonArea(polygon[0])) > 0.02);
+    if (polygons.length > 0) regions.push({ name, polygons });
+  }
+  return regions;
+}
+
+function unionGroup(names: string[]): AtlasRegion | null {
+  const all = names.flatMap(name => countryGeometry.get(name) ?? []);
+  const first = all[0];
+  if (!first) return null;
+  const merged = all.length === 1 ? [first] : polygonClipping.union(first, ...all.slice(1));
+  const polygons = merged.filter(polygon => polygon[0] && Math.abs(polygonArea(polygon[0])) > 0.02);
+  return polygons.length > 0 ? { name: '', polygons } : null;
+}
+
 export const PLAYABLE_ATLAS = featuresToRegions(PLAYABLE_NAMES);
-export const OTHER_ATLAS = featuresToRegions(null);
+export const OTHER_ATLAS: AtlasRegion[] = Object.entries(OTHER_GROUPS)
+  .map(([name, countries]) => {
+    const region = unionGroup(countries);
+    return region ? { ...region, name } : null;
+  })
+  .filter((region): region is AtlasRegion => region !== null);
 
 export const PLAYABLE_MULTI: AtlasPolygon[] = PLAYABLE_ATLAS.flatMap(region => region.polygons);
 export const PLAYABLE_LAND: AtlasRing[] = PLAYABLE_MULTI

@@ -85,15 +85,19 @@ export class MapRenderer {
   private otherLayer = new Graphics();
   private seaLabelLayer = new Container();
   private otherLabelLayer = new Container();
+  private landLayer = new Graphics();
   private shadowLayer = new Graphics();
   private fillLayer = new Graphics();
   private terrainLayer = new Graphics();
   private selectionLayer = new Graphics();
   private provinceBorderLayer = new Graphics();
   private countryBorderLayer = new Graphics();
+  private seaRouteLayer = new Graphics();
   private trailLayer = new Graphics();
   private hoverLayer = new Graphics();
   private cityLayer = new Graphics();
+  private portLayer = new Graphics();
+  private portLabelLayer = new Container();
   private countryLabelLayer = new Container();
   private armyLayer = new Container();
   private projected = new Map<string, number[]>();
@@ -101,6 +105,7 @@ export class MapRenderer {
   private edges: EdgeRecord[] = [];
   private countryLabels = new Map<string, Text>();
   private smallLabels = new Set<Text>();
+  private portLabels = new Set<Text>();
   private armyMarkers = new Map<string, ArmyMarker>();
   private state: GameState | null = null;
   private selectedProvince: string | null = null;
@@ -150,24 +155,55 @@ export class MapRenderer {
       this.otherLayer,
       this.seaLabelLayer,
       this.otherLabelLayer,
+      this.landLayer,
       this.shadowLayer,
       this.fillLayer,
       this.terrainLayer,
       this.provinceBorderLayer,
       this.countryBorderLayer,
+      this.seaRouteLayer,
       this.selectionLayer,
       this.hoverLayer,
       this.cityLayer,
+      this.portLayer,
+      this.countryLabelLayer,
+      this.portLabelLayer,
       this.trailLayer,
       this.armyLayer,
-      this.countryLabelLayer,
     );
     app.stage.addChild(this.world);
     this.prepareGeometry();
     this.drawOtherRegions();
+    this.drawLandBase();
     this.drawTerrain();
+    this.drawSeaRoutes();
+    this.drawPorts();
     this.fit();
     this.bindPointer();
+  }
+
+  private drawLandBase(): void {
+    this.landLayer.clear();
+    const japanColor = this.colorOf('JAPAN');
+    for (const polygon of this.geo.land) {
+      const points: number[] = [];
+      let lonSum = 0;
+      let latSum = 0;
+      for (const [lon, lat] of polygon) {
+        const point = this.projectPoint(lon, lat);
+        points.push(point.x, point.y);
+        lonSum += lon;
+        latSum += lat;
+      }
+      if (points.length < 6) continue;
+      const count = points.length / 2;
+      const avgLon = lonSum / count;
+      const avgLat = latSum / count;
+      const japan = avgLon >= 129 && avgLon <= 146 && avgLat >= 30 && avgLat <= 46;
+      this.landLayer.poly(points)
+        .fill({ color: japan ? japanColor : 0xd8d0bd, alpha: japan ? 0.72 : 1 })
+        .stroke({ width: 0.05, color: japan ? 0x3a2a4a : 0x9a8f7a, alpha: 0.6 });
+    }
   }
 
   private projectPoint(lon: number, lat: number): { x: number; y: number } {
@@ -178,8 +214,7 @@ export class MapRenderer {
 
   private drawOtherRegions(): void {
     this.otherLayer.clear();
-    for (const region of this.geo.otherRegions) {
-      const points: number[] = [];
+    for (const region of this.geo.otherRegions) {      const points: number[] = [];
       let x = 0;
       let y = 0;
       for (const [lon, lat] of region.points) {
@@ -238,6 +273,59 @@ export class MapRenderer {
       if (tint) this.terrainLayer.poly(points).fill({ color: tint.color, alpha: tint.alpha });
       const centroid = this.centroids.get(id);
       if (centroid) this.drawTerrainSymbol(centroid.x, centroid.y, terrain);
+    }
+  }
+
+  private drawSeaRoutes(): void {
+    this.seaRouteLayer.clear();
+    for (const route of this.geo.seaRoutes) {
+      const from = this.centroids.get(route.from);
+      const to = this.centroids.get(route.to);
+      if (!from || !to) continue;
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const length = Math.hypot(dx, dy);
+      if (length < 0.2) continue;
+      const dash = 0.32;
+      const gap = 0.24;
+      for (let offset = 0; offset < length; offset += dash + gap) {
+        const start = offset / length;
+        const end = Math.min(length, offset + dash) / length;
+        this.seaRouteLayer.moveTo(from.x + dx * start, from.y + dy * start)
+          .lineTo(from.x + dx * end, from.y + dy * end)
+          .stroke({ width: 0.09, color: 0x3f6f8a, alpha: 0.8 });
+      }
+    }
+  }
+
+  private drawPorts(): void {
+    this.portLayer.clear();
+    for (const label of this.portLabels) label.destroy();
+    this.portLabels.clear();
+    this.portLabelLayer.removeChildren();
+    for (const [id, centroid] of this.centroids) {
+      const def = this.content.provinces.get(id);
+      if (!def?.isPort) continue;
+      this.portLayer.circle(centroid.x, centroid.y, 0.19)
+        .fill({ color: 0xf2ead8, alpha: 0.95 })
+        .stroke({ width: 0.06, color: 0x2b4a6f, alpha: 0.95 });
+      this.portLayer.moveTo(centroid.x, centroid.y - 0.13)
+        .lineTo(centroid.x, centroid.y + 0.13)
+        .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 1 });
+      this.portLayer.moveTo(centroid.x - 0.12, centroid.y - 0.03)
+        .lineTo(centroid.x + 0.12, centroid.y - 0.03)
+        .stroke({ width: 0.05, color: 0x2b4a6f, alpha: 1 });
+      const text = new Text({
+        text: '港',
+        style: new TextStyle({ fontFamily: 'serif', fontSize: 48, fill: 0x2b4a6f }),
+      });
+      text.anchor.set(0.5);
+      text.scale.set(0.5 / 48);
+      text.position.set(centroid.x + 0.35, centroid.y - 0.3);
+      text.visible = this.world.scale.x >= 13.5;
+      text.eventMode = 'none';
+      this.portLabelLayer.addChild(text);
+      this.portLabels.add(text);
     }
   }
 
@@ -396,6 +484,9 @@ export class MapRenderer {
       marker.container.scale.set(markerScale * marker.stackScale);
     }
     for (const label of this.smallLabels) {
+      label.visible = scale >= 13.5;
+    }
+    for (const label of this.portLabels) {
       label.visible = scale >= 13.5;
     }
   }
@@ -691,6 +782,14 @@ export class MapRenderer {
       const color = this.colorOf(army.tag);
       const history = this.positions([...(army.history ?? []), army.province]);
       const planned = this.positions([army.province, ...army.movePath]);
+      if (selected && army.embarked && army.navalTarget) {
+        const from = this.centroids.get(army.province);
+        const to = this.centroids.get(army.navalTarget);
+        if (from && to) {
+          this.strokeTrail([from, to], 0.24, 0x3f7f9a, 0.75);
+          this.trailLayer.circle(to.x, to.y, 0.1).fill({ color: 0x3f7f9a, alpha: 0.9 });
+        }
+      }
       if (selected && history.length > 1) {
         this.strokeTrail(history, 0.18, 0x1f1c18, 0.4);
         this.strokeTrail(history, 0.1, 0xf2ead8, 0.7);

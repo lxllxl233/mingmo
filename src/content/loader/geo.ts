@@ -7,6 +7,7 @@ export interface RawMapGeo {
   land?: number[][][];
   otherRegions?: Array<{ name: string; points: number[][] }>;
   seaLabels?: Array<{ name: string; lon: number; lat: number }>;
+  seaRoutes?: Array<{ from: string; to: string; name: string }>;
 }
 
 export function toMapGeo(raw: RawMapGeo): MapGeo {
@@ -45,5 +46,6 @@ export function toMapGeo(raw: RawMapGeo): MapGeo {
     land,
     otherRegions,
     seaLabels: raw.seaLabels ?? [],
+    seaRoutes: raw.seaRoutes ?? [],
   };
 }

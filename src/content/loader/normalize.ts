@@ -48,6 +48,7 @@ export function normalizeProvince(raw: unknown, file: string, index: number): Pr
     terrain: object['terrain'] as ProvinceDef['terrain'],
     isCoastal: Boolean(object['coastal']),
     isRiver: Boolean(object['river']),
+    isPort: Boolean(object['is_port']),
     isFort: Boolean(object['fort']),
     fortLevel: Number(object['fort_level']),
     population: Number(object['population']),

@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import type { General } from '../../content/types';
 import type { ArmyState } from '../../engine/state/types';
+import { GENERAL_TRAIT_INFO, generalTraitBonus } from '../../engine/rules/generalTraits';
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 import { GeneralPortrait } from './GeneralPortrait';
@@ -23,11 +25,16 @@ export function ArmyPanel() {
   const selectArmy = useGameStore(state => state.selectArmy);
   const openPanel = useGameStore(state => state.openPanel);
   const command = useGameStore(state => state.command);
+  const [navalTarget, setNavalTarget] = useState('');
   if (!game || !selectedArmy) return null;
   const army = game.armies[selectedArmy];
   if (!army || army.tag !== game.playerTag) return null;
   const def = content.countries.get(army.tag);
   const province = content.provinces.get(army.province);
+  const ports = [...content.provinces.values()].filter(entry =>
+    entry.isPort && entry.id !== army.province);
+  const fleetPresent = Object.values(game.armies).some(entry =>
+    entry.tag === army.tag && entry.province === army.province && entry.composition.naval > 0);
   const general = army.general ? content.generals.get(army.general) ?? null : null;
   const assigned = new Set(
     Object.values(game.armies)
@@ -37,6 +44,7 @@ export function ArmyPanel() {
   const available: General[] = [...content.generals.values()].filter(candidate =>
     candidate.country === army.tag && !assigned.has(candidate.id));
   const strength = strengthOf(army);
+  const traitBonus = generalTraitBonus(general?.traits ?? []);
   const target = army.movePath.length > 0
     ? content.provinces.get(army.movePath[army.movePath.length - 1] ?? '')?.name ?? ''
     : null;
@@ -68,6 +76,23 @@ export function ArmyPanel() {
               <span>攻城 {general.siege}</span>
               <span>忠诚 {general.loyalty}</span>
             </div>
+          )}
+          {general && general.traits.length > 0 && (
+            <div className="general-traits">
+              {general.traits.map(trait => (
+                <span key={trait} title={GENERAL_TRAIT_INFO[trait]?.desc ?? '将领特质'}>
+                  {trait}
+                  {GENERAL_TRAIT_INFO[trait] && (
+                    <small>{GENERAL_TRAIT_INFO[trait].desc}</small>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+          {general && (traitBonus.attackPct !== 0 || traitBonus.defensePct !== 0) && (
+            <p className="muted">
+              特质战斗修正：攻击 {traitBonus.attackPct >= 0 ? '+' : ''}{traitBonus.attackPct}% · 防御 {traitBonus.defensePct >= 0 ? '+' : ''}{traitBonus.defensePct}%
+            </p>
           )}
         </div>
       </section>
@@ -114,6 +139,36 @@ export function ArmyPanel() {
         {history.length > 0 && <p className="muted">{history.join(' → ')} → {province?.name ?? army.province}</p>}
         {target && <p className="muted">当前目标：{target}</p>}
       </section>
+
+      {province?.isPort && (
+        <section>
+          <h3 className="section-title">海运</h3>
+          {army.embarked ? (
+            <p className="muted">
+              已登船，驶向 {content.provinces.get(army.navalTarget ?? '')?.name ?? '目标港口'}（{Math.round((army.navalProgress ?? 0) * 100)}%）
+            </p>
+          ) : (
+            <>
+              {!fleetPresent && <p className="muted">需要在本港建造战船，才能护送陆军海运。</p>}
+              <div className="naval-row">
+                <select value={navalTarget} onChange={event => setNavalTarget(event.target.value)}>
+                  <option value="">选择目标港口</option>
+                  {ports.map(port => (
+                    <option key={port.id} value={port.id}>{port.name}</option>
+                  ))}
+                </select>
+                <button
+                  className="primary"
+                  disabled={!fleetPresent || !navalTarget}
+                  onClick={() => command({ type: 'army.navalMove', armyId: army.id, portId: navalTarget })}
+                >
+                  登船海运
+                </button>
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       <footer className="panel-actions">
         <button className="primary" onClick={() => openPanel('military')}>军事列表</button>

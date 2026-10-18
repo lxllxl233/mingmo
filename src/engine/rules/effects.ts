@@ -39,6 +39,9 @@ function spawnArmy(
     history: [],
     movePath: [],
     moveProgress: 0,
+    embarked: false,
+    navalTarget: null,
+    navalProgress: 0,
     composition: {
       infantry: template.composition.infantry * size,
       firearm: template.composition.firearm * size,

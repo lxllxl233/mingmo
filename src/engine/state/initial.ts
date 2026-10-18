@@ -134,6 +134,14 @@ export function createInitialState(
       monthlyHistory: [],
       lastReport: null,
     };
+    const leader = def.leadersByScenario?.[scenario.id] ?? def.leader;
+    const nation = countries[def.tag];
+    if (nation && leader?.effects) {
+      for (const [key, value] of Object.entries(leader.effects)) {
+        const modifierKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+        nation.modifiers[modifierKey] = (nation.modifiers[modifierKey] ?? 0) + value;
+      }
+    }
   }
 
   const armies: Record<string, ArmyState> = {};
@@ -156,6 +164,9 @@ export function createInitialState(
       history: [],
       movePath: [],
       moveProgress: 0,
+      embarked: false,
+      navalTarget: null,
+      navalProgress: 0,
       composition: {
         infantry: template.composition.infantry * entry.size,
         firearm: template.composition.firearm * entry.size,

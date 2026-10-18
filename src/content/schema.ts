@@ -36,6 +36,7 @@ export const provinceSchema = z.object({
   terrain: z.enum(['plains', 'hills', 'mountains', 'wetland', 'desert', 'steppe', 'jungle', 'urban']),
   isCoastal: z.boolean(),
   isRiver: z.boolean(),
+  isPort: z.boolean().default(false),
   isFort: z.boolean(),
   fortLevel: z.number().int().min(0).max(10),
   population: z.number().int().min(0),
@@ -81,6 +82,8 @@ export const leaderSchema = z.object({
   hair: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   robe: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  effects: z.record(z.number()).optional().default({}),
+  timeline: z.array(z.object({ year: z.number().int(), text: z.string().min(1).max(80) })).optional().default([]),
 }).strict();
 
 export const countrySchema = z.object({
@@ -103,6 +106,12 @@ export const countrySchema = z.object({
 export const leaderEntrySchema = leaderSchema.extend({
   tag,
   scenario: z.string().min(1).max(12),
+}).strict();
+
+export const leaderProfileSchema = z.object({
+  name: z.string().min(1).max(24),
+  effects: z.record(z.number()).default({}),
+  timeline: z.array(z.object({ year: z.number().int(), text: z.string().min(1).max(80) })).default([]),
 }).strict();
 
 export const estateDefSchema = z.object({
