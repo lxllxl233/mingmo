@@ -7,6 +7,7 @@
   --red-soft: #c46a2b;
   --blue: #2b4a6f;
   --gold: #b8892e;
+  --accent: var(--gold);
   --green: #3f6b3a;
   --line: rgba(31, 28, 24, 0.18);
   --danger: #a12b22;
@@ -218,3 +219,32 @@ input, select {
 .pill.danger { color: var(--danger); border-color: var(--danger); }
 .pill.warn { color: var(--warn); border-color: var(--warn); }
 .pill.good { color: var(--good); border-color: var(--good); }
+
+.country-panel { overflow-y: auto; }
+.country-panel .panel-head { position: sticky; top: 0; background: var(--paper); z-index: 2; padding-bottom: 8px; }
+.leader-card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px;
+  margin: 4px 0 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.32);
+}
+.leader-info { min-width: 0; }
+.leader-info h3 { margin: 2px 0 4px; font-size: 20px; letter-spacing: 0.08em; }
+.eyebrow { margin: 0; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.14em; }
+.leader-trait { margin: 0 0 6px; font-size: 13px; color: var(--ink-soft); }
+.leader-quote { margin: 6px 0 0; padding-left: 8px; border-left: 2px solid var(--accent); font-size: 12px; line-height: 1.6; color: #5b4a38; }
+.country-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; margin: 10px 0 14px; }
+.country-stat { display: flex; flex-direction: column; gap: 2px; padding: 6px 8px; background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(31, 28, 24, 0.12); }
+.country-stat span { font-size: 10px; color: var(--ink-soft); letter-spacing: 0.08em; }
+.country-stat strong { font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.section-title { margin: 14px 0 6px; font-size: 14px; letter-spacing: 0.12em; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.estate-mini { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; padding: 5px 0; font-size: 12px; border-bottom: 1px dashed rgba(31, 28, 24, 0.12); }
+.estate-mini .muted { font-size: 11px; }
+.estate-bar { grid-column: 1 / -1; height: 4px; background: rgba(31, 28, 24, 0.12); overflow: hidden; }
+.estate-bar i { display: block; height: 100%; background: var(--accent); }
+.war-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed rgba(31, 28, 24, 0.12); font-size: 12px; }
+.war-row button { margin-left: auto; }
+.panel-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line); }

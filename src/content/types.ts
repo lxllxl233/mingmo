@@ -150,6 +150,23 @@ export interface CountryStarting {
   currency?: string;
 }
 
+export interface LeaderDef {
+  name: string;
+  title: string;
+  style: 'emperor' | 'khan' | 'shogun' | 'king' | 'lama' | 'director' | 'tsar' | 'rebel' | 'general';
+  trait: string;
+  quote?: string;
+  skin: string;
+  hair: string;
+  robe: string;
+  accent: string;
+}
+
+export interface LeaderEntry extends LeaderDef {
+  tag: CountryTag;
+  scenario: string;
+}
+
 export interface CountryDef {
   tag: CountryTag;
   name: string;
@@ -163,6 +180,8 @@ export interface CountryDef {
   factions: string[];
   uniqueMechanic: string;
   starting: CountryStarting;
+  leader?: LeaderDef;
+  leadersByScenario?: Record<string, LeaderDef>;
 }
 
 export interface EstateDef {

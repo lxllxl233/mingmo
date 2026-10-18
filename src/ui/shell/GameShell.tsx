@@ -5,6 +5,7 @@ import { useGameStore, type PanelKey } from '../state/store';
 import { TopBar } from './TopBar';
 import { MapViewport } from './MapViewport';
 import { ProvincePanel } from '../panels/ProvincePanel';
+import { CountryPanel } from '../panels/CountryPanel';
 import { EstatesPanel } from '../panels/EstatesPanel';
 import { BudgetPanel } from '../panels/BudgetPanel';
 import { FocusPanel } from '../panels/FocusPanel';
@@ -95,6 +96,7 @@ export function GameShell() {
         <MapViewport />
         <aside className="right-panel">
           {panel === 'province' && <ProvincePanel />}
+          {panel === 'country' && <CountryPanel />}
           {panel === 'estates' && <EstatesPanel />}
           {panel === 'budget' && <BudgetPanel />}
           {panel === 'military' && <MilitaryPanel />}

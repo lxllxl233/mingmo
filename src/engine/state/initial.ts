@@ -153,6 +153,7 @@ export function createInitialState(
       tag: entry.tag,
       name: `${country.name} ${template.name}`,
       province: entry.province,
+      history: [],
       movePath: [],
       moveProgress: 0,
       composition: {

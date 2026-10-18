@@ -11,6 +11,7 @@ import { sound } from '../../app/audio/sound';
 
 export type PanelKey =
   | 'province'
+  | 'country'
   | 'estates'
   | 'budget'
   | 'focus'
@@ -20,12 +21,33 @@ export type PanelKey =
   | 'decisions'
   | 'log';
 
+function findPath(content: ContentIndex, from: string, to: string): string[] | null {
+  if (from === to) return [];
+  const queue: Array<{ id: string; path: string[] }> = [{ id: from, path: [] }];
+  const seen = new Set([from]);
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current) break;
+    const def = content.provinces.get(current.id);
+    if (!def) continue;
+    for (const next of def.neighbors) {
+      if (seen.has(next)) continue;
+      seen.add(next);
+      const path = [...current.path, next];
+      if (next === to) return path;
+      if (path.length < 80) queue.push({ id: next, path });
+    }
+  }
+  return null;
+}
+
 interface UiStore {
   content: ContentIndex;
   game: GameState | null;
   version: number;
   speed: 0 | 1 | 2 | 4;
   panel: PanelKey | null;
+  countryFocus: string | null;
   selectedProvince: string | null;
   selectedArmy: string | null;
   message: string | null;
@@ -35,6 +57,8 @@ interface UiStore {
   setSpeed: (speed: 0 | 1 | 2 | 4) => void;
   selectProvince: (provinceId: string | null) => void;
   selectArmy: (armyId: string | null) => void;
+  openCountry: (tag: string) => void;
+  moveArmyTo: (provinceId: string) => boolean;
   openPanel: (panel: PanelKey) => void;
   closePanel: () => void;
   dismissMessage: () => void;
@@ -49,6 +73,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   version: 0,
   speed: 0,
   panel: null,
+  countryFocus: null,
   selectedProvince: null,
   selectedArmy: null,
   message: null,
@@ -61,6 +86,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       version: 0,
       speed: 0,
       panel: null,
+      countryFocus: null,
       selectedProvince: game.countries[tag]?.capital ?? null,
       selectedArmy: null,
       message: null,
@@ -114,11 +140,32 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ selectedProvince: provinceId });
       return;
     }
-    set({ selectedProvince: provinceId, selectedArmy: null, panel: provinceId ? 'province' : null });
+    set({ selectedProvince: provinceId, selectedArmy: null, countryFocus: null, panel: provinceId ? 'province' : null });
   },
   selectArmy: armyId => {
     sound.play('click');
-    set({ selectedArmy: armyId, panel: 'military' });
+    set({ selectedArmy: armyId, panel: 'military', countryFocus: null });
+  },
+  openCountry: tag => {
+    sound.play('click');
+    set({ countryFocus: tag, panel: 'country', selectedArmy: null });
+  },
+  moveArmyTo: provinceId => {
+    const { game, selectedArmy } = get();
+    if (!game || !selectedArmy) return false;
+    const army = game.armies[selectedArmy];
+    if (!army) return false;
+    if (army.province === provinceId) {
+      set({ message: '军团已在目标省份' });
+      return false;
+    }
+    const path = findPath(content, army.province, provinceId);
+    if (!path || path.length === 0) {
+      sound.play('error');
+      set({ message: '没有可通行的行军路线' });
+      return false;
+    }
+    return get().command({ type: 'army.move', armyId: selectedArmy, path });
   },
   openPanel: panel => set({ panel }),
   closePanel: () => set({ panel: null }),
@@ -144,6 +191,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
         version: get().version + 1,
         speed: 0,
         panel: null,
+        countryFocus: null,
         selectedProvince: game.countries[game.playerTag]?.capital ?? null,
         selectedArmy: null,
         message: `已读取 ${slot}`,
@@ -153,5 +201,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, panel: null, selectedProvince: null, selectedArmy: null, message: null }),
+  reset: () => set({ game: null, speed: 0, panel: null, countryFocus: null, selectedProvince: null, selectedArmy: null, message: null }),
 }));

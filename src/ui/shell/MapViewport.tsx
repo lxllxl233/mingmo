@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { MapRenderer } from '../../map/render/MapRenderer';
 import { useGameStore } from '../state/store';
 
@@ -13,10 +13,23 @@ export function MapViewport() {
   const selectProvince = useGameStore(state => state.selectProvince);
   const selectArmy = useGameStore(state => state.selectArmy);
 
+  const handleContextProvince = useCallback((provinceId: string) => {
+    const state = useGameStore.getState();
+    const game = state.game;
+    if (!game) return;
+    if (state.selectedArmy && game.armies[state.selectedArmy]) {
+      state.moveArmyTo(provinceId);
+      return;
+    }
+    const province = game.provinces[provinceId];
+    const tag = province?.controller ?? province?.owner;
+    if (tag) state.openCountry(tag);
+  }, []);
+
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const renderer = new MapRenderer(host, content.geo, content, selectProvince, selectArmy);
+    const renderer = new MapRenderer(host, content.geo, content, selectProvince, selectArmy, handleContextProvince);
     rendererRef.current = renderer;
     let cancelled = false;
     void renderer.init().then(() => {
@@ -31,7 +44,7 @@ export function MapViewport() {
       renderer.destroy();
       rendererRef.current = null;
     };
-  }, [content, selectProvince, selectArmy]);
+  }, [content, selectProvince, selectArmy, handleContextProvince]);
 
   useEffect(() => {
     if (game && rendererRef.current) {

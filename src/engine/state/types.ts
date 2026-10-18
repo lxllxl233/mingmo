@@ -105,6 +105,7 @@ export interface ArmyState {
   tag: string;
   name: string;
   province: string;
+  history: string[];
   movePath: string[];
   moveProgress: number;
   composition: {

@@ -71,6 +71,18 @@ export const countryStartingSchema = z.object({
   currency: z.string().optional(),
 }).strict();
 
+export const leaderSchema = z.object({
+  name: z.string().min(1).max(24),
+  title: z.string().min(1).max(24),
+  style: z.enum(['emperor', 'khan', 'shogun', 'king', 'lama', 'director', 'tsar', 'rebel', 'general']),
+  trait: z.string().min(1).max(40),
+  quote: z.string().max(120).optional(),
+  skin: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  hair: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  robe: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+}).strict();
+
 export const countrySchema = z.object({
   tag,
   name: z.string().min(1).max(20),
@@ -84,6 +96,13 @@ export const countrySchema = z.object({
   factions: z.array(z.string()).default([]),
   uniqueMechanic: z.string(),
   starting: countryStartingSchema,
+  leader: leaderSchema.optional(),
+  leadersByScenario: z.record(z.string(), leaderSchema).optional(),
+}).strict();
+
+export const leaderEntrySchema = leaderSchema.extend({
+  tag,
+  scenario: z.string().min(1).max(12),
 }).strict();
 
 export const estateDefSchema = z.object({

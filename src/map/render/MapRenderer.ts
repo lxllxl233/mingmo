@@ -4,6 +4,7 @@ import type { ArmyState, GameState } from '../../engine/state/types';
 
 type SelectProvinceHandler = (provinceId: string) => void;
 type SelectArmyHandler = (armyId: string) => void;
+type ContextProvinceHandler = (provinceId: string) => void;
 
 interface EdgeRecord {
   a: string;
@@ -72,6 +73,7 @@ export class MapRenderer {
   private selectionLayer = new Graphics();
   private provinceBorderLayer = new Graphics();
   private countryBorderLayer = new Graphics();
+  private trailLayer = new Graphics();
   private hoverLayer = new Graphics();
   private cityLayer = new Graphics();
   private countryLabelLayer = new Container();
@@ -91,6 +93,7 @@ export class MapRenderer {
   private moved = false;
   private lastPointer = { x: 0, y: 0 };
   private wheelHandler: ((event: WheelEvent) => void) | null = null;
+  private contextHandler: ((event: MouseEvent) => void) | null = null;
   private destroyed = false;
 
   constructor(
@@ -99,6 +102,7 @@ export class MapRenderer {
     private readonly content: ContentIndex,
     private readonly onSelectProvince: SelectProvinceHandler,
     private readonly onSelectArmy: SelectArmyHandler,
+    private readonly onContextProvince: ContextProvinceHandler,
   ) {}
 
   async init(): Promise<void> {
@@ -125,6 +129,7 @@ export class MapRenderer {
       this.fillLayer,
       this.provinceBorderLayer,
       this.countryBorderLayer,
+      this.trailLayer,
       this.selectionLayer,
       this.hoverLayer,
       this.cityLayer,
@@ -227,6 +232,7 @@ export class MapRenderer {
     if (!app) return;
     const stage = app.stage;
     stage.on('pointerdown', (event) => {
+      if (event.button === 2) return;
       this.dragging = true;
       this.moved = false;
       this.lastPointer = { x: event.global.x, y: event.global.y };
@@ -244,6 +250,7 @@ export class MapRenderer {
       this.lastPointer = { x: event.global.x, y: event.global.y };
     });
     stage.on('pointerup', (event) => {
+      if (event.button === 2) return;
       this.dragging = false;
       if (!this.moved) this.pick(event.global.x, event.global.y);
     });
@@ -267,6 +274,14 @@ export class MapRenderer {
       this.updateZoomScales();
     };
     app.canvas.addEventListener('wheel', this.wheelHandler, { passive: false });
+    this.contextHandler = (event: MouseEvent) => {
+      event.preventDefault();
+      if (!this.app) return;
+      const rect = this.app.canvas.getBoundingClientRect();
+      const province = this.provinceAt(event.clientX - rect.left, event.clientY - rect.top);
+      if (province) this.onContextProvince(province);
+    };
+    app.canvas.addEventListener('contextmenu', this.contextHandler);
     app.renderer.on('resize', () => this.fit());
   }
 
@@ -309,6 +324,7 @@ export class MapRenderer {
     } else {
       this.drawSelection();
       this.updateArmies();
+      this.drawArmyTrails();
     }
   }
 
@@ -348,6 +364,7 @@ export class MapRenderer {
     this.drawSelection();
     this.drawHover();
     this.updateArmies();
+    this.drawArmyTrails();
   }
 
   private drawSelection(): void {
@@ -457,6 +474,89 @@ export class MapRenderer {
     }
   }
 
+  private drawArmyTrails(): void {
+    if (!this.state) return;
+    this.trailLayer.clear();
+    for (const army of Object.values(this.state.armies)) {
+      const selected = army.id === this.selectedArmy;
+      if (!selected && army.movePath.length === 0) continue;
+      const color = this.colorOf(army.tag);
+      const history = this.positions([...(army.history ?? []), army.province]);
+      const planned = this.positions([army.province, ...army.movePath]);
+      if (selected && history.length > 1) {
+        this.strokeTrail(history, 0.18, 0x1f1c18, 0.4);
+        this.strokeTrail(history, 0.1, 0xf2ead8, 0.7);
+        for (const point of history) {
+          this.trailLayer.circle(point.x, point.y, 0.06).fill({ color: 0xf2ead8, alpha: 0.8 });
+        }
+      }
+      if (planned.length > 1) {
+        if (selected) {
+          this.strokeTrail(planned, 0.42, 0x1f1c18, 0.55);
+          this.strokeTrail(planned, 0.22, 0xffd27a, 1);
+          this.strokeTrailArrows(planned, 0xffd27a, 0x1f1c18);
+          for (const point of planned) {
+            this.trailLayer.circle(point.x, point.y, 0.09)
+              .fill({ color: 0xffd27a, alpha: 1 })
+              .stroke({ width: 0.04, color: 0x1f1c18, alpha: 0.9 });
+          }
+        } else {
+          this.strokeTrail(planned, 0.07, color, 0.35);
+        }
+      }
+    }
+  }
+
+  private positions(ids: string[]): Array<{ x: number; y: number }> {
+    const points: Array<{ x: number; y: number }> = [];
+    for (const id of ids) {
+      const point = this.centroids.get(id);
+      if (!point) continue;
+      const previous = points[points.length - 1];
+      if (previous && Math.hypot(previous.x - point.x, previous.y - point.y) < 0.01) continue;
+      points.push(point);
+    }
+    return points;
+  }
+
+  private strokeTrail(points: Array<{ x: number; y: number }>, width: number, color: number, alpha: number): void {
+    const first = points[0];
+    if (!first) return;
+    this.trailLayer.moveTo(first.x, first.y);
+    for (let i = 1; i < points.length; i += 1) {
+      const point = points[i];
+      if (point) this.trailLayer.lineTo(point.x, point.y);
+    }
+    this.trailLayer.stroke({ width, color, alpha });
+  }
+
+  private strokeTrailArrows(points: Array<{ x: number; y: number }>, color: number, outline: number): void {
+    for (let i = 1; i < points.length; i += 1) {
+      const from = points[i - 1];
+      const to = points[i];
+      if (!from || !to) continue;
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const length = Math.hypot(dx, dy);
+      if (length < 0.2) continue;
+      const angle = Math.atan2(dy, dx);
+      const left = angle + Math.PI * 0.78;
+      const right = angle - Math.PI * 0.78;
+      const outlineSize = 0.38;
+      const size = 0.27;
+      this.trailLayer.poly([
+        to.x, to.y,
+        to.x + Math.cos(left) * outlineSize, to.y + Math.sin(left) * outlineSize,
+        to.x + Math.cos(right) * outlineSize, to.y + Math.sin(right) * outlineSize,
+      ]).fill({ color: outline, alpha: 0.9 });
+      this.trailLayer.poly([
+        to.x, to.y,
+        to.x + Math.cos(left) * size, to.y + Math.sin(left) * size,
+        to.x + Math.cos(right) * size, to.y + Math.sin(right) * size,
+      ]).fill({ color, alpha: 1 });
+    }
+  }
+
   private ensureArmyMarker(id: string, tag: string, army: ArmyState): ArmyMarker {
     const existing = this.armyMarkers.get(id);
     if (existing) return existing;
@@ -498,6 +598,7 @@ export class MapRenderer {
     container.eventMode = 'static';
     container.cursor = 'pointer';
     container.on('pointertap', (event) => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
       event.stopPropagation();
       this.onSelectArmy(id);
     });
@@ -537,6 +638,9 @@ export class MapRenderer {
     this.destroyed = true;
     if (this.app && this.wheelHandler) {
       this.app.canvas.removeEventListener('wheel', this.wheelHandler);
+    }
+    if (this.app && this.contextHandler) {
+      this.app.canvas.removeEventListener('contextmenu', this.contextHandler);
     }
     this.app?.destroy(true, { children: true });
     this.app = null;

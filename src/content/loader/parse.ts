@@ -11,6 +11,7 @@ import {
   eventSchema,
   focusSchema,
   generalSchema,
+  leaderEntrySchema,
   namedModifierSchema,
   prefectureSchema,
   privilegeSchema,
@@ -32,6 +33,8 @@ import type {
   EventDef,
   Focus,
   General,
+  LeaderDef,
+  LeaderEntry,
   MapGeo,
   NamedModifier,
   PrefectureDef,
@@ -75,6 +78,7 @@ interface Collections {
   decisions: Collected[];
   armyTemplates: Collected[];
   generals: Collected[];
+  leaders: Collected[];
   namedModifiers: Collected[];
   scenarios: Collected[];
 }
@@ -96,6 +100,7 @@ const EMPTY_COLLECTIONS: Collections = {
   decisions: [],
   armyTemplates: [],
   generals: [],
+  leaders: [],
   namedModifiers: [],
   scenarios: [],
 };
@@ -150,7 +155,7 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
     regions: [], prefectures: [], provinces: [], countries: [], estateDefs: [],
     countryEstates: [], taxLaws: [], privileges: [], focuses: [], focusPacks: [], events: [],
     eventChains: [], techs: [], decisions: [], armyTemplates: [], generals: [],
-    namedModifiers: [], scenarios: [],
+    leaders: [], namedModifiers: [], scenarios: [],
   };
   let balance: { file: string; value: unknown } | null = null;
 
@@ -220,6 +225,9 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
         case 'generals':
           pushItems(collected.generals, normalizeValue(value), file.path, 'generals');
           break;
+        case 'leaders':
+          pushItems(collected.leaders, normalizeValue(value), file.path, 'leaders');
+          break;
         case 'named_modifiers':
           pushItems(collected.namedModifiers, normalizeValue(value), file.path, 'named_modifiers');
           break;
@@ -238,7 +246,26 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
   const regions: RegionDef[] = parseAll<RegionDef>(collected.regions, regionSchema);
   const prefectures: PrefectureDef[] = parseAll<PrefectureDef>(collected.prefectures, prefectureSchema);
   const provinces: ProvinceDef[] = parseAll<ProvinceDef>(collected.provinces, provinceSchema);
+  const leaderEntries: LeaderEntry[] = parseAll<LeaderEntry>(collected.leaders, leaderEntrySchema);
   const countries: CountryDef[] = parseAll<CountryDef>(collected.countries, countrySchema);
+  for (const country of countries) {
+    const entries = leaderEntries.filter(entry => entry.tag === country.tag);
+    const base = entries.find(entry => entry.scenario === 'default') ?? entries[0];
+    if (base) {
+      const { tag: _tag, scenario: _scenario, ...leader } = base;
+      void _tag;
+      void _scenario;
+      country.leader = leader;
+    }
+    const overrides: Record<string, LeaderDef> = {};
+    for (const entry of entries) {
+      if (entry.scenario === 'default') continue;
+      const { tag: _tag, scenario, ...leader } = entry;
+      void _tag;
+      overrides[scenario] = leader;
+    }
+    country.leadersByScenario = overrides;
+  }
   const estateDefs: EstateDef[] = parseAll<EstateDef>(collected.estateDefs, estateDefSchema);
   const countryEstatesByTag = new Map<string, CountryEstateConfig[]>();
   for (const item of collected.countryEstates) {

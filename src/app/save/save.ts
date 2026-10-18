@@ -10,7 +10,7 @@ export interface SaveFile {
   checksum: string;
 }
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export function encodeSave(state: GameState): string {
   const payload = {
@@ -31,12 +31,17 @@ export function decodeSave(text: string): GameState {
   } catch {
     throw new Error('存档不是合法 JSON');
   }
-  if (parsed.version !== SAVE_VERSION) {
+  if (parsed.version !== 1 && parsed.version !== SAVE_VERSION) {
     throw new Error(`存档版本 ${parsed.version} 与当前版本 ${SAVE_VERSION} 不兼容`);
   }
   const checksum = hashState(parsed.state);
   if (checksum !== parsed.checksum) {
     throw new Error('存档校验失败：文件可能已损坏');
+  }
+  if (parsed.version === 1) {
+    for (const army of Object.values(parsed.state.armies)) {
+      if (!Array.isArray(army.history)) army.history = [];
+    }
   }
   return parsed.state;
 }

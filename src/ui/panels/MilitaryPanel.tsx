@@ -107,6 +107,7 @@ export function MilitaryPanel() {
               行军到选中省份
             </button>
             <button onClick={() => command({ type: 'army.stop', armyId: army.id })}>停止</button>
+            <button className="ghost" onClick={() => selectArmy(null)}>取消选择</button>
           </div>
         </>
       )}

@@ -36,6 +36,7 @@ function spawnArmy(
     tag,
     name: `${country.name} ${template.name}`,
     province,
+    history: [],
     movePath: [],
     moveProgress: 0,
     composition: {

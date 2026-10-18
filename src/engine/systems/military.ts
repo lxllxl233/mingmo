@@ -217,6 +217,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       army.stance = 'move';
       army.moveProgress += 1 / (2 * cost);
       if (army.moveProgress >= 1) {
+        army.history = [...army.history, army.province].slice(-8);
         army.province = next;
         army.movePath.shift();
         army.moveProgress = 0;
@@ -283,6 +284,7 @@ export function recruitArmy(
     tag,
     name: `${content.countries.get(tag)?.name ?? tag} ${template.name}`,
     province: provinceId,
+    history: [],
     movePath: [],
     moveProgress: 0,
     composition: {

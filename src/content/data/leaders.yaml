@@ -1,0 +1,43 @@
+leaders:
+  - { tag: MING, scenario: "1627", name: 朱由检, title: 大明皇帝, style: emperor, trait: 刚愎而勤政, quote: 朕非亡国之君，诸臣皆亡国之臣。, skin: "#e6c3a1", hair: "#241c18", robe: "#9e2b25", accent: "#d4a017" }
+  - { tag: MING, scenario: "1644", name: 朱由检, title: 大明皇帝, style: emperor, trait: 刚愎而勤政, quote: 朕非亡国之君，诸臣皆亡国之臣。, skin: "#e6c3a1", hair: "#241c18", robe: "#9e2b25", accent: "#d4a017" }
+  - { tag: MING, scenario: "1650", name: 朱由榔, title: 南明永历帝, style: emperor, trait: 仁柔而多难, quote: 朕在，则明统未绝。, skin: "#e6c3a1", hair: "#241c18", robe: "#9e2b25", accent: "#d4a017" }
+
+  - { tag: QING, scenario: "1627", name: 皇太极, title: 后金大汗, style: emperor, trait: 深沉有大略, quote: 取天下者，必先取人心。, skin: "#d9b08c", hair: "#241c18", robe: "#d4a017", accent: "#7a2e2e" }
+  - { tag: QING, scenario: "1644", name: 福临, title: 大清皇帝, style: emperor, trait: 幼冲在位，多尔衮摄政, quote: 天下未定，摄政王劳苦。, skin: "#e6c3a1", hair: "#241c18", robe: "#d4a017", accent: "#7a2e2e" }
+  - { tag: QING, scenario: "1650", name: 福临, title: 大清皇帝, style: emperor, trait: 渐亲政事, quote: 满汉一体，方能长久。, skin: "#e6c3a1", hair: "#241c18", robe: "#d4a017", accent: "#7a2e2e" }
+
+  - { tag: SHUN, scenario: default, name: 李自成, title: 大顺皇帝, style: rebel, trait: 果决而少根基, quote: 均田免赋，迎闯王，不纳粮。, skin: "#d9b08c", hair: "#241c18", robe: "#3f6b3a", accent: "#d4a017" }
+  - { tag: XI, scenario: default, name: 张献忠, title: 大西皇帝, style: rebel, trait: 暴烈而善战, quote: 蜀人负我，我亦负蜀。, skin: "#d9b08c", hair: "#241c18", robe: "#7a3b8f", accent: "#d4a017" }
+
+  - { tag: SMING, scenario: "1627", name: 朱由崧, title: 南明弘光帝, style: emperor, trait: 庸弱而多疑, quote: 南京虽小，亦是社稷。, skin: "#e6c3a1", hair: "#241c18", robe: "#c46a2b", accent: "#b8892e" }
+  - { tag: SMING, scenario: "1644", name: 朱由崧, title: 南明弘光帝, style: emperor, trait: 庸弱而多疑, quote: 南京虽小，亦是社稷。, skin: "#e6c3a1", hair: "#241c18", robe: "#c46a2b", accent: "#b8892e" }
+  - { tag: SMING, scenario: "1650", name: 朱由榔, title: 南明永历帝, style: emperor, trait: 仁柔而多难, quote: 朕在，则明统未绝。, skin: "#e6c3a1", hair: "#241c18", robe: "#c46a2b", accent: "#b8892e" }
+
+  - { tag: ZHENG, scenario: "1627", name: 郑芝龙, title: 闽海霸主, style: general, trait: 精于海贸，善于投机, quote: 海上之利，半在舟师，半在人心。, skin: "#d9b08c", hair: "#241c18", robe: "#2b6f8a", accent: "#d4a017" }
+  - { tag: ZHENG, scenario: "1644", name: 郑成功, title: 国姓爷, style: general, trait: 坚忍而重名节, quote: 大明未亡，郑氏不降。, skin: "#d9b08c", hair: "#241c18", robe: "#2b6f8a", accent: "#d4a017" }
+  - { tag: ZHENG, scenario: "1650", name: 郑成功, title: 国姓爷, style: general, trait: 坚忍而重名节, quote: 大明未亡，郑氏不降。, skin: "#d9b08c", hair: "#241c18", robe: "#2b6f8a", accent: "#d4a017" }
+
+  - { tag: MONGOL, scenario: "1627", name: 林丹汗, title: 察哈尔大汗, style: khan, trait: 刚猛而失于寡谋, quote: 草原之上，只认长生天的意志。, skin: "#c99a6b", hair: "#241c18", robe: "#8a6a2b", accent: "#d4a017" }
+  - { tag: MONGOL, scenario: "1644", name: 额哲, title: 察哈尔汗, style: khan, trait: 年少而势孤, quote: 玉玺在谁手里，草原就听谁的。, skin: "#c99a6b", hair: "#241c18", robe: "#8a6a2b", accent: "#d4a017" }
+  - { tag: MONGOL, scenario: "1650", name: 额哲, title: 察哈尔汗, style: khan, trait: 年少而势孤, quote: 玉玺在谁手里，草原就听谁的。, skin: "#c99a6b", hair: "#241c18", robe: "#8a6a2b", accent: "#d4a017" }
+
+  - { tag: JOSEON, scenario: "1627", name: 李倧, title: 朝鲜仁祖, style: king, trait: 隐忍而多疑, quote: 事大以保国，非事大以亡国。, skin: "#e6c3a1", hair: "#241c18", robe: "#4a7a9a", accent: "#d4a017" }
+  - { tag: JOSEON, scenario: "1644", name: 李倧, title: 朝鲜仁祖, style: king, trait: 隐忍而多疑, quote: 事大以保国，非事大以亡国。, skin: "#e6c3a1", hair: "#241c18", robe: "#4a7a9a", accent: "#d4a017" }
+  - { tag: JOSEON, scenario: "1650", name: 李淏, title: 朝鲜孝宗, style: king, trait: 志在北伐而力不足, quote: 丙子之耻，不可忘也。, skin: "#e6c3a1", hair: "#241c18", robe: "#4a7a9a", accent: "#d4a017" }
+
+  - { tag: JAPAN, scenario: "1627", name: 德川家光, title: 江户幕府将军, style: shogun, trait: 刚断而重秩序, quote: 天下泰平，始于武家之法度。, skin: "#e6c3a1", hair: "#241c18", robe: "#6b4a86", accent: "#d4a017" }
+  - { tag: JAPAN, scenario: "1644", name: 德川家光, title: 江户幕府将军, style: shogun, trait: 刚断而重秩序, quote: 天下泰平，始于武家之法度。, skin: "#e6c3a1", hair: "#241c18", robe: "#6b4a86", accent: "#d4a017" }
+  - { tag: JAPAN, scenario: "1650", name: 德川家纲, title: 江户幕府将军, style: shogun, trait: 年少而守成, quote: 祖法不可轻改。, skin: "#e6c3a1", hair: "#241c18", robe: "#6b4a86", accent: "#d4a017" }
+
+  - { tag: TIBET, scenario: default, name: 固始汗, title: 和硕特汗·护法王, style: khan, trait: 骁勇而敬佛, quote: 以刀护法，以法牧人。, skin: "#c99a6b", hair: "#241c18", robe: "#d08a2e", accent: "#8a2b2b" }
+
+  - { tag: VOC, scenario: "1627", name: 安东尼·范迪门, title: 东印度总督, style: director, trait: 精明而冷酷, quote: 公司的账本，就是东方的宪法。, skin: "#e6c3a1", hair: "#3a2a1a", robe: "#e07b2a", accent: "#2b4a6f" }
+  - { tag: VOC, scenario: "1644", name: 安东尼·范迪门, title: 东印度总督, style: director, trait: 精明而冷酷, quote: 公司的账本，就是东方的宪法。, skin: "#e6c3a1", hair: "#3a2a1a", robe: "#e07b2a", accent: "#2b4a6f" }
+  - { tag: VOC, scenario: "1650", name: 揆一, title: 热兰遮城长官, style: director, trait: 尽责而寡援, quote: 只要热兰遮的旗还挂着，台湾就还是公司的。, skin: "#e6c3a1", hair: "#3a2a1a", robe: "#e07b2a", accent: "#2b4a6f" }
+
+  - { tag: RUSSIA, scenario: "1627", name: 米哈伊尔·罗曼诺夫, title: 全俄罗斯沙皇, style: tsar, trait: 温和而受制于贵族, quote: 俄罗斯的土地，没有尽头。, skin: "#e6c3a1", hair: "#3a2a1a", robe: "#2f5d3a", accent: "#b8892e" }
+  - { tag: RUSSIA, scenario: "1644", name: 米哈伊尔·罗曼诺夫, title: 全俄罗斯沙皇, style: tsar, trait: 温和而受制于贵族, quote: 俄罗斯的土地，没有尽头。, skin: "#e6c3a1", hair: "#3a2a1a", robe: "#2f5d3a", accent: "#b8892e" }
+  - { tag: RUSSIA, scenario: "1650", name: 阿列克谢·罗曼诺夫, title: 全俄罗斯沙皇, style: tsar, trait: 勤政而好扩张, quote: 远东的毛皮，属于沙皇的国库。, skin: "#e6c3a1", hair: "#3a2a1a", robe: "#2f5d3a", accent: "#b8892e" }
+
+  - { tag: NEU, scenario: default, name: 阿瓦王, title: 阿瓦土司, style: king, trait: 谨慎而善守, quote: 大国相争，小邦只求自保。, skin: "#c99a6b", hair: "#241c18", robe: "#7a7468", accent: "#b8892e" }

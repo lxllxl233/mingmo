@@ -29,4 +29,16 @@ describe('save format', () => {
     parsed.version = 99;
     expect(() => decodeSave(JSON.stringify(parsed))).toThrow(/不兼容/);
   });
+
+  it('migrates version 1 saves without army history', () => {
+    const state = createInitialState(content, '1627', 42, 'MING');
+    for (const army of Object.values(state.armies)) {
+      delete (army as { history?: string[] }).history;
+    }
+    const parsed = JSON.parse(encodeSave(state)) as { version: number; state: typeof state; checksum: string };
+    parsed.version = 1;
+    parsed.checksum = hashState(parsed.state);
+    const loaded = decodeSave(JSON.stringify(parsed));
+    expect(Object.values(loaded.armies).every(army => Array.isArray(army.history))).toBe(true);
+  });
 });
