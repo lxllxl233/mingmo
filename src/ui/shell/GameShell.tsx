@@ -12,6 +12,7 @@ import { ProvincePanel } from '../panels/ProvincePanel';
 import { CountryPanel } from '../panels/CountryPanel';
 import { ArmyPanel } from '../panels/ArmyPanel';
 import { EstatesPanel } from '../panels/EstatesPanel';
+import { CorePanel } from '../panels/CorePanel';
 import { BudgetPanel } from '../panels/BudgetPanel';
 import { FocusPanel } from '../panels/FocusPanel';
 import { ResearchPanel } from '../panels/ResearchPanel';
@@ -23,9 +24,11 @@ import { EventModal } from '../overlays/EventModal';
 import { WarAlertModal } from '../overlays/WarAlertModal';
 import { EndModal } from '../overlays/EndModal';
 import { TrainingModal } from '../overlays/TrainingModal';
+import { SpectatorShell } from './SpectatorShell';
 
 const SIDEBAR: Array<{ key: PanelKey; label: string }> = [
   { key: 'focus', label: '国策' },
+  { key: 'core', label: '核心' },
   { key: 'research', label: '科研' },
   { key: 'estates', label: '阶级' },
   { key: 'budget', label: '财政' },
@@ -81,6 +84,7 @@ export function GameShell() {
   }, [message, dismissMessage]);
 
   if (!game) return null;
+  if (game.spectator) return <SpectatorShell />;
   const country = game.countries[game.playerTag];
   const activeFocus = country?.focus ? content.focuses.get(country.focus.id) : null;
   const playerDef = content.countries.get(game.playerTag);
@@ -122,6 +126,7 @@ export function GameShell() {
           {panel === 'country' && <CountryPanel />}
           {panel === 'army' && <ArmyPanel />}
           {panel === 'estates' && <EstatesPanel />}
+          {panel === 'core' && <CorePanel />}
           {panel === 'budget' && <BudgetPanel />}
           {panel === 'military' && <MilitaryPanel />}
           {panel === 'diplomacy' && <DiplomacyPanel />}

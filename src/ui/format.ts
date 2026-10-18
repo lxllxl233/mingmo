@@ -79,6 +79,8 @@ export function effectSummary(effect: Effect): string {
   }
   if ('setFlag' in effect) return '';
   if ('annexProvince' in effect) return '吞并目标省份（需已控制其地区）';
+  if ('addCore' in effect) return '获得核心（完整人力与资源）';
+  if ('addClaim' in effect) return '获得宣称';
   if ('setTaxLaw' in effect) return '变更税法';
   if ('unlockDecision' in effect) return '解锁决议';
   if ('unlockUnit' in effect) return '解锁单位';

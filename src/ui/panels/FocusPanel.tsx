@@ -115,7 +115,7 @@ export function FocusPanel() {
           </div>
         )}
         <div className="focus-card-grid">
-          {selectedNodes.sort((a, b) => a.y - b.y).map(focus => {
+          {orderedNodes.map(focus => {
             const completed = country.completedFocuses.includes(focus.id);
             const current = country.focus?.id === focus.id;
             const available = isFocusAvailable(game, content, country.tag, focus);
@@ -142,7 +142,7 @@ export function FocusPanel() {
                   <div className="focus-card-desc">{focus.desc}</div>
                 )}
                 {focus.grants && focus.grants.length > 0 && (
-                  <div className="focus-card-meta">扩张目标：{focus.grants.map(id => content.provinces.get(id)?.name ?? id).join('、')}（需先控制）</div>
+                  <div className="focus-card-meta">核心目标：{focus.grants.map(id => content.provinces.get(id)?.name ?? id).join('、')}（只获核心，不直接改属）</div>
                 )}
                 {missing.length > 0 && <div className="focus-card-meta">前置：{missing.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>}
                 {focus.mutuallyExclusive.length > 0 && (

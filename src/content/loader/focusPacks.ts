@@ -186,9 +186,10 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
           mutuallyExclusive: [],
           completionEffect: [
             ...effectsFor(branch.kind, tier, entry.id, decisionId, branch.modifier),
-            ...(entry.grants ?? []).map(province => ({
-              annexProvince: { province, requireControl: true },
-            })),
+            ...(entry.grants ?? []).flatMap(province => [
+              { addCore: province },
+              { addClaim: province },
+            ]),
           ],
           ...(entry.grants ? { grants: entry.grants } : {}),
           aiWillDo: {

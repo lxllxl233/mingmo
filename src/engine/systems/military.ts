@@ -207,6 +207,7 @@ function captureProvince(state: GameState, content: ContentIndex, army: ArmyStat
   if (!province || !def) return;
   const oldOwner = province.owner;
   province.controller = army.tag;
+  province.coreWork = null;
   delete province.siege;
   province.unrest = clamp(province.unrest + 8, 0, 100);
   province.devastation = clamp(province.devastation + 4, 0, 100);

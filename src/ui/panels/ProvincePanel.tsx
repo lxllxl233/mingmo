@@ -40,6 +40,24 @@ export function ProvincePanel() {
       <p className="muted">{region?.name} · 所属省份：{prefecture?.name ?? '—'} · {TERRAIN_NAMES[def.terrain] ?? def.terrain}</p>
       <div className="row"><span>所有者</span><b style={{ color: owner?.color }}>{owner?.name ?? province.owner}</b></div>
       <div className="row"><span>控制者</span><b style={{ color: controller?.color }}>{controller?.name ?? province.controller}</b></div>
+      {province.controller === game.playerTag && (
+        <>
+          <div className="row"><span>核心状态</span><b className={province.cores.includes(game.playerTag) ? 'good' : 'warn'}>
+            {province.cores.includes(game.playerTag) ? '核心（100% 人力与资源）' : '占领区（15% 人力与资源）'}
+          </b></div>
+          {!province.cores.includes(game.playerTag) && (
+            <div className="core-integrate">
+              {province.coreWork ? (
+                <p className="muted">收买人心：{province.coreWork.progress} / {province.coreWork.totalDays} 日</p>
+              ) : (
+                <button onClick={() => command({ type: 'province.integrateCore', provinceId: selected })}>
+                  收买人心（30000 两 / 12000 石 / 360 日）
+                </button>
+              )}
+            </div>
+          )}
+        </>
+      )}
       <div className="row"><span>人口 / 田亩</span><b>{province.population.toLocaleString()} / {def.landholding.toLocaleString()} 万亩</b></div>
       <div className="row"><span>发展度</span><b>{def.development}</b></div>
       <div className="row"><span>占优阶级</span><b>{estateName}</b></div>

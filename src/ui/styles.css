@@ -580,3 +580,54 @@ input, select {
 .focus-exclusions { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 12px; padding: 7px 10px; border: 1px dashed #9e2b25; background: rgba(158,43,37,.05); font-size: 11px; color: var(--ink-soft); }
 .focus-exclusions b { color: #9e2b25; }
 .focus-exclusions i { color: #9e2b25; font-style: normal; padding: 0 3px; }
+
+.core-list { display: flex; flex-direction: column; gap: 6px; max-height: 55vh; overflow: auto; }
+.core-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 8px; border-bottom: 1px dashed var(--line); }
+.core-row b { font-size: 13px; color: var(--ink); }
+.core-row small { display: block; margin-top: 2px; font-size: 10px; color: var(--ink-soft); }
+.core-row button { font-size: 11px; padding: 4px 8px; white-space: nowrap; }
+.core-progress { display: flex; align-items: center; gap: 5px; margin-top: 3px; font-size: 10px; }
+.core-progress progress { width: 90px; height: 6px; accent-color: var(--gold); }
+
+.spectator { display: flex; flex-direction: column; height: 100vh; background: #d6ded5; }
+.spectator-top { display: flex; align-items: center; gap: 12px; min-height: 43px; padding: 0 12px; border-bottom: 1px solid var(--line); background: #efe4cd; }
+.spectator-top b { color: var(--red); letter-spacing: .08em; }
+.spectator-badge { margin-left: 8px; padding: 2px 7px; border: 1px solid #b8892e; color: #8b6a3f; font-size: 10px; }
+.spectator-flags { display: flex; gap: 2px; max-width: 280px; overflow: hidden; }
+.spectator-main { flex: 1; min-height: 0; display: flex; }
+.spectator-main .map-host { flex: 1; }
+.spectator-log { width: 260px; overflow-y: auto; padding: 10px 12px; background: #f1e7d2; border-left: 1px solid var(--line); }
+.spectator-log h3 { margin: 0 0 8px; color: var(--red); font-size: 14px; letter-spacing: .1em; }
+.spectator-log-row { padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 11px; line-height: 1.55; }
+.spectator-log-row small { display: block; color: #8a7a60; font-size: 9px; margin-bottom: 2px; }
+.spectator-message { padding: 6px; background: rgba(184,137,46,.12); color: #6b4f2a; font-size: 11px; }
+.spectator-bottom { display: flex; align-items: center; gap: 12px; min-height: 39px; padding: 0 12px; border-top: 1px solid var(--line); background: #efe4cd; font-size: 11px; }
+
+.core-integrate { margin: 5px 0; }
+.core-integrate button { font-size: 11px; padding: 4px 8px; }
+
+/* UI polish */
+button { transition: background .12s ease, border-color .12s ease, color .12s ease, transform .12s ease; }
+button:active { transform: translateY(1px); }
+.topbar { box-shadow: 0 2px 10px rgba(50,38,22,.08); background: linear-gradient(#f1e7d2,#eadfc8); }
+.game-main { grid-template-columns: 68px 1fr minmax(340px, 380px); }
+.sidebar { background: linear-gradient(180deg,#e9dec7,#e3d6bc); gap: 3px; padding: 8px 6px; }
+.sidebar button { border-color: transparent; color: #5c4c35; padding: 9px 4px; border-radius: 2px; }
+.sidebar button:hover { background: rgba(255,255,255,.38); border-color: rgba(158,43,37,.16); }
+.sidebar button.active { background: #f6eddb; color: var(--red); box-shadow: inset 3px 0 0 var(--red), 0 1px 3px rgba(50,38,22,.08); }
+.right-panel { background: linear-gradient(180deg, rgba(246,238,221,.98), rgba(240,230,209,.98)); box-shadow: -2px 0 12px rgba(50,38,22,.06); }
+.panel { padding: 14px 16px 30px; }
+.panel h2 { font-size: 21px; color: #382b1c; }
+.panel .section-title { padding-bottom: 4px; border-bottom: 1px solid var(--line); color: var(--red); }
+.panel-actions { position: sticky; bottom: -1px; padding: 8px 0 2px; background: linear-gradient(transparent, rgba(242,234,216,.96) 30%); }
+.bottombar { background: linear-gradient(#eadfc8,#e4d7bd); box-shadow: 0 -2px 9px rgba(50,38,22,.06); }
+.war-dock { background: linear-gradient(#efe3ca,#e9dcc1); }
+.focus-overlay { background: linear-gradient(180deg,#f7eedb,#f0e4cc); }
+.focus-head { box-shadow: 0 2px 8px rgba(50,38,22,.07); }
+.focus-card { background: rgba(255,252,244,.55); box-shadow: 0 1px 2px rgba(50,38,22,.04); }
+.focus-card.available:hover { box-shadow: 0 3px 10px rgba(50,38,22,.1); }
+.faction-card, .scenario-card { transition: border-color .12s ease, background .12s ease, transform .12s ease; }
+.faction-card:hover, .scenario-card:hover { transform: translateY(-1px); }
+.start-actions button { min-height: 30px; }
+@keyframes panel-in { from { opacity: .55; transform: translateX(5px); } to { opacity: 1; transform: none; } }
+.right-panel > .panel { animation: panel-in .16s ease-out; }

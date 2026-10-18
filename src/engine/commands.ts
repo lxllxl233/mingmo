@@ -10,6 +10,7 @@ import { startTaxReform } from './systems/tax';
 import { chooseEventOption } from './systems/events';
 import { setArmyPath } from './systems/military';
 import { enqueueTraining } from './systems/training';
+import { startCoreIntegration } from './systems/core';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -24,6 +25,7 @@ export type Command =
   | { type: 'army.navalMove'; armyId: string; portId: string }
   | { type: 'army.stop'; armyId: string }
   | { type: 'army.disband'; armyId: string }
+  | { type: 'province.integrateCore'; provinceId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.demandTribute'; vassal: string }
@@ -185,6 +187,12 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
         text: `解散军团：${army.name}`,
         severity: 'info',
       });
+      break;
+    }
+    case 'province.integrateCore': {
+      if (!startCoreIntegration(state, tag, command.provinceId)) {
+        throw new CommandError('无法收买该地区人心');
+      }
       break;
     }
     case 'diplomacy.declareWar':

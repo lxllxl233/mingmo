@@ -53,6 +53,7 @@ export function createInitialState(
   seed: number,
   playerTag: string,
   difficulty: Difficulty = 'normal',
+  spectator = false,
 ): GameState {
   const scenario: ScenarioDef | undefined = content.scenarios.get(scenarioId);
   if (!scenario) throw new Error(`unknown scenario ${scenarioId}`);
@@ -226,6 +227,7 @@ export function createInitialState(
     day: startDay,
     playerTag,
     scenarioId,
+    spectator,
     countries,
     provinces,
     armies,

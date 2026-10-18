@@ -14,6 +14,7 @@ export type PanelKey =
   | 'province'
   | 'country'
   | 'army'
+  | 'core'
   | 'estates'
   | 'budget'
   | 'focus'
@@ -62,6 +63,7 @@ interface UiStore {
   selectedArmy: string | null;
   message: string | null;
   start: (scenarioId: string, tag: string, seed?: number, difficulty?: Difficulty) => void;
+  startSpectator: (scenarioId: string, seed?: number, difficulty?: Difficulty) => void;
   command: (command: Command) => boolean;
   tick: () => void;
   setSpeed: (speed: 0 | 1 | 2 | 4) => void;
@@ -120,8 +122,27 @@ export const useGameStore = create<UiStore>((set, get) => ({
     });
   },
 
-  command: command => {
-    const { game } = get();
+  startSpectator: (scenarioId, seed = 42, difficulty = 'normal') => {
+    const game = createInitialState(content, scenarioId, seed, 'MING', difficulty, true);
+    sound.play('command');
+    set({
+      game,
+      version: 0,
+      speed: 1,
+      speedBeforeEvent: 0,
+      panel: null,
+      countryFocus: null,
+      diplomaticMode: false,
+      diplomaticAnchor: null,
+      trainingPicker: null,
+      trainingRequest: null,
+      selectedProvince: null,
+      selectedArmy: null,
+      message: '看海模式：全图视野，所有势力由 AI 推演。',
+    });
+  },
+
+  command: command => {    const { game } = get();
     if (!game) return false;
     try {
       dispatch(game, command, content);
@@ -145,7 +166,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   tick: () => {
     const { game, speed } = get();
     if (!game || speed === 0 || game.ended) return;
-    if (game.pendingEvents.some(event => event.country === game.playerTag)) {
+    if (!game.spectator && game.pendingEvents.some(event => event.country === game.playerTag)) {
       set({ speedBeforeEvent: speed, speed: 0 });
       return;
     }
@@ -154,7 +175,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     const next = { ...game };
     const pendingAfterTick = next.pendingEvents.some(event => event.country === next.playerTag);
     const newWarAlert = next.warAlerts.length > alertCount;
-    if (pendingAfterTick || newWarAlert) {
+    if (!next.spectator && (pendingAfterTick || newWarAlert)) {
       set({ game: next, version: get().version + 1, speedBeforeEvent: speed, speed: 0 });
     } else {
       set({ game: next, version: get().version + 1 });

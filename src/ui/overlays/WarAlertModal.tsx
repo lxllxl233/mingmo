@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { sound } from '../../app/audio/sound';
 import { useGameStore } from '../state/store';
 
 export function WarAlertModal() {
@@ -5,8 +7,11 @@ export function WarAlertModal() {
   const content = useGameStore(state => state.content);
   const acknowledge = useGameStore(state => state.acknowledgeWarAlert);
   const openCountry = useGameStore(state => state.openCountry);
+  const alert = game?.warAlerts[0];
+  useEffect(() => {
+    if (alert) sound.play('event');
+  }, [alert?.warId]);
   if (!game || game.warAlerts.length === 0) return null;
-  const alert = game.warAlerts[0];
   if (!alert) return null;
   const attacker = content.countries.get(alert.attacker);
   const defender = content.countries.get(alert.defender);

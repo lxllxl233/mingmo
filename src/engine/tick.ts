@@ -1,6 +1,7 @@
 import type { ContentIndex } from '../content/types';
 import { LAST_DAY_INDEX, isMonthStart, isQuarterStart, isYearStart } from './core/clock';
 import { advanceArmies, replenishArmies } from './systems/military';
+import { advanceCoreIntegration } from './systems/core';
 import { advanceTraining } from './systems/training';
 import { advanceFocus } from './systems/focus';
 import { advanceResearch } from './systems/research';
@@ -69,6 +70,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   advanceResearch(state, content);
   advanceArmies(state, content);
   replenishArmies(state, content);
+  advanceCoreIntegration(state, content);
   advanceTraining(state, content);
   processEvents(state, content);
 
@@ -90,7 +92,12 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   const player = state.countries[state.playerTag];
   if (isYearStart(state.day) || state.day >= LAST_DAY_INDEX || !player?.alive) {
     const result = evaluateVictory(state, content);
-    if (state.day >= LAST_DAY_INDEX
+    if (state.spectator) {
+      if (state.day >= LAST_DAY_INDEX) {
+        state.victory = result;
+        state.ended = true;
+      }
+    } else if (state.day >= LAST_DAY_INDEX
       || !player?.alive
       || result.reason === '一统天下'
       || result.reason === '承天受命') {

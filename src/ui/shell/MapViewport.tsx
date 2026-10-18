@@ -19,9 +19,11 @@ export function MapViewport() {
       ? 'finance'
       : panel === 'military'
         ? 'military'
-        : panel === 'diplomacy' || diplomaticMode
-          ? 'diplomacy'
-          : 'normal';
+        : panel === 'core'
+          ? 'core'
+          : panel === 'diplomacy' || diplomaticMode
+            ? 'diplomacy'
+            : 'normal';
   const mapAnchor = panel === 'diplomacy' ? game?.playerTag ?? null : diplomaticAnchor;
   const selectProvince = useGameStore(state => state.selectProvince);
   const selectArmy = useGameStore(state => state.selectArmy);
@@ -120,6 +122,7 @@ export function MapViewport() {
             {mapMode === 'estates' && '阶级地图'}
             {mapMode === 'finance' && '财政地图'}
             {mapMode === 'military' && '军事地图'}
+            {mapMode === 'core' && '核心地图'}
             {mapMode === 'diplomacy' && '外交地图'}
           </b>
           {mapMode === 'estates' && (
@@ -144,6 +147,13 @@ export function MapViewport() {
               <span><i style={{ background: '#3f6f9a' }} />我军</span>
               <span><i style={{ background: '#a33a32' }} />敌军</span>
               <span><i style={{ background: '#8a8578' }} />无军</span>
+            </>
+          )}
+          {mapMode === 'core' && (
+            <>
+              <span><i style={{ background: '#6f8a5a' }} />核心</span>
+              <span><i style={{ background: '#b0603f' }} />占领区</span>
+              <span><i style={{ background: '#9a9384' }} />他国</span>
             </>
           )}
           {mapMode === 'diplomacy' && (

@@ -61,7 +61,7 @@ export function declareWar(
   };
   state.nextWarId += 1;
   state.wars.push(war);
-  if (defender === state.playerTag) {
+  if (defender === state.playerTag && !state.spectator) {
     state.warAlerts.push({
       warId: war.id,
       attacker,

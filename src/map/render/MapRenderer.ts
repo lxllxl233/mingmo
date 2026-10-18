@@ -7,7 +7,7 @@ import { areAtWar } from '../../engine/rules/war';
 type SelectProvinceHandler = (provinceId: string) => void;
 type SelectArmyHandler = (armyId: string) => void;
 type ContextProvinceHandler = (provinceId: string, ctrlKey: boolean) => void;
-export type MapMode = 'normal' | 'estates' | 'finance' | 'military' | 'diplomacy';
+export type MapMode = 'normal' | 'estates' | 'finance' | 'military' | 'diplomacy' | 'core';
 
 const ESTATE_COLORS: Record<string, number> = {
   nobles: 0xb8892e,
@@ -792,6 +792,12 @@ export class MapRenderer {
       }
       if (armiesHere.some(army => army.tag === this.state?.playerTag)) return 0x3f6f9a;
       return 0x8a8578;
+    }
+    if (this.mapMode === 'core' && this.state) {
+      const province = this.state.provinces[provinceId];
+      if (!province) return 0x8a8578;
+      if (province.controller !== this.state.playerTag) return 0x9a9384;
+      return province.cores.includes(this.state.playerTag) ? 0x6f8a5a : 0xb0603f;
     }
     if (this.mapMode !== 'diplomacy' || !this.state) return this.colorOf(tag);
     const anchor = this.diplomaticAnchor ?? this.state.playerTag;

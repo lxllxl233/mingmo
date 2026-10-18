@@ -6,6 +6,12 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+export function coreResourceFactor(state: GameState, tag: string, provinceId: string): number {
+  const province = state.provinces[provinceId];
+  if (!province || province.controller !== tag) return 0;
+  return province.cores.includes(tag) ? 1 : 0.15;
+}
+
 export function countryProvinceList(
   state: GameState,
   content: ContentIndex,
@@ -63,10 +69,14 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const adminCapacity = content.balance.economy.adminCapacityBase + (officials?.influence ?? 0) * 0.6;
 
     let base = 0;
+    let weightedPopulation = 0;
     for (const entry of provinces) {
       const warDamage = 1 - entry.state.devastation / 200;
+      const coreFactor = coreResourceFactor(state, nation.tag, entry.id);
+      weightedPopulation += entry.state.population * coreFactor;
       base += (entry.def.landholding * content.balance.economy.landValuePerWan
-        + entry.state.population * content.balance.economy.populationValuePerPerson) * Math.max(0.2, warDamage);
+        + entry.state.population * content.balance.economy.populationValuePerPerson)
+        * Math.max(0.2, warDamage) * coreFactor;
     }
 
     let silverIncome = 0;
@@ -141,7 +151,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
     nation.flags['food_shortage'] = foodShortage;
 
-    nation.manpower += population * content.balance.economy.manpowerRegenRate;
+    nation.manpower += weightedPopulation * content.balance.economy.manpowerRegenRate;
 
     for (const estate of Object.values(nation.estates)) {
       const law = lawOf(content, nation, estate.key);

@@ -6,6 +6,7 @@ import { availableFocuses, startFocus } from './focus';
 import { availableTechs, startResearch } from './research';
 import { startTaxReform } from './tax';
 import { enqueueTraining } from './training';
+import { startCoreIntegration } from './core';
 import { setArmyPath } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { canMarchThrough } from '../rules/access';
@@ -69,13 +70,31 @@ function focusScore(state: GameState, content: ContentIndex, tag: string, focusI
   return score;
 }
 
+function historicalFocusBonus(state: GameState, tag: string, focusId: string): number {
+  if (state.scenarioId === '1627') {
+    if (tag === 'QING' && (focusId.startsWith('qing_entry') || focusId.startsWith('qing_banner'))) return 70;
+    if (tag === 'MING' && focusId.startsWith('ming_liaodong')) return 55;
+  }
+  if (state.scenarioId === '1644') {
+    if (tag === 'QING' && focusId.startsWith('qing_entry')) return 80;
+    if (tag === 'SHUN' && focusId.startsWith('shun_east')) return 70;
+    if (tag === 'XI' && focusId.startsWith('xi_sichuan')) return 55;
+  }
+  if (state.scenarioId === '1650') {
+    if (tag === 'QING' && focusId.startsWith('qing_entry')) return 55;
+    if (tag === 'SMING' && focusId.startsWith('sming_')) return 45;
+  }
+  return 0;
+}
+
 function manageFocus(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation || nation.focus !== null) return;
   const focuses = availableFocuses(state, content, tag);
   let best: { id: string; score: number } | null = null;
   for (const focus of focuses) {
-    const score = focusScore(state, content, tag, focus.id, focus.aiWillDo.base);
+    const score = focusScore(state, content, tag, focus.id, focus.aiWillDo.base)
+      + historicalFocusBonus(state, tag, focus.id);
     if (!best || score > best.score) best = { id: focus.id, score };
   }
   if (best) startFocus(state, content, tag, best.id);
@@ -145,6 +164,26 @@ function neighborsOf(state: GameState, content: ContentIndex, tag: string): stri
   return [...result];
 }
 
+function historicalWarTarget(state: GameState, tag: string): string | null {
+  const alive = (target: string) => Boolean(state.countries[target]?.alive) && target !== tag;
+  if (state.scenarioId === '1627') {
+    if (tag === 'QING' && alive('MING')) return 'MING';
+    if (tag === 'MING' && alive('QING')) return 'QING';
+  }
+  if (state.scenarioId === '1644') {
+    if (tag === 'QING') return alive('SHUN') ? 'SHUN' : alive('MING') ? 'MING' : null;
+    if (tag === 'SHUN' && alive('MING')) return 'MING';
+    if (tag === 'MING' && alive('SHUN')) return 'SHUN';
+    if (tag === 'XI' && alive('MING')) return 'MING';
+  }
+  if (state.scenarioId === '1650') {
+    if (tag === 'QING') return alive('SMING') ? 'SMING' : alive('ZHENG') ? 'ZHENG' : null;
+    if (tag === 'SMING' && alive('QING')) return 'QING';
+    if (tag === 'ZHENG' && alive('QING')) return 'QING';
+  }
+  return null;
+}
+
 function manageWar(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   const def = content.countries.get(tag);
@@ -160,6 +199,15 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
   }
   if (state.day - nation.ai.lastWarDay < profile.warDelay) return;
   if (nation.treasury < profile.minTreasury || nation.stability < profile.minStability) return;
+  const scripted = historicalWarTarget(state, tag);
+  if (scripted && !areAtWar(state, tag, scripted)) {
+    const war = declareWar(state, tag, scripted, '历史疆界', content);
+    if (war) {
+      nation.ai.lastWarDay = state.day;
+      nation.ai.target = scripted;
+      return;
+    }
+  }
   const neighbors = neighborsOf(state, content, tag);
   const ownStrength = Math.max(1, armyStrengthOf(state, tag));
   const aggression = content.balance.ai.aggression * personalityFactor(def.aiPersonality, 'war');
@@ -225,6 +273,17 @@ function findPathToProvince(state: GameState, content: ContentIndex, tag: string
   return null;
 }
 
+function manageCore(state: GameState, content: ContentIndex, tag: string): void {
+  const nation = state.countries[tag];
+  if (!nation || nation.treasury < 80000 || nation.food < 50000) return;
+  const candidates = Object.values(state.provinces)
+    .filter(province => province.controller === tag && !province.cores.includes(tag) && !province.coreWork)
+    .map(province => ({ province, development: content.provinces.get(province.id)?.development ?? 0 }))
+    .sort((a, b) => b.development - a.development);
+  const best = candidates[0];
+  if (best) startCoreIntegration(state, tag, best.province.id);
+}
+
 function manageMovement(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation) return;
@@ -259,11 +318,12 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
 
 export function runMonthlyAi(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
-    if (!nation.alive || nation.tag === state.playerTag) continue;
+    if (!nation.alive || (!state.spectator && nation.tag === state.playerTag)) continue;
     manageFocus(state, content, nation.tag);
     manageResearch(state, content, nation.tag);
     manageTax(state, content, nation.tag);
     manageArmy(state, content, nation.tag);
+    manageCore(state, content, nation.tag);
     manageWar(state, content, nation.tag);
     manageMovement(state, content, nation.tag);
   }

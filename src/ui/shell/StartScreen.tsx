@@ -37,6 +37,7 @@ const PERSONALITY_LABELS: Record<string, string> = {
 export function StartScreen() {
   const content = useGameStore(state => state.content);
   const start = useGameStore(state => state.start);
+  const startSpectator = useGameStore(state => state.startSpectator);
   const load = useGameStore(state => state.load);
   const [scenarioId, setScenarioId] = useState('1627');
   const [tag, setTag] = useState('MING');
@@ -206,6 +207,9 @@ export function StartScreen() {
         <span className="hint">同一种子与同一串指令会得到逐日一致的结果。</span>
         {hasLocal('auto') && <button onClick={() => load('auto')}>读取自动存档</button>}
         {hasLocal('manual') && <button onClick={() => load('manual')}>读取手动存档</button>}
+        {phase === 'faction' && (
+          <button onClick={() => startSpectator(scenarioId, Number(seed) || 42, difficulty)}>看海模式</button>
+        )}
         {phase === 'faction' && (
           <button className="primary" onClick={() => start(scenarioId, selectedTag, Number(seed) || 42, difficulty)}>
             开始游戏

@@ -52,7 +52,7 @@ export function fireEvent(
   if (!state.countries[country]?.alive) return;
   state.firedEvents[firedKey(event.id, country)] = state.day;
   state.stats.eventsFired += 1;
-  if (country === state.playerTag) {
+  if (country === state.playerTag && !state.spectator) {
     const pending = { eventId: event.id, country, firedDay: state.day };
     if (event.chain) state.pendingEvents.unshift(pending);
     else state.pendingEvents.push(pending);

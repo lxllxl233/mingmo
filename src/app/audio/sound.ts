@@ -23,6 +23,7 @@ class SoundEngine {
   private musicTimer: number | null = null;
   private musicPlaying = false;
   private musicVolume = 0.65;
+  private voiceAudio: HTMLAudioElement | null = null;
 
   constructor() {
     try {
@@ -41,8 +42,10 @@ class SoundEngine {
 
   setMuted(muted: boolean): void {
     this.muted = muted;
-    if (muted) this.stopMusic();
-    else if (this.musicTracks.length > 0) this.restartMusic();
+    if (muted) {
+      this.stopMusic();
+      this.voiceAudio?.pause();
+    } else if (this.musicTracks.length > 0) this.restartMusic();
     try {
       localStorage.setItem(STORAGE_KEY, muted ? '1' : '0');
     } catch {
@@ -143,11 +146,36 @@ class SoundEngine {
     const track = this.musicTracks[this.musicIndex];
     if (!track) return;
     const notes = track.notes;
+    const style = /qing|mongol|russia/.test(track.id)
+      ? 'drums'
+      : /japan|zheng|voc/.test(track.id)
+        ? 'koto'
+        : /ming|shun|xi|sming/.test(track.id)
+          ? 'guzheng'
+          : 'strings';
     for (let i = 0; i < notes.length; i += 1) {
       const frequency = notes[i];
       if (frequency === undefined) continue;
-      this.tone(frequency, 0.9, 'sine', 0.012 * this.musicVolume, frequency * 0.998, i * 0.72);
-      if (i % 4 === 0) this.tone(frequency / 2, 1.6, 'triangle', 0.006 * this.musicVolume, frequency / 2, i * 0.72);
+      const at = i * 0.67;
+      if (style === 'koto') {
+        this.tone(frequency * 2, 0.52, 'triangle', 0.022 * this.musicVolume, frequency * 1.99, at);
+      } else if (style === 'drums') {
+        this.tone(frequency, 0.5, 'sawtooth', 0.014 * this.musicVolume, frequency * 0.998, at);
+      } else if (style === 'guzheng') {
+        this.tone(frequency, 0.7, 'triangle', 0.021 * this.musicVolume, frequency * 0.995, at);
+        this.tone(frequency * 2, 0.25, 'sine', 0.007 * this.musicVolume, frequency * 2, at);
+      } else {
+        this.tone(frequency, 0.85, 'sine', 0.017 * this.musicVolume, frequency * 0.999, at);
+      }
+      if (i % 2 === 0) {
+        this.tone(frequency / 2, 1.7, 'sine', 0.013 * this.musicVolume, frequency / 2, at);
+        this.tone(frequency * 0.75, 1.45, 'triangle', 0.006 * this.musicVolume, frequency * 0.75, at);
+      }
+      if (i % 4 === 0) {
+        this.tone(frequency / 4, 2.2, 'triangle', 0.009 * this.musicVolume, frequency / 4, at);
+        if (style === 'drums') this.noise(0.12, 420, 0.012 * this.musicVolume);
+      }
+      if (i % 8 === 4) this.noise(0.06, 1400, 0.006 * this.musicVolume);
     }
   }
 
@@ -163,15 +191,28 @@ class SoundEngine {
     const total = composition.infantry + composition.firearm + composition.cavalry
       + composition.artillery + composition.naval;
     let phrase = '集合！';
-    if (total > 0 && composition.naval / total >= 0.35) phrase = '扬帆！';
-    else if (total > 0 && composition.cavalry / total >= 0.3) phrase = '上马！';
-    else if (tag === 'QING') phrase = '列阵！';
-    else if (tag === 'MING') phrase = '列队！';
-    else if (tag === 'JAPAN') phrase = '整列！';
-    else if (tag === 'ZHENG') phrase = '扬帆！';
-    const pitch = tag === 'MING' ? 0.95 : tag === 'QING' ? 0.8 : tag === 'JAPAN' ? 1.15 : 1;
-    this.shout(phrase, pitch);
+    let file = 'default_assemble.wav';
+    if (total > 0 && composition.naval / total >= 0.35) { phrase = '扬帆！'; file = 'navy_sail.wav'; }
+    else if (total > 0 && composition.cavalry / total >= 0.3) { phrase = '上马！'; file = 'cavalry_mount.wav'; }
+    else if (tag === 'QING') { phrase = '列阵！'; file = 'qing_array.wav'; }
+    else if (tag === 'MING') { phrase = '列队！'; file = 'ming_line.wav'; }
+    else if (tag === 'JAPAN') { phrase = '整列！'; file = 'japan_dress.wav'; }
+    else if (tag === 'ZHENG') { phrase = '扬帆！'; file = 'navy_sail.wav'; }
+    this.playVoice(file, phrase);
     this.tone(96, 0.1, 'triangle', 0.025, 64);
+  }
+
+  private playVoice(file: string, fallbackText: string): void {
+    if (this.muted) return;
+    try {
+      if (!this.voiceAudio) this.voiceAudio = new Audio();
+      this.voiceAudio.pause();
+      this.voiceAudio.src = `/audio/voices/${file}`;
+      this.voiceAudio.volume = 0.8;
+      void this.voiceAudio.play().catch(() => this.shout(fallbackText, 1));
+    } catch {
+      this.shout(fallbackText, 1);
+    }
   }
 
   private shout(text: string, pitch: number): void {

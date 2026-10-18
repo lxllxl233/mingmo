@@ -53,6 +53,7 @@ export function decodeSave(text: string): GameState {
   if (parsed.state.difficulty !== 'easy' && parsed.state.difficulty !== 'hard') {
     parsed.state.difficulty = 'normal';
   }
+  if (typeof parsed.state.spectator !== 'boolean') parsed.state.spectator = false;
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (parsed.version <= 4 && !parsed.state.truces) parsed.state.truces = {};
   if (parsed.version <= 5) {

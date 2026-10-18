@@ -15,6 +15,11 @@ export interface ProvinceState {
   population: number;
   cores: string[];
   claims: string[];
+  coreWork?: {
+    country: string;
+    progress: number;
+    totalDays: number;
+  } | null;
   unrest: number;
   devastation: number;
   modifiers: TimedModifier[];
@@ -213,6 +218,7 @@ export interface GameState {
   day: number;
   playerTag: string;
   scenarioId: string;
+  spectator: boolean;
   countries: Record<string, CountryState>;
   provinces: Record<string, ProvinceState>;
   armies: Record<string, ArmyState>;
