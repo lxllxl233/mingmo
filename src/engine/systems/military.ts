@@ -471,6 +471,8 @@ export function setArmyPath(
     army.stance = 'hold';
     return true;
   }
+  const newPathKey = path.join('|');
+  const oldPathKey = army.movePath.join('|');
   const from = content.provinces.get(army.province);
   if (!from) return false;
   let current = army.province;
@@ -479,6 +481,10 @@ export function setArmyPath(
     if (!currentDef || !currentDef.neighbors.includes(next)) return false;
     if (!canMarchThrough(state, army.tag, next)) return false;
     current = next;
+  }
+  if (newPathKey !== oldPathKey) {
+    army.history = [];
+    army.moveProgress = 0;
   }
   army.movePath = [...path];
   army.stance = 'move';
