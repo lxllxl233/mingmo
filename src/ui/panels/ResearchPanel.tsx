@@ -18,8 +18,12 @@ export function ResearchPanel() {
   if (!game) return null;
   const country = game.countries[game.playerTag];
   if (!country) return null;
-  const totalTechs = content.techs.size;
+  const totalTechs = [...content.techs.values()].filter(tech => !tech.country || tech.country === country.tag).length;
   const completedCount = country.completedTechs.length;
+  const visibleTechs = (category: Tech['category']) =>
+    (content.techsByCategory.get(category) ?? [])
+      .filter(tech => !tech.country || tech.country === country.tag)
+      .sort((a, b) => a.era - b.era || a.costDays - b.costDays);
 
   return (
     <div className="panel">
@@ -54,7 +58,7 @@ export function ResearchPanel() {
         {CATEGORIES.map(category => (
           <div key={category.key}>
             <h3>{category.label}</h3>
-            {(content.techsByCategory.get(category.key) ?? []).sort((a, b) => a.era - b.era || a.costDays - b.costDays).map(tech => {
+            {visibleTechs(category.key).map(tech => {
               const completed = country.completedTechs.includes(tech.id);
               const active = country.research.some(slot => slot.techId === tech.id);
               const available = isTechAvailable(game, content, country.tag, tech);

@@ -50,6 +50,30 @@ core_regions:
   TIBET: [reg_xizang, reg_weilate]
   VOC: [reg_taiwan]
   RUSSIA: [reg_russia_far]
+starting_focuses:
+  MING: [ming_court_1]
+  QING: [qing_entry_1, qing_banner_1]
+  SMING: [sming_legit_1, sming_southwest_1]
+  XI: [xi_sichuan_1]
+  ZHENG: [zheng_taiwan_1]
+  MONGOL: [mongol_league_1]
+  JOSEON: [joseon_north_1]
+  JAPAN: [japan_sakoku_1]
+  TIBET: [tibet_monastery_1]
+  VOC: [voc_fort_1]
+  RUSSIA: [russia_fort_1]
+starting_techs:
+  MING: [fis_single_whip, adm_assessment_law]
+  QING: [fis_single_whip, adm_baojia, mil_firearm_3, mil_cavalry_2]
+  SMING: [adm_assessment_law, mil_pike_2]
+  XI: [agri_irrigation, mil_firearm_2]
+  ZHENG: [fis_sea_trade, mil_navy_2]
+  MONGOL: [mil_cavalry, adm_post]
+  JOSEON: [agri_irrigation, mil_fort_2]
+  JAPAN: [mil_firearm_2, fis_customs]
+  TIBET: [tho_medicine, agri_tea]
+  VOC: [fis_sea_trade, mil_navy_2]
+  RUSSIA: [mil_fort_2, fis_salt]
 province_overrides:
   kunming: SMING
   guilin: SMING

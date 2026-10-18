@@ -102,9 +102,13 @@ export function chooseEventOption(
   return true;
 }
 
+const SHARED_EVENT_TAGS = new Set(['MING', 'QING', 'SHUN', 'XI', 'SMING', 'ZHENG', 'MONGOL', 'JOSEON']);
+
 function targetsFor(event: EventDef, state: GameState): string[] {
   if (event.country && event.country !== 'any') return [event.country];
-  return Object.values(state.countries).filter(country => country.alive).map(country => country.tag);
+  return Object.values(state.countries)
+    .filter(country => country.alive && SHARED_EVENT_TAGS.has(country.tag))
+    .map(country => country.tag);
 }
 
 export function processEvents(state: GameState, content: ContentIndex): void {

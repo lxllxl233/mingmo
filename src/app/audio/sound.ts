@@ -225,13 +225,13 @@ class SoundEngine {
     const total = composition.infantry + composition.firearm + composition.cavalry
       + composition.artillery + composition.naval;
     let phrase = '集合！';
-    let file = 'default_assemble.wav';
-    if (total > 0 && composition.naval / total >= 0.35) { phrase = '扬帆！'; file = 'navy_sail.wav'; }
-    else if (total > 0 && composition.cavalry / total >= 0.3) { phrase = '上马！'; file = 'cavalry_mount.wav'; }
-    else if (tag === 'QING') { phrase = '列阵！'; file = 'qing_array.wav'; }
-    else if (tag === 'MING') { phrase = '列队！'; file = 'ming_line.wav'; }
-    else if (tag === 'JAPAN') { phrase = '整列！'; file = 'japan_dress.wav'; }
-    else if (tag === 'ZHENG') { phrase = '扬帆！'; file = 'navy_sail.wav'; }
+    let file = 'default_assemble.mp3';
+    if (total > 0 && composition.naval / total >= 0.35) { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
+    else if (total > 0 && composition.cavalry / total >= 0.3) { phrase = '上马！'; file = 'cavalry_mount.mp3'; }
+    else if (tag === 'QING') { phrase = '列阵！'; file = 'qing_array.mp3'; }
+    else if (tag === 'MING') { phrase = '列队！'; file = 'ming_line.mp3'; }
+    else if (tag === 'JAPAN') { phrase = '整列！'; file = 'japan_dress.mp3'; }
+    else if (tag === 'ZHENG') { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
     this.playVoice(file, phrase);
     this.tone(96, 0.1, 'triangle', 0.025, 64);
   }

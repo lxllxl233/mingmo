@@ -5,6 +5,7 @@ import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { generalTraitBonus } from '../rules/generalTraits';
 import { canMarchThrough } from '../rules/access';
+import { crisisCombatPenalty } from './crisis';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -122,6 +123,10 @@ function resolveBattleRound(state: GameState, content: ContentIndex, a: ArmyStat
   if (!countryA || !countryB) return;
   const modsA = aggregateModifiers(countryA, content);
   const modsB = aggregateModifiers(countryB, content);
+  modsA['army_attack_pct'] = (modsA['army_attack_pct'] ?? 0) + crisisCombatPenalty(countryA);
+  modsA['army_defense_pct'] = (modsA['army_defense_pct'] ?? 0) + crisisCombatPenalty(countryA);
+  modsB['army_attack_pct'] = (modsB['army_attack_pct'] ?? 0) + crisisCombatPenalty(countryB);
+  modsB['army_defense_pct'] = (modsB['army_defense_pct'] ?? 0) + crisisCombatPenalty(countryB);
   const attackA = attackValue(a, content, modsA);
   const defenseB = defenseValue(b, content, modsB, def.terrain);
   const attackB = attackValue(b, content, modsB);

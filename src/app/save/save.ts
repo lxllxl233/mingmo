@@ -54,6 +54,10 @@ export function decodeSave(text: string): GameState {
     parsed.state.difficulty = 'normal';
   }
   if (typeof parsed.state.spectator !== 'boolean') parsed.state.spectator = false;
+  for (const nation of Object.values(parsed.state.countries)) {
+    if (typeof nation.fiscalCrisisDays !== 'number') nation.fiscalCrisisDays = 0;
+    if (typeof nation.foodCrisisDays !== 'number') nation.foodCrisisDays = 0;
+  }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (parsed.version <= 4 && !parsed.state.truces) parsed.state.truces = {};
   if (parsed.version <= 5) {

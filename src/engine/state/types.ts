@@ -100,6 +100,8 @@ export interface CountryState {
   armyLoyalty: number;
   inflation: number;
   warExhaustion: number;
+  fiscalCrisisDays: number;
+  foodCrisisDays: number;
   estates: Record<string, EstateState>;
   factions: Record<string, number>;
   focus: { id: string; progress: number } | null;

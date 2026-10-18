@@ -15,6 +15,13 @@ export function BudgetPanel() {
       <div className="row"><span>国库</span><b>{Math.round(country.treasury).toLocaleString()} 两</b></div>
       <div className="row"><span>粮储</span><b>{Math.round(country.food).toLocaleString()} 石</b></div>
       <div className="row"><span>欠饷</span><b className={country.arrears > 0 ? 'danger' : ''}>{Math.round(country.arrears).toLocaleString()} 两</b></div>
+      <div className="row"><span>财政危机</span><b className={country.fiscalCrisisDays > 0 ? 'danger' : ''}>{country.fiscalCrisisDays} 日</b></div>
+      <div className="row"><span>粮荒危机</span><b className={country.foodCrisisDays > 0 ? 'danger' : ''}>{country.foodCrisisDays} 日</b></div>
+      {(country.fiscalCrisisDays > 0 || country.foodCrisisDays > 0) && (
+        <p className="danger">
+          国库或粮储见底：组织度、补给与战斗力持续下降，非战斗减员增加；持续 365 日将导致国家崩溃。
+        </p>
+      )}
       <div className="row"><span>通胀 / 腐败</span><b>{country.inflation.toFixed(0)} / {country.corruption.toFixed(0)}</b></div>
       {!report && <p className="muted">尚未结算。按 1x 推进到下个月。</p>}
       {report && (

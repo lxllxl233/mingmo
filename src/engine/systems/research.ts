@@ -8,6 +8,7 @@ import type { GameState } from '../state/types';
 export function isTechAvailable(state: GameState, content: ContentIndex, tag: string, tech: Tech): boolean {
   const nation = state.countries[tag];
   if (!nation || !nation.alive) return false;
+  if (tech.country && tech.country !== tag) return false;
   if (nation.completedTechs.includes(tech.id)) return false;
   if (nation.research.some(slot => slot.techId === tech.id)) return false;
   if (!tech.prerequisites.every(id => nation.completedTechs.includes(id))) return false;

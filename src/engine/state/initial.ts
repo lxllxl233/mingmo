@@ -16,6 +16,7 @@ import type {
   WarState,
 } from './types';
 import { relationKey } from './types';
+import { applyEffects } from '../rules/effects';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -129,6 +130,8 @@ export function createInitialState(
       armyLoyalty: clamp(starting.armyLoyalty, 0, 100),
       inflation: clamp(starting.inflation, 0, 100),
       warExhaustion: 0,
+      fiscalCrisisDays: 0,
+      foodCrisisDays: 0,
       estates,
       factions,
       focus: null,
@@ -153,6 +156,21 @@ export function createInitialState(
         const modifierKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
         nation.modifiers[modifierKey] = (nation.modifiers[modifierKey] ?? 0) + value;
       }
+    }
+  }
+
+  for (const [tag, focusIds] of Object.entries(scenario.startingFocuses ?? {})) {
+    const country = countries[tag];
+    if (!country) continue;
+    for (const focusId of focusIds ?? []) {
+      if (!country.completedFocuses.includes(focusId)) country.completedFocuses.push(focusId);
+    }
+  }
+  for (const [tag, techIds] of Object.entries(scenario.startingTechs ?? {})) {
+    const country = countries[tag];
+    if (!country) continue;
+    for (const techId of techIds ?? []) {
+      if (!country.completedTechs.includes(techId)) country.completedTechs.push(techId);
     }
   }
 
@@ -230,7 +248,7 @@ export function createInitialState(
     };
   });
 
-  return {
+  const state: GameState = {
     version: 1,
     seed,
     day: startDay,
@@ -248,7 +266,11 @@ export function createInitialState(
       : { JOSEON: 'QING', NEU: 'QING' },
     lastTribute: {},
     relations,
-    eventQueue: scenario.initialEvents.map(eventId => ({ eventId, country: playerTag, dueDay: startDay })),
+    eventQueue: scenario.initialEvents.map(eventId => {
+      const event = content.events.get(eventId);
+      const country = event?.country && event.country !== 'any' ? event.country : playerTag;
+      return { eventId, country, dueDay: startDay };
+    }),
     pendingEvents: [],
     firedEvents: {},
     log: [{
@@ -275,4 +297,23 @@ export function createInitialState(
     ended: false,
     victory: null,
   };
+  for (const nation of Object.values(state.countries)) {
+    for (const techId of nation.completedTechs) {
+      const tech = content.techs.get(techId);
+      if (tech) {
+        applyEffects(tech.effects, { state, content, country: nation.tag });
+        for (const unit of tech.unlocks.units ?? []) {
+          if (!nation.unlockedUnits.includes(unit)) nation.unlockedUnits.push(unit);
+        }
+        for (const decision of tech.unlocks.decisions ?? []) {
+          if (!nation.unlockedDecisions.includes(decision)) nation.unlockedDecisions.push(decision);
+        }
+      }
+    }
+    for (const focusId of nation.completedFocuses) {
+      const focus = content.focuses.get(focusId);
+      if (focus) applyEffects(focus.completionEffect, { state, content, country: nation.tag });
+    }
+  }
+  return state;
 }

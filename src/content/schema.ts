@@ -255,6 +255,7 @@ export const techSchema = z.object({
   id: id,
   name: z.string().min(1).max(40),
   desc: z.string().min(1).max(800),
+  country: tag.optional(),
   category: z.enum(['military', 'agriculture', 'administration', 'fiscal', 'thought']),
   era: z.number().int().min(1600).max(1700),
   costDays: z.number().int().min(60).max(400),
@@ -326,6 +327,8 @@ export const scenarioSchema = z.object({
   playableTags: z.array(tag).default([]),
   regionOwners: z.record(z.string(), tag),
   coreRegions: z.record(z.string(), z.array(z.string())).default({}),
+  startingFocuses: z.record(z.string(), z.array(z.string())).default({}),
+  startingTechs: z.record(z.string(), z.array(z.string())).default({}),
   provinceOverrides: z.record(z.string(), tag).default({}),
   countryOverrides: z.record(z.string(), z.record(z.string(), z.unknown())).default({}),
   armies: z.array(z.object({

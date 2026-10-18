@@ -13,9 +13,9 @@ const content = loadContentFromDirectory();
 describe('focus and research', () => {
   it('completes a focus after its cost', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
-    expect(startFocus(state, content, 'MING', 'ming_court_1')).toBe(true);
-    for (let day = 0; day < 70; day += 1) advanceDay(state, content);
-    expect(state.countries['MING']?.completedFocuses).toContain('ming_court_1');
+    expect(startFocus(state, content, 'MING', 'ming_court_2')).toBe(true);
+    for (let day = 0; day < 100; day += 1) advanceDay(state, content);
+    expect(state.countries['MING']?.completedFocuses).toContain('ming_court_2');
   });
 
   it('completes a technology after its cost', () => {

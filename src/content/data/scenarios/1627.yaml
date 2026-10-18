@@ -50,6 +50,30 @@ core_regions:
   TIBET: [reg_xizang, reg_weilate]
   VOC: [reg_taiwan]
   RUSSIA: [reg_russia_far]
+starting_focuses:
+  MING: [ming_court_1, ming_fiscal_1]
+  QING: [qing_banner_1]
+  SHUN: [shun_east_1]
+  XI: [xi_sichuan_1]
+  ZHENG: [zheng_trade_1]
+  MONGOL: [mongol_unite_1]
+  JOSEON: [joseon_tribute_1]
+  JAPAN: [japan_sakoku_1]
+  TIBET: [tibet_dharma_1]
+  VOC: [voc_trade_1]
+  RUSSIA: [russia_expand_1]
+starting_techs:
+  MING: [fis_single_whip, adm_assessment_law, mil_fort]
+  QING: [mil_cavalry, adm_baojia]
+  SHUN: [agri_land_reclaim, mil_pike]
+  XI: [agri_irrigation, mil_firearm]
+  ZHENG: [mil_navy, fis_sea_trade]
+  MONGOL: [mil_cavalry, adm_post]
+  JOSEON: [agri_irrigation, mil_fort]
+  JAPAN: [mil_firearm, fis_customs]
+  TIBET: [agri_irrigation, tho_medicine]
+  VOC: [fis_sea_trade, mil_navy]
+  RUSSIA: [mil_fort, fis_salt]
 province_overrides:
   shenyang: QING
   liaoyang: QING
@@ -62,7 +86,7 @@ province_overrides:
   quanzhou: ZHENG
 country_overrides:
   MING: { stability: 45, treasury: 1200000, food: 8000000, manpower: 200000, mandate: 65, corruption: 55, authority: 50, army_loyalty: 55 }
-  QING: { stability: 60, treasury: 300000, food: 1200000, manpower: 80000, mandate: 40, corruption: 30, authority: 70, army_loyalty: 80 }
+  QING: { stability: 60, treasury: 500000, food: 1200000, manpower: 80000, mandate: 40, corruption: 30, authority: 70, army_loyalty: 80 }
   SHUN: { stability: 55, treasury: 200000, food: 200000, manpower: 30000, mandate: 30, corruption: 45, authority: 45, army_loyalty: 55 }
   XI: { stability: 45, treasury: 150000, food: 200000, manpower: 20000, mandate: 20, corruption: 50, authority: 40, army_loyalty: 50 }
   SMING: { stability: 35, treasury: 400000, food: 2000000, manpower: 60000, mandate: 55, corruption: 60, authority: 40, army_loyalty: 45 }

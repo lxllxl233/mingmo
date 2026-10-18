@@ -145,6 +145,7 @@ function manageArmy(state: GameState, content: ContentIndex, tag: string): void 
   const atWar = warsOf(state, tag).length > 0;
   const target = provinces * (atWar ? 500 : 250) * profile.armyTarget;
   if (armyStrengthOf(state, tag) >= target) return;
+  if ((nation.lastReport?.net ?? 0) < 0 && nation.treasury < 180000) return;
   if (nation.treasury < profile.minTreasury * 0.8 || nation.manpower < 2000) return;
   const template = AI_TEMPLATES[tag] ?? 'ming_guard';
   enqueueTraining(state, content, tag, nation.capital, template, 2);
@@ -275,7 +276,7 @@ function findPathToProvince(state: GameState, content: ContentIndex, tag: string
 
 function manageCore(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
-  if (!nation || nation.treasury < 80000 || nation.food < 50000) return;
+  if (!nation || nation.treasury < 250000 || nation.food < 80000) return;
   const candidates = Object.values(state.provinces)
     .filter(province => province.controller === tag && !province.cores.includes(tag) && !province.coreWork)
     .map(province => ({ province, development: content.provinces.get(province.id)?.development ?? 0 }))

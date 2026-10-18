@@ -331,6 +331,7 @@ export interface Tech {
   id: TechId;
   name: string;
   desc: string;
+  country?: CountryTag;
   category: 'military' | 'agriculture' | 'administration' | 'fiscal' | 'thought';
   era: number;
   costDays: number;
@@ -392,6 +393,8 @@ export interface ScenarioDef {
   playableTags: CountryTag[];
   regionOwners: Record<RegionId, CountryTag>;
   coreRegions?: Partial<Record<CountryTag, RegionId[]>>;
+  startingFocuses?: Partial<Record<CountryTag, string[]>>;
+  startingTechs?: Partial<Record<CountryTag, string[]>>;
   provinceOverrides: Record<ProvinceId, CountryTag>;
   countryOverrides: Record<CountryTag, Partial<CountryStarting>>;
   armies: Array<{ tag: CountryTag; template: ArmyTemplateId; province: ProvinceId; size: number }>;

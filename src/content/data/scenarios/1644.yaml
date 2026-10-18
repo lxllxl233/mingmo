@@ -50,6 +50,30 @@ core_regions:
   TIBET: [reg_xizang, reg_weilate]
   VOC: [reg_taiwan]
   RUSSIA: [reg_russia_far]
+starting_focuses:
+  MING: [ming_court_1, ming_liaodong_1]
+  QING: [qing_entry_1, qing_banner_1]
+  SHUN: [shun_east_1]
+  XI: [xi_sichuan_1]
+  ZHENG: [zheng_resist_1]
+  MONGOL: [mongol_qing_1]
+  JOSEON: [joseon_north_1]
+  JAPAN: [japan_sakoku_1]
+  TIBET: [tibet_qing_1]
+  VOC: [voc_fort_1]
+  RUSSIA: [russia_expand_1]
+starting_techs:
+  MING: [fis_single_whip, adm_assessment_law, mil_fort]
+  QING: [mil_cavalry_2, adm_baojia, fis_single_whip]
+  SHUN: [agri_land_reclaim, mil_pike_2]
+  XI: [agri_irrigation, mil_firearm_2]
+  ZHENG: [mil_navy_2, fis_sea_trade]
+  MONGOL: [mil_cavalry, adm_post]
+  JOSEON: [agri_irrigation, mil_fort_2]
+  JAPAN: [mil_firearm_2, fis_customs]
+  TIBET: [tho_medicine, agri_tea]
+  VOC: [fis_sea_trade, mil_navy_2]
+  RUSSIA: [mil_fort_2, fis_salt]
 province_overrides:
   penghu: ZHENG
   quanzhou: ZHENG
@@ -57,13 +81,13 @@ province_overrides:
   chongqing: XI
 country_overrides:
   MING: { stability: 20, treasury: 300000, food: 2500000, manpower: 80000, mandate: 35, corruption: 75, authority: 30, army_loyalty: 30 }
-  QING: { stability: 65, treasury: 600000, food: 2000000, manpower: 150000, mandate: 50, corruption: 35, authority: 75, army_loyalty: 80 }
+  QING: { stability: 65, treasury: 800000, food: 2000000, manpower: 150000, mandate: 50, corruption: 35, authority: 75, army_loyalty: 80 }
   SHUN: { stability: 60, treasury: 800000, food: 1200000, manpower: 120000, mandate: 45, corruption: 55, authority: 60, army_loyalty: 55 }
   XI: { stability: 40, treasury: 250000, food: 500000, manpower: 50000, mandate: 25, corruption: 55, authority: 50, army_loyalty: 50 }
   SMING: { stability: 40, treasury: 500000, food: 1200000, manpower: 40000, mandate: 60, corruption: 60, authority: 40, army_loyalty: 45 }
   ZHENG: { stability: 65, treasury: 700000, food: 900000, manpower: 40000, mandate: 30, corruption: 30, authority: 60, army_loyalty: 70 }
   MONGOL: { stability: 45, treasury: 120000, food: 400000, manpower: 30000, mandate: 20, corruption: 40, authority: 45, army_loyalty: 55 }
-  JOSEON: { stability: 45, treasury: 200000, food: 1200000, manpower: 50000, mandate: 25, corruption: 40, authority: 50, army_loyalty: 50 }
+  JOSEON: { stability: 45, treasury: 800000, food: 1200000, manpower: 50000, mandate: 25, corruption: 40, authority: 50, army_loyalty: 50 }
   JAPAN: { stability: 65, treasury: 900000, food: 3000000, manpower: 100000, mandate: 30, corruption: 25, authority: 65, army_loyalty: 75 }
   TIBET: { stability: 55, treasury: 90000, food: 500000, manpower: 30000, mandate: 25, corruption: 35, authority: 60, army_loyalty: 65 }
   VOC: { stability: 65, treasury: 650000, food: 500000, manpower: 10000, mandate: 0, corruption: 20, authority: 70, army_loyalty: 75 }
