@@ -190,8 +190,10 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
       sum + defenseValue(army, content, modsFor(army.tag), def.terrain), 0);
     const defenderHit = (attackPower / (defensePower + 100)) * 7 * Math.max(0.6, frontAttackers.length / Math.max(1, frontDefenders.length));
     const attackerHit = (defensePower / (attackPower + 100)) * 4.2 * Math.max(0.6, frontDefenders.length / Math.max(1, frontAttackers.length));
-    const antes = new Map<string, number>();
-    for (const army of [...frontAttackers, ...frontDefenders]) antes.set(army.tag, (antes.get(army.tag) ?? 0) + compositionTotal(army));
+    const beforeStrength = new Map<string, number>();
+    for (const army of [...frontAttackers, ...frontDefenders]) {
+      beforeStrength.set(army.id, compositionTotal(army));
+    }
     for (const army of frontDefenders) {
       const share = compositionTotal(army) / Math.max(1, frontDefenders.reduce((sum, entry) => sum + compositionTotal(entry), 0));
       army.organization = clamp(army.organization - defenderHit * share, 0, 100);
@@ -205,7 +207,7 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
       army.stance = 'battle';
     }
     for (const army of [...frontAttackers, ...frontDefenders]) {
-      const before = antes.get(army.tag) ?? 0;
+      const before = beforeStrength.get(army.id) ?? 0;
       const after = compositionTotal(army);
       const war = state.wars.find(entry =>
         (entry.attacker === army.tag || entry.defender === army.tag)
