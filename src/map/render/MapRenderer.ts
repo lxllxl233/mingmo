@@ -827,7 +827,7 @@ export class MapRenderer {
     const selected: string[] = [];
     if (this.state) {
       for (const army of Object.values(this.state.armies)) {
-        if (army.tag !== this.state.playerTag) continue;
+        if (!this.state.spectator && army.tag !== this.state.playerTag) continue;
         const centroid = this.centroids.get(army.province);
         if (!centroid) continue;
         const screen = this.world.toGlobal(new Point(centroid.x, centroid.y));
@@ -1435,8 +1435,9 @@ export class MapRenderer {
         marker.positioned = true;
       }
       marker.container.zIndex = this.selectedArmy === representative.id ? 10 : 0;
-      marker.container.eventMode = representative.tag === this.state.playerTag ? 'static' : 'none';
-      marker.container.cursor = representative.tag === this.state.playerTag ? 'pointer' : 'default';
+      const selectable = representative.tag === this.state.playerTag || this.state.spectator;
+      marker.container.eventMode = selectable ? 'static' : 'none';
+      marker.container.cursor = selectable ? 'pointer' : 'default';
       marker.selection.visible = ordered.some(army => army.id === this.selectedArmy);
       marker.stackScale = 1 + Math.min(0.4, Math.max(0, count - 1) * 0.08);
       marker.label.text = `${strengthText(total)}${count > 1 ? ` ×${count}` : ''}`;

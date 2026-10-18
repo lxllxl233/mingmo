@@ -29,7 +29,8 @@ export function ArmyPanel() {
   const [navalTarget, setNavalTarget] = useState('');
   if (!game || !selectedArmy) return null;
   const army = game.armies[selectedArmy];
-  if (!army || army.tag !== game.playerTag) return null;
+  if (!army || (!game.spectator && army.tag !== game.playerTag)) return null;
+  const readOnly = game.spectator;
   const def = content.countries.get(army.tag);
   const province = content.provinces.get(army.province);
   const ports = [...content.provinces.values()].filter(entry =>
@@ -105,6 +106,7 @@ export function ArmyPanel() {
         <span>更换将领</span>
         <select
           value={army.general ?? ''}
+          disabled={readOnly}
           onChange={event => {
             const value = event.target.value;
             command({ type: 'army.assignGeneral', armyId: army.id, generalId: value || null });
@@ -154,7 +156,12 @@ export function ArmyPanel() {
             </p>
           ) : (
             <>
-              {!fleetPresent && <p className="muted">需要在本港建造战船，才能护送陆军海运。</p>}
+              {readOnly ? (
+                <p className="muted">看海模式：仅观察军队状态，不进行指挥。</p>
+              ) : !fleetPresent ? (
+                <p className="muted">需要在本港建造战船，才能护送陆军海运。</p>
+              ) : null}
+              {!readOnly && (
               <div className="naval-row">
                 <select value={navalTarget} onChange={event => setNavalTarget(event.target.value)}>
                   <option value="">选择目标港口</option>
@@ -170,25 +177,32 @@ export function ArmyPanel() {
                   登船海运
                 </button>
               </div>
+              )}
             </>
           )}
         </section>
       )}
 
       <footer className="panel-actions">
-        <button className="primary" onClick={() => openPanel('military')}>军事列表</button>
-        <button onClick={() => command({ type: 'army.stop', armyId: army.id })}>停止</button>
-        <button
-          className={army.forcedMarch ? 'primary' : ''}
-          title="急行军：无视沿途敌对地区的占领，直接向终点推进；组织与补给持续下降"
-          onClick={() => command({ type: 'army.forceMarch', armyId: army.id })}
-        >
-          {army.forcedMarch ? '急行军中' : '急行军'}
+        {!readOnly && <button className="primary" onClick={() => openPanel('military')}>军事列表</button>}
+        {!readOnly && <button onClick={() => command({ type: 'army.stop', armyId: army.id })}>停止</button>}
+        {!readOnly && (
+          <button
+            className={army.forcedMarch ? 'primary' : ''}
+            title="急行军：无视沿途敌对地区的占领，直接向终点推进；组织与补给持续下降"
+            onClick={() => command({ type: 'army.forceMarch', armyId: army.id })}
+          >
+            {army.forcedMarch ? '急行军中' : '急行军'}
+          </button>
+        )}
+        {!readOnly && (
+          <button className="danger" onClick={() => {
+            if (command({ type: 'army.disband', armyId: army.id })) selectArmy(null);
+          }}>解散军团</button>
+        )}
+        <button className="ghost" onClick={() => { if (readOnly) closePanel(); else selectArmy(null); }}>
+          {readOnly ? '返回地图' : '取消选择'}
         </button>
-        <button className="danger" onClick={() => {
-          if (command({ type: 'army.disband', armyId: army.id })) selectArmy(null);
-        }}>解散军团</button>
-        <button className="ghost" onClick={() => selectArmy(null)}>取消选择</button>
       </footer>
     </div>
   );

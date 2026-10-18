@@ -66,6 +66,12 @@ export function MapViewport() {
     const state = useGameStore.getState();
     const game = state.game;
     if (!game) return;
+    if (game.spectator) {
+      const province = game.provinces[provinceId];
+      const tag = province?.controller ?? province?.owner;
+      if (tag) state.openCountry(tag);
+      return;
+    }
     if (state.selectedArmy && game.armies[state.selectedArmy]) {
       if (ctrlKey) state.appendArmyWaypoint(provinceId);
       else state.moveArmyTo(provinceId);

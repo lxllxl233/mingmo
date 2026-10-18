@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { musicForFaction } from '../../app/audio/music';
@@ -76,7 +76,7 @@ export function GameShell() {
 
   useEffect(() => {
     if (!game || game.spectator || speed === 0) return;
-    const interval = speed === 1 ? 3000 : speed === 2 ? 1500 : 750;
+    const interval = speed === 1 ? 3000 : speed === 2 ? 1500 : speed === 4 ? 750 : speed === 8 ? 375 : 188;
     const handle = window.setInterval(() => tick(), interval);
     return () => window.clearInterval(handle);
   }, [speed, tick, game?.spectator]);
@@ -169,10 +169,10 @@ export function GameShell() {
       </div>
       <footer className="bottombar">
         <div className="speed">
-          {([0, 1, 2, 4] as const).map(value => (
+          {([0, 1, 2, 4, 8, 16] as const).map(value => (
             <button
               key={value}
-              title={value === 0 ? '暂停（空格）' : value === 1 ? '8 小时 / 秒' : value === 2 ? '16 小时 / 秒' : '32 小时 / 秒'}
+              title={value === 0 ? '暂停（空格）' : value === 1 ? '8 小时 / 秒' : value === 2 ? '16 小时 / 秒' : value === 4 ? '32 小时 / 秒' : value === 8 ? '64 小时 / 秒' : '128 小时 / 秒'}
               className={speed === value ? 'active' : ''}
               onClick={() => setSpeed(value)}
             >
@@ -214,4 +214,6 @@ export function GameShell() {
     </div>
   );
 }
+
+
 

@@ -6,6 +6,8 @@ import { MusicControl } from './MusicControl';
 import { CountryFlag } from '../panels/CountryFlag';
 import { BattleModal } from '../panels/BattleModal';
 import { CountryPanel } from '../panels/CountryPanel';
+import { ArmyPanel } from '../panels/ArmyPanel';
+import { ArmyListPanel } from '../panels/ArmyListPanel';
 
 export function SpectatorShell() {
   const game = useGameStore(state => state.game);
@@ -20,7 +22,7 @@ export function SpectatorShell() {
 
   useEffect(() => {
     if (speed === 0) return;
-    const interval = speed === 1 ? 3000 : speed === 2 ? 1500 : 750;
+    const interval = speed === 1 ? 3000 : speed === 2 ? 1500 : speed === 4 ? 750 : speed === 8 ? 375 : 188;
     const handle = window.setInterval(() => tick(), interval);
     return () => window.clearInterval(handle);
   }, [speed, tick]);
@@ -65,6 +67,14 @@ export function SpectatorShell() {
           <aside className="spectator-country">
             <CountryPanel />
           </aside>
+        ) : panel === 'army' ? (
+          <aside className="spectator-country">
+            <ArmyPanel />
+          </aside>
+        ) : panel === 'armyList' ? (
+          <aside className="spectator-country">
+            <ArmyListPanel />
+          </aside>
         ) : (
           <aside className="spectator-log">
             <h3>世界观察</h3>
@@ -82,10 +92,10 @@ export function SpectatorShell() {
       </div>
       <footer className="spectator-bottom">
         <div className="speed">
-          {([0, 1, 2, 4] as const).map(value => (
+          {([0, 1, 2, 4, 8, 16] as const).map(value => (
             <button
               key={value}
-              title={value === 0 ? '暂停（空格）' : value === 1 ? '8 小时 / 秒' : value === 2 ? '16 小时 / 秒' : '32 小时 / 秒'}
+              title={value === 0 ? '暂停（空格）' : value === 1 ? '8 小时 / 秒' : value === 2 ? '16 小时 / 秒' : value === 4 ? '32 小时 / 秒' : value === 8 ? '64 小时 / 秒' : '128 小时 / 秒'}
               className={speed === value ? 'active' : ''}
               onClick={() => setSpeed(value)}
             >
@@ -102,3 +112,5 @@ export function SpectatorShell() {
     </div>
   );
 }
+
+
