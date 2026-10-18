@@ -24,6 +24,7 @@ class SoundEngine {
   private musicVolume = 0.65;
   private musicAudio: HTMLAudioElement | null = null;
   private voiceAudio: HTMLAudioElement | null = null;
+  private musicToken = 0;
 
   constructor() {
     try {
@@ -117,7 +118,11 @@ class SoundEngine {
 
   stopMusic(): void {
     this.musicPlaying = false;
-    if (this.musicAudio) this.musicAudio.pause();
+    this.musicToken += 1;
+    if (this.musicAudio) {
+      this.musicAudio.pause();
+      this.musicAudio.currentTime = 0;
+    }
   }
 
   private restartMusic(): void {
@@ -132,13 +137,15 @@ class SoundEngine {
   private startAudio(track: MusicTrack): boolean {
     if (!track.file || typeof Audio === 'undefined') return false;
     try {
+      const token = ++this.musicToken;
       if (!this.musicAudio) this.musicAudio = new Audio();
       this.musicAudio.pause();
+      this.musicAudio.currentTime = 0;
       this.musicAudio.src = track.file;
       this.musicAudio.loop = this.musicLoop === 'single';
       this.musicAudio.volume = this.musicVolume;
       this.musicAudio.onended = () => {
-        if (!this.musicPlaying) return;
+        if (token !== this.musicToken || !this.musicPlaying) return;
         if (this.musicLoop === 'single') {
           void this.musicAudio?.play();
           return;
@@ -148,7 +155,7 @@ class SoundEngine {
         if (next) this.startAudio(next);
       };
       void this.musicAudio.play().catch(() => {
-        this.musicPlaying = false;
+        if (token === this.musicToken) this.musicPlaying = false;
       });
       return true;
     } catch {
@@ -307,5 +314,6 @@ class SoundEngine {
   }
 }
 
-export const sound = new SoundEngine();
+const shared = globalThis as typeof globalThis & { __mingmoSound?: SoundEngine };
+export const sound = shared.__mingmoSound ?? (shared.__mingmoSound = new SoundEngine());
 export type { SoundKind };

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { MapRenderer } from '../../map/render/MapRenderer';
 import { useGameStore } from '../state/store';
-import { BattleBubble } from '../panels/BattleBubble';
 
 export function MapViewport() {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -59,6 +58,10 @@ export function MapViewport() {
     useGameStore.getState().openArmyStack(armyIds);
   }, []);
 
+  const handleSelectBattle = useCallback((battleId: string) => {
+    useGameStore.getState().openBattle(battleId);
+  }, []);
+
   const handleContextProvince = useCallback((provinceId: string, ctrlKey: boolean) => {
     const state = useGameStore.getState();
     const game = state.game;
@@ -76,7 +79,7 @@ export function MapViewport() {
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleArmyStack, handleContextProvince);
+    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleArmyStack, handleContextProvince, handleSelectBattle);
     rendererRef.current = renderer;
     let cancelled = false;
     void renderer.init().then(() => {
@@ -92,7 +95,7 @@ export function MapViewport() {
       renderer.destroy();
       rendererRef.current = null;
     };
-  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy, handleArmyStack]);
+  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy, handleArmyStack, handleSelectBattle]);
 
   useEffect(() => {
     if (game && rendererRef.current) {
@@ -114,7 +117,6 @@ export function MapViewport() {
   return (
     <div className="map-host" ref={hostRef}>
       <div className="map-grain" />
-      <BattleBubble />
       {trainingRequest && (
         <div className="deploy-banner">
           <b>{trainingRequest.kind === 'navy' ? '部署水军' : '部署陆军'}</b>

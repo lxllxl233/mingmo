@@ -8,6 +8,7 @@ type SelectProvinceHandler = (provinceId: string) => void;
 type SelectArmyHandler = (armyId: string) => void;
 type SelectArmyStackHandler = (armyIds: string[]) => void;
 type ContextProvinceHandler = (provinceId: string, ctrlKey: boolean) => void;
+type SelectBattleHandler = (battleId: string) => void;
 export type MapMode = 'normal' | 'estates' | 'finance' | 'military' | 'diplomacy' | 'core';
 
 const ESTATE_COLORS: Record<string, number> = {
@@ -162,6 +163,8 @@ export class MapRenderer {
   private localLabelArea = new Map<Text, number>();
   private localLabelsDrawn = false;
   private armyLayer = new Container();
+  private battleLayer = new Container();
+  private battleMarkers = new Map<string, Container>();
   private projected = new Map<string, number[]>();
   private centroids = new Map<string, { x: number; y: number }>();
   private edges: EdgeRecord[] = [];
@@ -180,6 +183,10 @@ export class MapRenderer {
   private ownerSignature = '';
   private hasDrawn = false;
   private dragging = false;
+  private rightSelectStart: { x: number; y: number } | null = null;
+  private rightSelectMoved = false;
+  private rightSelectBox = new Graphics();
+  private suppressContextUntil = 0;
   private moved = false;
   private lastPointer = { x: 0, y: 0 };
   private wheelHandler: ((event: WheelEvent) => void) | null = null;
@@ -194,6 +201,7 @@ export class MapRenderer {
     private readonly onSelectArmy: SelectArmyHandler,
     private readonly onSelectArmyStack: SelectArmyStackHandler,
     private readonly onContextProvince: ContextProvinceHandler,
+    private readonly onSelectBattle: SelectBattleHandler,
   ) {}
 
   async init(): Promise<void> {
@@ -240,6 +248,7 @@ export class MapRenderer {
       this.portLabelLayer,
       this.trailLayer,
       this.armyLayer,
+      this.battleLayer,
     );
     app.stage.addChild(this.world);
     this.prepareGeometry();
@@ -250,6 +259,8 @@ export class MapRenderer {
     this.drawPorts();
     this.fit();
     this.bindPointer();
+    app.stage.addChild(this.rightSelectBox);
+    this.rightSelectBox.eventMode = 'none';
     app.ticker.add(() => this.animateArmyMarkers());
   }
 
@@ -669,6 +680,9 @@ export class MapRenderer {
     for (const marker of this.armyMarkers.values()) {
       marker.container.scale.set(markerScale * marker.stackScale);
     }
+    for (const marker of this.battleMarkers.values()) {
+      marker.scale.set(1 / Math.max(0.001, scale));
+    }
     const labelScale = Math.min(1, 18 / scale);
     for (const [label, base] of this.labelBaseScale) {
       label.scale.set(base * labelScale);
@@ -696,12 +710,33 @@ export class MapRenderer {
     if (!app) return;
     const stage = app.stage;
     stage.on('pointerdown', (event) => {
-      if (event.button === 2) return;
+      if (event.button === 2) {
+        this.rightSelectStart = { x: event.global.x, y: event.global.y };
+        this.rightSelectMoved = false;
+        this.rightSelectBox.clear();
+        return;
+      }
       this.dragging = true;
       this.moved = false;
       this.lastPointer = { x: event.global.x, y: event.global.y };
     });
     stage.on('pointermove', (event) => {
+      if (this.rightSelectStart) {
+        const dx = event.global.x - this.rightSelectStart.x;
+        const dy = event.global.y - this.rightSelectStart.y;
+        if (Math.abs(dx) + Math.abs(dy) > 6) this.rightSelectMoved = true;
+        if (this.rightSelectMoved) {
+          this.rightSelectBox.clear();
+          this.rightSelectBox.rect(
+            Math.min(this.rightSelectStart.x, event.global.x),
+            Math.min(this.rightSelectStart.y, event.global.y),
+            Math.abs(dx),
+            Math.abs(dy),
+          ).fill({ color: 0x1f1c18, alpha: 0.08 })
+            .stroke({ width: 1.2, color: 0x9e2b25, alpha: 0.95 });
+        }
+        return;
+      }
       if (!this.dragging) {
         this.updateHover(event.global.x, event.global.y);
         return;
@@ -715,12 +750,17 @@ export class MapRenderer {
       this.lastPointer = { x: event.global.x, y: event.global.y };
     });
     stage.on('pointerup', (event) => {
-      if (event.button === 2) return;
+      if (event.button === 2 || this.rightSelectStart) {
+        this.finishRightSelection(event.global.x, event.global.y, event.ctrlKey);
+        return;
+      }
       this.dragging = false;
       if (!this.moved) this.pick(event.global.x, event.global.y);
     });
     stage.on('pointerupoutside', () => {
       this.dragging = false;
+      this.rightSelectStart = null;
+      this.rightSelectBox.clear();
     });
 
     this.wheelHandler = (event: WheelEvent) => {
@@ -750,6 +790,7 @@ export class MapRenderer {
     this.contextHandler = (event: MouseEvent) => {
       event.preventDefault();
       if (!this.app) return;
+      if (this.rightSelectStart || performance.now() < this.suppressContextUntil) return;
       const rect = this.app.canvas.getBoundingClientRect();
       const scaleX = this.app.screen.width / rect.width;
       const scaleY = this.app.screen.height / rect.height;
@@ -761,6 +802,37 @@ export class MapRenderer {
     };
     app.canvas.addEventListener('contextmenu', this.contextHandler);
     app.renderer.on('resize', () => this.fit());
+  }
+
+  private finishRightSelection(screenX: number, screenY: number, ctrlKey: boolean): void {
+    const start = this.rightSelectStart;
+    this.rightSelectStart = null;
+    this.rightSelectBox.clear();
+    this.suppressContextUntil = performance.now() + 250;
+    if (!start) return;
+    if (!this.rightSelectMoved) {
+      const province = this.provinceAt(screenX, screenY);
+      if (province) this.onContextProvince(province, ctrlKey);
+      return;
+    }
+    const minX = Math.min(start.x, screenX);
+    const maxX = Math.max(start.x, screenX);
+    const minY = Math.min(start.y, screenY);
+    const maxY = Math.max(start.y, screenY);
+    const selected: string[] = [];
+    if (this.state) {
+      for (const army of Object.values(this.state.armies)) {
+        if (army.tag !== this.state.playerTag) continue;
+        const centroid = this.centroids.get(army.province);
+        if (!centroid) continue;
+        const screen = this.world.toGlobal(new Point(centroid.x, centroid.y));
+        if (screen.x >= minX && screen.x <= maxX && screen.y >= minY && screen.y <= maxY) {
+          selected.push(army.id);
+        }
+      }
+    }
+    if (selected.length === 1) this.onSelectArmy(selected[0]!);
+    else if (selected.length > 1) this.onSelectArmyStack(selected);
   }
 
   private provinceAt(screenX: number, screenY: number): string | null {
@@ -866,6 +938,8 @@ export class MapRenderer {
       this.drawSelection();
       this.updateArmies();
       this.drawArmyTrails();
+      this.updateBattles();
+      this.updateZoomScales();
     }
   }
 
@@ -895,6 +969,8 @@ export class MapRenderer {
     this.drawHover();
     this.updateArmies();
     this.drawArmyTrails();
+    this.updateBattles();
+    this.updateZoomScales();
   }
 
   private drawSelection(): void {
@@ -1367,6 +1443,57 @@ export class MapRenderer {
         marker.container.destroy({ children: true });
         this.armyMarkers.delete(key);
       }
+    }
+  }
+
+  private updateBattles(): void {
+    if (!this.state) return;
+    const alive = new Set<string>();
+    for (const battle of this.state.battles) {
+      const centroid = this.centroids.get(battle.provinceId);
+      if (!centroid) continue;
+      alive.add(battle.id);
+      let marker = this.battleMarkers.get(battle.id);
+      if (!marker) {
+        marker = new Container();
+        marker.eventMode = 'static';
+        marker.cursor = 'pointer';
+        const bg = new Graphics();
+        bg.roundRect(-48, -29, 96, 26, 13)
+          .fill({ color: 0xf7edd9, alpha: 0.96 })
+          .stroke({ width: 1.4, color: 0x9e2b25, alpha: 0.95 });
+        const label = new Text({
+          text: '',
+          style: {
+            fontFamily: 'Noto Serif SC, SimSun, serif',
+            fontSize: 11,
+            fontWeight: '600',
+            fill: 0x9e2b25,
+          },
+        });
+        label.anchor.set(0.5);
+        label.resolution = 3;
+        label.position.y = -16;
+        marker.addChild(bg, label);
+        marker.position.set(centroid.x, centroid.y);
+        marker.on('pointertap', (event) => {
+          event.stopPropagation();
+          this.onSelectBattle(battle.id);
+        });
+        this.battleLayer.addChild(marker);
+        this.battleMarkers.set(battle.id, marker);
+      }
+      const label = marker.children[1];
+      if (label instanceof Text) {
+        const name = this.content.provinces.get(battle.provinceId)?.name ?? battle.provinceId;
+        label.text = `⚔ ${name} ${battle.days}日`;
+      }
+      marker.position.set(centroid.x, centroid.y);
+    }
+    for (const [id, marker] of this.battleMarkers) {
+      if (alive.has(id)) continue;
+      marker.destroy({ children: true });
+      this.battleMarkers.delete(id);
     }
   }
 
