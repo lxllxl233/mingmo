@@ -38,10 +38,11 @@ function updateWarExhaustion(state: GameState): void {
 }
 
 function updateAlive(state: GameState, content: ContentIndex): void {
+  const owners = new Set<string>();
+  for (const province of Object.values(state.provinces)) owners.add(province.owner);
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
-    const owned = Object.values(state.provinces).some(province => province.owner === nation.tag);
-    if (!owned) {
+    if (!owners.has(nation.tag)) {
       nation.alive = false;
       state.log.push({
         day: state.day,
