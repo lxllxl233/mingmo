@@ -1,0 +1,226 @@
+# 科技树（节选，15 项，覆盖 5 类）
+# 字段规范见 prompts/02-content-spec.md 第 7 节。
+
+techs:
+
+  # ══ 军事 ══════════════════════════════════════════════
+
+  - id: mil_matchlock_improved
+    name: 鸟铳改良
+    desc: 加长铳管，改进准星与扳机，射程稍远而装填稍速。
+    category: military
+    era: 1620
+    cost_days: 120
+    prerequisites: []
+    effects:
+      - add_modifier: { army_attack_pct: 5 }
+    unlocks:
+      units: [firearm_infantry]
+    ai_weight: 60
+
+  - id: mil_franciscan_breech
+    name: 佛郎机
+    desc: 后装子母铳，射速快而口径小。守城与野战皆可用。
+    category: military
+    era: 1620
+    cost_days: 150
+    prerequisites: []
+    effects:
+      - add_modifier: { artillery_attack_pct: 8, fort_defense_pct: 5 }
+    unlocks:
+      units: [light_artillery]
+    ai_weight: 55
+    historical_context: 正德年间自葡萄牙传入，嘉靖后大量仿制，是明代最早成体系的火器之一。
+
+  - id: mil_red_barbarian_cannon
+    name: 红夷大炮
+    desc: 仿制佛郎机长管炮，重逾三千斤。攻城破壁，守城亦利。
+    category: military
+    era: 1620
+    cost_days: 240
+    prerequisites: [mil_franciscan_breech]
+    requires_any:
+      any:
+        - has_advisor: jesuit_missionary
+        - has_flag: captured_portuguese_guns
+        - has_flag: ningyuan_victory
+    effects:
+      - add_modifier: { siege_speed_pct: 25, fort_defense_pct: 15, artillery_attack_pct: 20 }
+    unlocks:
+      units: [artillery_battery]
+      decisions: [ming_dec_cast_cannons]
+    ai_weight: 75
+    historical_context: 天启年间自澳门购炮，宁远之战首次重创后金，此后明清双方皆倾力仿制。
+
+  - id: mil_bastion_fort
+    name: 棱堡
+    desc: 低矮厚墙、菱形棱角，以交叉火力取代高墙。旧式攻城法顿失其效。
+    category: military
+    era: 1630
+    cost_days: 220
+    prerequisites: [mil_red_barbarian_cannon]
+    effects:
+      - add_modifier: { fort_defense_pct: 30 }
+      - add_modifier: { siege_speed_pct: -5 }
+    unlocks:
+      buildings: [bastion]
+    ai_weight: 40
+
+  - id: mil_wagon_fort
+    name: 车营
+    desc: 以偏厢车结阵，火器居中，骑兵护翼。野战遇骑，可守可退。
+    category: military
+    era: 1620
+    cost_days: 180
+    prerequisites: [mil_matchlock_improved]
+    effects:
+      - add_modifier: { army_defense_pct: 20, cavalry_attack_pct: -5 }
+    unlocks:
+      units: [wagon_fort]
+    ai_weight: 45
+    historical_context: 孙承宗、袁崇焕在辽西用车营对抗八旗骑兵，实战效果有限，但降低了野战崩溃速度。
+
+  - id: mil_cavalry_tactics
+    name: 骑兵战术
+    desc: 练骑射、整队形，专攻侧翼与追击。
+    category: military
+    era: 1620
+    cost_days: 140
+    prerequisites: []
+    effects:
+      - add_modifier: { cavalry_attack_pct: 15 }
+    ai_weight: 50
+
+  # ══ 农业 ══════════════════════════════════════════════
+
+  - id: agr_double_crop
+    name: 双季稻
+    desc: 江南推广早稻晚稻连作，一亩可收两熟。
+    category: agriculture
+    era: 1620
+    cost_days: 160
+    prerequisites: []
+    effects:
+      - add_modifier: { food_output_pct: 12 }
+    ai_weight: 55
+
+  - id: agr_new_world_crops
+    name: 番薯与玉米
+    desc: 耐旱耐瘠，山地沙地皆可种。荒年可活人无数。
+    category: agriculture
+    era: 1620
+    cost_days: 200
+    prerequisites: [agr_double_crop]
+    requires_any:
+      any:
+        - controls: fujian
+        - has_flag: maritime_trade
+    effects:
+      - add_modifier: { food_output_pct: 18, pop_growth_pct: 5 }
+      - add_modifier: { famine_resistance: 0.15 }
+    ai_weight: 65
+    historical_context: 番薯约在万历年间经吕宋传入闽粤，徐光启《农政全书》力倡其利，但推广缓慢。
+
+  - id: agr_water_conservancy
+    name: 水利法
+    desc: 修堤堰、疏沟渠、设水闸。旱涝皆有备。
+    category: agriculture
+    era: 1620
+    cost_days: 180
+    prerequisites: []
+    effects:
+      - add_modifier: { food_output_pct: 8, famine_resistance: 0.1 }
+    unlocks:
+      buildings: [irrigation]
+    ai_weight: 50
+
+  # ══ 行政 ══════════════════════════════════════════════
+
+  - id: adm_assessment_law
+    name: 考成法
+    desc: 以钱粮完欠定官吏优劣，立限考事。政令始能下行。
+    category: administration
+    era: 1620
+    cost_days: 170
+    prerequisites: []
+    effects:
+      - add_modifier: { tax_efficiency_pct: 8, corruption_drift: -0.15 }
+      - add_stability: -4
+    ai_weight: 55
+    historical_context: 张居正万历初年推行考成法，一时上下肃然，然身后尽废。
+
+  - id: adm_baojia
+    name: 保甲
+    desc: 十家为甲，十甲为保，互相稽察。盗匪难藏，民亦受累。
+    category: administration
+    era: 1620
+    cost_days: 120
+    prerequisites: [adm_assessment_law]
+    effects:
+      - add_modifier: { unrest_monthly: -0.8 }
+      - add_manpower: 5000
+    ai_weight: 40
+
+  # ══ 财政 ══════════════════════════════════════════════
+
+  - id: fis_single_whip
+    name: 一条鞭法
+    desc: 赋役合并，计亩征银，官收官解。简化税制，亦加速白银货币化。
+    category: fiscal
+    era: 1620
+    cost_days: 220
+    prerequisites: []
+    effects:
+      - add_modifier: { tax_efficiency_pct: 15 }
+      - add_faction_influence: { gentry: -10, farmer: 5 }
+    ai_weight: 60
+    historical_context: 嘉靖年间始行，万历九年张居正推向全国，是明代最重要的赋役改革。
+
+  - id: fis_customs
+    name: 海关与市舶
+    desc: 设关抽分，编制船引。海贸之利始归公帑。
+    category: fiscal
+    era: 1620
+    cost_days: 160
+    prerequisites: []
+    requires_any:
+      any:
+        - controls: yuegang
+        - controls: guangzhou
+        - has_flag: sea_trade_open
+    effects:
+      - add_modifier: { trade_efficiency_pct: 20 }
+    unlocks:
+      buildings: [customs_house]
+    ai_weight: 50
+
+  # ══ 思想技艺 ══════════════════════════════════════════
+
+  - id: thou_geometry
+    name: 几何原本
+    desc: 利玛窦口授，徐光启笔受。点线面体，皆可推演。
+    category: thought
+    era: 1620
+    cost_days: 200
+    prerequisites: []
+    requires_any:
+      any:
+        - has_advisor: jesuit_missionary
+        - has_flag: opened_to_western_learning
+    effects:
+      - add_modifier: { research_speed_pct: 8 }
+      - add_modifier: { artillery_attack_pct: 5 }
+    ai_weight: 35
+
+  - id: thou_chongzhen_calendar
+    name: 崇祯历书
+    desc: 用西法推步，测日食月食，较《大统历》为密。天象既明，灾异之说稍息。
+    category: thought
+    era: 1630
+    cost_days: 260
+    prerequisites: [thou_geometry]
+    effects:
+      - add_modifier: { stability_monthly: 0.1, research_speed_pct: 5 }
+      - add_mandate: 5
+    ai_weight: 30
+    historical_context: 徐光启、李天经主持，汤若望等参与，崇祯末年成书而未及颁行，清初改为《时宪历》。

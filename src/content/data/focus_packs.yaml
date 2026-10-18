@@ -1,0 +1,907 @@
+focus_packs:
+  # ══════════════════════════════════════════════════════
+  # 大明：中枢 / 财政 / 辽事 / 民变 / 改革 / 南迁
+  # ══════════════════════════════════════════════════════
+  - country: MING
+    exclusions:
+      - [ming_court_2, ming_court_3]
+      - [ming_fiscal_2, ming_fiscal_3]
+      - [ming_liaodong_5, ming_liaodong_6]
+      - [ming_rebellion_1, ming_rebellion_2]
+      - [ming_reform_3, ming_reform_4]
+    branches:
+      - name: 中枢
+        kind: court
+        desc: 党争、厂卫与内阁，决定政令能否出得了京师。
+        focuses:
+          - { id: ming_court_1, name: 钦定逆案, tier: 0 }
+          - { id: ming_court_2, name: 东林辅政, tier: 1 }
+          - { id: ming_court_3, name: 复用厂卫, tier: 2 }
+          - { id: ming_court_4, name: 内阁集权, tier: 3 }
+          - { id: ming_court_5, name: 考成新法, tier: 4 }
+          - { id: ming_court_6, name: 京察大计, tier: 5 }
+          - { id: ming_court_7, name: 天子独断, tier: 6 }
+      - name: 财政
+        kind: reform
+        desc: 太仓的窟窿不是税率问题，是税基被谁截留的问题。
+        focuses:
+          - { id: ming_fiscal_1, name: 整顿盐法, tier: 0 }
+          - { id: ming_fiscal_2, name: 清丈田亩, tier: 1 }
+          - { id: ming_fiscal_3, name: 加派辽饷, tier: 2 }
+          - { id: ming_fiscal_4, name: 开海通商, tier: 3 }
+          - { id: ming_fiscal_5, name: 裁撤宗禄, tier: 4 }
+          - { id: ming_fiscal_6, name: 火耗归公, tier: 5 }
+          - { id: ming_fiscal_7, name: 太仓重整, tier: 6 }
+      - name: 辽事
+        kind: military
+        desc: 关宁锦防线、火器与和战，决定辽东是失血还是止血。
+        focuses:
+          - { id: ming_liaodong_1, name: 关宁锦防线, tier: 0 }
+          - { id: ming_liaodong_2, name: 练新军, tier: 1 }
+          - { id: ming_liaodong_3, name: 火器局, tier: 2 }
+          - { id: ming_liaodong_4, name: 联蒙抗金, tier: 3 }
+          - { id: ming_liaodong_5, name: 与清议和, tier: 4 }
+          - { id: ming_liaodong_6, name: 决战辽东, tier: 5 }
+          - { id: ming_liaodong_7, name: 收复辽沈, tier: 6 }
+      - name: 民变
+        kind: court
+        desc: 剿与抚不是道德选择，是财政与时间的交换。
+        focuses:
+          - { id: ming_rebellion_1, name: 剿寇, tier: 0 }
+          - { id: ming_rebellion_2, name: 招抚, tier: 1 }
+          - { id: ming_rebellion_3, name: 以寇制寇, tier: 2 }
+          - { id: ming_rebellion_4, name: 赈济陕甘, tier: 3 }
+          - { id: ming_rebellion_5, name: 裁驿并站, tier: 4 }
+          - { id: ming_rebellion_6, name: 团练乡勇, tier: 5 }
+          - { id: ming_rebellion_7, name: 平定流寇, tier: 6 }
+      - name: 改革
+        kind: reform
+        desc: 迁都、死守、罪己与新政，都是在给社稷续命。
+        focuses:
+          - { id: ming_reform_1, name: 一条鞭深化, tier: 0 }
+          - { id: ming_reform_2, name: 考成法, tier: 1 }
+          - { id: ming_reform_3, name: 迁都南京, tier: 2 }
+          - { id: ming_reform_4, name: 死守京师, tier: 3 }
+          - { id: ming_reform_5, name: 罪己诏, tier: 4 }
+          - { id: ming_reform_6, name: 士绅一体当差, tier: 5 }
+          - { id: ming_reform_7, name: 新政全局, tier: 6 }
+      - name: 南迁
+        kind: navy
+        desc: 漕运、江防与海路，是京师与江南之间的命脉。
+        focuses:
+          - { id: ming_south_1, name: 南京备荒, tier: 0 }
+          - { id: ming_south_2, name: 漕运改海运, tier: 1 }
+          - { id: ming_south_3, name: 江防, tier: 2 }
+          - { id: ming_south_4, name: 闽粤海防, tier: 3 }
+          - { id: ming_south_5, name: 联郑氏, tier: 4 }
+          - { id: ming_south_6, name: 借葡师, tier: 5 }
+          - { id: ming_south_7, name: 南渡续命, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 大清：八旗 / 汉化 / 入关 / 藩部 / 海疆 / 内政
+  # ══════════════════════════════════════════════════════
+  - country: QING
+    exclusions:
+      - [qing_han_1, qing_han_5]
+      - [qing_coast_1, qing_coast_6]
+      - [qing_domestic_1, qing_domestic_2]
+    branches:
+      - name: 八旗
+        kind: military
+        barrier: false
+        desc: 八旗是清的根本，也是清的人口天花板。
+        focuses:
+          - { id: qing_banner_1, name: 牛录编审, tier: 0 }
+          - { id: qing_banner_2, name: 旗地扩张, tier: 1 }
+          - { id: qing_banner_3, name: 蒙古八旗, tier: 2 }
+          - { id: qing_banner_4, name: 汉军八旗, tier: 3 }
+          - { id: qing_banner_5, name: 火器营, tier: 4 }
+          - { id: qing_banner_6, name: 八旗劲旅, tier: 5 }
+          - { id: qing_banner_7, name: 满洲根本, tier: 6 }
+      - name: 汉化
+        kind: court
+        desc: 满汉一体还是首崇满洲，决定清能不能坐稳天下。
+        focuses:
+          - { id: qing_han_1, name: 满汉一体, tier: 0 }
+          - { id: qing_han_2, name: 开科取士, tier: 1 }
+          - { id: qing_han_3, name: 任用汉官, tier: 2 }
+          - { id: qing_han_4, name: 整顿吏治, tier: 3 }
+          - { id: qing_han_5, name: 首崇满洲, tier: 4 }
+          - { id: qing_han_6, name: 剃发易服, tier: 5 }
+          - { id: qing_han_7, name: 大一统之制, tier: 6 }
+      - name: 入关
+        kind: military
+        desc: 山海关是天下第一关，也是清唯一的机会窗口。
+        focuses:
+          - { id: qing_entry_1, name: 联蒙入塞, tier: 0 }
+          - { id: qing_entry_2, name: 招降吴三桂, tier: 1 }
+          - { id: qing_entry_3, name: 山海关决战, tier: 2 }
+          - { id: qing_entry_4, name: 定鼎北京, tier: 3 }
+          - { id: qing_entry_5, name: 南下追击, tier: 4 }
+          - { id: qing_entry_6, name: 平定江南, tier: 5 }
+          - { id: qing_entry_7, name: 一统天下, tier: 6 }
+      - name: 藩部
+        kind: diplomacy
+        desc: 盟旗、联姻与征讨，决定草原是屏障还是伤口。
+        focuses:
+          - { id: qing_vassal_1, name: 盟旗制度, tier: 0 }
+          - { id: qing_vassal_2, name: 联姻科尔沁, tier: 1 }
+          - { id: qing_vassal_3, name: 征讨察哈尔, tier: 2 }
+          - { id: qing_vassal_4, name: 收服西藏, tier: 3 }
+          - { id: qing_vassal_5, name: 朝鲜属国, tier: 4 }
+          - { id: qing_vassal_6, name: 准噶尔交往, tier: 5 }
+          - { id: qing_vassal_7, name: 藩部共主, tier: 6 }
+      - name: 海疆
+        kind: navy
+        desc: 海禁与迁界能断绝郑氏，也会断绝自己的关税。
+        focuses:
+          - { id: qing_coast_1, name: 海禁, tier: 0 }
+          - { id: qing_coast_2, name: 迁界, tier: 1 }
+          - { id: qing_coast_3, name: 水师建设, tier: 2 }
+          - { id: qing_coast_4, name: 招降郑氏, tier: 3 }
+          - { id: qing_coast_5, name: 平台之役, tier: 4 }
+          - { id: qing_coast_6, name: 开海贸易, tier: 5 }
+          - { id: qing_coast_7, name: 海疆一统, tier: 6 }
+      - name: 内政
+        kind: economy
+        desc: 圈地、更名田与漕运，是清在汉地的财政地基。
+        focuses:
+          - { id: qing_domestic_1, name: 圈地, tier: 0 }
+          - { id: qing_domestic_2, name: 更名田, tier: 1 }
+          - { id: qing_domestic_3, name: 摊丁入亩, tier: 2 }
+          - { id: qing_domestic_4, name: 盐法, tier: 3 }
+          - { id: qing_domestic_5, name: 漕运, tier: 4 }
+          - { id: qing_domestic_6, name: 人参贸易, tier: 5 }
+          - { id: qing_domestic_7, name: 盛京本位, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 大顺：追赃 / 建制 / 招抚 / 东征 / 流民 / 军制
+  # ══════════════════════════════════════════════════════
+  - country: SHUN
+    exclusions:
+      - [shun_confiscate_1, shun_confiscate_4]
+      - [shun_refugee_1, shun_refugee_5]
+      - [shun_recruit_4, shun_east_4]
+    branches:
+      - name: 追赃
+        kind: economy
+        desc: 追赃能立刻换来军饷，也会立刻失去士绅。
+        focuses:
+          - { id: shun_confiscate_1, name: 追赃助饷, tier: 0 }
+          - { id: shun_confiscate_2, name: 拷掠明官, tier: 1 }
+          - { id: shun_confiscate_3, name: 没收藩产, tier: 2 }
+          - { id: shun_confiscate_4, name: 均田免赋, tier: 3 }
+          - { id: shun_confiscate_5, name: 设官理民, tier: 4 }
+          - { id: shun_confiscate_6, name: 铸钱, tier: 5 }
+          - { id: shun_confiscate_7, name: 财政自立, tier: 6 }
+      - name: 建制
+        kind: court
+        desc: 从流寇到朝廷，缺的不是名号，是官僚与税册。
+        focuses:
+          - { id: shun_state_1, name: 西安称帝, tier: 0 }
+          - { id: shun_state_2, name: 设六政府, tier: 1 }
+          - { id: shun_state_3, name: 开科取士, tier: 2 }
+          - { id: shun_state_4, name: 招降明将, tier: 3 }
+          - { id: shun_state_5, name: 整肃军纪, tier: 4 }
+          - { id: shun_state_6, name: 定都西安, tier: 5 }
+          - { id: shun_state_7, name: 大顺正朔, tier: 6 }
+      - name: 招抚
+        kind: diplomacy
+        desc: 招抚是给对手一条生路，也是给自己埋一条后路。
+        focuses:
+          - { id: shun_recruit_1, name: 招抚左良玉, tier: 0 }
+          - { id: shun_recruit_2, name: 联络南明, tier: 1 }
+          - { id: shun_recruit_3, name: 结好蒙古, tier: 2 }
+          - { id: shun_recruit_4, name: 招降吴三桂, tier: 3 }
+          - { id: shun_recruit_5, name: 安抚士绅, tier: 4 }
+          - { id: shun_recruit_6, name: 减免赋税, tier: 5 }
+          - { id: shun_recruit_7, name: 天下归心, tier: 6 }
+      - name: 东征
+        kind: military
+        desc: 从西安到北京，速度是大顺唯一的本钱。
+        focuses:
+          - { id: shun_east_1, name: 渡河东征, tier: 0 }
+          - { id: shun_east_2, name: 破太原, tier: 1 }
+          - { id: shun_east_3, name: 取北京, tier: 2 }
+          - { id: shun_east_4, name: 山海关, tier: 3 }
+          - { id: shun_east_5, name: 追亡逐北, tier: 4 }
+          - { id: shun_east_6, name: 据守山西, tier: 5 }
+          - { id: shun_east_7, name: 北伐辽东, tier: 6 }
+      - name: 流民
+        kind: reform
+        desc: 流民是兵源，也是税基；安置不好，两者都会反噬。
+        focuses:
+          - { id: shun_refugee_1, name: 流民屯田, tier: 0 }
+          - { id: shun_refugee_2, name: 赈济饥民, tier: 1 }
+          - { id: shun_refugee_3, name: 编户齐民, tier: 2 }
+          - { id: shun_refugee_4, name: 裁撤冗官, tier: 3 }
+          - { id: shun_refugee_5, name: 军屯, tier: 4 }
+          - { id: shun_refugee_6, name: 盐课, tier: 5 }
+          - { id: shun_refugee_7, name: 恢复生产, tier: 6 }
+      - name: 军制
+        kind: military
+        desc: 老营的战斗力来自流民，也来自没有退路。
+        focuses:
+          - { id: shun_army_1, name: 老营整编, tier: 0 }
+          - { id: shun_army_2, name: 骑兵扩张, tier: 1 }
+          - { id: shun_army_3, name: 火器缴获, tier: 2 }
+          - { id: shun_army_4, name: 三堵墙战术, tier: 3 }
+          - { id: shun_army_5, name: 军纪, tier: 4 }
+          - { id: shun_army_6, name: 粮道, tier: 5 }
+          - { id: shun_army_7, name: 百万之众, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 大西：入川 / 屯垦 / 联明 / 出川 / 恐怖 / 治理
+  # ══════════════════════════════════════════════════════
+  - country: XI
+    exclusions:
+      - [xi_ming_1, xi_expand_1]
+      - [xi_terror_1, xi_govern_1]
+    branches:
+      - name: 入川
+        kind: military
+        desc: 四川四面皆山，守住是基业，守不住是坟墓。
+        focuses:
+          - { id: xi_sichuan_1, name: 据成都, tier: 0 }
+          - { id: xi_sichuan_2, name: 取重庆, tier: 1 }
+          - { id: xi_sichuan_3, name: 定川西, tier: 2 }
+          - { id: xi_sichuan_4, name: 征川南, tier: 3 }
+          - { id: xi_sichuan_5, name: 土司归附, tier: 4 }
+          - { id: xi_sichuan_6, name: 粮道, tier: 5 }
+          - { id: xi_sichuan_7, name: 全蜀, tier: 6 }
+      - name: 屯垦
+        kind: economy
+        desc: 粮尽则国亡，四川的田是最好的兵工厂。
+        focuses:
+          - { id: xi_colony_1, name: 军屯, tier: 0 }
+          - { id: xi_colony_2, name: 民屯, tier: 1 }
+          - { id: xi_colony_3, name: 招抚流民, tier: 2 }
+          - { id: xi_colony_4, name: 修都江堰, tier: 3 }
+          - { id: xi_colony_5, name: 盐井, tier: 4 }
+          - { id: xi_colony_6, name: 铸钱, tier: 5 }
+          - { id: xi_colony_7, name: 天府之富, tier: 6 }
+      - name: 联明
+        kind: diplomacy
+        desc: 联明不是忠义，是两面受敌时唯一的下注。
+        focuses:
+          - { id: xi_ming_1, name: 联南明, tier: 0 }
+          - { id: xi_ming_2, name: 抗清, tier: 1 }
+          - { id: xi_ming_3, name: 联络大顺, tier: 2 }
+          - { id: xi_ming_4, name: 结好土司, tier: 3 }
+          - { id: xi_ming_5, name: 借师, tier: 4 }
+          - { id: xi_ming_6, name: 称藩, tier: 5 }
+          - { id: xi_ming_7, name: 共保西南, tier: 6 }
+      - name: 出川
+        kind: military
+        desc: 出川是豪赌，赢了争天下，输了连四川也回不去。
+        focuses:
+          - { id: xi_expand_1, name: 出汉中, tier: 0 }
+          - { id: xi_expand_2, name: 取西安, tier: 1 }
+          - { id: xi_expand_3, name: 东下荆襄, tier: 2 }
+          - { id: xi_expand_4, name: 北伐, tier: 3 }
+          - { id: xi_expand_5, name: 入滇, tier: 4 }
+          - { id: xi_expand_6, name: 图黔, tier: 5 }
+          - { id: xi_expand_7, name: 争天下, tier: 6 }
+      - name: 恐怖
+        kind: unique
+        modifier: { stability_monthly: -0.08, army_attack_pct: 4 }
+        desc: 以杀立威最快，也最快把人心杀光。
+        focuses:
+          - { id: xi_terror_1, name: 严刑, tier: 0 }
+          - { id: xi_terror_2, name: 屠戮, tier: 1 }
+          - { id: xi_terror_3, name: 立威, tier: 2 }
+          - { id: xi_terror_4, name: 清洗, tier: 3 }
+          - { id: xi_terror_5, name: 恐怖统治, tier: 4 }
+          - { id: xi_terror_6, name: 人人自危, tier: 5 }
+          - { id: xi_terror_7, name: 以杀止乱, tier: 6 }
+      - name: 治理
+        kind: reform
+        desc: 从杀人到治人，大西必须跨过的一道坎。
+        focuses:
+          - { id: xi_govern_1, name: 设官, tier: 0 }
+          - { id: xi_govern_2, name: 科举, tier: 1 }
+          - { id: xi_govern_3, name: 均田, tier: 2 }
+          - { id: xi_govern_4, name: 轻徭, tier: 3 }
+          - { id: xi_govern_5, name: 安民, tier: 4 }
+          - { id: xi_govern_6, name: 恢复, tier: 5 }
+          - { id: xi_govern_7, name: 蜀人归心, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 南明：正统 / 联寇 / 联海 / 西南 / 藩镇 / 财政
+  # ══════════════════════════════════════════════════════
+  - country: SMING
+    exclusions:
+      - [sming_bandit_1, sming_bandit_5]
+      - [sming_warlord_1, sming_warlord_4]
+    branches:
+      - name: 正统
+        kind: court
+        desc: 正统是南明最大的资产，也是最大的负债。
+        focuses:
+          - { id: sming_legit_1, name: 弘光继统, tier: 0 }
+          - { id: sming_legit_2, name: 隆武, tier: 1 }
+          - { id: sming_legit_3, name: 永历, tier: 2 }
+          - { id: sming_legit_4, name: 正统之争, tier: 3 }
+          - { id: sming_legit_5, name: 追尊, tier: 4 }
+          - { id: sming_legit_6, name: 玉玺, tier: 5 }
+          - { id: sming_legit_7, name: 天下共主, tier: 6 }
+      - name: 联寇
+        kind: diplomacy
+        desc: 联寇抗清还是借虏平寇，决定南明死在谁手里。
+        focuses:
+          - { id: sming_bandit_1, name: 联顺抗清, tier: 0 }
+          - { id: sming_bandit_2, name: 联西, tier: 1 }
+          - { id: sming_bandit_3, name: 招抚流寇, tier: 2 }
+          - { id: sming_bandit_4, name: 共保江南, tier: 3 }
+          - { id: sming_bandit_5, name: 借虏平寇, tier: 4 }
+          - { id: sming_bandit_6, name: 联郑, tier: 5 }
+          - { id: sming_bandit_7, name: 抗清统一战线, tier: 6 }
+      - name: 联海
+        kind: navy
+        desc: 海路是南明唯一不被陆军切断的通道。
+        focuses:
+          - { id: sming_sea_1, name: 联郑氏, tier: 0 }
+          - { id: sming_sea_2, name: 水师, tier: 1 }
+          - { id: sming_sea_3, name: 海贸, tier: 2 }
+          - { id: sming_sea_4, name: 台湾, tier: 3 }
+          - { id: sming_sea_5, name: 澎湖, tier: 4 }
+          - { id: sming_sea_6, name: 海防, tier: 5 }
+          - { id: sming_sea_7, name: 海权, tier: 6 }
+      - name: 西南
+        kind: military
+        desc: 西南的山地能拖住清军，也能拖死南明。
+        focuses:
+          - { id: sming_southwest_1, name: 据云南, tier: 0 }
+          - { id: sming_southwest_2, name: 守桂林, tier: 1 }
+          - { id: sming_southwest_3, name: 入贵州, tier: 2 }
+          - { id: sming_southwest_4, name: 联土司, tier: 3 }
+          - { id: sming_southwest_5, name: 李定国, tier: 4 }
+          - { id: sming_southwest_6, name: 两蹶名王, tier: 5 }
+          - { id: sming_southwest_7, name: 西南根据地, tier: 6 }
+      - name: 藩镇
+        kind: court
+        desc: 武将能救命，也能要命；削藩与笼络只差一步。
+        focuses:
+          - { id: sming_warlord_1, name: 笼络武将, tier: 0 }
+          - { id: sming_warlord_2, name: 四镇, tier: 1 }
+          - { id: sming_warlord_3, name: 军饷, tier: 2 }
+          - { id: sming_warlord_4, name: 削藩, tier: 3 }
+          - { id: sming_warlord_5, name: 督师, tier: 4 }
+          - { id: sming_warlord_6, name: 文官统军, tier: 5 }
+          - { id: sming_warlord_7, name: 中央集权, tier: 6 }
+      - name: 财政
+        kind: economy
+        desc: 江南的财赋是南明的命，捐纳与加派是饮鸩止渴。
+        focuses:
+          - { id: sming_fiscal_1, name: 捐纳, tier: 0 }
+          - { id: sming_fiscal_2, name: 加派, tier: 1 }
+          - { id: sming_fiscal_3, name: 海关, tier: 2 }
+          - { id: sming_fiscal_4, name: 盐课, tier: 3 }
+          - { id: sming_fiscal_5, name: 屯田, tier: 4 }
+          - { id: sming_fiscal_6, name: 借款, tier: 5 }
+          - { id: sming_fiscal_7, name: 江南财赋, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 郑氏：海商 / 抗清 / 取台 / 南洋 / 海禁 / 内政
+  # ══════════════════════════════════════════════════════
+  - country: ZHENG
+    exclusions:
+      - [zheng_resist_2, zheng_taiwan_1]
+      - [zheng_sea_4, zheng_sea_6]
+    branches:
+      - name: 海商
+        kind: economy
+        desc: 郑氏的本钱在海上，不在陆上。
+        focuses:
+          - { id: zheng_trade_1, name: 海洋贸易, tier: 0 }
+          - { id: zheng_trade_2, name: 日本白银, tier: 1 }
+          - { id: zheng_trade_3, name: 南洋香料, tier: 2 }
+          - { id: zheng_trade_4, name: 迁界走私, tier: 3 }
+          - { id: zheng_trade_5, name: 商船队, tier: 4 }
+          - { id: zheng_trade_6, name: 海商网络, tier: 5 }
+          - { id: zheng_trade_7, name: 海上帝国, tier: 6 }
+      - name: 抗清
+        kind: military
+        desc: 北伐是姿态，也是把最后一点陆上力量押上去。
+        focuses:
+          - { id: zheng_resist_1, name: 金门厦门, tier: 0 }
+          - { id: zheng_resist_2, name: 北伐南京, tier: 1 }
+          - { id: zheng_resist_3, name: 海澄, tier: 2 }
+          - { id: zheng_resist_4, name: 收复台湾, tier: 3 }
+          - { id: zheng_resist_5, name: 水师, tier: 4 }
+          - { id: zheng_resist_6, name: 沿海袭扰, tier: 5 }
+          - { id: zheng_resist_7, name: 大明遗忠, tier: 6 }
+      - name: 取台
+        kind: military
+        desc: 台湾是退路，也是郑氏唯一能站稳的陆地。
+        focuses:
+          - { id: zheng_taiwan_1, name: 澎湖, tier: 0 }
+          - { id: zheng_taiwan_2, name: 鹿耳门, tier: 1 }
+          - { id: zheng_taiwan_3, name: 赤嵌, tier: 2 }
+          - { id: zheng_taiwan_4, name: 安平, tier: 3 }
+          - { id: zheng_taiwan_5, name: 屯垦, tier: 4 }
+          - { id: zheng_taiwan_6, name: 原住民, tier: 5 }
+          - { id: zheng_taiwan_7, name: 台湾基业, tier: 6 }
+      - name: 南洋
+        kind: navy
+        desc: 南洋是郑氏的第二战场，也是清廷够不到的地方。
+        focuses:
+          - { id: zheng_nanyang_1, name: 吕宋, tier: 0 }
+          - { id: zheng_nanyang_2, name: 巴达维亚, tier: 1 }
+          - { id: zheng_nanyang_3, name: 马六甲, tier: 2 }
+          - { id: zheng_nanyang_4, name: 贸易据点, tier: 3 }
+          - { id: zheng_nanyang_5, name: 舰队, tier: 4 }
+          - { id: zheng_nanyang_6, name: 南洋华人, tier: 5 }
+          - { id: zheng_nanyang_7, name: 海上霸权, tier: 6 }
+      - name: 海禁
+        kind: diplomacy
+        desc: 迁界与海禁是清廷的刀，郑氏必须找到缝。
+        focuses:
+          - { id: zheng_sea_1, name: 反迁界, tier: 0 }
+          - { id: zheng_sea_2, name: 沿海贸易, tier: 1 }
+          - { id: zheng_sea_3, name: 联日本, tier: 2 }
+          - { id: zheng_sea_4, name: 联荷兰, tier: 3 }
+          - { id: zheng_sea_5, name: 联南明, tier: 4 }
+          - { id: zheng_sea_6, name: 海上联盟, tier: 5 }
+          - { id: zheng_sea_7, name: 开海, tier: 6 }
+      - name: 内政
+        kind: reform
+        desc: 海岛政权也需要田亩、科举与赋税。
+        focuses:
+          - { id: zheng_admin_1, name: 军屯, tier: 0 }
+          - { id: zheng_admin_2, name: 科举, tier: 1 }
+          - { id: zheng_admin_3, name: 府县, tier: 2 }
+          - { id: zheng_admin_4, name: 赋税, tier: 3 }
+          - { id: zheng_admin_5, name: 安抚, tier: 4 }
+          - { id: zheng_admin_6, name: 移民, tier: 5 }
+          - { id: zheng_admin_7, name: 海岛治理, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 察哈尔蒙古：统一 / 联明 / 联藏 / 附金 / 骑兵 / 盟旗
+  # ══════════════════════════════════════════════════════
+  - country: MONGOL
+    exclusions:
+      - [mongol_ming_2, mongol_qing_1]
+      - [mongol_unite_1, mongol_league_1]
+    branches:
+      - name: 统一蒙古
+        kind: military
+        desc: 蒙古的统一从来不是靠血统，是靠谁能分出牧场。
+        focuses:
+          - { id: mongol_unite_1, name: 察哈尔, tier: 0 }
+          - { id: mongol_unite_2, name: 土默特, tier: 1 }
+          - { id: mongol_unite_3, name: 鄂尔多斯, tier: 2 }
+          - { id: mongol_unite_4, name: 喀尔喀, tier: 3 }
+          - { id: mongol_unite_5, name: 科尔沁, tier: 4 }
+          - { id: mongol_unite_6, name: 卫拉特, tier: 5 }
+          - { id: mongol_unite_7, name: 蒙古一统, tier: 6 }
+      - name: 联明
+        kind: diplomacy
+        desc: 联明抗金是旧盟，也是明朝最便宜的一支骑兵。
+        focuses:
+          - { id: mongol_ming_1, name: 马市, tier: 0 }
+          - { id: mongol_ming_2, name: 联明抗金, tier: 1 }
+          - { id: mongol_ming_3, name: 朝贡, tier: 2 }
+          - { id: mongol_ming_4, name: 互市, tier: 3 }
+          - { id: mongol_ming_5, name: 联藏, tier: 4 }
+          - { id: mongol_ming_6, name: 联俄, tier: 5 }
+          - { id: mongol_ming_7, name: 草原平衡, tier: 6 }
+      - name: 联藏
+        kind: diplomacy
+        desc: 迎请喇嘛，是把宗教权威变成草原号召力。
+        focuses:
+          - { id: mongol_tibet_1, name: 迎请喇嘛, tier: 0 }
+          - { id: mongol_tibet_2, name: 格鲁派, tier: 1 }
+          - { id: mongol_tibet_3, name: 政教, tier: 2 }
+          - { id: mongol_tibet_4, name: 青海, tier: 3 }
+          - { id: mongol_tibet_5, name: 和硕特, tier: 4 }
+          - { id: mongol_tibet_6, name: 佛法, tier: 5 }
+          - { id: mongol_tibet_7, name: 宗教权威, tier: 6 }
+      - name: 附金
+        kind: diplomacy
+        desc: 附金能保住牧场，也会把蒙古变成八旗的兵源。
+        focuses:
+          - { id: mongol_qing_1, name: 后金盟约, tier: 0 }
+          - { id: mongol_qing_2, name: 联姻, tier: 1 }
+          - { id: mongol_qing_3, name: 编旗, tier: 2 }
+          - { id: mongol_qing_4, name: 从征, tier: 3 }
+          - { id: mongol_qing_5, name: 科尔沁归附, tier: 4 }
+          - { id: mongol_qing_6, name: 蒙古八旗, tier: 5 }
+          - { id: mongol_qing_7, name: 清蒙一体, tier: 6 }
+      - name: 骑兵
+        kind: military
+        desc: 蒙古的野战优势在骑射与机动，不在攻城。
+        focuses:
+          - { id: mongol_cavalry_1, name: 箭丁, tier: 0 }
+          - { id: mongol_cavalry_2, name: 轻骑, tier: 1 }
+          - { id: mongol_cavalry_3, name: 草原补给, tier: 2 }
+          - { id: mongol_cavalry_4, name: 突袭, tier: 3 }
+          - { id: mongol_cavalry_5, name: 骑射, tier: 4 }
+          - { id: mongol_cavalry_6, name: 部族动员, tier: 5 }
+          - { id: mongol_cavalry_7, name: 十万骑, tier: 6 }
+      - name: 盟旗
+        kind: reform
+        desc: 盟旗制能把部族固定下来，也会固定住部族的敌意。
+        focuses:
+          - { id: mongol_league_1, name: 盟旗制, tier: 0 }
+          - { id: mongol_league_2, name: 分封, tier: 1 }
+          - { id: mongol_league_3, name: 牧地, tier: 2 }
+          - { id: mongol_league_4, name: 人口编审, tier: 3 }
+          - { id: mongol_league_5, name: 驿站, tier: 4 }
+          - { id: mongol_league_6, name: 商道, tier: 5 }
+          - { id: mongol_league_7, name: 草原秩序, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 朝鲜：事大 / 北伐 / 中立 / 自强 / 两班 / 海防
+  # ══════════════════════════════════════════════════════
+  - country: JOSEON
+    exclusions:
+      - [joseon_tribute_1, joseon_north_1]
+      - [joseon_neutral_1, joseon_tribute_4]
+    branches:
+      - name: 事大
+        kind: diplomacy
+        desc: 事大不是软弱，是小国在两强之间唯一的生存术。
+        focuses:
+          - { id: joseon_tribute_1, name: 事大明朝, tier: 0 }
+          - { id: joseon_tribute_2, name: 朝贡, tier: 1 }
+          - { id: joseon_tribute_3, name: 壬辰援军, tier: 2 }
+          - { id: joseon_tribute_4, name: 联明抗金, tier: 3 }
+          - { id: joseon_tribute_5, name: 世子入质, tier: 4 }
+          - { id: joseon_tribute_6, name: 事大保国, tier: 5 }
+          - { id: joseon_tribute_7, name: 属国之道, tier: 6 }
+      - name: 北伐
+        kind: military
+        desc: 丙子之耻是朝鲜的伤口，也是北伐的旗号。
+        focuses:
+          - { id: joseon_north_1, name: 丙子之耻, tier: 0 }
+          - { id: joseon_north_2, name: 北伐清朝, tier: 1 }
+          - { id: joseon_north_3, name: 练兵, tier: 2 }
+          - { id: joseon_north_4, name: 火器, tier: 3 }
+          - { id: joseon_north_5, name: 山城, tier: 4 }
+          - { id: joseon_north_6, name: 联明, tier: 5 }
+          - { id: joseon_north_7, name: 复仇, tier: 6 }
+      - name: 中立
+        kind: diplomacy
+        desc: 两不帮是最难的，因为两边都会逼你表态。
+        focuses:
+          - { id: joseon_neutral_1, name: 两不帮, tier: 0 }
+          - { id: joseon_neutral_2, name: 闭关, tier: 1 }
+          - { id: joseon_neutral_3, name: 守边, tier: 2 }
+          - { id: joseon_neutral_4, name: 通商, tier: 3 }
+          - { id: joseon_neutral_5, name: 联日本, tier: 4 }
+          - { id: joseon_neutral_6, name: 联蒙古, tier: 5 }
+          - { id: joseon_neutral_7, name: 自保, tier: 6 }
+      - name: 自强
+        kind: reform
+        desc: 朝鲜的病在制度，不在兵器。
+        focuses:
+          - { id: joseon_reform_1, name: 均田, tier: 0 }
+          - { id: joseon_reform_2, name: 大同法, tier: 1 }
+          - { id: joseon_reform_3, name: 军籍, tier: 2 }
+          - { id: joseon_reform_4, name: 科举, tier: 3 }
+          - { id: joseon_reform_5, name: 两班改革, tier: 4 }
+          - { id: joseon_reform_6, name: 财政, tier: 5 }
+          - { id: joseon_reform_7, name: 富国强兵, tier: 6 }
+      - name: 两班
+        kind: court
+        desc: 两班共治是朝鲜的秩序，也是朝鲜的僵局。
+        focuses:
+          - { id: joseon_yangban_1, name: 朋党, tier: 0 }
+          - { id: joseon_yangban_2, name: 士林, tier: 1 }
+          - { id: joseon_yangban_3, name: 勋旧, tier: 2 }
+          - { id: joseon_yangban_4, name: 科举, tier: 3 }
+          - { id: joseon_yangban_5, name: 乡约, tier: 4 }
+          - { id: joseon_yangban_6, name: 书院, tier: 5 }
+          - { id: joseon_yangban_7, name: 两班共治, tier: 6 }
+      - name: 海防
+        kind: navy
+        desc: 朝鲜的海防面对倭寇、日本与清朝水师。
+        focuses:
+          - { id: joseon_navy_1, name: 水师, tier: 0 }
+          - { id: joseon_navy_2, name: 倭寇, tier: 1 }
+          - { id: joseon_navy_3, name: 海禁, tier: 2 }
+          - { id: joseon_navy_4, name: 济州, tier: 3 }
+          - { id: joseon_navy_5, name: 对马, tier: 4 }
+          - { id: joseon_navy_6, name: 海运, tier: 5 }
+          - { id: joseon_navy_7, name: 海疆, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 日本：锁国 / 海贸 / 侵朝 / 南蛮 / 幕藩 / 内政
+  # ══════════════════════════════════════════════════════
+  - country: JAPAN
+    exclusions:
+      - [japan_sakoku_1, japan_nanban_6]
+      - [japan_invasion_1, japan_sakoku_1]
+    branches:
+      - name: 锁国
+        kind: diplomacy
+        desc: 锁国能保住德川的秩序，也会锁住日本的眼睛。
+        focuses:
+          - { id: japan_sakoku_1, name: 锁国令, tier: 0 }
+          - { id: japan_sakoku_2, name: 禁教, tier: 1 }
+          - { id: japan_sakoku_3, name: 长崎通商, tier: 2 }
+          - { id: japan_sakoku_4, name: 朱印船, tier: 3 }
+          - { id: japan_sakoku_5, name: 南蛮贸易, tier: 4 }
+          - { id: japan_sakoku_6, name: 海禁, tier: 5 }
+          - { id: japan_sakoku_7, name: 岛国自守, tier: 6 }
+      - name: 海贸
+        kind: economy
+        desc: 白银与朱印船是日本介入东亚的另一种方式。
+        focuses:
+          - { id: japan_trade_1, name: 朱印船, tier: 0 }
+          - { id: japan_trade_2, name: 日本白银, tier: 1 }
+          - { id: japan_trade_3, name: 南洋, tier: 2 }
+          - { id: japan_trade_4, name: 长崎, tier: 3 }
+          - { id: japan_trade_5, name: 对马, tier: 4 }
+          - { id: japan_trade_6, name: 琉球, tier: 5 }
+          - { id: japan_trade_7, name: 海上贸易, tier: 6 }
+      - name: 侵朝
+        kind: military
+        desc: 壬辰的记忆还在，大陆野心也还在。
+        focuses:
+          - { id: japan_invasion_1, name: 壬辰再起, tier: 0 }
+          - { id: japan_invasion_2, name: 对马, tier: 1 }
+          - { id: japan_invasion_3, name: 釜山, tier: 2 }
+          - { id: japan_invasion_4, name: 汉城, tier: 3 }
+          - { id: japan_invasion_5, name: 水军, tier: 4 }
+          - { id: japan_invasion_6, name: 明军, tier: 5 }
+          - { id: japan_invasion_7, name: 大陆野心, tier: 6 }
+      - name: 南蛮
+        kind: diplomacy
+        desc: 南蛮带来铁炮、天主教与一个更大的世界。
+        focuses:
+          - { id: japan_nanban_1, name: 南蛮交易, tier: 0 }
+          - { id: japan_nanban_2, name: 铁炮, tier: 1 }
+          - { id: japan_nanban_3, name: 天主教, tier: 2 }
+          - { id: japan_nanban_4, name: 荷兰, tier: 3 }
+          - { id: japan_nanban_5, name: 葡萄牙, tier: 4 }
+          - { id: japan_nanban_6, name: 西学, tier: 5 }
+          - { id: japan_nanban_7, name: 开国, tier: 6 }
+      - name: 幕藩
+        kind: court
+        desc: 幕府集权与藩政自治，是德川体制的两根梁。
+        focuses:
+          - { id: japan_bakufu_1, name: 幕府集权, tier: 0 }
+          - { id: japan_bakufu_2, name: 藩政, tier: 1 }
+          - { id: japan_bakufu_3, name: 参勤交代, tier: 2 }
+          - { id: japan_bakufu_4, name: 大名统制, tier: 3 }
+          - { id: japan_bakufu_5, name: 天皇, tier: 4 }
+          - { id: japan_bakufu_6, name: 武士, tier: 5 }
+          - { id: japan_bakufu_7, name: 幕藩体制, tier: 6 }
+      - name: 内政
+        kind: reform
+        desc: 检地、石高与兵农分离，是日本近世的财政基础。
+        focuses:
+          - { id: japan_domestic_1, name: 检地, tier: 0 }
+          - { id: japan_domestic_2, name: 石高, tier: 1 }
+          - { id: japan_domestic_3, name: 兵农分离, tier: 2 }
+          - { id: japan_domestic_4, name: 町人, tier: 3 }
+          - { id: japan_domestic_5, name: 货币, tier: 4 }
+          - { id: japan_domestic_6, name: 大阪, tier: 5 }
+          - { id: japan_domestic_7, name: 天下泰平, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 和硕特·西藏：弘法 / 联蒙 / 附清 / 寺院经济 / 藏兵 / 高原
+  # ══════════════════════════════════════════════════════
+  - country: TIBET
+    exclusions:
+      - [tibet_mongol_1, tibet_qing_1]
+      - [tibet_dharma_1, tibet_army_1]
+    branches:
+      - name: 弘法
+        kind: court
+        desc: 格鲁派的宗教权威，是西藏最硬的国力。
+        focuses:
+          - { id: tibet_dharma_1, name: 格鲁派, tier: 0 }
+          - { id: tibet_dharma_2, name: 达赖, tier: 1 }
+          - { id: tibet_dharma_3, name: 班禅, tier: 2 }
+          - { id: tibet_dharma_4, name: 寺院, tier: 3 }
+          - { id: tibet_dharma_5, name: 法会, tier: 4 }
+          - { id: tibet_dharma_6, name: 经院, tier: 5 }
+          - { id: tibet_dharma_7, name: 政教合一, tier: 6 }
+      - name: 联蒙
+        kind: diplomacy
+        desc: 和硕特是护法者，也是西藏的驻军。
+        focuses:
+          - { id: tibet_mongol_1, name: 和硕特, tier: 0 }
+          - { id: tibet_mongol_2, name: 固始汗, tier: 1 }
+          - { id: tibet_mongol_3, name: 蒙古施主, tier: 2 }
+          - { id: tibet_mongol_4, name: 青海, tier: 3 }
+          - { id: tibet_mongol_5, name: 准噶尔, tier: 4 }
+          - { id: tibet_mongol_6, name: 联蒙护法, tier: 5 }
+          - { id: tibet_mongol_7, name: 施主关系, tier: 6 }
+      - name: 附清
+        kind: diplomacy
+        desc: 清朝的册封能保西藏，也能把西藏拖进中原的战争。
+        focuses:
+          - { id: tibet_qing_1, name: 清朝册封, tier: 0 }
+          - { id: tibet_qing_2, name: 朝贡, tier: 1 }
+          - { id: tibet_qing_3, name: 达赖入觐, tier: 2 }
+          - { id: tibet_qing_4, name: 联清, tier: 3 }
+          - { id: tibet_qing_5, name: 属国, tier: 4 }
+          - { id: tibet_qing_6, name: 保护, tier: 5 }
+          - { id: tibet_qing_7, name: 金瓶之制, tier: 6 }
+      - name: 寺院经济
+        kind: economy
+        desc: 寺产、布施与茶马，是高原的财政命脉。
+        focuses:
+          - { id: tibet_monastery_1, name: 寺产, tier: 0 }
+          - { id: tibet_monastery_2, name: 布施, tier: 1 }
+          - { id: tibet_monastery_3, name: 茶马, tier: 2 }
+          - { id: tibet_monastery_4, name: 香火, tier: 3 }
+          - { id: tibet_monastery_5, name: 牧场, tier: 4 }
+          - { id: tibet_monastery_6, name: 商队, tier: 5 }
+          - { id: tibet_monastery_7, name: 寺院庄园, tier: 6 }
+      - name: 藏兵
+        kind: military
+        desc: 高原的战争靠山地、补给与耐力。
+        focuses:
+          - { id: tibet_army_1, name: 藏军, tier: 0 }
+          - { id: tibet_army_2, name: 民兵, tier: 1 }
+          - { id: tibet_army_3, name: 山地, tier: 2 }
+          - { id: tibet_army_4, name: 要塞, tier: 3 }
+          - { id: tibet_army_5, name: 联蒙骑兵, tier: 4 }
+          - { id: tibet_army_6, name: 边境, tier: 5 }
+          - { id: tibet_army_7, name: 自卫, tier: 6 }
+      - name: 高原
+        kind: reform
+        desc: 驿站、宗谿与头人，是高原治理的骨架。
+        focuses:
+          - { id: tibet_admin_1, name: 驿站, tier: 0 }
+          - { id: tibet_admin_2, name: 宗谿, tier: 1 }
+          - { id: tibet_admin_3, name: 头人, tier: 2 }
+          - { id: tibet_admin_4, name: 法律, tier: 3 }
+          - { id: tibet_admin_5, name: 人口, tier: 4 }
+          - { id: tibet_admin_6, name: 牧场, tier: 5 }
+          - { id: tibet_admin_7, name: 高原秩序, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 荷兰东印度：贸易 / 筑城 / 联明或联清 / 舰队 / 公司财政 / 土著
+  # ══════════════════════════════════════════════════════
+  - country: VOC
+    exclusions:
+      - [voc_align_1, voc_align_2]
+      - [voc_native_3, voc_native_6]
+    branches:
+      - name: 贸易
+        kind: economy
+        desc: 公司不是国家，但公司的账本比国家更硬。
+        focuses:
+          - { id: voc_trade_1, name: 香料, tier: 0 }
+          - { id: voc_trade_2, name: 蔗糖, tier: 1 }
+          - { id: voc_trade_3, name: 丝瓷, tier: 2 }
+          - { id: voc_trade_4, name: 巴达维亚, tier: 3 }
+          - { id: voc_trade_5, name: 日本白银, tier: 4 }
+          - { id: voc_trade_6, name: 中国生丝, tier: 5 }
+          - { id: voc_trade_7, name: 亚洲贸易网, tier: 6 }
+      - name: 筑城
+        kind: military
+        desc: 据点、炮台与补给，是公司在东亚的陆地根基。
+        focuses:
+          - { id: voc_fort_1, name: 热兰遮, tier: 0 }
+          - { id: voc_fort_2, name: 普罗民遮, tier: 1 }
+          - { id: voc_fort_3, name: 澎湖, tier: 2 }
+          - { id: voc_fort_4, name: 鸡笼, tier: 3 }
+          - { id: voc_fort_5, name: 堡垒, tier: 4 }
+          - { id: voc_fort_6, name: 炮台, tier: 5 }
+          - { id: voc_fort_7, name: 据点防御, tier: 6 }
+      - name: 联明或联清
+        kind: diplomacy
+        desc: 公司不忠于任何王朝，只忠于贸易许可。
+        focuses:
+          - { id: voc_align_1, name: 联明, tier: 0 }
+          - { id: voc_align_2, name: 联清, tier: 1 }
+          - { id: voc_align_3, name: 联郑, tier: 2 }
+          - { id: voc_align_4, name: 中立, tier: 3 }
+          - { id: voc_align_5, name: 贸易许可, tier: 4 }
+          - { id: voc_align_6, name: 条约, tier: 5 }
+          - { id: voc_align_7, name: 两面下注, tier: 6 }
+      - name: 舰队
+        kind: navy
+        desc: 舰队是公司唯一能跨海投射的力量。
+        focuses:
+          - { id: voc_fleet_1, name: 战列舰, tier: 0 }
+          - { id: voc_fleet_2, name: 巡航, tier: 1 }
+          - { id: voc_fleet_3, name: 封锁, tier: 2 }
+          - { id: voc_fleet_4, name: 护航, tier: 3 }
+          - { id: voc_fleet_5, name: 海军基地, tier: 4 }
+          - { id: voc_fleet_6, name: 补给, tier: 5 }
+          - { id: voc_fleet_7, name: 海上霸权, tier: 6 }
+      - name: 公司财政
+        kind: reform
+        desc: 股东、分红与审计，决定公司能打多久。
+        focuses:
+          - { id: voc_finance_1, name: 股东, tier: 0 }
+          - { id: voc_finance_2, name: 分红, tier: 1 }
+          - { id: voc_finance_3, name: 会计, tier: 2 }
+          - { id: voc_finance_4, name: 债券, tier: 3 }
+          - { id: voc_finance_5, name: 股份, tier: 4 }
+          - { id: voc_finance_6, name: 审计, tier: 5 }
+          - { id: voc_finance_7, name: 公司治理, tier: 6 }
+      - name: 土著
+        kind: court
+        desc: 土著不是资源，是公司必须面对的人。
+        focuses:
+          - { id: voc_native_1, name: 土贡, tier: 0 }
+          - { id: voc_native_2, name: 徭役, tier: 1 }
+          - { id: voc_native_3, name: 传教, tier: 2 }
+          - { id: voc_native_4, name: 通婚, tier: 3 }
+          - { id: voc_native_5, name: 头人, tier: 4 }
+          - { id: voc_native_6, name: 反抗, tier: 5 }
+          - { id: voc_native_7, name: 殖民地秩序, tier: 6 }
+
+  # ══════════════════════════════════════════════════════
+  # 沙俄：东扩 / 筑堡 / 通商 / 哥萨克 / 毛皮 / 远东
+  # ══════════════════════════════════════════════════════
+  - country: RUSSIA
+    exclusions:
+      - [russia_trade_1, russia_expand_1]
+      - [russia_cossack_2, russia_admin_1]
+    branches:
+      - name: 东扩
+        kind: military
+        desc: 从乌拉尔到黑龙江，俄国的东扩靠的是河流与堡。
+        focuses:
+          - { id: russia_expand_1, name: 雅克萨, tier: 0 }
+          - { id: russia_expand_2, name: 尼布楚, tier: 1 }
+          - { id: russia_expand_3, name: 黑龙江, tier: 2 }
+          - { id: russia_expand_4, name: 哥萨克, tier: 3 }
+          - { id: russia_expand_5, name: 筑堡, tier: 4 }
+          - { id: russia_expand_6, name: 远征, tier: 5 }
+          - { id: russia_expand_7, name: 远东, tier: 6 }
+      - name: 筑堡
+        kind: military
+        desc: 堡垒线是俄国在远东的补给与统治工具。
+        focuses:
+          - { id: russia_fort_1, name: 堡垒线, tier: 0 }
+          - { id: russia_fort_2, name: 补给, tier: 1 }
+          - { id: russia_fort_3, name: 驻军, tier: 2 }
+          - { id: russia_fort_4, name: 移民, tier: 3 }
+          - { id: russia_fort_5, name: 毛皮, tier: 4 }
+          - { id: russia_fort_6, name: 河流, tier: 5 }
+          - { id: russia_fort_7, name: 据点网, tier: 6 }
+      - name: 通商
+        kind: diplomacy
+        desc: 与清通商比与清开战更划算，但哥萨克不这么想。
+        focuses:
+          - { id: russia_trade_1, name: 对清贸易, tier: 0 }
+          - { id: russia_trade_2, name: 尼布楚条约, tier: 1 }
+          - { id: russia_trade_3, name: 使团, tier: 2 }
+          - { id: russia_trade_4, name: 毛皮, tier: 3 }
+          - { id: russia_trade_5, name: 边境, tier: 4 }
+          - { id: russia_trade_6, name: 联蒙, tier: 5 }
+          - { id: russia_trade_7, name: 通商, tier: 6 }
+      - name: 哥萨克
+        kind: court
+        desc: 哥萨克是俄国的刀，也是俄国管不住的人。
+        focuses:
+          - { id: russia_cossack_1, name: 哥萨克军, tier: 0 }
+          - { id: russia_cossack_2, name: 自治, tier: 1 }
+          - { id: russia_cossack_3, name: 军饷, tier: 2 }
+          - { id: russia_cossack_4, name: 远征, tier: 3 }
+          - { id: russia_cossack_5, name: 掠夺, tier: 4 }
+          - { id: russia_cossack_6, name: 归附, tier: 5 }
+          - { id: russia_cossack_7, name: 边疆军镇, tier: 6 }
+      - name: 毛皮
+        kind: economy
+        desc: 毛皮是西伯利亚的黄金，也是俄国的财政来源。
+        focuses:
+          - { id: russia_fur_1, name: 毛皮税, tier: 0 }
+          - { id: russia_fur_2, name: 狩猎, tier: 1 }
+          - { id: russia_fur_3, name: 商队, tier: 2 }
+          - { id: russia_fur_4, name: 西伯利亚, tier: 3 }
+          - { id: russia_fur_5, name: 税收, tier: 4 }
+          - { id: russia_fur_6, name: 贸易, tier: 5 }
+          - { id: russia_fur_7, name: 财政, tier: 6 }
+      - name: 远东
+        kind: reform
+        desc: 移民、农垦与东正教，是俄国在远东的长期经营。
+        focuses:
+          - { id: russia_admin_1, name: 移民, tier: 0 }
+          - { id: russia_admin_2, name: 农垦, tier: 1 }
+          - { id: russia_admin_3, name: 东正教, tier: 2 }
+          - { id: russia_admin_4, name: 学校, tier: 3 }
+          - { id: russia_admin_5, name: 道路, tier: 4 }
+          - { id: russia_admin_6, name: 驿站, tier: 5 }
+          - { id: russia_admin_7, name: 新俄罗斯, tier: 6 }

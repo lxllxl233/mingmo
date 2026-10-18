@@ -1,0 +1,19 @@
+named_modifiers:
+  - id: smuggling
+    name: 走私
+    modifiers: { trade_efficiency_pct: -8, unrest_monthly: 0.3 }
+  - id: war_exhaustion
+    name: 战争疲惫
+    modifiers: { stability_monthly: -0.08, manpower_add: -2000 }
+  - id: war_damage
+    name: 战火
+    modifiers: { devastation_add: 1, unrest_add: 1 }
+  - id: famine
+    name: 饥荒
+    modifiers: { food_output_pct: -30, stability_monthly: -0.2 }
+  - id: prosperity
+    name: 繁荣
+    modifiers: { tax_efficiency_pct: 6, trade_efficiency_pct: 6 }
+  - id: reform_unrest
+    name: 改革动荡
+    modifiers: { stability_monthly: -0.1, unrest_monthly: 0.2 }

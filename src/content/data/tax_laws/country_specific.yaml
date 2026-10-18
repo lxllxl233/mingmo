@@ -1,0 +1,169 @@
+tax_laws:
+  - id: tax_ming_clan_reduction
+    country: MING
+    estate: dynasty
+    name: 宗禄折色
+    desc: 宗室禄米改折银，并减其半。藩府怨望，太仓稍纾。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: -1.6
+    influence_shift: -10
+    effects:
+      - add_modifier: { tax_efficiency_pct: 5 }
+    ai_weight: 35
+  - id: tax_qing_banner_land
+    country: QING
+    estate: nobles
+    name: 旗地起科
+    desc: 旗地按亩纳粮，八旗不满，汉民稍安。
+    rate: 0.02
+    efficiency: 0.65
+    evasion_base: 0.2
+    silver_share: 0.7
+    loyalty_drift: -1.4
+    influence_shift: -8
+    incidence: { estate: peasants, factor: 0.15 }
+    ai_weight: 30
+  - id: tax_shun_confiscation
+    country: SHUN
+    estate: gentry
+    name: 追赃助饷
+    desc: 拷掠明官，追其赃银。饷源立至，士绅离心。
+    rate: 0.15
+    efficiency: 0.8
+    evasion_base: 0.25
+    silver_share: 1.0
+    loyalty_drift: -3.0
+    influence_shift: -15
+    incidence: { estate: peasants, factor: 0.3 }
+    effects:
+      - add_modifier: { corruption_add: 0.2 }
+    ai_weight: 70
+  - id: tax_xi_terror
+    country: XI
+    estate: peasants
+    name: 掠富济军
+    desc: 籍没富户，以充军资。短期可支，长期无人。
+    rate: 0.12
+    efficiency: 0.75
+    evasion_base: 0.3
+    silver_share: 0.95
+    loyalty_drift: -3.5
+    influence_shift: -12
+    effects:
+      - add_modifier: { unrest_monthly: 0.6, stability_monthly: -0.06 }
+    ai_weight: 60
+  - id: tax_sming_donation
+    country: SMING
+    estate: merchants
+    name: 劝捐助饷
+    desc: 江南富商劝捐助饷，名为乐输，实为摊派。
+    rate: 0.10
+    efficiency: 0.6
+    evasion_base: 0.25
+    silver_share: 1.0
+    loyalty_drift: -1.8
+    influence_shift: -5
+    effects:
+      - add_modifier: { trade_efficiency_pct: -4 }
+    ai_weight: 45
+  - id: tax_zheng_sea_trade
+    country: ZHENG
+    estate: merchants
+    name: 海舶抽分
+    desc: 郑氏设馆抽分，海舶往来皆取其税。饷源在海上。
+    rate: 0.09
+    efficiency: 0.85
+    evasion_base: 0.1
+    silver_share: 1.0
+    loyalty_drift: 0.4
+    influence_shift: 5
+    effects:
+      - add_modifier: { trade_efficiency_pct: 12, naval_attack_pct: 3 }
+    ai_weight: 65
+  - id: tax_mongol_herds
+    country: MONGOL
+    estate: nobles
+    name: 牧地贡赋
+    desc: 按牧场与牲畜征贡，台吉代收，部众苦之。
+    rate: 0.04
+    efficiency: 0.55
+    evasion_base: 0.3
+    silver_share: 0.4
+    loyalty_drift: -1.0
+    influence_shift: -4
+    effects:
+      - add_modifier: { manpower_add: 3000 }
+    ai_weight: 35
+  - id: tax_joseon_tribute
+    country: JOSEON
+    estate: peasants
+    name: 大同法
+    desc: 以米代贡，均定税额。农民稍便，两班不悦。
+    rate: 0.05
+    efficiency: 0.7
+    evasion_base: 0.2
+    silver_share: 0.3
+    loyalty_drift: 0.2
+    influence_shift: 3
+    effects:
+      - add_modifier: { food_output_pct: 5 }
+    ai_weight: 50
+  - id: tax_japan_kokudaka
+    country: JAPAN
+    estate: peasants
+    name: 石高检地
+    desc: 检地定石高，按石征年贡。村请制下，征收稍稳。
+    rate: 0.08
+    efficiency: 0.8
+    evasion_base: 0.1
+    silver_share: 0.4
+    loyalty_drift: -0.6
+    influence_shift: 4
+    effects:
+      - add_modifier: { tax_efficiency_pct: 5, food_output_pct: 3 }
+    ai_weight: 55
+  - id: tax_tibet_monastery
+    country: TIBET
+    estate: clergy
+    name: 寺院庄园
+    desc: 寺院庄园自给，不服国役。格鲁派的财富即西藏的财富。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: 1.2
+    influence_shift: 8
+    effects:
+      - add_modifier: { stability_monthly: 0.06 }
+    ai_weight: 45
+  - id: tax_voc_dividend
+    country: VOC
+    estate: merchants
+    name: 公司分红
+    desc: 以贸易利润向股东分红，再以余利养兵。账本即宪法。
+    rate: 0.12
+    efficiency: 0.9
+    evasion_base: 0.05
+    silver_share: 1.0
+    loyalty_drift: 0.6
+    influence_shift: 6
+    effects:
+      - add_modifier: { trade_efficiency_pct: 8 }
+    ai_weight: 65
+  - id: tax_russia_fur
+    country: RUSSIA
+    estate: peasants
+    name: 毛皮贡赋
+    desc: 以毛皮代税，向西伯利亚部族征收。轻银而重货。
+    rate: 0.04
+    efficiency: 0.6
+    evasion_base: 0.2
+    silver_share: 0.5
+    loyalty_drift: -0.8
+    influence_shift: 0
+    effects:
+      - add_modifier: { trade_efficiency_pct: 6 }
+    ai_weight: 40

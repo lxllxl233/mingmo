@@ -1,0 +1,92 @@
+id: "1627"
+name: 崇祯元年
+start_date: 1627-10-01
+description: 阉党初败，辽东糜烂，陕西饥民方起。大明仍有牌可打。
+player_hints:
+  - 先看财政：太仓已不足以支撑九边。
+  - 关宁锦防线与陕西流民，是两条同时流血的伤口。
+  - 向士绅开刀能续命，但江南的反弹会比你预想的快。
+playable_tags: [MING, QING, SHUN, XI, SMING, ZHENG, MONGOL, JOSEON, JAPAN, TIBET, VOC, RUSSIA]
+region_owners:
+  reg_beizhili: MING
+  reg_shandong: MING
+  reg_shanxi: MING
+  reg_henan: MING
+  reg_shaanxi: MING
+  reg_hexi: MING
+  reg_xuanda: MING
+  reg_liaodong: MING
+  reg_nanzhili: MING
+  reg_zhejiang: MING
+  reg_jiangxi: MING
+  reg_huguang: MING
+  reg_sichuan: MING
+  reg_fujian: MING
+  reg_guangdong: MING
+  reg_guangxi: MING
+  reg_yunnan: MING
+  reg_guizhou: MING
+  reg_mengnan: MONGOL
+  reg_mobei: MONGOL
+  reg_weilate: TIBET
+  reg_nvzhen: QING
+  reg_xizang: TIBET
+  reg_joseon: JOSEON
+  reg_annam: NEU
+  reg_burma: NEU
+  reg_japan_west: JAPAN
+  reg_japan_east: JAPAN
+  reg_taiwan: VOC
+  reg_russia_far: RUSSIA
+province_overrides:
+  shenyang: QING
+  liaoyang: QING
+  guangning: QING
+  kaizhou: QING
+  yanan: SHUN
+  chengdu: XI
+  nanjing: SMING
+  anping: ZHENG
+country_overrides:
+  MING: { stability: 45, treasury: 1200000, corruption: 55 }
+  QING: { stability: 60, treasury: 300000, mandate: 40 }
+  SHUN: { stability: 55, treasury: 200000, mandate: 30 }
+  XI: { stability: 45, treasury: 150000, mandate: 20 }
+  SMING: { stability: 35, treasury: 400000, mandate: 55 }
+  ZHENG: { stability: 60, treasury: 500000, mandate: 25 }
+  MONGOL: { stability: 50, treasury: 100000, mandate: 20 }
+  JOSEON: { stability: 55, treasury: 300000, mandate: 30 }
+  JAPAN: { stability: 65, treasury: 800000, mandate: 30 }
+  TIBET: { stability: 60, treasury: 80000, mandate: 25 }
+  VOC: { stability: 65, treasury: 600000, mandate: 0 }
+  RUSSIA: { stability: 60, treasury: 200000, mandate: 10 }
+armies:
+  - { tag: MING, template: ming_guard, province: beijing, size: 4 }
+  - { tag: MING, template: guanning_army, province: shanhaiguan, size: 3 }
+  - { tag: MING, template: ming_guard, province: xian, size: 2 }
+  - { tag: MING, template: ming_guard, province: suzhou, size: 2 }
+  - { tag: MING, template: ming_guard, province: chengdu, size: 1 }
+  - { tag: QING, template: qing_banner, province: shenyang, size: 4 }
+  - { tag: QING, template: qing_banner, province: liaoyang, size: 2 }
+  - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 3 }
+  - { tag: MONGOL, template: mongol_cavalry, province: ordos, size: 2 }
+  - { tag: JOSEON, template: joseon_army, province: hanseong, size: 3 }
+  - { tag: JOSEON, template: joseon_army, province: pyongyang, size: 1 }
+  - { tag: JAPAN, template: japan_samurai, province: edo, size: 3 }
+  - { tag: JAPAN, template: japan_samurai, province: osaka, size: 2 }
+  - { tag: JAPAN, template: japan_navy, province: nagasaki, size: 1 }
+  - { tag: TIBET, template: tibet_army, province: lhasa, size: 2 }
+  - { tag: TIBET, template: tibet_army, province: qinghai, size: 1 }
+  - { tag: VOC, template: voc_company, province: anping, size: 2 }
+  - { tag: VOC, template: voc_fleet, province: penghu, size: 1 }
+  - { tag: RUSSIA, template: russia_cossack, province: albazin, size: 2 }
+  - { tag: RUSSIA, template: russia_cossack, province: nerchinsk, size: 1 }
+  - { tag: SHUN, template: shun_rebel, province: yanan, size: 1 }
+  - { tag: XI, template: xi_army, province: chengdu, size: 1 }
+  - { tag: SMING, template: sming_army, province: nanjing, size: 1 }
+  - { tag: ZHENG, template: zheng_navy, province: anping, size: 1 }
+  - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
+  - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
+initial_wars:
+  - { attacker: QING, defender: MING, goal: 辽东 }
+initial_events: []

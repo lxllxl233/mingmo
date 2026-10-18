@@ -1,0 +1,338 @@
+import type { ContentIndex } from '../../content/types';
+import { aggregateModifiers } from '../rules/modifiers';
+import { areAtWar } from '../rules/war';
+import type { ArmyState, GameState } from '../state/types';
+import { armyStrength } from '../state/types';
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+function compositionTotal(army: ArmyState): number {
+  return armyStrength(army);
+}
+
+export function pickGeneral(state: GameState, content: ContentIndex, tag: string): string | null {
+  const used = new Set(Object.values(state.armies).map(army => army.general).filter((id): id is string => id !== null));
+  for (const general of content.generals.values()) {
+    if (general.country === tag && !used.has(general.id)) return general.id;
+  }
+  return null;
+}
+
+function loseStrength(army: ArmyState, losses: number): void {
+  const total = compositionTotal(army);
+  if (total <= 0) return;
+  const ratio = Math.min(1, losses / total);
+  army.composition.infantry = Math.max(0, Math.round(army.composition.infantry * (1 - ratio)));
+  army.composition.firearm = Math.max(0, Math.round(army.composition.firearm * (1 - ratio)));
+  army.composition.cavalry = Math.max(0, Math.round(army.composition.cavalry * (1 - ratio)));
+  army.composition.artillery = Math.max(0, Math.round(army.composition.artillery * (1 - ratio)));
+  army.composition.naval = Math.max(0, Math.round(army.composition.naval * (1 - ratio)));
+}
+
+function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<string, number>): number {
+  const c = army.composition;
+  const base = c.infantry * content.balance.military.baseAttack
+    + c.firearm * content.balance.military.firearmAttack
+    + c.cavalry * content.balance.military.cavalryAttack
+    + c.artillery * content.balance.military.artillerySiege;
+  const quality = (army.training / 100) * (army.equipment / 100);
+  const general = army.general ? content.generals.get(army.general) : undefined;
+  const command = 1 + (general?.attack ?? 0) * 0.015;
+  return base * quality * command * (1 + (modifiers['army_attack_pct'] ?? 0) / 100);
+}
+
+function defenseValue(
+  army: ArmyState,
+  content: ContentIndex,
+  modifiers: Record<string, number>,
+  terrain: keyof typeof content.balance.military.terrainDefense,
+): number {
+  const c = army.composition;
+  const base = c.infantry * content.balance.military.baseDefense
+    + c.firearm * content.balance.military.baseDefense * 1.2
+    + c.cavalry * content.balance.military.baseDefense * 0.8
+    + c.artillery * content.balance.military.baseDefense * 0.6;
+  const quality = (army.training / 100) * (army.equipment / 100);
+  const terrainBonus = 1 + (content.balance.military.terrainDefense[terrain] ?? 0);
+  const general = army.general ? content.generals.get(army.general) : undefined;
+  const command = 1 + (general?.defense ?? 0) * 0.015;
+  return base * quality * terrainBonus * command * (1 + (modifiers['army_defense_pct'] ?? 0) / 100);
+}
+
+function friendlyRetreat(state: GameState, content: ContentIndex, army: ArmyState): string | null {
+  const def = content.provinces.get(army.province);
+  if (!def) return null;
+  const candidates = def.neighbors
+    .map(id => ({ id, province: state.provinces[id], def: content.provinces.get(id) }))
+    .filter((entry): entry is { id: string; province: NonNullable<typeof entry.province>; def: NonNullable<typeof entry.def> } =>
+      entry.province !== undefined && entry.def !== undefined);
+  const friendly = candidates
+    .filter(entry => entry.province.controller === army.tag || entry.province.owner === army.tag)
+    .sort((a, b) => (b.province.controller === army.tag ? 1 : 0) - (a.province.controller === army.tag ? 1 : 0));
+  if (friendly[0]) return friendly[0].id;
+  const safe = candidates.filter(entry => !areAtWar(state, army.tag, entry.province.controller));
+  return safe[0]?.id ?? null;
+}
+
+function resolveBattleRound(state: GameState, content: ContentIndex, a: ArmyState, b: ArmyState): void {
+  const def = content.provinces.get(a.province);
+  if (!def) return;
+  const countryA = state.countries[a.tag];
+  const countryB = state.countries[b.tag];
+  if (!countryA || !countryB) return;
+  const modsA = aggregateModifiers(countryA, content);
+  const modsB = aggregateModifiers(countryB, content);
+  const attackA = attackValue(a, content, modsA);
+  const defenseB = defenseValue(b, content, modsB, def.terrain);
+  const attackB = attackValue(b, content, modsB);
+  const defenseA = defenseValue(a, content, modsA, def.terrain);
+
+  const orgDamageB = (attackA / (defenseB + 100)) * 6;
+  const strengthDamageB = attackA * 0.0006;
+  b.organization = clamp(b.organization - orgDamageB, 0, 100);
+  loseStrength(b, strengthDamageB);
+  a.organization = clamp(a.organization - (attackB / (defenseA + 100)) * 3, 0, 100);
+  loseStrength(a, attackB * 0.0003);
+
+  if (a.stance !== 'battle' || b.stance !== 'battle') {
+    state.stats.battles += 1;
+    a.stance = 'battle';
+    b.stance = 'battle';
+    state.log.push({
+      day: state.day,
+      category: 'military',
+      text: `${content.countries.get(a.tag)?.name ?? a.tag} 与 ${content.countries.get(b.tag)?.name ?? b.tag} 在 ${def.name} 交战`,
+      severity: 'warning',
+    });
+  }
+
+  if (b.organization <= 0) {
+    const retreat = friendlyRetreat(state, content, b);
+    if (retreat) {
+      b.province = retreat;
+      b.organization = 10;
+      b.movePath = [];
+      b.stance = 'hold';
+    } else {
+      delete state.armies[b.id];
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        text: `${content.countries.get(b.tag)?.name ?? b.tag} 在 ${def.name} 全军覆没`,
+        severity: 'danger',
+      });
+      return;
+    }
+    loseStrength(b, b.composition.infantry * 0.1);
+    state.log.push({
+      day: state.day,
+      category: 'military',
+      text: `${content.countries.get(b.tag)?.name ?? b.tag} 在 ${def.name} 溃退`,
+      severity: 'danger',
+    });
+  }
+  if (a.organization <= 0) {
+    const retreat = friendlyRetreat(state, content, a);
+    if (retreat) {
+      a.province = retreat;
+      a.organization = 10;
+      a.movePath = [];
+      a.stance = 'hold';
+    } else {
+      delete state.armies[a.id];
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        text: `${content.countries.get(a.tag)?.name ?? a.tag} 在 ${def.name} 全军覆没`,
+        severity: 'danger',
+      });
+      return;
+    }
+    loseStrength(a, a.composition.infantry * 0.1);
+  }
+}
+
+function captureProvince(state: GameState, content: ContentIndex, army: ArmyState, provinceId: string): void {
+  const province = state.provinces[provinceId];
+  const def = content.provinces.get(provinceId);
+  if (!province || !def) return;
+  const oldOwner = province.owner;
+  province.controller = army.tag;
+  delete province.siege;
+  province.unrest = clamp(province.unrest + 8, 0, 100);
+  province.devastation = clamp(province.devastation + 4, 0, 100);
+  state.stats.provincesCaptured += 1;
+  state.log.push({
+    day: state.day,
+    category: 'military',
+    text: `${content.countries.get(army.tag)?.name ?? army.tag} 占领 ${def.name}`,
+    severity: 'warning',
+  });
+  if (oldOwner !== army.tag) {
+    const old = state.countries[oldOwner];
+    if (old && old.capital === provinceId) {
+      old.mandate = clamp(old.mandate - content.balance.politics.mandateLossOnCapital, 0, 100);
+      state.log.push({
+        day: state.day,
+        category: 'politics',
+        country: oldOwner,
+        text: `京师 ${def.name} 失陷，天命 -${content.balance.politics.mandateLossOnCapital}`,
+        severity: 'danger',
+      });
+    }
+  }
+}
+
+export function advanceArmies(state: GameState, content: ContentIndex): void {
+  for (const army of Object.values(state.armies)) {
+    if (!state.armies[army.id]) continue;
+    const nation = state.countries[army.tag];
+    if (!nation?.alive) continue;
+    const currentDef = content.provinces.get(army.province);
+    if (!currentDef) continue;
+
+    const friendly = state.provinces[army.province]?.controller === army.tag
+      || state.provinces[army.province]?.owner === army.tag;
+    if (friendly) {
+      army.supply = clamp(army.supply + content.balance.military.supplyRecovery, 0, 100);
+    } else {
+      army.supply = clamp(army.supply - content.balance.military.supplyDecay, 0, 100);
+    }
+    if (army.supply < 20) army.organization = clamp(army.organization - 0.5, 0, 100);
+    if (army.stance !== 'battle' && army.supply > 40) {
+      army.organization = clamp(army.organization + 0.25, 0, 100);
+    }
+
+    if (army.movePath.length > 0) {
+      const next = army.movePath[0];
+      if (!next || !currentDef.neighbors.includes(next)) {
+        army.movePath = [];
+        army.stance = 'hold';
+        continue;
+      }
+      const nextDef = content.provinces.get(next);
+      const cost = content.balance.military.movementCost[nextDef?.terrain ?? 'plains'] ?? 1;
+      army.stance = 'move';
+      army.moveProgress += 1 / (2 * cost);
+      if (army.moveProgress >= 1) {
+        army.province = next;
+        army.movePath.shift();
+        army.moveProgress = 0;
+      }
+    }
+
+    const inProvince = Object.values(state.armies).filter(other =>
+      other.id !== army.id
+      && other.province === army.province
+      && other.tag !== army.tag
+      && areAtWar(state, army.tag, other.tag));
+    for (const enemy of inProvince) {
+      resolveBattleRound(state, content, army, enemy);
+      break;
+    }
+    if (army.stance === 'battle') continue;
+
+    const province = state.provinces[army.province];
+    if (!province || province.controller === army.tag || province.owner === army.tag) {
+      if (province) delete province.siege;
+      continue;
+    }
+    if (currentDef.isFort) {
+      const siege = province.siege?.attacker === army.tag
+        ? province.siege
+        : { attacker: army.tag, progress: 0, days: 0 };
+      province.siege = siege;
+      const artillery = army.composition.artillery;
+      const siegeSpeed = 8 + artillery / 120;
+      siege.progress += siegeSpeed;
+      siege.days += 1;
+      if (siege.progress >= currentDef.fortLevel * 100) {
+        captureProvince(state, content, army, army.province);
+        state.stats.sieges += 1;
+      }
+    } else {
+      captureProvince(state, content, army, army.province);
+    }
+  }
+}
+
+export function recruitArmy(
+  state: GameState,
+  content: ContentIndex,
+  tag: string,
+  provinceId: string,
+  templateId: string,
+  size: number,
+): boolean {
+  const nation = state.countries[tag];
+  const template = content.armyTemplates.get(templateId);
+  const province = state.provinces[provinceId];
+  if (!nation || !template || !province) return false;
+  if (province.controller !== tag) return false;
+  const silverCost = size * 5000;
+  const manpowerCost = size * 1000;
+  if (nation.treasury < silverCost || nation.manpower < manpowerCost) return false;
+  nation.treasury -= silverCost;
+  nation.manpower -= manpowerCost;
+  const id = `army_${state.nextArmyId}`;
+  state.nextArmyId += 1;
+  state.armies[id] = {
+    id,
+    tag,
+    name: `${content.countries.get(tag)?.name ?? tag} ${template.name}`,
+    province: provinceId,
+    movePath: [],
+    moveProgress: 0,
+    composition: {
+      infantry: template.composition.infantry * size,
+      firearm: template.composition.firearm * size,
+      cavalry: template.composition.cavalry * size,
+      artillery: template.composition.artillery * size,
+      naval: template.composition.naval * size,
+    },
+    organization: content.balance.military.baseOrganization,
+    training: template.training,
+    equipment: template.equipment,
+    supply: 100,
+    sourceEstate: template.sourceEstate,
+    general: pickGeneral(state, content, tag),
+    stance: 'hold',
+  };
+  const estate = nation.estates[template.sourceEstate];
+  if (estate) estate.loyalty = clamp(estate.loyalty - 1, 0, 100);
+  state.log.push({
+    day: state.day,
+    category: 'military',
+    country: tag,
+    text: `征募 ${template.name} ${size} 营，耗银 ${silverCost}`,
+    severity: 'info',
+  });
+  return true;
+}
+
+export function setArmyPath(
+  state: GameState,
+  content: ContentIndex,
+  armyId: string,
+  path: string[],
+): boolean {  const army = state.armies[armyId];
+  if (!army) return false;
+  if (path.length === 0) {
+    army.movePath = [];
+    army.stance = 'hold';
+    return true;
+  }
+  const from = content.provinces.get(army.province);
+  if (!from) return false;
+  let current = army.province;
+  for (const next of path) {
+    const currentDef = content.provinces.get(current);
+    if (!currentDef || !currentDef.neighbors.includes(next)) return false;
+    current = next;
+  }
+  army.movePath = [...path];
+  army.stance = 'move';
+  return true;
+}

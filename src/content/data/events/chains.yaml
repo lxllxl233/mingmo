@@ -1,0 +1,1114 @@
+events:
+  # ══ 大明 · 甲申 ══════════════════════════════════════
+  - id: MING_e_jiashen_1
+    title: 北京告急
+    desc: 李自成在西安称帝，随即东渡黄河，兵锋直指京师。京营缺饷，九门戒严。
+    historical_context: 崇祯十七年正月，大顺军东征，明廷在战、守、迁之间摇摆。
+    scope: country
+    country: MING
+    chain: MING_chain_jiashen
+    trigger:
+      all:
+        - date: { after: 1644-02-01, before: 1644-04-30 }
+        - not_has_flag: jiashen_started
+    fire_once: true
+    options:
+      - id: summon_wu
+        name: 调吴三桂入卫
+        tooltip: 放弃关外，勤王京师。山海关防务空虚。
+        ai_chance: 40
+        effect:
+          - set_flag: jiashen_started
+          - set_flag: wu_sangui_summoned
+          - add_treasury: -200000
+          - add_stability: 3
+          - spawn_army: { province: beijing, template: guanning_army, size: 3 }
+          - trigger_event: { id: MING_e_jiashen_2, delay_days: 10 }
+      - id: move_south
+        name: 南迁
+        tooltip: 弃京师，退保南京。天命与民心大损，但社稷可续。
+        ai_chance: 20
+        effect:
+          - set_flag: jiashen_started
+          - set_flag: capital_moved
+          - add_stability: -15
+          - add_mandate: -20
+          - change_capital: nanjing
+          - trigger_event: { id: MING_e_jiashen_2, delay_days: 20 }
+      - id: hold
+        name: 死守京师
+        tooltip: 天子守国门。城破则社稷倾覆。
+        ai_chance: 40
+        effect:
+          - set_flag: jiashen_started
+          - set_flag: beijing_last_stand
+          - add_stability: 10
+          - add_mandate: 5
+          - trigger_event: { id: MING_e_jiashen_2, delay_days: 20 }
+
+  - id: MING_e_jiashen_2
+    title: 山海关
+    desc: 关外八旗按兵不动，关内大顺军已至。吴三桂的抉择，决定天下归谁。
+    scope: country
+    country: MING
+    chain: MING_chain_jiashen
+    trigger:
+      all:
+        - has_flag: jiashen_started
+        - date: { after: 1644-03-01, before: 1644-05-31 }
+    fire_once: true
+    options:
+      - id: open_to_qing
+        name: 许吴三桂开关
+        ai_chance: 45
+        effect:
+          - set_flag: wu_sangui_defected
+          - add_stability: -10
+          - add_mandate: -10
+          - change_owner: { province: shanhaiguan, to: QING }
+          - trigger_event: { id: MING_e_jiashen_3, delay_days: 15 }
+      - id: order_hold
+        name: 严令据守
+        ai_chance: 55
+        effect:
+          - set_flag: shanhaiguan_held
+          - add_treasury: -50000
+          - add_army_loyalty: 3
+          - trigger_event: { id: MING_e_jiashen_3, delay_days: 30 }
+
+  - id: MING_e_jiashen_3
+    title: 甲申之变
+    desc: 京师城防已破，宫中火起。是死社稷，还是南渡？
+    scope: country
+    country: MING
+    chain: MING_chain_jiashen
+    trigger:
+      all:
+        - has_flag: jiashen_started
+        - date: { after: 1644-04-01, before: 1644-06-30 }
+    fire_once: true
+    options:
+      - id: die
+        name: 死社稷
+        ai_chance: 50
+        effect:
+          - set_flag: jiashen_resolved
+          - set_flag: capital_fallen
+          - add_stability: -20
+          - add_mandate: -30
+          - change_owner: { province: beijing, to: SHUN }
+          - add_treasury: -300000
+      - id: flee
+        name: 南渡
+        ai_chance: 50
+        effect:
+          - set_flag: jiashen_resolved
+          - set_flag: capital_moved
+          - add_stability: -8
+          - add_mandate: -15
+          - change_capital: nanjing
+          - change_owner: { province: beijing, to: SHUN }
+
+  # ══ 大清 · 入关 ══════════════════════════════════════
+  - id: QING_e_entry_1
+    title: 皇太极驾崩
+    desc: 盛京宫中，皇太极暴卒。多尔衮与豪格各拥兵，继位之争一触即发。
+    historical_context: 1643 年皇太极去世，多尔衮摄政，清廷完成权力交接。
+    scope: country
+    country: QING
+    chain: QING_chain_entry
+    trigger:
+      all:
+        - date: { after: 1643-08-01, before: 1643-12-31 }
+        - not_has_flag: qing_succession
+    fire_once: true
+    options:
+      - id: dorgon
+        name: 多尔衮摄政
+        ai_chance: 65
+        effect:
+          - set_flag: qing_succession
+          - set_flag: dorgon_regent
+          - add_stability: 5
+          - add_authority: 5
+          - trigger_event: { id: QING_e_entry_2, delay_days: 30 }
+      - id: haoge
+        name: 豪格争位
+        ai_chance: 35
+        effect:
+          - set_flag: qing_succession
+          - set_flag: haoge_khan
+          - add_stability: -8
+          - add_authority: -5
+          - trigger_event: { id: QING_e_entry_2, delay_days: 30 }
+
+  - id: QING_e_entry_2
+    title: 吴三桂请兵
+    desc: 山海关总兵吴三桂遣使乞师，愿以关内之地相酬。
+    scope: country
+    country: QING
+    chain: QING_chain_entry
+    trigger:
+      all:
+        - has_flag: qing_succession
+        - date: { after: 1644-03-01, before: 1644-05-31 }
+    fire_once: true
+    options:
+      - id: enter
+        name: 倾国入关
+        ai_chance: 70
+        effect:
+          - set_flag: qing_entered
+          - add_treasury: -100000
+          - spawn_army: { province: shanhaiguan, template: qing_banner, size: 2 }
+          - trigger_event: { id: QING_e_entry_3, delay_days: 20 }
+      - id: wait
+        name: 坐观成败
+        ai_chance: 30
+        effect:
+          - set_flag: qing_waited
+          - add_stability: 3
+          - trigger_event: { id: QING_e_entry_3, delay_days: 60 }
+
+  - id: QING_e_entry_3
+    title: 定鼎北京
+    desc: 北京已下，紫禁城空。摄政王问：是为崇祯复仇，还是直接南下？
+    scope: country
+    country: QING
+    chain: QING_chain_entry
+    trigger:
+      all:
+        - any: [{ has_flag: qing_entered }, { has_flag: qing_waited }]
+        - date: { after: 1644-05-01, before: 1644-08-31 }
+    fire_once: true
+    options:
+      - id: revenge
+        name: 为崇祯复仇
+        ai_chance: 55
+        effect:
+          - set_flag: qing_legitimacy
+          - add_mandate: 10
+          - add_stability: 5
+          - change_owner: { province: beijing, to: QING }
+      - id: conquer
+        name: 直接南下
+        ai_chance: 45
+        effect:
+          - set_flag: qing_conquest
+          - add_mandate: 3
+          - add_modifier: { unrest_monthly: 0.5 }
+          - change_owner: { province: beijing, to: QING }
+          - add_treasury: -100000
+
+  # ══ 大顺 · 东征 ══════════════════════════════════════
+  - id: SHUN_e_east_1
+    title: 西安称帝
+    desc: 李自成在西安称大顺皇帝，改元永昌。诸将劝其乘胜东征。
+    historical_context: 1644 年正月，李自成在西安建立大顺政权。
+    scope: country
+    country: SHUN
+    chain: SHUN_chain_east
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1644-02-28 }
+        - not_has_flag: shun_emperor
+    fire_once: true
+    options:
+      - id: east
+        name: 渡河东征
+        ai_chance: 70
+        effect:
+          - set_flag: shun_emperor
+          - set_flag: shun_eastward
+          - add_stability: 5
+          - add_mandate: 10
+          - trigger_event: { id: SHUN_e_east_2, delay_days: 15 }
+      - id: consolidate
+        name: 先固关中
+        ai_chance: 30
+        effect:
+          - set_flag: shun_emperor
+          - add_stability: 8
+          - add_treasury: 100000
+          - trigger_event: { id: SHUN_e_east_2, delay_days: 60 }
+
+  - id: SHUN_e_east_2
+    title: 渡河
+    desc: 大顺军渡黄河，破太原，直逼宁武关。明军望风而降者众。
+    scope: country
+    country: SHUN
+    chain: SHUN_chain_east
+    trigger:
+      all:
+        - has_flag: shun_emperor
+        - date: { after: 1644-02-01, before: 1644-03-31 }
+    fire_once: true
+    options:
+      - id: speed
+        name: 轻骑急进
+        ai_chance: 60
+        effect:
+          - set_flag: shun_speed
+          - add_treasury: -50000
+          - add_stability: -3
+          - trigger_event: { id: SHUN_e_east_3, delay_days: 10 }
+      - id: slow
+        name: 稳扎稳打
+        ai_chance: 40
+        effect:
+          - set_flag: shun_slow
+          - add_treasury: -100000
+          - add_stability: 3
+          - trigger_event: { id: SHUN_e_east_3, delay_days: 30 }
+
+  - id: SHUN_e_east_3
+    title: 北京城下
+    desc: 京师已在眼前。是招降崇祯，还是强攻？
+    scope: country
+    country: SHUN
+    chain: SHUN_chain_east
+    trigger:
+      all:
+        - any: [{ has_flag: shun_speed }, { has_flag: shun_slow }]
+        - date: { after: 1644-03-01, before: 1644-05-31 }
+    fire_once: true
+    options:
+      - id: negotiate
+        name: 遣使招降
+        ai_chance: 35
+        effect:
+          - set_flag: shun_negotiated
+          - add_stability: 3
+          - add_treasury: -30000
+          - change_owner: { province: beijing, to: SHUN }
+      - id: assault
+        name: 强攻北京
+        ai_chance: 65
+        effect:
+          - set_flag: shun_took_beijing
+          - add_stability: -5
+          - add_treasury: -50000
+          - change_owner: { province: beijing, to: SHUN }
+          - add_modifier: { unrest_monthly: 0.4 }
+
+  # ══ 大西 · 四川 ══════════════════════════════════════
+  - id: XI_e_sichuan_1
+    title: 入成都
+    desc: 张献忠率大西军入川，攻破成都。蜀王被执，全川震动。
+    scope: country
+    country: XI
+    chain: XI_chain_sichuan
+    trigger:
+      all:
+        - date: { after: 1644-06-01, before: 1644-10-31 }
+        - not_has_flag: xi_chengdu
+    fire_once: true
+    options:
+      - id: occupy
+        name: 据城立威
+        ai_chance: 60
+        effect:
+          - set_flag: xi_chengdu
+          - add_stability: 3
+          - add_treasury: 100000
+          - trigger_event: { id: XI_e_sichuan_2, delay_days: 20 }
+      - id: appease
+        name: 安抚蜀人
+        ai_chance: 40
+        effect:
+          - set_flag: xi_chengdu
+          - set_flag: xi_appease
+          - add_stability: 8
+          - add_estate_loyalty: { estate: gentry, value: 5 }
+          - trigger_event: { id: XI_e_sichuan_2, delay_days: 30 }
+
+  - id: XI_e_sichuan_2
+    title: 大西称帝
+    desc: 张献忠在成都称帝，国号大西。诸将请开科取士，以安蜀人。
+    scope: country
+    country: XI
+    chain: XI_chain_sichuan
+    trigger:
+      all:
+        - has_flag: xi_chengdu
+        - date: { after: 1644-10-01, before: 1645-02-28 }
+    fire_once: true
+    options:
+      - id: exam
+        name: 开科取士
+        ai_chance: 40
+        effect:
+          - set_flag: xi_emperor
+          - add_stability: 6
+          - add_estate_loyalty: { estate: gentry, value: 8 }
+          - trigger_event: { id: XI_e_sichuan_3, delay_days: 30 }
+      - id: terror
+        name: 以杀立威
+        ai_chance: 60
+        effect:
+          - set_flag: xi_emperor
+          - set_flag: xi_terror
+          - add_stability: -5
+          - add_estate_loyalty: { estate: gentry, value: -15 }
+          - add_modifier: { unrest_monthly: 0.6 }
+          - trigger_event: { id: XI_e_sichuan_3, delay_days: 20 }
+
+  - id: XI_e_sichuan_3
+    title: 粮尽
+    desc: 川中残破，粮道断绝。清军自北而来，南明自东而来。
+    scope: country
+    country: XI
+    chain: XI_chain_sichuan
+    trigger:
+      all:
+        - has_flag: xi_emperor
+        - date: { after: 1645-01-01, before: 1646-12-31 }
+    fire_once: true
+    options:
+      - id: ally_ming
+        name: 联明抗清
+        ai_chance: 45
+        effect:
+          - set_flag: xi_ally_ming
+          - add_relation: { target: SMING, value: 30 }
+          - add_treasury: -50000
+          - add_stability: 3
+      - id: fight
+        name: 独立支撑
+        ai_chance: 55
+        effect:
+          - set_flag: xi_alone
+          - add_manpower: 10000
+          - add_stability: -5
+          - add_modifier: { army_attack_pct: 3 }
+
+  # ══ 南明 · 继统 ══════════════════════════════════════
+  - id: SMING_e_legit_1
+    title: 南京议立
+    desc: 崇祯殉国，南京诸臣议立新君。福王、潞王各有拥戴者。
+    historical_context: 1644 年南京拥立福王朱由崧，弘光朝廷建立，随即陷入党争。
+    scope: country
+    country: SMING
+    chain: SMING_chain_legit
+    trigger:
+      all:
+        - date: { after: 1644-04-01, before: 1644-06-30 }
+        - not_has_flag: sming_founded
+    fire_once: true
+    options:
+      - id: fuwang
+        name: 立福王
+        ai_chance: 55
+        effect:
+          - set_flag: sming_founded
+          - set_flag: fuwang_emperor
+          - add_stability: 5
+          - add_faction_influence: { donglin: -5, military: 5 }
+          - trigger_event: { id: SMING_e_legit_2, delay_days: 20 }
+      - id: luwang
+        name: 立潞王
+        ai_chance: 45
+        effect:
+          - set_flag: sming_founded
+          - set_flag: luwang_emperor
+          - add_stability: 2
+          - add_faction_influence: { donglin: 8, military: -5 }
+          - trigger_event: { id: SMING_e_legit_2, delay_days: 20 }
+
+  - id: SMING_e_legit_2
+    title: 弘光朝廷
+    desc: 新君登基，马士英与史可法争权。江北四镇拥兵索饷。
+    scope: country
+    country: SMING
+    chain: SMING_chain_legit
+    trigger:
+      all:
+        - has_flag: sming_founded
+        - date: { after: 1644-06-01, before: 1644-09-30 }
+    fire_once: true
+    options:
+      - id: back_shi
+        name: 倚重史可法
+        ai_chance: 50
+        effect:
+          - set_flag: shi_kefa
+          - add_stability: 6
+          - add_estate_loyalty: { estate: gentry, value: 5 }
+          - trigger_event: { id: SMING_e_legit_3, delay_days: 30 }
+      - id: back_ma
+        name: 倚重马士英
+        ai_chance: 50
+        effect:
+          - set_flag: ma_shiying
+          - add_corruption: 5
+          - add_faction_influence: { military: 8, donglin: -8 }
+          - trigger_event: { id: SMING_e_legit_3, delay_days: 30 }
+
+  - id: SMING_e_legit_3
+    title: 江北四镇
+    desc: 四镇总兵各拥兵数万，索饷不已。朝廷无银，唯有加派。
+    scope: country
+    country: SMING
+    chain: SMING_chain_legit
+    trigger:
+      all:
+        - has_flag: sming_founded
+        - date: { after: 1644-09-01, before: 1645-03-31 }
+    fire_once: true
+    options:
+      - id: pay
+        name: 加派养兵
+        ai_chance: 55
+        effect:
+          - set_flag: sming_four_towns
+          - add_treasury: -100000
+          - add_estate_loyalty: { estate: peasants, value: -8 }
+          - add_army_loyalty: 5
+      - id: curb
+        name: 裁抑藩镇
+        ai_chance: 45
+        effect:
+          - set_flag: sming_curb_warlords
+          - add_stability: -5
+          - add_army_loyalty: -8
+          - add_modifier: { army_defense_pct: 3 }
+
+  # ══ 郑氏 · 取台 ══════════════════════════════════════
+  - id: ZHENG_e_taiwan_1
+    title: 金门决策
+    desc: 南京败后，郑成功退守金厦。诸将议：北伐不成，可否东取台湾？
+    historical_context: 1659 年郑成功南京失利，转而筹划取台湾作为抗清基地。
+    scope: country
+    country: ZHENG
+    chain: ZHENG_chain_taiwan
+    trigger:
+      all:
+        - date: { after: 1659-01-01, before: 1660-12-31 }
+        - not_has_flag: zheng_taiwan_plan
+    fire_once: true
+    options:
+      - id: go
+        name: 东取台湾
+        ai_chance: 65
+        effect:
+          - set_flag: zheng_taiwan_plan
+          - set_flag: zheng_east
+          - add_treasury: -100000
+          - add_stability: 5
+          - trigger_event: { id: ZHENG_e_taiwan_2, delay_days: 30 }
+      - id: stay
+        name: 固守金厦
+        ai_chance: 35
+        effect:
+          - set_flag: zheng_taiwan_plan
+          - add_stability: 3
+          - add_modifier: { naval_attack_pct: 5 }
+          - trigger_event: { id: ZHENG_e_taiwan_2, delay_days: 60 }
+
+  - id: ZHENG_e_taiwan_2
+    title: 鹿耳门
+    desc: 郑军舰队乘潮入鹿耳门，荷兰人据热兰遮城固守。
+    scope: country
+    country: ZHENG
+    chain: ZHENG_chain_taiwan
+    trigger:
+      all:
+        - has_flag: zheng_taiwan_plan
+        - date: { after: 1661-03-01, before: 1661-06-30 }
+    fire_once: true
+    options:
+      - id: siege
+        name: 围城
+        ai_chance: 60
+        effect:
+          - set_flag: zheng_siege
+          - add_treasury: -50000
+          - spawn_army: { province: anping, template: zheng_marines, size: 2 }
+          - trigger_event: { id: ZHENG_e_taiwan_3, delay_days: 30 }
+      - id: assault
+        name: 强攻
+        ai_chance: 40
+        effect:
+          - set_flag: zheng_assault
+          - add_treasury: -80000
+          - add_army_loyalty: -3
+          - trigger_event: { id: ZHENG_e_taiwan_3, delay_days: 20 }
+
+  - id: ZHENG_e_taiwan_3
+    title: 热兰遮
+    desc: 荷兰守军粮尽，举城投降。台湾第一次成为汉人政权的大本营。
+    scope: country
+    country: ZHENG
+    chain: ZHENG_chain_taiwan
+    trigger:
+      all:
+        - any: [{ has_flag: zheng_siege }, { has_flag: zheng_assault }]
+        - date: { after: 1661-06-01, before: 1662-06-30 }
+    fire_once: true
+    options:
+      - id: lenient
+        name: 允其体面撤走
+        ai_chance: 50
+        effect:
+          - set_flag: zheng_taiwan
+          - add_stability: 8
+          - add_treasury: 50000
+          - change_owner: { province: anping, to: ZHENG }
+      - id: harsh
+        name: 没收公司财产
+        ai_chance: 50
+        effect:
+          - set_flag: zheng_taiwan
+          - add_treasury: 150000
+          - add_stability: -3
+          - change_owner: { province: anping, to: ZHENG }
+
+  # ══ 蒙古 · 林丹汗 ════════════════════════════════════
+  - id: MONGOL_e_lin_1
+    title: 察哈尔西迁
+    desc: 林丹汗不敌后金，率部西迁。部众饥疲，诸部离心。
+    historical_context: 1632 年后林丹汗西迁青海，察哈尔蒙古走向瓦解。
+    scope: country
+    country: MONGOL
+    chain: MONGOL_chain_lin
+    trigger:
+      all:
+        - date: { after: 1632-01-01, before: 1635-12-31 }
+        - not_has_flag: mongol_westward
+    fire_once: true
+    options:
+      - id: west
+        name: 继续西迁
+        ai_chance: 60
+        effect:
+          - set_flag: mongol_westward
+          - add_treasury: -50000
+          - add_stability: -5
+          - trigger_event: { id: MONGOL_e_lin_2, delay_days: 60 }
+      - id: fight
+        name: 回头决战
+        ai_chance: 40
+        effect:
+          - set_flag: mongol_westward
+          - add_manpower: 10000
+          - add_stability: 3
+          - trigger_event: { id: MONGOL_e_lin_2, delay_days: 30 }
+
+  - id: MONGOL_e_lin_2
+    title: 传国玉玺
+    desc: 林丹汗病卒，其子额哲献传国玉玺于后金。草原的合法性易主。
+    historical_context: 1635 年额哲降金，传国玉玺归皇太极，为称帝提供依据。
+    scope: country
+    country: MONGOL
+    chain: MONGOL_chain_lin
+    trigger:
+      all:
+        - has_flag: mongol_westward
+        - date: { after: 1635-01-01, before: 1636-12-31 }
+    fire_once: true
+    options:
+      - id: submit
+        name: 归附后金
+        ai_chance: 55
+        effect:
+          - set_flag: mongol_submit
+          - add_stability: 5
+          - add_relation: { target: QING, value: 30 }
+          - add_treasury: 50000
+          - trigger_event: { id: MONGOL_e_lin_3, delay_days: 30 }
+      - id: resist
+        name: 拥立新汗
+        ai_chance: 45
+        effect:
+          - set_flag: mongol_resist
+          - add_stability: -5
+          - add_manpower: 15000
+          - trigger_event: { id: MONGOL_e_lin_3, delay_days: 30 }
+
+  - id: MONGOL_e_lin_3
+    title: 部众离散
+    desc: 察哈尔部众或降或散。草原上只剩两条路：附金，或西迁卫拉特。
+    scope: country
+    country: MONGOL
+    chain: MONGOL_chain_lin
+    trigger:
+      all:
+        - any: [{ has_flag: mongol_submit }, { has_flag: mongol_resist }]
+        - date: { after: 1636-01-01, before: 1638-12-31 }
+    fire_once: true
+    options:
+      - id: join_qing
+        name: 编入八旗
+        ai_chance: 50
+        effect:
+          - set_flag: mongol_banners
+          - add_treasury: 100000
+          - add_relation: { target: QING, value: 30 }
+          - add_modifier: { cavalry_attack_pct: 5 }
+      - id: go_west
+        name: 西迁卫拉特
+        ai_chance: 50
+        effect:
+          - set_flag: mongol_west
+          - add_treasury: -50000
+          - add_modifier: { cavalry_attack_pct: 8, stability_monthly: -0.05 }
+
+  # ══ 朝鲜 · 丙子 ══════════════════════════════════════
+  - id: JOSEON_e_bingzi_1
+    title: 清军压境
+    desc: 皇太极亲率大军渡鸭绿江，直逼汉城。朝鲜君臣仓皇议守议和。
+    historical_context: 1636 年丙子之役，清军攻朝鲜，迫其断绝与明关系。
+    scope: country
+    country: JOSEON
+    chain: JOSEON_chain_bingzi
+    trigger:
+      all:
+        - date: { after: 1636-12-01, before: 1637-01-31 }
+        - not_has_flag: joseon_bingzi
+    fire_once: true
+    options:
+      - id: fight
+        name: 坚守南汉山城
+        ai_chance: 55
+        effect:
+          - set_flag: joseon_bingzi
+          - set_flag: joseon_fight
+          - add_stability: 5
+          - add_manpower: 10000
+          - trigger_event: { id: JOSEON_e_bingzi_2, delay_days: 15 }
+      - id: negotiate
+        name: 遣使议和
+        ai_chance: 45
+        effect:
+          - set_flag: joseon_bingzi
+          - set_flag: joseon_negotiate
+          - add_stability: -5
+          - add_treasury: -50000
+          - trigger_event: { id: JOSEON_e_bingzi_2, delay_days: 15 }
+
+  - id: JOSEON_e_bingzi_2
+    title: 南汉山城
+    desc: 城中粮尽，援军不至。主战与主和两派在御前争执。
+    scope: country
+    country: JOSEON
+    chain: JOSEON_chain_bingzi
+    trigger:
+      all:
+        - has_flag: joseon_bingzi
+        - date: { after: 1637-01-01, before: 1637-02-28 }
+    fire_once: true
+    options:
+      - id: surrender
+        name: 出城降清
+        ai_chance: 60
+        effect:
+          - set_flag: joseon_submit
+          - add_stability: -10
+          - add_treasury: -100000
+          - add_relation: { target: QING, value: 20 }
+          - trigger_event: { id: JOSEON_e_bingzi_3, delay_days: 15 }
+      - id: hold
+        name: 死守待援
+        ai_chance: 40
+        effect:
+          - set_flag: joseon_hold
+          - add_stability: 3
+          - add_manpower: -10000
+          - trigger_event: { id: JOSEON_e_bingzi_3, delay_days: 15 }
+
+  - id: JOSEON_e_bingzi_3
+    title: 三田渡
+    desc: 朝鲜国王行三跪九叩之礼，与清廷结城下之盟。丙子之耻，自此刻入朝鲜记忆。
+    scope: country
+    country: JOSEON
+    chain: JOSEON_chain_bingzi
+    trigger:
+      all:
+        - any: [{ has_flag: joseon_submit }, { has_flag: joseon_hold }]
+        - date: { after: 1637-02-01, before: 1637-06-30 }
+    fire_once: true
+    options:
+      - id: accept
+        name: 忍辱事清
+        ai_chance: 65
+        effect:
+          - set_flag: joseon_tributary
+          - add_stability: -5
+          - add_treasury: -100000
+          - add_relation: { target: QING, value: 30 }
+      - id: secret
+        name: 阴结明朝
+        ai_chance: 35
+        effect:
+          - set_flag: joseon_secret_ming
+          - add_stability: 3
+          - add_relation: { target: MING, value: 30 }
+          - add_relation: { target: QING, value: -20 }
+
+  # ══ 日本 · 锁国 ══════════════════════════════════════
+  - id: JAPAN_e_sakoku_1
+    title: 岛原之乱
+    desc: 岛原、天草农民因重税与禁教而起，据原城死守。幕府调集诸藩围剿。
+    historical_context: 1637–1638 年岛原之乱后，德川幕府加速推行锁国。
+    scope: country
+    country: JAPAN
+    chain: JAPAN_chain_sakoku
+    trigger:
+      all:
+        - date: { after: 1637-10-01, before: 1638-06-30 }
+        - not_has_flag: japan_shimabara
+    fire_once: true
+    options:
+      - id: crush
+        name: 诸藩围剿
+        ai_chance: 60
+        effect:
+          - set_flag: japan_shimabara
+          - add_treasury: -80000
+          - add_stability: 3
+          - trigger_event: { id: JAPAN_e_sakoku_2, delay_days: 30 }
+      - id: concede
+        name: 减免年贡
+        ai_chance: 40
+        effect:
+          - set_flag: japan_shimabara
+          - add_treasury: -50000
+          - add_stability: 5
+          - add_estate_loyalty: { estate: peasants, value: 8 }
+          - trigger_event: { id: JAPAN_e_sakoku_2, delay_days: 30 }
+
+  - id: JAPAN_e_sakoku_2
+    title: 锁国令
+    desc: 幕府颁锁国令，禁天主教、限朱印船、只留长崎通商。
+    scope: country
+    country: JAPAN
+    chain: JAPAN_chain_sakoku
+    trigger:
+      all:
+        - has_flag: japan_shimabara
+        - date: { after: 1639-01-01, before: 1640-06-30 }
+    fire_once: true
+    options:
+      - id: close
+        name: 厉行锁国
+        ai_chance: 60
+        effect:
+          - set_flag: japan_closed
+          - add_stability: 8
+          - add_modifier: { trade_efficiency_pct: -8, corruption_drift: -0.02 }
+          - trigger_event: { id: JAPAN_e_sakoku_3, delay_days: 60 }
+      - id: limited
+        name: 有限通商
+        ai_chance: 40
+        effect:
+          - set_flag: japan_limited
+          - add_treasury: 80000
+          - add_modifier: { trade_efficiency_pct: 5 }
+          - trigger_event: { id: JAPAN_e_sakoku_3, delay_days: 60 }
+
+  - id: JAPAN_e_sakoku_3
+    title: 长崎
+    desc: 长崎出岛成为日本唯一对西方开放的窗口。荷兰商馆在此延续两百年。
+    scope: country
+    country: JAPAN
+    chain: JAPAN_chain_sakoku
+    trigger:
+      all:
+        - any: [{ has_flag: japan_closed }, { has_flag: japan_limited }]
+        - date: { after: 1640-01-01, before: 1642-12-31 }
+    fire_once: true
+    options:
+      - id: accept
+        name: 维持现状
+        ai_chance: 60
+        effect:
+          - set_flag: japan_sakoku_done
+          - add_treasury: 50000
+          - add_modifier: { trade_efficiency_pct: 4 }
+      - id: open
+        name: 暗中扩贸
+        ai_chance: 40
+        effect:
+          - set_flag: japan_sakoku_done
+          - add_treasury: 100000
+          - add_modifier: { trade_efficiency_pct: 8, stability_monthly: -0.03 }
+
+  # ══ 西藏 · 固始汗 ════════════════════════════════════
+  - id: TIBET_e_gushi_1
+    title: 固始汗入藏
+    desc: 和硕特部固始汗应格鲁派之请入藏，击败藏巴汗。拉萨城门洞开。
+    historical_context: 1641 年固始汗入藏，建立和硕特汗廷与格鲁派联合政权。
+    scope: country
+    country: TIBET
+    chain: TIBET_chain_gushi
+    trigger:
+      all:
+        - date: { after: 1641-01-01, before: 1642-06-30 }
+        - not_has_flag: tibet_gushi
+    fire_once: true
+    options:
+      - id: enter
+        name: 入拉萨
+        ai_chance: 60
+        effect:
+          - set_flag: tibet_gushi
+          - add_stability: 8
+          - add_mandate: 5
+          - trigger_event: { id: TIBET_e_gushi_2, delay_days: 30 }
+      - id: negotiate
+        name: 与藏巴汗议和
+        ai_chance: 40
+        effect:
+          - set_flag: tibet_gushi
+          - add_stability: 4
+          - add_treasury: -30000
+          - trigger_event: { id: TIBET_e_gushi_2, delay_days: 30 }
+
+  - id: TIBET_e_gushi_2
+    title: 政教合治
+    desc: 达赖喇嘛与固始汗共治西藏。寺院获赐庄园，格鲁派权威达到顶点。
+    scope: country
+    country: TIBET
+    chain: TIBET_chain_gushi
+    trigger:
+      all:
+        - has_flag: tibet_gushi
+        - date: { after: 1642-01-01, before: 1643-12-31 }
+    fire_once: true
+    options:
+      - id: temple
+        name: 厚赐寺院
+        ai_chance: 55
+        effect:
+          - set_flag: tibet_theocracy
+          - add_stability: 6
+          - add_estate_loyalty: { estate: clergy, value: 10 }
+          - add_treasury: -50000
+          - trigger_event: { id: TIBET_e_gushi_3, delay_days: 30 }
+      - id: balance
+        name: 平衡贵族
+        ai_chance: 45
+        effect:
+          - set_flag: tibet_balance
+          - add_stability: 3
+          - add_estate_loyalty: { estate: nobles, value: 8 }
+          - trigger_event: { id: TIBET_e_gushi_3, delay_days: 30 }
+
+  - id: TIBET_e_gushi_3
+    title: 联清
+    desc: 清朝遣使入藏，请达赖喇嘛入觐。西藏必须在两大施主之间选择。
+    scope: country
+    country: TIBET
+    chain: TIBET_chain_gushi
+    trigger:
+      all:
+        - any: [{ has_flag: tibet_theocracy }, { has_flag: tibet_balance }]
+        - date: { after: 1643-01-01, before: 1645-12-31 }
+    fire_once: true
+    options:
+      - id: qing
+        name: 结好清朝
+        ai_chance: 55
+        effect:
+          - set_flag: tibet_qing_tribute
+          - add_treasury: 50000
+          - add_relation: { target: QING, value: 30 }
+          - add_mandate: 5
+      - id: mongol
+        name: 依靠和硕特
+        ai_chance: 45
+        effect:
+          - set_flag: tibet_mongol_guard
+          - add_manpower: 5000
+          - add_modifier: { army_defense_pct: 5 }
+
+  # ══ 荷兰 · 热兰遮 ════════════════════════════════════
+  - id: VOC_e_zeelandia_1
+    title: 郑军来袭
+    desc: 郑成功舰队出现在鹿耳门。热兰遮城守军只有数百，巴达维亚援军遥遥无期。
+    historical_context: 1661 年郑成功攻台，次年荷兰东印度公司投降，退出台湾。
+    scope: country
+    country: VOC
+    chain: VOC_chain_zeelandia
+    trigger:
+      all:
+        - date: { after: 1661-03-01, before: 1661-05-31 }
+        - not_has_flag: voc_zeelandia
+    fire_once: true
+    options:
+      - id: defend
+        name: 固守热兰遮
+        ai_chance: 60
+        effect:
+          - set_flag: voc_zeelandia
+          - set_flag: voc_defend
+          - add_treasury: -50000
+          - trigger_event: { id: VOC_e_zeelandia_2, delay_days: 20 }
+      - id: negotiate
+        name: 遣使谈判
+        ai_chance: 40
+        effect:
+          - set_flag: voc_zeelandia
+          - set_flag: voc_negotiate
+          - add_treasury: -30000
+          - trigger_event: { id: VOC_e_zeelandia_2, delay_days: 30 }
+
+  - id: VOC_e_zeelandia_2
+    title: 围城
+    desc: 郑军切断水源，炮击城墙。城中痢疾流行，守军士气低落。
+    scope: country
+    country: VOC
+    chain: VOC_chain_zeelandia
+    trigger:
+      all:
+        - has_flag: voc_zeelandia
+        - date: { after: 1661-06-01, before: 1661-12-31 }
+    fire_once: true
+    options:
+      - id: hold
+        name: 等待援军
+        ai_chance: 50
+        effect:
+          - set_flag: voc_hold
+          - add_army_loyalty: -5
+          - add_treasury: -50000
+          - trigger_event: { id: VOC_e_zeelandia_3, delay_days: 30 }
+      - id: surrender
+        name: 体面投降
+        ai_chance: 50
+        effect:
+          - set_flag: voc_surrender
+          - add_treasury: -100000
+          - add_stability: -5
+          - trigger_event: { id: VOC_e_zeelandia_3, delay_days: 20 }
+
+  - id: VOC_e_zeelandia_3
+    title: 退出台湾
+    desc: 公司旗降下，郑军入城。巴达维亚的董事们会如何解释这场失败？
+    scope: country
+    country: VOC
+    chain: VOC_chain_zeelandia
+    trigger:
+      all:
+        - any: [{ has_flag: voc_hold }, { has_flag: voc_surrender }]
+        - date: { after: 1661-12-01, before: 1662-06-30 }
+    fire_once: true
+    options:
+      - id: withdraw
+        name: 撤往巴达维亚
+        ai_chance: 55
+        effect:
+          - set_flag: voc_taiwan_lost
+          - add_treasury: -50000
+          - add_modifier: { trade_efficiency_pct: -5 }
+      - id: reinforce
+        name: 再派舰队
+        ai_chance: 45
+        effect:
+          - set_flag: voc_taiwan_lost
+          - add_treasury: -150000
+          - add_modifier: { naval_attack_pct: 8 }
+          - add_manpower: 5000
+
+  # ══ 沙俄 · 雅克萨 ════════════════════════════════════
+  - id: RUSSIA_e_albazin_1
+    title: 筑堡雅克萨
+    desc: 哥萨克在黑龙江畔筑雅克萨堡，向沿岸部族征毛皮税。
+    historical_context: 1650 年代俄国哥萨克进入黑龙江流域，与清廷发生冲突。
+    scope: country
+    country: RUSSIA
+    chain: RUSSIA_chain_albazin
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1652-12-31 }
+        - not_has_flag: russia_albazin
+    fire_once: true
+    options:
+      - id: fortify
+        name: 加固堡垒
+        ai_chance: 60
+        effect:
+          - set_flag: russia_albazin
+          - add_treasury: -50000
+          - add_modifier: { fort_defense_pct: 10 }
+          - trigger_event: { id: RUSSIA_e_albazin_2, delay_days: 60 }
+      - id: trade
+        name: 以贸易代征
+        ai_chance: 40
+        effect:
+          - set_flag: russia_albazin
+          - add_treasury: 50000
+          - add_modifier: { trade_efficiency_pct: 5 }
+          - trigger_event: { id: RUSSIA_e_albazin_2, delay_days: 60 }
+
+  - id: RUSSIA_e_albazin_2
+    title: 清军来攻
+    desc: 清廷视黑龙江为龙兴之地，遣军驱逐哥萨克。雅克萨被围。
+    scope: country
+    country: RUSSIA
+    chain: RUSSIA_chain_albazin
+    trigger:
+      all:
+        - has_flag: russia_albazin
+        - date: { after: 1652-01-01, before: 1654-12-31 }
+    fire_once: true
+    options:
+      - id: fight
+        name: 坚守
+        ai_chance: 55
+        effect:
+          - set_flag: russia_fight
+          - add_manpower: 5000
+          - add_treasury: -50000
+          - spawn_army: { province: albazin, template: russia_cossack, size: 2 }
+          - trigger_event: { id: RUSSIA_e_albazin_3, delay_days: 30 }
+      - id: withdraw
+        name: 退往尼布楚
+        ai_chance: 45
+        effect:
+          - set_flag: russia_withdraw
+          - add_stability: -3
+          - add_treasury: -30000
+          - trigger_event: { id: RUSSIA_e_albazin_3, delay_days: 30 }
+
+  - id: RUSSIA_e_albazin_3
+    title: 尼布楚
+    desc: 雅克萨的硝烟未散，双方已在尼布楚坐下。边界与贸易，只能选一个。
+    scope: country
+    country: RUSSIA
+    chain: RUSSIA_chain_albazin
+    trigger:
+      all:
+        - any: [{ has_flag: russia_fight }, { has_flag: russia_withdraw }]
+        - date: { after: 1653-01-01, before: 1656-12-31 }
+    fire_once: true
+    options:
+      - id: treaty
+        name: 议定边界
+        ai_chance: 55
+        effect:
+          - set_flag: russia_nerchinsk
+          - add_treasury: 100000
+          - add_relation: { target: QING, value: 30 }
+          - add_modifier: { trade_efficiency_pct: 8 }
+      - id: expand
+        name: 继续东扩
+        ai_chance: 45
+        effect:
+          - set_flag: russia_expand
+          - add_manpower: 10000
+          - add_modifier: { army_attack_pct: 4, stability_monthly: -0.05 }
+
+event_chains:
+  - { id: MING_chain_jiashen, name: 甲申, stages: [MING_e_jiashen_1, MING_e_jiashen_2, MING_e_jiashen_3], on_complete: [{ set_flag: jiashen_resolved }] }
+  - { id: QING_chain_entry, name: 入关, stages: [QING_e_entry_1, QING_e_entry_2, QING_e_entry_3], on_complete: [{ set_flag: qing_entry_done }] }
+  - { id: SHUN_chain_east, name: 东征, stages: [SHUN_e_east_1, SHUN_e_east_2, SHUN_e_east_3], on_complete: [{ set_flag: shun_east_done }] }
+  - { id: XI_chain_sichuan, name: 四川, stages: [XI_e_sichuan_1, XI_e_sichuan_2, XI_e_sichuan_3], on_complete: [{ set_flag: xi_sichuan_done }] }
+  - { id: SMING_chain_legit, name: 继统, stages: [SMING_e_legit_1, SMING_e_legit_2, SMING_e_legit_3], on_complete: [{ set_flag: sming_legit_done }] }
+  - { id: ZHENG_chain_taiwan, name: 取台, stages: [ZHENG_e_taiwan_1, ZHENG_e_taiwan_2, ZHENG_e_taiwan_3], on_complete: [{ set_flag: zheng_taiwan_done }] }
+  - { id: MONGOL_chain_lin, name: 林丹汗, stages: [MONGOL_e_lin_1, MONGOL_e_lin_2, MONGOL_e_lin_3], on_complete: [{ set_flag: mongol_lin_done }] }
+  - { id: JOSEON_chain_bingzi, name: 丙子, stages: [JOSEON_e_bingzi_1, JOSEON_e_bingzi_2, JOSEON_e_bingzi_3], on_complete: [{ set_flag: joseon_bingzi_done }] }
+  - { id: JAPAN_chain_sakoku, name: 锁国, stages: [JAPAN_e_sakoku_1, JAPAN_e_sakoku_2, JAPAN_e_sakoku_3], on_complete: [{ set_flag: japan_sakoku_done }] }
+  - { id: TIBET_chain_gushi, name: 固始汗, stages: [TIBET_e_gushi_1, TIBET_e_gushi_2, TIBET_e_gushi_3], on_complete: [{ set_flag: tibet_gushi_done }] }
+  - { id: VOC_chain_zeelandia, name: 热兰遮, stages: [VOC_e_zeelandia_1, VOC_e_zeelandia_2, VOC_e_zeelandia_3], on_complete: [{ set_flag: voc_zeelandia_done }] }
+  - { id: RUSSIA_chain_albazin, name: 雅克萨, stages: [RUSSIA_e_albazin_1, RUSSIA_e_albazin_2, RUSSIA_e_albazin_3], on_complete: [{ set_flag: russia_albazin_done }] }

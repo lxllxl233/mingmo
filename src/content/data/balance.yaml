@@ -1,0 +1,67 @@
+balance:
+  economy:
+    land_value_per_wan: 4500
+    population_value_per_person: 0.02
+    grain_price: 0.6
+    admin_capacity_base: 50
+    army_upkeep_per_man_month: 1.2
+    official_salary_per_province_month: 450
+    dynasty_stipend_base_month: 100000
+    disaster_relief_cost: 50000
+    food_per_person_month: 0.0003
+    manpower_regen_rate: 0.00005
+    customary_tax_rate: 0.035
+    corruption_drift: 0.02
+    stability_drift: -0.02
+    unrest_decay: 0.5
+    unrest_from_tax: 120
+    rebel_unrest_threshold: 60
+  military:
+    base_organization: 100
+    base_attack: 10
+    base_defense: 10
+    firearm_attack: 15
+    cavalry_attack: 14
+    artillery_siege: 20
+    terrain_defense:
+      plains: 0
+      hills: 0.15
+      mountains: 0.35
+      wetland: 0.2
+      desert: 0
+      steppe: -0.1
+      jungle: 0.25
+      urban: 0.5
+    terrain_width:
+      plains: 20
+      hills: 14
+      mountains: 8
+      wetland: 8
+      desert: 16
+      steppe: 24
+      jungle: 10
+      urban: 6
+    movement_cost:
+      plains: 1
+      hills: 1.4
+      mountains: 2
+      wetland: 2.2
+      desert: 1.8
+      steppe: 1
+      jungle: 2.5
+      urban: 1
+    supply_recovery: 5
+    supply_decay: 8
+    rout_organization: 0
+    rout_strength_keep: 0.2
+  politics:
+    low_stability_threshold: 30
+    low_loyalty_threshold: 30
+    rebel_loyalty_threshold: 15
+    mandate_loss_on_capital: 25
+    max_corruption: 100
+  ai:
+    aggression: 0.5
+    min_army_ratio: 0.6
+    peace_exhaustion: 60
+    recruit_treasury_floor: 100000

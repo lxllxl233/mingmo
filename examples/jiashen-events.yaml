@@ -1,0 +1,239 @@
+# 甲申事件链（1644）＋ 一条决议
+# 字段规范见 prompts/02-content-spec.md 第 5、6 节。
+# 这是 M4 的核心 fixture：三条分支必须各自跑通。
+
+chain:
+  id: MING_chain_jiashen
+  name: 甲申
+  stages:
+    - SHUN_e_1644_01
+    - MING_e_1644_02
+    - MING_e_1644_03
+    - QING_e_1644_04
+    - MING_e_1644_04s
+  on_complete:
+    - set_flag: jiashen_resolved
+
+events:
+
+  # ── 第一环：大顺称帝 ─────────────────────────────────
+
+  - id: SHUN_e_1644_01
+    title: 西安称帝
+    scope: country
+    country: SHUN
+    chain: MING_chain_jiashen
+    historical_context: 崇祯十七年正月初一，李自成在西安称帝，国号大顺，改元永昌。
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1644-03-01 }
+        - controls: xian
+        - not_has_flag: shun_emperor
+    fire_once: true
+    options:
+      - id: proclaim
+        name: 即皇帝位
+        tooltip: 建号永昌，传檄天下。大顺自此为一国之号，不再只是流寇。
+        ai_chance: 95
+        effect:
+          - add_mandate: 40
+          - add_stability: 10
+          - add_political_power: 100
+          - set_flag: shun_emperor
+          - add_modifier: { political_power_monthly: 0.2 }
+          - trigger_event: { id: MING_e_1644_02, delay_days: 20 }
+      - id: delay
+        name: 暂缓称帝
+        tooltip: 仍以闯王号令部众。得民心稍多，然士绅观望。
+        ai_chance: 5
+        effect:
+          - add_stability: 4
+          - add_faction_influence: { gentry: 8 }
+          - set_flag: shun_hesitated
+          - trigger_event: { id: MING_e_1644_02, delay_days: 45 }
+
+  # ── 第二环：北京告急 ─────────────────────────────────
+
+  - id: MING_e_1644_02
+    title: 北京告急
+    scope: country
+    country: MING
+    chain: MING_chain_jiashen
+    historical_context: 大顺军东渡黄河，太原、宁武相继失守。京师震动，议南迁者与主战者争于廷。
+    trigger:
+      all:
+        - date: { after: 1644-01-15, before: 1644-05-31 }
+        - not_has_flag: capital_fallen
+        - not_has_flag: capital_moved
+    fire_once: true
+    options:
+      - id: summon_wu
+        name: 调吴三桂入卫
+        tooltip: 弃关外四城，撤宁远之兵勤王。山海关空虚，清军可长驱而入。
+        ai_chance: 40
+        effect:
+          - add_stability: 5
+          - add_treasury: -200000
+          - set_flag: wu_sangui_summoned
+          - spawn_army: { province: beijing, template: guanning_army, size: 4 }
+          - trigger_event: { id: MING_e_1644_03, delay_days: 15 }
+      - id: move_south
+        name: 南迁
+        tooltip: 弃京师，退保南京。天命与民心大损，然社稷可续。
+        trigger: { controls: nanjing }
+        ai_chance: 20
+        effect:
+          - add_stability: -15
+          - add_mandate: -20
+          - add_faction_influence: { donglin: -10, military: -15 }
+          - set_flag: capital_moved
+          - change_capital: nanjing
+          - trigger_event: { id: MING_e_1644_04s, delay_days: 30 }
+      - id: hold
+        name: 死守京师
+        tooltip: 天子守国门。城破则社稷倾覆，无退路。
+        ai_chance: 40
+        effect:
+          - add_stability: 10
+          - add_mandate: 5
+          - set_flag: beijing_last_stand
+          - trigger_event: { id: MING_e_1644_03, delay_days: 25 }
+
+  # ── 第三环：山海关 ───────────────────────────────────
+
+  - id: MING_e_1644_03
+    title: 山海关
+    scope: country
+    country: MING
+    chain: MING_chain_jiashen
+    historical_context: 吴三桂拥关宁之兵，前有李自成，后有多尔衮。开关则引狼入室，不开关则腹背受敌。
+    trigger:
+      all:
+        - date: { after: 1644-02-01, before: 1644-06-30 }
+        - any:
+            - has_flag: wu_sangui_summoned
+            - has_flag: beijing_last_stand
+        - not_has_flag: shanhaiguan_decided
+    fire_once: true
+    options:
+      - id: open_to_qing
+        name: 乞师于清
+        tooltip: 许以割地岁币，请清军入关共讨流寇。清军自此不再北返。
+        ai_chance: 55
+        effect:
+          - set_flag: wu_sangui_defected
+          - add_relation: { target: QING, value: 50 }
+          - add_stability: -10
+          - add_mandate: -15
+          - trigger_event: { id: QING_e_1644_04, delay_days: 10 }
+      - id: resist_both
+        name: 两面拒守
+        tooltip: 不降顺，不降清。孤军守关，粮尽则溃。
+        ai_chance: 25
+        effect:
+          - add_stability: 5
+          - add_mandate: 5
+          - spawn_army: { province: shanhaiguan, template: guanning_army, size: 3 }
+          - set_flag: shanhaiguan_alone
+          - trigger_event: { id: QING_e_1644_04, delay_days: 40 }
+      - id: submit_shun
+        name: 降于大顺
+        tooltip: 开关迎闯王，同拒清军。闯军入关，未必能守。
+        ai_chance: 20
+        effect:
+          - set_flag: wu_sangui_submitted_shun
+          - add_relation: { target: SHUN, value: 60 }
+          - add_stability: -5
+          - change_owner: { province: shanhaiguan, to: SHUN }
+          - trigger_event: { id: QING_e_1644_04, delay_days: 25 }
+
+  # ── 第四环：清军入关 ─────────────────────────────────
+
+  - id: QING_e_1644_04
+    title: 清军入关
+    scope: country
+    country: QING
+    chain: MING_chain_jiashen
+    historical_context: 多尔衮率八旗入山海关，以「为崇祯复仇」为名，实则定鼎中原之始。
+    trigger:
+      all:
+        - date: { after: 1644-03-01, before: 1644-12-31 }
+        - any:
+            - has_flag: wu_sangui_defected
+            - has_flag: beijing_fallen
+            - has_flag: shanhaiguan_alone
+            - has_flag: wu_sangui_submitted_shun
+    fire_once: true
+    options:
+      - id: revenge_banner
+        name: 为崇祯发丧，传檄复仇
+        tooltip: 以仁义之师自居，招降明臣。得汉地士绅之心，然八旗战力稍分。
+        ai_chance: 65
+        effect:
+          - add_mandate: 15
+          - add_stability: 8
+          - add_modifier: { tax_efficiency_pct: 8 }
+          - set_flag: qing_avenger
+          - add_faction_influence: { gentry: 10 }
+      - id: conquer_directly
+        name: 直接南下
+        tooltip: 不假辞色，以征服者自居。进军更快，抵抗更烈。
+        ai_chance: 35
+        effect:
+          - add_modifier: { army_attack_pct: 10 }
+          - add_stability: -5
+          - set_flag: qing_conqueror
+          - add_province_modifier: { province: beijing, modifier: resistance_high, days: 730 }
+
+  # ── 第四环（替代）：南迁续命 ─────────────────────────
+
+  - id: MING_e_1644_04s
+    title: 南京续命
+    scope: country
+    country: MING
+    chain: MING_chain_jiashen
+    historical_context: 崇祯若南迁，明廷可依江南财赋与长江天险，或如东晋、南宋故事。然诸藩、武将、党争仍在。
+    trigger:
+      all:
+        - has_flag: capital_moved
+        - not_has_flag: southern_ming_founded
+    fire_once: true
+    options:
+      - id: found_southern_court
+        name: 立南京，号令江南
+        tooltip: 以南京为行在，收江南财赋。正统犹在，然藩镇之势已成。
+        ai_chance: 90
+        effect:
+          - add_stability: 10
+          - add_mandate: 10
+          - add_treasury: 500000
+          - add_faction_influence: { military: 15, donglin: 10 }
+          - set_flag: southern_ming_founded
+          - add_country_modifier: { modifier: southern_court, days: 3650 }
+      - id: abdicate
+        name: 禅位于藩
+        tooltip: 另立宗室，自退为臣。可平众议，亦失权威。
+        ai_chance: 10
+        effect:
+          - add_stability: -10
+          - add_authority: -30
+          - set_flag: ming_abdicated
+
+decisions:
+
+  - id: ming_dec_edict_of_sin
+    country: MING
+    name: 罪己诏
+    desc: 下诏自责，以收人心。史称「减膳撤乐，下诏罪己」，然诏书既下，赋税未减。
+    visible: { stability: { lt: 40 } }
+    available:
+      all:
+        - has_flag: natural_disaster_recent
+        - not_has_flag: edict_this_year
+    cost: { treasury: 50000, political_power: 50 }
+    cooldown_days: 365
+    effect:
+      - add_stability: 8
+      - add_mandate: 5
+      - add_faction_influence: { gentry: 5, eunuch: -5 }
+      - set_flag: edict_this_year

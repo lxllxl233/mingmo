@@ -1,0 +1,373 @@
+# 大明国策树（节选，17 条，覆盖 4 条分支）
+# 字段规范见 prompts/02-content-spec.md 第 4 节。YAML 一律 snake_case。
+# 这份文件可直接作为 M3 的 fixture：pnpm validate 应全绿。
+
+tree: MING
+focuses:
+
+  # ══ 中枢 ══════════════════════════════════════════════
+
+  - id: ming_court_purge_eunuchs
+    country: MING
+    branch: 中枢
+    name: 钦定逆案
+    desc: 魏忠贤伏法，阉党二百六十余人论罪。朝野以为中兴可期，然党籍一开，攻讦无已。
+    x: 0
+    y: 0
+    cost_days: 70
+    prerequisites: []
+    mutually_exclusive: []
+    available:
+      date: { after: 1627-11-01 }
+    completion_effect:
+      - add_stability: 8
+      - add_corruption: -10
+      - add_political_power: 50
+      - add_faction_influence: { donglin: 12, eunuch: -40 }
+      - set_flag: eunuch_purged
+    ai_will_do:
+      base: 80
+    historical_context: 崇祯元年十一月，魏忠贤自缢，阉党二百六十余人被列入逆案。
+
+  - id: ming_court_donglin_ascend
+    country: MING
+    branch: 中枢
+    name: 东林辅政
+    desc: 起用东林旧人，清议入朝。士人归心，然门户之见亦随之而入。
+    x: 0
+    y: 1
+    cost_days: 90
+    prerequisites: [ming_court_purge_eunuchs]
+    mutually_exclusive: [ming_court_secret_police]
+    completion_effect:
+      - add_stability: 5
+      - add_modifier: { tax_efficiency_pct: 5, corruption_drift: -0.1 }
+      - add_faction_influence: { donglin: 25, gentry: 10, eunuch: -10 }
+      - set_flag: donglin_ascendant
+    ai_will_do:
+      base: 45
+      modifier:
+        - factor: 1.8
+          if: { faction_influence: { donglin: { gte: 30 } } }
+
+  - id: ming_court_secret_police
+    country: MING
+    branch: 中枢
+    name: 复用厂卫
+    desc: 锦衣卫与东厂复振，诏狱再开。耳目灵通，人心亦惧。
+    x: 0
+    y: 2
+    cost_days: 90
+    prerequisites: [ming_court_purge_eunuchs]
+    mutually_exclusive: [ming_court_donglin_ascend]
+    completion_effect:
+      - add_authority: 15
+      - add_stability: -6
+      - add_modifier: { unrest_monthly: -0.5 }
+      - add_faction_influence: { eunuch: 25, donglin: -20, gentry: -10 }
+      - set_flag: secret_police_active
+      - unlock_decision: ming_dec_arrest_officials
+    ai_will_do:
+      base: 40
+      modifier:
+        - factor: 2.0
+          if: { stability: { lt: 35 } }
+
+  - id: ming_court_cabinet_centralize
+    country: MING
+    branch: 中枢
+    name: 内阁集权
+    desc: 票拟归于一阁，六部承风。政令自此出于一人，亦系于一人。
+    x: 1
+    y: 3
+    cost_days: 120
+    prerequisites_any: [ming_court_donglin_ascend, ming_court_secret_police]
+    mutually_exclusive: []
+    completion_effect:
+      - add_authority: 20
+      - add_modifier: { political_power_monthly: 0.2 }
+      - add_stability: 4
+      - set_flag: cabinet_centralized
+    ai_will_do:
+      base: 50
+
+  # ══ 财政 ══════════════════════════════════════════════
+
+  - id: ming_fiscal_salt_audit
+    country: MING
+    branch: 财政
+    name: 整顿盐法
+    desc: 清理盐引积弊，裁革中官，盐课归户部。商民两便，然内廷失一利孔。
+    x: 2
+    y: 0
+    cost_days: 80
+    prerequisites: []
+    mutually_exclusive: []
+    completion_effect:
+      - add_treasury: 200000
+      - add_modifier: { tax_efficiency_pct: 6 }
+      - add_faction_influence: { merchant: 8, eunuch: -10 }
+    ai_will_do:
+      base: 70
+    historical_context: 明代盐法积弊已久，叶淇变法后商屯废而边储绌，盐课成为财政争夺焦点。
+
+  - id: ming_fiscal_land_survey
+    country: MING
+    branch: 财政
+    name: 清丈田亩
+    desc: 丈量天下田土，查隐田、均赋役。豪右大惧，小民稍苏。此政一开，无回头路。
+    x: 2
+    y: 1
+    cost_days: 150
+    prerequisites: [ming_fiscal_salt_audit]
+    mutually_exclusive: [ming_fiscal_extra_levy]
+    completion_effect:
+      - add_modifier: { tax_efficiency_pct: 18, corruption_drift: -0.2 }
+      - add_stability: -8
+      - add_faction_influence: { gentry: -25, farmer: 15 }
+      - add_province_modifier: { province: nanjing, modifier: land_survey_unrest, days: 365 }
+      - set_flag: land_surveyed
+    ai_will_do:
+      base: 35
+      modifier:
+        - factor: 2.2
+          if: { treasury: { lt: 0 } }
+        - factor: 0.4
+          if: { faction_influence: { gentry: { gte: 45 } } }
+
+  - id: ming_fiscal_extra_levy
+    country: MING
+    branch: 财政
+    name: 加派三饷
+    desc: 辽饷之外，再增剿饷、练饷。岁入骤增，而田间之怨亦骤增。
+    x: 3
+    y: 1
+    cost_days: 60
+    prerequisites: [ming_fiscal_salt_audit]
+    mutually_exclusive: [ming_fiscal_land_survey]
+    completion_effect:
+      - add_treasury: 800000
+      - add_modifier: { tax_efficiency_pct: 20, inflation_add: 8 }
+      - add_stability: -12
+      - add_faction_influence: { farmer: -25, gentry: 5 }
+      - set_flag: three_levies
+    ai_will_do:
+      base: 65
+      modifier:
+        - factor: 1.6
+          if: { at_war_with: QING }
+
+  - id: ming_fiscal_cut_clan_stipends
+    country: MING
+    branch: 财政
+    name: 裁撤宗禄
+    desc: 宗室繁衍，岁禄半天下。裁其禄米，改给折色。藩府哗然，然太仓可活。
+    x: 3
+    y: 2
+    cost_days: 130
+    prerequisites: [ming_fiscal_land_survey]
+    mutually_exclusive: []
+    completion_effect:
+      - add_modifier: { tax_efficiency_pct: 10, stability_monthly: 0.05 }
+      - add_stability: -5
+      - add_faction_influence: { royal_clan: -30 }
+      - set_flag: clan_stipends_cut
+    ai_will_do:
+      base: 30
+
+  - id: ming_fiscal_open_sea
+    country: MING
+    branch: 财政
+    name: 开海通商
+    desc: 许月港贩东西洋，复设市舶提举司。关税可补辽饷之缺，然海氛亦自此难制。
+    x: 4
+    y: 0
+    cost_days: 90
+    prerequisites: [ming_fiscal_salt_audit]
+    mutually_exclusive: []
+    available:
+      any:
+        - controls: yuegang
+        - has_flag: coastal_trade_lobby
+    completion_effect:
+      - add_treasury: 300000
+      - add_modifier: { trade_efficiency_pct: 15 }
+      - add_faction_influence: { merchant: 18, gentry: -10 }
+      - unlock_decision: ming_dec_open_port
+      - set_flag: sea_trade_open
+    ai_will_do:
+      base: 45
+      modifier:
+        - factor: 2.0
+          if: { treasury: { lt: 0 } }
+
+  # ══ 辽事 ══════════════════════════════════════════════
+
+  - id: ming_liao_ningjin_line
+    country: MING
+    branch: 辽事
+    name: 关宁锦防线
+    desc: 筑城宁远、锦州，以辽人守辽土，以辽土养辽人。放弃广宁以东，专守辽西走廊。
+    x: 2
+    y: 4
+    cost_days: 100
+    prerequisites: []
+    mutually_exclusive: []
+    completion_effect:
+      - add_modifier: { fort_defense_pct: 20 }
+      - add_treasury: -400000
+      - add_province_modifier: { province: ningyuan, modifier: fortress_network, days: 730 }
+      - add_province_modifier: { province: jinzhou, modifier: fortress_network, days: 730 }
+      - set_flag: ningjin_line
+    ai_will_do:
+      base: 70
+    historical_context: 孙承宗、袁崇焕主持辽西筑城，宁远、锦州互为犄角，是明末唯一有效的辽东战略。
+
+  - id: ming_liao_new_army
+    country: MING
+    branch: 辽事
+    name: 练新军
+    desc: 募辽人为兵，厚饷精选，以戚继光之法训练。兵精而饷重，户部不能支。
+    x: 3
+    y: 4
+    cost_days: 140
+    prerequisites: [ming_liao_ningjin_line]
+    mutually_exclusive: []
+    completion_effect:
+      - add_modifier: { discipline_pct: 15, morale_add: 5 }
+      - add_treasury: -600000
+      - unlock_unit: new_army_infantry
+      - add_faction_influence: { military: 15 }
+      - set_flag: new_army_trained
+    ai_will_do:
+      base: 55
+
+  - id: ming_liao_artillery_corps
+    country: MING
+    branch: 辽事
+    name: 火器局
+    desc: 仿制红夷炮，募葡人教习，立炮营于宁远。此物一成，坚城可守，坚城亦可破。
+    x: 4
+    y: 5
+    cost_days: 160
+    prerequisites: [ming_liao_new_army]
+    mutually_exclusive: []
+    available:
+      any:
+        - has_tech: mil_red_barbarian_cannon
+        - has_flag: captured_portuguese_guns
+        - has_flag: ningyuan_victory
+        - has_advisor: jesuit_missionary
+    completion_effect:
+      - unlock_unit: artillery_battery
+      - add_modifier: { siege_speed_pct: 15, artillery_attack_pct: 15 }
+      - add_treasury: -500000
+      - set_flag: ming_artillery_corps
+    ai_will_do:
+      base: 60
+
+  - id: ming_liao_negotiate
+    country: MING
+    branch: 辽事
+    name: 与清议和
+    desc: 遣使沈阳，许以岁币、互市，换东线十年之安。朝议汹汹，谓此秦桧之事。
+    x: 3
+    y: 6
+    cost_days: 90
+    prerequisites: [ming_liao_ningjin_line]
+    mutually_exclusive: [ming_liao_decisive_battle]
+    completion_effect:
+      - add_relation: { target: QING, value: 40 }
+      - add_modifier: { army_upkeep_pct: -15 }
+      - add_stability: -10
+      - add_mandate: -8
+      - add_faction_influence: { donglin: -15, military: -20 }
+      - set_flag: qing_truce_negotiated
+      - unlock_decision: ming_dec_pay_indemnity
+    ai_will_do:
+      base: 25
+      modifier:
+        - factor: 2.5
+          if: { any: [ { treasury: { lt: 0 } }, { stability: { lt: 30 } } ] }
+
+  - id: ming_liao_decisive_battle
+    country: MING
+    branch: 辽事
+    name: 决战辽东
+    desc: 调九边精锐，合天下之力，与清军一战定辽东。胜则辽事可了，败则九边尽空。
+    x: 4
+    y: 6
+    cost_days: 120
+    prerequisites: [ming_liao_ningjin_line]
+    mutually_exclusive: [ming_liao_negotiate]
+    completion_effect:
+      - add_modifier: { army_attack_pct: 15, morale_add: 8 }
+      - add_treasury: -800000
+      - add_stability: 6
+      - add_faction_influence: { military: 20, donglin: 5 }
+      - set_flag: liaodong_decisive
+      - unlock_decision: ming_dec_grand_campaign
+    ai_will_do:
+      base: 40
+      modifier:
+        - factor: 2.0
+          if: { army_size: { gte: 200000 } }
+
+  # ══ 民变 ══════════════════════════════════════════════
+
+  - id: ming_rebel_suppress
+    country: MING
+    branch: 民变
+    name: 全力进剿
+    desc: 调边军入陕，限期荡平。剿之愈急，降而复叛者愈众。
+    x: 6
+    y: 4
+    cost_days: 80
+    prerequisites: []
+    mutually_exclusive: [ming_rebel_pacify]
+    completion_effect:
+      - add_modifier: { army_attack_pct: 10 }
+      - add_treasury: -300000
+      - add_stability: -4
+      - add_faction_influence: { military: 12, farmer: -15 }
+      - set_flag: rebel_suppression
+    ai_will_do:
+      base: 55
+    historical_context: 崇祯朝主剿，陈奇瑜、洪承畴、孙传庭皆以剿闻名，然流寇剿而不灭。
+
+  - id: ming_rebel_pacify
+    country: MING
+    branch: 民变
+    name: 招抚流寇
+    desc: 许以官职、给以田土，散其众而归农。抚之则暂安，然饷从何出。
+    x: 6
+    y: 5
+    cost_days: 80
+    prerequisites: []
+    mutually_exclusive: [ming_rebel_suppress]
+    completion_effect:
+      - add_treasury: -400000
+      - add_stability: 6
+      - add_modifier: { unrest_monthly: -1.0 }
+      - add_faction_influence: { farmer: 12, military: -8 }
+      - set_flag: rebel_pacification
+    ai_will_do:
+      base: 40
+
+  - id: ming_rebel_use_rebels
+    country: MING
+    branch: 民变
+    name: 以寇制寇
+    desc: 招降一部，使击他部。此策最省饷，亦最易反噬。
+    x: 7
+    y: 4
+    cost_days: 100
+    prerequisites: [ming_rebel_suppress]
+    mutually_exclusive: []
+    completion_effect:
+      - add_stability: -6
+      - add_modifier: { army_attack_pct: 8 }
+      - spawn_army: { province: xian, template: surrendered_rebel, size: 3 }
+      - set_flag: rebel_auxiliaries
+    ai_will_do:
+      base: 30

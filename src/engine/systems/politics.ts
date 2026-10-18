@@ -1,0 +1,113 @@
+import type { ContentIndex } from '../../content/types';
+import { isQuarterStart } from '../core/clock';
+import type { GameState } from '../state/types';
+import { countryProvinceList } from './economy';
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+function normalizeInfluence(state: GameState): void {
+  for (const nation of Object.values(state.countries)) {
+    if (!nation.alive) continue;
+    const estates = Object.values(nation.estates);
+    const total = estates.reduce((sum, estate) => sum + estate.influence, 0);
+    if (total <= 0) continue;
+    for (const estate of estates) {
+      estate.influence = clamp((estate.influence / total) * 100, 0, 100);
+    }
+  }
+}
+
+function driftFactions(nation: GameState['countries'][string]): void {
+  for (const name of Object.keys(nation.factions)) {
+    const current = nation.factions[name] ?? 0;
+    nation.factions[name] = clamp(current + (10 - current) * 0.01, 0, 100);
+  }
+}
+
+function rebelTag(state: GameState, owner: string): string | null {
+  if (owner === 'MING' && state.countries['SHUN']?.alive) return 'SHUN';
+  if (owner === 'MING' && state.countries['XI']?.alive) return 'XI';
+  return null;
+}
+
+export function runMonthlyPolitics(state: GameState, content: ContentIndex): void {
+  if (isQuarterStart(state.day)) normalizeInfluence(state);
+
+  for (const nation of Object.values(state.countries)) {
+    if (!nation.alive) continue;
+    driftFactions(nation);
+
+    for (const estate of Object.values(nation.estates)) {
+      if (estate.loyalty < content.balance.politics.lowLoyaltyThreshold) {
+        nation.stability = clamp(nation.stability - 0.05, 0, 100);
+      }
+      if (estate.loyalty < content.balance.politics.rebelLoyaltyThreshold && estate.influence > 40) {
+        if (state.day % 60 === 0) {
+          state.log.push({
+            day: state.day,
+            category: 'estate',
+            country: nation.tag,
+            text: `${content.countries.get(nation.tag)?.name ?? nation.tag} 的 ${content.estateDefs.get(estate.key)?.name ?? estate.key} 忠诚仅 ${estate.loyalty.toFixed(0)}，有抗税之虞`,
+            severity: 'danger',
+          });
+        }
+      }
+    }
+
+    if (nation.stability < content.balance.politics.lowStabilityThreshold) {
+      nation.authority = clamp(nation.authority - 0.1, 0, 100);
+    }
+    nation.corruption = clamp(nation.corruption, 0, content.balance.politics.maxCorruption);
+
+    let rebellions = 0;
+    for (const entry of countryProvinceList(state, content, nation.tag)) {
+      if (rebellions >= 1) break;
+      const estate = nation.estates[entry.def.dominantEstate];
+      const law = estate ? content.taxLaws.get(estate.taxLaw) : undefined;
+      const taxPressure = estate && law
+        ? Math.max(0, law.rate - estate.customaryRate) * content.balance.economy.unrestFromTax
+        : 0;
+      const stabilityPressure = (100 - nation.stability) * 0.02;
+      const devastationPressure = entry.state.devastation * 0.12;
+      const delta = taxPressure + stabilityPressure + devastationPressure - content.balance.economy.unrestDecay;
+      entry.state.unrest = clamp(entry.state.unrest + delta, 0, 100);
+      const growth = nation.flags['food_shortage'] ? -0.004 : 0.0006;
+      entry.state.population = Math.max(100, Math.round(entry.state.population * (1 + growth)));
+      if (entry.state.unrest > content.balance.economy.rebelUnrestThreshold) {
+        if (state.day % 90 === 0) {
+          state.log.push({
+            day: state.day,
+            category: 'politics',
+            country: nation.tag,
+            text: `${content.provinces.get(entry.id)?.name ?? entry.id} 民怨 ${entry.state.unrest.toFixed(0)}，随时可能起事`,
+            severity: 'danger',
+          });
+        }
+      }
+      const canCollapse = nation.tag === 'MING'
+        ? nation.stability < 45 || nation.arrears > 1_000_000
+        : nation.stability < 25;
+      if (entry.state.owner === nation.tag
+        && entry.state.unrest > 75
+        && canCollapse) {
+        const rebel = rebelTag(state, nation.tag);
+        if (rebel) {
+          entry.state.owner = rebel;
+          entry.state.controller = rebel;
+          if (!entry.state.cores.includes(rebel)) entry.state.cores.push(rebel);
+          entry.state.unrest = Math.max(20, entry.state.unrest - 30);
+          rebellions += 1;
+          state.log.push({
+            day: state.day,
+            category: 'politics',
+            country: nation.tag,
+            text: `${content.provinces.get(entry.id)?.name ?? entry.id} 民变，归附 ${content.countries.get(rebel)?.name ?? rebel}`,
+            severity: 'danger',
+          });
+        }
+      }
+    }
+  }
+}

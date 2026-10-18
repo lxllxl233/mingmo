@@ -1,0 +1,363 @@
+# 30 个地区：地图生成与 AI 战区划分的中间层。
+# 经纬度为近似中心；rx/ry 为省锚点生成半径（度）。
+regions:
+  - id: reg_beizhili
+    name: 北直隶
+    group: 明·北五省
+    lon: 115.5
+    lat: 39.4
+    rx: 3.4
+    ry: 2.1
+    landmass: mainland
+    population_weight: 8
+    development: 58
+    dominant_estate: peasants
+    terrain: [plains, plains, hills, urban]
+  - id: reg_shandong
+    name: 山东
+    group: 明·北五省
+    lon: 118.0
+    lat: 36.3
+    rx: 3.0
+    ry: 1.8
+    landmass: mainland
+    population_weight: 10
+    development: 54
+    dominant_estate: peasants
+    terrain: [plains, plains, hills]
+  - id: reg_shanxi
+    name: 山西
+    group: 明·北五省
+    lon: 112.4
+    lat: 37.3
+    rx: 2.6
+    ry: 2.2
+    landmass: mainland
+    population_weight: 7
+    development: 48
+    dominant_estate: peasants
+    terrain: [hills, mountains, plains]
+  - id: reg_henan
+    name: 河南
+    group: 明·北五省
+    lon: 113.6
+    lat: 34.0
+    rx: 2.8
+    ry: 2.0
+    landmass: mainland
+    population_weight: 12
+    development: 52
+    dominant_estate: peasants
+    terrain: [plains, plains, hills]
+  - id: reg_shaanxi
+    name: 陕西
+    group: 明·北五省
+    lon: 108.6
+    lat: 35.0
+    rx: 3.2
+    ry: 3.0
+    landmass: mainland
+    population_weight: 8
+    development: 42
+    dominant_estate: peasants
+    terrain: [hills, mountains, plains, desert]
+  - id: reg_hexi
+    name: 河西
+    group: 明·边镇
+    lon: 100.0
+    lat: 38.6
+    rx: 5.0
+    ry: 2.2
+    landmass: mainland
+    population_weight: 2
+    development: 30
+    dominant_estate: soldiers
+    terrain: [desert, desert, steppe, mountains]
+  - id: reg_xuanda
+    name: 宣大
+    group: 明·边镇
+    lon: 114.0
+    lat: 40.8
+    rx: 1.8
+    ry: 1.0
+    landmass: mainland
+    population_weight: 1
+    development: 32
+    dominant_estate: soldiers
+    terrain: [mountains, hills, steppe]
+  - id: reg_liaodong
+    name: 辽东
+    group: 明·边镇
+    lon: 122.6
+    lat: 41.5
+    rx: 2.9
+    ry: 2.1
+    landmass: mainland
+    population_weight: 4
+    development: 38
+    dominant_estate: soldiers
+    terrain: [hills, plains, wetland, mountains]
+  - id: reg_nanzhili
+    name: 南直隶
+    group: 明·南七省
+    lon: 118.6
+    lat: 32.0
+    rx: 3.8
+    ry: 2.2
+    landmass: mainland
+    population_weight: 18
+    development: 68
+    dominant_estate: gentry
+    terrain: [plains, wetland, hills, urban]
+  - id: reg_zhejiang
+    name: 浙江
+    group: 明·南七省
+    lon: 120.3
+    lat: 29.4
+    rx: 2.1
+    ry: 1.8
+    landmass: mainland
+    population_weight: 10
+    development: 66
+    dominant_estate: gentry
+    terrain: [hills, plains, wetland]
+  - id: reg_jiangxi
+    name: 江西
+    group: 明·南七省
+    lon: 115.5
+    lat: 27.5
+    rx: 2.6
+    ry: 2.5
+    landmass: mainland
+    population_weight: 9
+    development: 55
+    dominant_estate: peasants
+    terrain: [hills, plains, mountains]
+  - id: reg_huguang
+    name: 湖广
+    group: 明·南七省
+    lon: 112.5
+    lat: 29.5
+    rx: 4.0
+    ry: 3.4
+    landmass: mainland
+    population_weight: 12
+    development: 50
+    dominant_estate: peasants
+    terrain: [plains, hills, wetland, mountains]
+  - id: reg_sichuan
+    name: 四川
+    group: 明·南七省
+    lon: 104.6
+    lat: 30.4
+    rx: 4.4
+    ry: 3.0
+    landmass: mainland
+    population_weight: 8
+    development: 46
+    dominant_estate: peasants
+    terrain: [hills, mountains, plains, jungle]
+  - id: reg_fujian
+    name: 福建
+    group: 明·南七省
+    lon: 118.3
+    lat: 26.0
+    rx: 1.8
+    ry: 2.1
+    landmass: mainland
+    population_weight: 5
+    development: 52
+    dominant_estate: merchants
+    terrain: [hills, mountains, coastal]
+  - id: reg_guangdong
+    name: 广东
+    group: 明·南七省
+    lon: 113.5
+    lat: 23.5
+    rx: 3.0
+    ry: 2.2
+    landmass: mainland
+    population_weight: 6
+    development: 54
+    dominant_estate: merchants
+    terrain: [hills, plains, jungle]
+  - id: reg_guangxi
+    name: 广西
+    group: 明·西南
+    lon: 109.5
+    lat: 23.4
+    rx: 2.8
+    ry: 2.0
+    landmass: mainland
+    population_weight: 2.5
+    development: 34
+    dominant_estate: peasants
+    terrain: [mountains, jungle, hills]
+  - id: reg_yunnan
+    name: 云南
+    group: 明·西南
+    lon: 101.6
+    lat: 25.0
+    rx: 3.8
+    ry: 2.8
+    landmass: mainland
+    population_weight: 2
+    development: 32
+    dominant_estate: nobles
+    terrain: [mountains, hills, jungle]
+  - id: reg_guizhou
+    name: 贵州
+    group: 明·西南
+    lon: 106.6
+    lat: 26.6
+    rx: 2.2
+    ry: 1.8
+    landmass: mainland
+    population_weight: 1.5
+    development: 28
+    dominant_estate: nobles
+    terrain: [mountains, hills, jungle]
+  - id: reg_mengnan
+    name: 漠南蒙古
+    group: 塞北
+    lon: 112.5
+    lat: 43.0
+    rx: 6.2
+    ry: 3.0
+    landmass: mainland
+    population_weight: 2.5
+    development: 18
+    dominant_estate: nobles
+    terrain: [steppe, steppe, desert, hills]
+  - id: reg_mobei
+    name: 漠北喀尔喀
+    group: 塞北
+    lon: 105.0
+    lat: 47.6
+    rx: 7.0
+    ry: 3.0
+    landmass: mainland
+    population_weight: 1.2
+    development: 12
+    dominant_estate: nobles
+    terrain: [steppe, steppe, desert]
+  - id: reg_weilate
+    name: 卫拉特与青海
+    group: 塞北
+    lon: 88.0
+    lat: 39.5
+    rx: 10.0
+    ry: 7.0
+    landmass: mainland
+    population_weight: 1.5
+    development: 12
+    dominant_estate: nobles
+    terrain: [desert, steppe, mountains]
+  - id: reg_nvzhen
+    name: 野人女真
+    group: 塞北
+    lon: 127.0
+    lat: 47.0
+    rx: 5.0
+    ry: 4.0
+    landmass: mainland
+    population_weight: 2.5
+    development: 14
+    dominant_estate: nobles
+    terrain: [wetland, hills, mountains]
+  - id: reg_xizang
+    name: 西藏
+    group: 高原
+    lon: 88.0
+    lat: 31.0
+    rx: 8.0
+    ry: 5.0
+    landmass: mainland
+    population_weight: 1.2
+    development: 10
+    dominant_estate: clergy
+    terrain: [mountains, mountains, steppe]
+  - id: reg_joseon
+    name: 朝鲜
+    group: 属国
+    lon: 127.2
+    lat: 37.4
+    rx: 1.9
+    ry: 3.0
+    landmass: mainland
+    population_weight: 4
+    development: 40
+    dominant_estate: nobles
+    terrain: [mountains, hills, plains]
+  - id: reg_annam
+    name: 安南
+    group: 属国
+    lon: 105.6
+    lat: 19.0
+    rx: 2.4
+    ry: 3.8
+    landmass: mainland
+    population_weight: 4
+    development: 34
+    dominant_estate: peasants
+    terrain: [jungle, hills, plains]
+  - id: reg_burma
+    name: 缅甸
+    group: 属国
+    lon: 96.0
+    lat: 21.0
+    rx: 3.0
+    ry: 4.0
+    landmass: mainland
+    population_weight: 2
+    development: 24
+    dominant_estate: nobles
+    terrain: [jungle, hills, mountains]
+  - id: reg_japan_west
+    name: 日本西国
+    group: 日本
+    lon: 133.0
+    lat: 34.4
+    rx: 2.8
+    ry: 3.0
+    landmass: japan
+    population_weight: 6
+    development: 45
+    dominant_estate: nobles
+    terrain: [hills, mountains, coastal]
+  - id: reg_japan_east
+    name: 日本东国
+    group: 日本
+    lon: 139.0
+    lat: 36.4
+    rx: 3.0
+    ry: 3.4
+    landmass: japan
+    population_weight: 7
+    development: 42
+    dominant_estate: nobles
+    terrain: [hills, plains, mountains]
+  - id: reg_taiwan
+    name: 台湾与澎湖
+    group: 海岛
+    lon: 120.8
+    lat: 23.5
+    rx: 1.4
+    ry: 1.4
+    landmass: taiwan
+    population_weight: 0.3
+    development: 16
+    dominant_estate: merchants
+    terrain: [hills, jungle, coastal]
+  - id: reg_russia_far
+    name: 俄国远东
+    group: 极东
+    lon: 126.0
+    lat: 52.0
+    rx: 6.0
+    ry: 3.0
+    landmass: mainland
+    population_weight: 0.1
+    development: 8
+    dominant_estate: nobles
+    terrain: [wetland, mountains, steppe]

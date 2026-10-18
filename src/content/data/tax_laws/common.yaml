@@ -1,0 +1,412 @@
+tax_laws:
+  # ── 农民 ──────────────────────────────────────────────
+  - id: tax_peasants_single_whip
+    estate: peasants
+    name: 一条鞭
+    desc: 计亩征银，赋役合一。简便易行，然银贵钱贱则民困。
+    rate: 0.04
+    efficiency: 0.75
+    evasion_base: 0.15
+    silver_share: 0.9
+    loyalty_drift: 0
+    influence_shift: 0
+    effects:
+      - add_modifier: { tax_efficiency_pct: 5 }
+    ai_weight: 60
+  - id: tax_peasants_head_tax
+    estate: peasants
+    name: 丁口税
+    desc: 按人丁征银，不问田亩。贫者无田而有丁，苦之；富者匿丁以避。
+    rate: 0.03
+    efficiency: 0.6
+    evasion_base: 0.25
+    silver_share: 0.4
+    loyalty_drift: -0.5
+    influence_shift: 0
+    effects:
+      - add_modifier: { manpower_add: 3000 }
+    ai_weight: 30
+  - id: tax_peasants_light
+    estate: peasants
+    name: 轻徭薄赋
+    desc: 减赋以苏民困。田里稍安，而九边之饷无从出。
+    rate: 0.02
+    efficiency: 0.7
+    evasion_base: 0.1
+    silver_share: 0.5
+    loyalty_drift: 1.0
+    influence_shift: 0
+    effects:
+      - add_modifier: { stability_monthly: 0.1 }
+    ai_weight: 25
+  - id: tax_peasants_surtax
+    estate: peasants
+    name: 三饷加派
+    desc: 辽饷之外，再增剿饷、练饷。岁入骤增，而田间之怨亦骤增。
+    rate: 0.08
+    efficiency: 0.55
+    evasion_base: 0.3
+    silver_share: 0.9
+    loyalty_drift: -2.5
+    influence_shift: -5
+    effects:
+      - add_modifier: { inflation_add: 8 }
+      - add_modifier: { unrest_monthly: 1.0 }
+    ai_weight: 45
+  - id: tax_peasants_military_colony
+    estate: peasants
+    name: 军屯
+    desc: 拨田与军，且耕且守。省转运之费，然屯田多为军官所侵。
+    rate: 0.05
+    efficiency: 0.5
+    evasion_base: 0.2
+    silver_share: 0.1
+    loyalty_drift: -0.3
+    influence_shift: 0
+    effects:
+      - add_modifier: { manpower_add: 8000, food_output_pct: 5 }
+    ai_weight: 35
+
+  # ── 士绅 ──────────────────────────────────────────────
+  - id: tax_gentry_exemption
+    estate: gentry
+    name: 优免
+    desc: 有功名者免差徭，田亩多诡寄其名下。国用不足，而绅衿不可犯。
+    rate: 0.005
+    efficiency: 0.9
+    evasion_base: 0.05
+    silver_share: 0.8
+    loyalty_drift: 0.4
+    influence_shift: 0
+    effects:
+      - add_modifier: { stability_monthly: 0.05, tax_efficiency_pct: -6 }
+    ai_weight: 40
+  - id: tax_gentry_land_survey
+    estate: gentry
+    name: 清丈限田
+    desc: 丈量隐田，按实亩起科。豪右大恨，而小民稍苏。
+    rate: 0.05
+    efficiency: 0.7
+    evasion_base: 0.2
+    silver_share: 0.9
+    loyalty_drift: -1.2
+    influence_shift: -8
+    incidence: { estate: peasants, factor: 0.35 }
+    require:
+      all:
+        - has_tech: adm_assessment_law
+        - authority: { gte: 55 }
+    ai_weight: 25
+  - id: tax_gentry_equal_service
+    estate: gentry
+    name: 绅衿一体当差
+    desc: 绅衿与民一体当差纳粮。前朝所无，江南大哗。
+    rate: 0.04
+    efficiency: 0.8
+    evasion_base: 0.15
+    silver_share: 0.9
+    loyalty_drift: -2.0
+    influence_shift: -12
+    incidence: { estate: peasants, factor: 0.15 }
+    require:
+      all:
+        - authority: { gte: 60 }
+    ai_weight: 15
+
+  # ── 商人 ──────────────────────────────────────────────
+  - id: tax_merchants_inland_customs
+    estate: merchants
+    name: 关津抽分
+    desc: 设关立卡，货过抽分。商旅裹足，私贩绕道。
+    rate: 0.06
+    efficiency: 0.65
+    evasion_base: 0.25
+    silver_share: 1.0
+    loyalty_drift: -0.8
+    influence_shift: 0
+    effects:
+      - add_modifier: { trade_efficiency_pct: -10 }
+    ai_weight: 45
+  - id: tax_merchants_maritime
+    estate: merchants
+    name: 开海·市舶
+    desc: 许贩东西洋，设市舶抽税。海商踊跃，然海防自此多事。
+    rate: 0.08
+    efficiency: 0.7
+    evasion_base: 0.15
+    silver_share: 1.0
+    loyalty_drift: 0.5
+    influence_shift: 5
+    require:
+      any:
+        - controls: quanzhou
+        - controls: guangzhou
+        - has_flag: sea_trade_open
+    effects:
+      - add_modifier: { trade_efficiency_pct: 15 }
+    ai_weight: 55
+  - id: tax_merchants_sea_ban
+    estate: merchants
+    name: 海禁
+    desc: 片板不许下海。关税归零，私贩与倭寇并起。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: -0.5
+    influence_shift: -10
+    effects:
+      - add_modifier: { trade_efficiency_pct: -20 }
+      - add_province_modifier: { province: quanzhou, modifier: smuggling, days: 3650 }
+    ai_weight: 10
+  - id: tax_merchants_salt
+    estate: merchants
+    name: 盐引·纲法
+    desc: 盐归纲商，世袭专卖。课额有保证，而私盐愈禁愈多。
+    rate: 0.1
+    efficiency: 0.85
+    evasion_base: 0.1
+    silver_share: 1.0
+    loyalty_drift: -1.2
+    influence_shift: 8
+    effects:
+      - add_modifier: { tax_efficiency_pct: 4 }
+    ai_weight: 50
+
+  # ── 宗室 ──────────────────────────────────────────────
+  - id: tax_dynasty_stipend
+    estate: dynasty
+    name: 宗禄
+    desc: 宗室岁支禄米，世袭罔替。藩府富可敌国，太仓为之一空。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: 0.8
+    influence_shift: 5
+    effects:
+      - add_modifier: { tax_efficiency_pct: -8 }
+    ai_weight: 20
+  - id: tax_dynasty_reduced
+    estate: dynasty
+    name: 宗禄折色减半
+    desc: 禄米改折银，且减其半。宗藩哗然，然国用稍纾。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: -1.5
+    influence_shift: -10
+    effects:
+      - add_modifier: { tax_efficiency_pct: 4 }
+    ai_weight: 30
+  - id: tax_dynasty_manor
+    estate: dynasty
+    name: 宗藩庄田起科
+    desc: 藩府庄田按亩纳粮。宗室大恨，而田赋稍增。
+    rate: 0.02
+    efficiency: 0.55
+    evasion_base: 0.3
+    silver_share: 0.7
+    loyalty_drift: -1.0
+    influence_shift: -6
+    incidence: { estate: peasants, factor: 0.2 }
+    ai_weight: 20
+
+  # ── 贵族 ──────────────────────────────────────────────
+  - id: tax_nobles_full_stipend
+    estate: nobles
+    name: 全禄
+    desc: 勋贵禄米如故，岁支数百万石。太仓为之一空。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: 0.8
+    influence_shift: 5
+    effects:
+      - add_modifier: { tax_efficiency_pct: -10 }
+    ai_weight: 20
+  - id: tax_nobles_reduced_stipend
+    estate: nobles
+    name: 折色减禄
+    desc: 禄米改折银，且减其半。勋贵哗然，然国用稍纾。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: -1.5
+    influence_shift: -10
+    effects:
+      - add_modifier: { tax_efficiency_pct: 6 }
+    ai_weight: 30
+  - id: tax_nobles_manor
+    estate: nobles
+    name: 庄田起科
+    desc: 勋贵庄田亦按亩纳粮。豪强隐匿，胥吏不敢问。
+    rate: 0.03
+    efficiency: 0.6
+    evasion_base: 0.3
+    silver_share: 0.7
+    loyalty_drift: -1.2
+    influence_shift: -6
+    incidence: { estate: peasants, factor: 0.2 }
+    ai_weight: 25
+
+  # ── 军人 ──────────────────────────────────────────────
+  - id: tax_soldiers_weisuo
+    estate: soldiers
+    name: 卫所屯田
+    desc: 军户世袭，屯田自给。兵额册上百万，实存不足半。
+    rate: 0.02
+    efficiency: 0.4
+    evasion_base: 0.35
+    silver_share: 0.2
+    loyalty_drift: -0.5
+    influence_shift: -5
+    effects:
+      - add_modifier: { army_upkeep_pct: -40, discipline_pct: -10 }
+    ai_weight: 30
+  - id: tax_soldiers_mercenary
+    estate: soldiers
+    name: 募兵厚饷
+    desc: 以银募兵，厚给月饷。兵精而费重，欠饷则哗。
+    rate: 0.06
+    efficiency: 0.8
+    evasion_base: 0.1
+    silver_share: 0.95
+    loyalty_drift: 0.5
+    influence_shift: 5
+    effects:
+      - add_modifier: { discipline_pct: 10, army_upkeep_pct: 30 }
+    ai_weight: 55
+  - id: tax_soldiers_retinue
+    estate: soldiers
+    name: 家丁私兵
+    desc: 将领自募家丁，饷出于私囊。兵为将有，朝廷不能制。
+    rate: 0.03
+    efficiency: 0.7
+    evasion_base: 0.2
+    silver_share: 0.9
+    loyalty_drift: 0.8
+    influence_shift: 12
+    effects:
+      - add_modifier: { discipline_pct: 8, army_attack_pct: 5 }
+    ai_weight: 40
+
+  # ── 官僚 ──────────────────────────────────────────────
+  - id: tax_officials_thin_salary
+    estate: officials
+    name: 薄俸
+    desc: 洪武祖制，俸薄不足以养廉。胥吏因缘为奸，火耗羡余尽入私囊。
+    rate: 0.01
+    efficiency: 0.6
+    evasion_base: 0.3
+    silver_share: 0.8
+    loyalty_drift: -0.8
+    influence_shift: 0
+    effects:
+      - add_modifier: { corruption_add: 0.3 }
+    ai_weight: 30
+  - id: tax_officials_honesty_silver
+    estate: officials
+    name: 养廉银
+    desc: 加给养廉，以俸养廉。吏治稍清，而库帑益绌。
+    rate: 0.02
+    efficiency: 0.9
+    evasion_base: 0.1
+    silver_share: 0.9
+    loyalty_drift: 1.0
+    influence_shift: 5
+    effects:
+      - add_modifier: { corruption_add: -0.25, tax_efficiency_pct: 6 }
+    ai_weight: 45
+  - id: tax_officials_meltage
+    estate: officials
+    name: 火耗归公
+    desc: 州县火耗，尽数归公，另给养廉。官吏失其利，怨言四起。
+    rate: 0.03
+    efficiency: 0.8
+    evasion_base: 0.15
+    silver_share: 1.0
+    loyalty_drift: -0.5
+    influence_shift: -5
+    effects:
+      - add_modifier: { tax_efficiency_pct: 5 }
+    ai_weight: 35
+
+  # ── 宗教 ──────────────────────────────────────────────
+  - id: tax_clergy_exempt
+    estate: clergy
+    name: 寺产免税
+    desc: 寺观田产不纳粮、不当差。香火日盛，而国课日削。
+    rate: 0
+    efficiency: 0
+    evasion_base: 0
+    silver_share: 0
+    loyalty_drift: 1.0
+    influence_shift: 5
+    effects:
+      - add_modifier: { stability_monthly: 0.05, tax_efficiency_pct: -3 }
+    ai_weight: 25
+  - id: tax_clergy_license
+    estate: clergy
+    name: 度牒收费
+    desc: 出家给牒，纳银乃许。僧道日多，度牒之费亦成利薮。
+    rate: 0.02
+    efficiency: 0.7
+    evasion_base: 0.2
+    silver_share: 1.0
+    loyalty_drift: -0.5
+    influence_shift: 0
+    ai_weight: 20
+  - id: tax_clergy_estate
+    estate: clergy
+    name: 寺产起科
+    desc: 寺观田产按亩纳粮。僧道大哗，而国课稍增。
+    rate: 0.03
+    efficiency: 0.5
+    evasion_base: 0.3
+    silver_share: 0.6
+    loyalty_drift: -1.5
+    influence_shift: -8
+    ai_weight: 10
+
+  # ── 土著（VOC 专属） ─────────────────────────────────
+  - id: tax_natives_tribute
+    estate: custom:natives
+    name: 土贡
+    desc: 以贡赋代田税，头人代收，公司但取其成。
+    rate: 0.03
+    efficiency: 0.5
+    evasion_base: 0.25
+    silver_share: 0.6
+    loyalty_drift: -0.5
+    influence_shift: 0
+    ai_weight: 40
+  - id: tax_natives_corvee
+    estate: custom:natives
+    name: 徭役征发
+    desc: 征土著修城、运粮、筑路。不见银，而见尸。
+    rate: 0.01
+    efficiency: 0.8
+    evasion_base: 0.1
+    silver_share: 0.1
+    loyalty_drift: -2.0
+    influence_shift: -5
+    effects:
+      - add_modifier: { manpower_add: 2000 }
+    ai_weight: 20
+  - id: tax_natives_trade
+    estate: custom:natives
+    name: 土著贸易专营
+    desc: 公司垄断香料与蔗糖，土著只许按官价出售。
+    rate: 0.05
+    efficiency: 0.7
+    evasion_base: 0.15
+    silver_share: 1.0
+    loyalty_drift: -1.2
+    influence_shift: 5
+    effects:
+      - add_modifier: { trade_efficiency_pct: 8 }
+    ai_weight: 50

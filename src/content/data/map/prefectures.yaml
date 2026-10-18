@@ -1,0 +1,222 @@
+# 160 府。省由 scripts/gen-map.ts 按「每府 3 省」生成。
+# 有 seat/lon/lat 的府使用真实锚点；其余由地区椭圆内确定性布点。
+prefectures:
+  # 北直隶 6
+  - { id: pref_beijing, name: 北京, region: reg_beizhili, seat: beijing, lon: 116.40, lat: 39.90 }
+  - { id: pref_baoding, name: 保定, region: reg_beizhili, lon: 115.48, lat: 38.87 }
+  - { id: pref_hejian, name: 河间, region: reg_beizhili }
+  - { id: pref_zhending, name: 真定, region: reg_beizhili, lon: 114.57, lat: 38.14 }
+  - { id: pref_yongping, name: 永平, region: reg_beizhili, lon: 118.90, lat: 39.90 }
+  - { id: pref_tianjin, name: 天津, region: reg_beizhili, seat: tianjin, lon: 117.20, lat: 39.13 }
+
+  # 山东 6
+  - { id: pref_jinan, name: 济南, region: reg_shandong, seat: jinan, lon: 117.00, lat: 36.67 }
+  - { id: pref_yanzhou, name: 兖州, region: reg_shandong, lon: 116.78, lat: 35.55 }
+  - { id: pref_qingzhou, name: 青州, region: reg_shandong, lon: 118.48, lat: 36.70 }
+  - { id: pref_dengzhou, name: 登州, region: reg_shandong, lon: 120.75, lat: 37.80 }
+  - { id: pref_linqing, name: 临清, region: reg_shandong, lon: 115.70, lat: 36.84 }
+  - { id: pref_jining, name: 济宁, region: reg_shandong, lon: 116.59, lat: 35.41 }
+
+  # 山西 5
+  - { id: pref_taiyuan, name: 太原, region: reg_shanxi, seat: taiyuan, lon: 112.55, lat: 37.87 }
+  - { id: pref_pingyang, name: 平阳, region: reg_shanxi, lon: 111.52, lat: 36.08 }
+  - { id: pref_datong, name: 大同, region: reg_shanxi, seat: datong, lon: 113.30, lat: 40.08 }
+  - { id: pref_luan, name: 潞安, region: reg_shanxi, lon: 113.12, lat: 36.20 }
+  - { id: pref_fenzhou, name: 汾州, region: reg_shanxi, lon: 111.78, lat: 37.27 }
+
+  # 河南 5
+  - { id: pref_kaifeng, name: 开封, region: reg_henan, seat: kaifeng, lon: 114.30, lat: 34.80 }
+  - { id: pref_guide, name: 归德, region: reg_henan, lon: 115.65, lat: 34.42 }
+  - { id: pref_zhangde, name: 彰德, region: reg_henan, lon: 114.35, lat: 36.10 }
+  - { id: pref_weihui, name: 卫辉, region: reg_henan, lon: 114.06, lat: 35.30 }
+  - { id: pref_nanyang, name: 南阳, region: reg_henan, lon: 112.53, lat: 33.00 }
+
+  # 陕西 6
+  - { id: pref_xian, name: 西安, region: reg_shaanxi, seat: xian, lon: 108.94, lat: 34.34 }
+  - { id: pref_yanan, name: 延安, region: reg_shaanxi, lon: 109.49, lat: 36.60 }
+  - { id: pref_qingyang, name: 庆阳, region: reg_shaanxi, lon: 107.64, lat: 36.00 }
+  - { id: pref_pingliang, name: 平凉, region: reg_shaanxi, lon: 106.67, lat: 35.54 }
+  - { id: pref_hanzhong, name: 汉中, region: reg_shaanxi, lon: 107.03, lat: 33.07 }
+  - { id: pref_yulin, name: 榆林, region: reg_shaanxi, lon: 109.74, lat: 38.29 }
+
+  # 河西 5
+  - { id: pref_ganzhou_hexi, name: 甘州, region: reg_hexi, lon: 100.45, lat: 38.93 }
+  - { id: pref_suzhou_hexi, name: 肃州, region: reg_hexi, lon: 98.49, lat: 39.73 }
+  - { id: pref_liangzhou, name: 凉州, region: reg_hexi, lon: 102.64, lat: 37.93 }
+  - { id: pref_ningxia, name: 宁夏, region: reg_hexi, lon: 106.23, lat: 38.49 }
+  - { id: pref_xining, name: 西宁, region: reg_hexi, lon: 101.78, lat: 36.62 }
+
+  # 宣大 5
+  - { id: pref_zhangjiakou, name: 张家口, region: reg_xuanda, lon: 114.88, lat: 40.82 }
+  - { id: pref_dushikou, name: 独石口, region: reg_xuanda, lon: 115.72, lat: 41.10 }
+  - { id: pref_shahukou, name: 杀虎口, region: reg_xuanda, lon: 112.32, lat: 40.19 }
+  - { id: pref_pianguan, name: 偏关, region: reg_xuanda, lon: 111.50, lat: 39.44 }
+  - { id: pref_yanmen, name: 雁门, region: reg_xuanda, lon: 113.00, lat: 39.20 }
+
+  # 辽东 7
+  - { id: pref_shenyang, name: 沈阳, region: reg_liaodong, seat: shenyang, lon: 123.43, lat: 41.80 }
+  - { id: pref_liaoyang, name: 辽阳, region: reg_liaodong, seat: liaoyang, lon: 123.17, lat: 41.27 }
+  - { id: pref_guangning, name: 广宁, region: reg_liaodong, seat: guangning, lon: 121.80, lat: 41.60 }
+  - { id: pref_jinzhou, name: 锦州, region: reg_liaodong, seat: jinzhou, lon: 121.13, lat: 41.10 }
+  - { id: pref_ningyuan, name: 宁远, region: reg_liaodong, seat: ningyuan, lon: 120.72, lat: 40.62 }
+  - { id: pref_shanhaiguan, name: 山海关, region: reg_liaodong, seat: shanhaiguan, lon: 119.75, lat: 40.01 }
+  - { id: pref_kaizhou, name: 开原, region: reg_liaodong, lon: 124.04, lat: 42.55 }
+
+  # 南直隶 10
+  - { id: pref_nanjing, name: 南京, region: reg_nanzhili, seat: nanjing, lon: 118.80, lat: 32.06 }
+  - { id: pref_suzhou, name: 苏州, region: reg_nanzhili, seat: suzhou, lon: 120.58, lat: 31.30 }
+  - { id: pref_songjiang, name: 松江, region: reg_nanzhili, lon: 121.23, lat: 31.00 }
+  - { id: pref_changzhou, name: 常州, region: reg_nanzhili, lon: 119.95, lat: 31.79 }
+  - { id: pref_zhenjiang, name: 镇江, region: reg_nanzhili, lon: 119.45, lat: 32.20 }
+  - { id: pref_yangzhou, name: 扬州, region: reg_nanzhili, seat: yangzhou, lon: 119.42, lat: 32.39 }
+  - { id: pref_huaian, name: 淮安, region: reg_nanzhili, lon: 119.02, lat: 33.50 }
+  - { id: pref_xuzhou, name: 徐州, region: reg_nanzhili, lon: 117.18, lat: 34.26 }
+  - { id: pref_anqing, name: 安庆, region: reg_nanzhili, lon: 117.05, lat: 30.53 }
+  - { id: pref_huizhou, name: 徽州, region: reg_nanzhili, lon: 118.34, lat: 29.87 }
+
+  # 浙江 7
+  - { id: pref_hangzhou, name: 杭州, region: reg_zhejiang, seat: hangzhou, lon: 120.15, lat: 30.27 }
+  - { id: pref_jiaxing, name: 嘉兴, region: reg_zhejiang, lon: 120.75, lat: 30.75 }
+  - { id: pref_huzhou, name: 湖州, region: reg_zhejiang, lon: 120.09, lat: 30.89 }
+  - { id: pref_shaoxing, name: 绍兴, region: reg_zhejiang, lon: 120.58, lat: 30.00 }
+  - { id: pref_ningbo, name: 宁波, region: reg_zhejiang, lon: 121.55, lat: 29.87 }
+  - { id: pref_taizhou, name: 台州, region: reg_zhejiang, lon: 121.42, lat: 28.66 }
+  - { id: pref_wenzhou, name: 温州, region: reg_zhejiang, lon: 120.70, lat: 28.00 }
+
+  # 江西 7
+  - { id: pref_nanchang, name: 南昌, region: reg_jiangxi, seat: nanchang, lon: 115.89, lat: 28.68 }
+  - { id: pref_jiujiang, name: 九江, region: reg_jiangxi, lon: 115.99, lat: 29.71 }
+  - { id: pref_raozhou, name: 饶州, region: reg_jiangxi, lon: 117.18, lat: 29.30 }
+  - { id: pref_guangxin, name: 广信, region: reg_jiangxi, lon: 118.00, lat: 28.45 }
+  - { id: pref_fuzhou_jiangxi, name: 抚州, region: reg_jiangxi, lon: 116.36, lat: 27.95 }
+  - { id: pref_jian, name: 吉安, region: reg_jiangxi, lon: 114.99, lat: 27.11 }
+  - { id: pref_ganzhou, name: 赣州, region: reg_jiangxi, lon: 114.94, lat: 25.83 }
+
+  # 湖广 8
+  - { id: pref_wuchang, name: 武昌, region: reg_huguang, seat: wuchang, lon: 114.30, lat: 30.55 }
+  - { id: pref_hanyang, name: 汉阳, region: reg_huguang, lon: 114.22, lat: 30.55 }
+  - { id: pref_huangzhou, name: 黄州, region: reg_huguang, lon: 114.88, lat: 30.45 }
+  - { id: pref_chengtian, name: 承天, region: reg_huguang, lon: 112.58, lat: 31.17 }
+  - { id: pref_yuezhou, name: 岳州, region: reg_huguang, lon: 113.13, lat: 29.37 }
+  - { id: pref_jingzhou, name: 荆州, region: reg_huguang, lon: 112.24, lat: 30.33 }
+  - { id: pref_xiangyang, name: 襄阳, region: reg_huguang, seat: xiangyang, lon: 112.14, lat: 32.04 }
+  - { id: pref_changsha, name: 长沙, region: reg_huguang, lon: 112.98, lat: 28.19 }
+
+  # 四川 6
+  - { id: pref_chengdu, name: 成都, region: reg_sichuan, seat: chengdu, lon: 104.07, lat: 30.67 }
+  - { id: pref_chongqing, name: 重庆, region: reg_sichuan, seat: chongqing, lon: 106.55, lat: 29.56 }
+  - { id: pref_baoning, name: 保宁, region: reg_sichuan, lon: 105.97, lat: 31.58 }
+  - { id: pref_shunqing, name: 顺庆, region: reg_sichuan, lon: 106.11, lat: 30.80 }
+  - { id: pref_xuzhou_sichuan, name: 叙州, region: reg_sichuan, lon: 104.62, lat: 28.77 }
+  - { id: pref_kuizhou, name: 夔州, region: reg_sichuan, lon: 109.51, lat: 31.02 }
+
+  # 福建 6
+  - { id: pref_fuzhou, name: 福州, region: reg_fujian, seat: fuzhou, lon: 119.30, lat: 26.08 }
+  - { id: pref_jianning, name: 建宁, region: reg_fujian, lon: 118.32, lat: 27.34 }
+  - { id: pref_quanzhou, name: 泉州, region: reg_fujian, seat: quanzhou, lon: 118.59, lat: 24.91 }
+  - { id: pref_zhangzhou, name: 漳州, region: reg_fujian, lon: 117.65, lat: 24.51 }
+  - { id: pref_tingzhou, name: 汀州, region: reg_fujian, lon: 116.36, lat: 25.84 }
+  - { id: pref_yanping, name: 延平, region: reg_fujian, lon: 118.18, lat: 26.64 }
+
+  # 广东 6
+  - { id: pref_guangzhou, name: 广州, region: reg_guangdong, seat: guangzhou, lon: 113.26, lat: 23.13 }
+  - { id: pref_shaozhou, name: 韶州, region: reg_guangdong, lon: 113.60, lat: 24.81 }
+  - { id: pref_huizhou_gd, name: 惠州, region: reg_guangdong, lon: 114.42, lat: 23.11 }
+  - { id: pref_chaozhou, name: 潮州, region: reg_guangdong, lon: 116.62, lat: 23.66 }
+  - { id: pref_zhaoqing, name: 肇庆, region: reg_guangdong, lon: 112.47, lat: 23.05 }
+  - { id: pref_leizhou, name: 雷州, region: reg_guangdong, lon: 110.10, lat: 20.91 }
+
+  # 广西 5
+  - { id: pref_guilin, name: 桂林, region: reg_guangxi, seat: guilin, lon: 110.29, lat: 25.27 }
+  - { id: pref_liuzhou, name: 柳州, region: reg_guangxi, lon: 109.42, lat: 24.33 }
+  - { id: pref_wuzhou, name: 梧州, region: reg_guangxi, lon: 111.28, lat: 23.48 }
+  - { id: pref_nanning, name: 南宁, region: reg_guangxi, lon: 108.37, lat: 22.82 }
+  - { id: pref_taiping, name: 太平, region: reg_guangxi, lon: 107.36, lat: 22.29 }
+
+  # 云南 5
+  - { id: pref_yunnanfu, name: 云南府, region: reg_yunnan, seat: kunming, lon: 102.71, lat: 25.04 }
+  - { id: pref_dali, name: 大理, region: reg_yunnan, lon: 100.23, lat: 25.60 }
+  - { id: pref_linan, name: 临安, region: reg_yunnan, lon: 102.83, lat: 23.62 }
+  - { id: pref_qujing, name: 曲靖, region: reg_yunnan, lon: 103.80, lat: 25.49 }
+  - { id: pref_tengyue, name: 腾越, region: reg_yunnan, seat: tengyue, lon: 98.50, lat: 25.02 }
+
+  # 贵州 4
+  - { id: pref_guiyang, name: 贵阳, region: reg_guizhou, seat: guiyang, lon: 106.63, lat: 26.65 }
+  - { id: pref_sinan, name: 思南, region: reg_guizhou, lon: 108.25, lat: 27.94 }
+  - { id: pref_zhenyuan, name: 镇远, region: reg_guizhou, lon: 108.42, lat: 27.05 }
+  - { id: pref_tongren, name: 铜仁, region: reg_guizhou, lon: 109.19, lat: 27.72 }
+
+  # 漠南蒙古 5
+  - { id: pref_guihua, name: 归化, region: reg_mengnan, lon: 111.75, lat: 40.84 }
+  - { id: pref_tumote, name: 土默特, region: reg_mengnan, lon: 111.50, lat: 40.50 }
+  - { id: pref_ordos, name: 鄂尔多斯, region: reg_mengnan, lon: 109.80, lat: 39.60 }
+  - { id: pref_chahar, name: 察哈尔, region: reg_mengnan, lon: 114.50, lat: 42.00 }
+  - { id: pref_horqin, name: 科尔沁, region: reg_mengnan, lon: 122.00, lat: 44.50 }
+
+  # 漠北喀尔喀 4
+  - { id: pref_tusheet, name: 土谢图, region: reg_mobei, lon: 106.00, lat: 47.50 }
+  - { id: pref_chechen, name: 车臣, region: reg_mobei, lon: 108.00, lat: 48.00 }
+  - { id: pref_zhasaketu, name: 札萨克图, region: reg_mobei, lon: 103.00, lat: 47.00 }
+  - { id: pref_kulun, name: 库伦, region: reg_mobei, lon: 106.90, lat: 47.90 }
+
+  # 卫拉特与青海 5
+  - { id: pref_urumqi, name: 乌鲁木齐, region: reg_weilate, lon: 87.62, lat: 43.82 }
+  - { id: pref_ili, name: 伊犁, region: reg_weilate, lon: 81.32, lat: 43.92 }
+  - { id: pref_qinghai, name: 青海, region: reg_weilate, lon: 100.80, lat: 36.62 }
+  - { id: pref_qaidam, name: 柴达木, region: reg_weilate, lon: 94.00, lat: 37.30 }
+  - { id: pref_hesute, name: 和硕特, region: reg_weilate, lon: 98.00, lat: 35.50 }
+
+  # 野人女真 5
+  - { id: pref_hetu_ala, name: 赫图阿拉, region: reg_nvzhen, seat: hetuala, lon: 124.80, lat: 41.70 }
+  - { id: pref_jianzhou, name: 建州, region: reg_nvzhen, lon: 125.50, lat: 42.00 }
+  - { id: pref_haixi, name: 海西, region: reg_nvzhen, lon: 126.50, lat: 44.00 }
+  - { id: pref_heilongjiang, name: 黑龙江, region: reg_nvzhen, lon: 127.50, lat: 47.50 }
+  - { id: pref_ningguta, name: 宁古塔, region: reg_nvzhen, lon: 129.50, lat: 44.50 }
+
+  # 西藏 4
+  - { id: pref_lhasa, name: 拉萨, region: reg_xizang, seat: lhasa, lon: 91.11, lat: 29.65 }
+  - { id: pref_shigatse, name: 日喀则, region: reg_xizang, lon: 88.88, lat: 29.27 }
+  - { id: pref_shannan, name: 山南, region: reg_xizang, lon: 91.80, lat: 29.20 }
+  - { id: pref_chamdo, name: 昌都, region: reg_xizang, lon: 97.17, lat: 31.14 }
+
+  # 朝鲜 5
+  - { id: pref_hanseong, name: 汉城, region: reg_joseon, seat: hanseong, lon: 126.98, lat: 37.57 }
+  - { id: pref_kaesong, name: 开城, region: reg_joseon, lon: 126.55, lat: 37.97 }
+  - { id: pref_pyongyang, name: 平壤, region: reg_joseon, lon: 125.75, lat: 39.03 }
+  - { id: pref_uiju, name: 义州, region: reg_joseon, lon: 124.50, lat: 40.10 }
+  - { id: pref_hamhung, name: 咸兴, region: reg_joseon, lon: 127.54, lat: 39.92 }
+
+  # 安南 4
+  - { id: pref_dongkinh, name: 升龙, region: reg_annam, lon: 105.85, lat: 21.03 }
+  - { id: pref_thanhhoa, name: 清化, region: reg_annam, lon: 105.78, lat: 19.80 }
+  - { id: pref_hue, name: 顺化, region: reg_annam, lon: 107.60, lat: 16.50 }
+  - { id: pref_caobang, name: 高平, region: reg_annam, lon: 106.30, lat: 22.70 }
+
+  # 缅甸 4
+  - { id: pref_ava, name: 阿瓦, region: reg_burma, lon: 96.10, lat: 21.90 }
+  - { id: pref_toungoo, name: 东吁, region: reg_burma, lon: 96.43, lat: 18.94 }
+  - { id: pref_pegu, name: 勃固, region: reg_burma, lon: 96.50, lat: 17.30 }
+  - { id: pref_bhamo, name: 八莫, region: reg_burma, lon: 97.23, lat: 24.27 }
+
+  # 日本西国 4
+  - { id: pref_nagasaki, name: 长崎, region: reg_japan_west, lon: 129.87, lat: 32.75 }
+  - { id: pref_hakata, name: 博多, region: reg_japan_west, lon: 130.40, lat: 33.60 }
+  - { id: pref_osaka, name: 大阪, region: reg_japan_west, lon: 135.50, lat: 34.70 }
+  - { id: pref_kyoto, name: 京都, region: reg_japan_west, lon: 135.77, lat: 35.01 }
+
+  # 日本东国 4
+  - { id: pref_edo, name: 江户, region: reg_japan_east, seat: edo, lon: 139.70, lat: 35.70 }
+  - { id: pref_sunpu, name: 骏府, region: reg_japan_east, lon: 138.38, lat: 34.98 }
+  - { id: pref_nagoya, name: 名古屋, region: reg_japan_east, lon: 136.91, lat: 35.18 }
+  - { id: pref_sendai, name: 仙台, region: reg_japan_east, lon: 140.87, lat: 38.27 }
+
+  # 台湾与澎湖 4
+  - { id: pref_penghu, name: 澎湖, region: reg_taiwan, seat: penghu, lon: 119.60, lat: 23.55 }
+  - { id: pref_anping, name: 安平, region: reg_taiwan, seat: anping, lon: 120.20, lat: 23.00 }
+  - { id: pref_keelung, name: 鸡笼, region: reg_taiwan, lon: 121.75, lat: 25.15 }
+  - { id: pref_tamsui, name: 淡水, region: reg_taiwan, lon: 121.45, lat: 25.18 }
+
+  # 俄国远东 3
+  - { id: pref_albazin, name: 雅克萨, region: reg_russia_far, seat: albazin, lon: 123.60, lat: 53.40 }
+  - { id: pref_nerchinsk, name: 尼布楚, region: reg_russia_far, seat: nerchinsk, lon: 116.60, lat: 51.00 }
+  - { id: pref_okhotsk, name: 鄂霍次克, region: reg_russia_far, lon: 143.20, lat: 54.80 }

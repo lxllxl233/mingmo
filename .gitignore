@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.pnpm-store/
+.esbuild-tmp/
+coverage/
+out/
+ui-*.png
+map-preview.*
+*.local
+.DS_Store

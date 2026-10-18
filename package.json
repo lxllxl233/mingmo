@@ -1,0 +1,38 @@
+{
+  "name": "jiashen",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "甲申 · 明末清初省份级大战略",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "gen:map": "tsx scripts/gen-map.ts",
+    "sim": "tsx scripts/sim.ts",
+    "validate": "tsx scripts/validate.ts",
+    "smoke:ui": "node scripts/smoke-ui.mjs"
+  },
+  "dependencies": {
+    "pixi.js": "^8.22.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "yaml": "^2.9.1",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "playwright-core": "^1.64.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
+}

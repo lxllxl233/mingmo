@@ -1,0 +1,138 @@
+privileges:
+  - id: priv_clan_stipend
+    estate: dynasty
+    name: 宗禄
+    desc: 宗室岁支禄米，世袭罔替。藩府富可敌国，太仓为之一空。
+    effects:
+      - add_modifier: { tax_efficiency_pct: -6 }
+    revoke:
+      cost: { political_power: 100 }
+      effects:
+        - add_estate_loyalty: { estate: dynasty, value: -25 }
+        - add_stability: -6
+        - add_modifier: { tax_efficiency_pct: 6 }
+    ai_keep: 70
+  - id: priv_clan_manor
+    estate: dynasty
+    name: 藩府庄田
+    desc: 藩王就封，赐田动辄万顷，佃户不纳国课。
+    effects:
+      - add_modifier: { food_output_pct: -3 }
+    revoke:
+      cost: { political_power: 120 }
+      effects:
+        - add_estate_loyalty: { estate: dynasty, value: -20 }
+        - add_modifier: { food_output_pct: 3 }
+    ai_keep: 65
+  - id: priv_noble_manor
+    estate: nobles
+    name: 勋贵庄田
+    desc: 公侯伯子男各有庄田，佃户供其租，不纳国课。
+    effects:
+      - add_modifier: { tax_efficiency_pct: -3 }
+    revoke:
+      cost: { political_power: 70 }
+      effects:
+        - add_estate_loyalty: { estate: nobles, value: -18 }
+        - add_modifier: { tax_efficiency_pct: 3 }
+    ai_keep: 60
+  - id: priv_official_meltage
+    estate: officials
+    name: 火耗陋规
+    desc: 征税有火耗，解运有羡余，皆为官吏私入。
+    effects:
+      - add_modifier: { tax_efficiency_pct: -5 }
+    revoke:
+      cost: { political_power: 60 }
+      effects:
+        - add_estate_loyalty: { estate: officials, value: -15 }
+        - add_modifier: { corruption_add: -0.02 }
+    ai_keep: 55
+  - id: priv_gentry_corvee_exempt
+    estate: gentry
+    name: 优免差徭
+    desc: 有功名者免徭役，投献成风，田亩多挂绅衿名下。
+    effects:
+      - add_modifier: { tax_efficiency_pct: -4 }
+    revoke:
+      cost: { political_power: 80 }
+      effects:
+        - add_estate_loyalty: { estate: gentry, value: -20 }
+        - add_stability: -5
+        - add_modifier: { tax_efficiency_pct: 4 }
+    ai_keep: 60
+  - id: priv_gentry_hidden_land
+    estate: gentry
+    name: 诡寄飞洒
+    desc: 田亩诡寄他户，飞洒税粮于贫民。
+    effects:
+      - add_modifier: { tax_efficiency_pct: -8 }
+    revoke:
+      cost: { political_power: 90 }
+      effects:
+        - add_estate_loyalty: { estate: gentry, value: -25 }
+        - add_modifier: { tax_efficiency_pct: 8 }
+    ai_keep: 50
+  - id: priv_merchant_salt_license
+    estate: merchants
+    name: 盐引世袭
+    desc: 纲商世袭盐引，垄断盐利。
+    effects:
+      - add_modifier: { trade_efficiency_pct: 5 }
+    revoke:
+      cost: { political_power: 60 }
+      effects:
+        - add_estate_loyalty: { estate: merchants, value: -18 }
+        - add_modifier: { trade_efficiency_pct: -8 }
+    ai_keep: 55
+  - id: priv_soldier_land
+    estate: soldiers
+    name: 军田
+    desc: 军户授田，且耕且守，免其杂差。
+    effects:
+      - add_modifier: { army_upkeep_pct: -10 }
+    revoke:
+      cost: { political_power: 50 }
+      effects:
+        - add_estate_loyalty: { estate: soldiers, value: -15 }
+        - add_modifier: { army_upkeep_pct: 10 }
+    ai_keep: 60
+  - id: priv_banner_land
+    estate: nobles
+    name: 旗地
+    desc: 八旗圈地，旗人食租，汉民失田。
+    effects:
+      - add_modifier: { army_upkeep_pct: -8 }
+      - add_modifier: { unrest_monthly: 0.2 }
+    revoke:
+      cost: { political_power: 120 }
+      effects:
+        - add_estate_loyalty: { estate: nobles, value: -30 }
+        - add_estate_loyalty: { estate: soldiers, value: -20 }
+        - add_modifier: { unrest_monthly: -0.3 }
+    ai_keep: 80
+  - id: priv_clergy_exempt
+    estate: clergy
+    name: 寺观免科
+    desc: 寺院田产不纳粮、不当差。
+    effects:
+      - add_modifier: { tax_efficiency_pct: -3 }
+    revoke:
+      cost: { political_power: 70 }
+      effects:
+        - add_estate_loyalty: { estate: clergy, value: -25 }
+        - add_mandate: -5
+        - add_modifier: { tax_efficiency_pct: 3 }
+    ai_keep: 45
+  - id: priv_native_tribute
+    estate: custom:natives
+    name: 土著贡赋
+    desc: 公司以贡赋代田税，土著头人代收，层层中饱。
+    effects:
+      - add_modifier: { tax_efficiency_pct: -4 }
+    revoke:
+      cost: { political_power: 50 }
+      effects:
+        - add_estate_loyalty: { estate: custom:natives, value: -20 }
+        - add_modifier: { tax_efficiency_pct: 4 }
+    ai_keep: 50

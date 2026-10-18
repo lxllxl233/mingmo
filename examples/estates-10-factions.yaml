@@ -1,0 +1,749 @@
+# 除明、清之外的 10 个势力：阶级配置 + 势力专属税法
+# 配合 examples/estates-tax.yaml（明/清 + 25 条通用税法 + 特权）使用。
+# 所有 income_share 之和 = 1.00。数值为可调基线，不是史实统计。
+
+estates:
+
+  SHUN:                      # 大顺，1644 据关中
+    - key: nobles
+      name: 老营将领
+      influence: 25
+      loyalty: 55
+      income_share: 0.10
+      privileges: []
+      tax_law: tax_warlord_retinue
+    - key: officials
+      name: 文吏
+      influence: 5
+      loyalty: 35
+      income_share: 0.03
+      privileges: []
+      tax_law: tax_officials_thin_salary
+    - key: gentry
+      name: 士绅
+      influence: 10
+      loyalty: 25
+      income_share: 0.15
+      privileges: [priv_gentry_hidden_land]
+      tax_law: tax_shun_confiscation
+    - key: merchants
+      name: 商人
+      influence: 8
+      loyalty: 40
+      income_share: 0.12
+      privileges: []
+      tax_law: tax_merchants_inland_customs
+    - key: peasants
+      name: 农民
+      influence: 40
+      loyalty: 60
+      income_share: 0.55
+      privileges: []
+      tax_law: tax_shun_land_equal
+    - key: soldiers
+      name: 老营兵
+      influence: 35
+      loyalty: 65
+      income_share: 0.05
+      privileges: []
+      tax_law: tax_soldiers_retinue
+
+  XI:                        # 大西，据四川
+    - key: nobles
+      name: 将领
+      influence: 25
+      loyalty: 60
+      income_share: 0.15
+      privileges: []
+      tax_law: tax_warlord_retinue
+    - key: officials
+      name: 文吏
+      influence: 5
+      loyalty: 30
+      income_share: 0.05
+      privileges: []
+      tax_law: tax_officials_thin_salary
+    - key: gentry
+      name: 士绅
+      influence: 5
+      loyalty: 10
+      income_share: 0.10
+      privileges: []
+      tax_law: tax_xi_terror
+    - key: merchants
+      name: 商人
+      influence: 5
+      loyalty: 20
+      income_share: 0.08
+      privileges: []
+      tax_law: tax_merchants_inland_customs
+    - key: peasants
+      name: 农民
+      influence: 30
+      loyalty: 15
+      income_share: 0.45
+      privileges: []
+      tax_law: tax_xi_forced_levy
+    - key: soldiers
+      name: 兵
+      influence: 40
+      loyalty: 65
+      income_share: 0.17
+      privileges: []
+      tax_law: tax_soldiers_retinue
+
+  SMING:                     # 南明，弘光/永历
+    - key: dynasty
+      name: 宗室
+      influence: 15
+      loyalty: 55
+      income_share: 0.03
+      privileges: [priv_clan_manor]
+      tax_law: tax_dynasty_reduced
+    - key: nobles
+      name: 勋贵
+      influence: 10
+      loyalty: 50
+      income_share: 0.03
+      privileges: [priv_noble_manor]
+      tax_law: tax_nobles_manor
+    - key: officials
+      name: 官僚
+      influence: 20
+      loyalty: 45
+      income_share: 0.04
+      privileges: [priv_official_meltage]
+      tax_law: tax_officials_thin_salary
+    - key: gentry
+      name: 士绅
+      influence: 30
+      loyalty: 50
+      income_share: 0.24
+      privileges: [priv_gentry_corvee_exempt, priv_gentry_hidden_land]
+      tax_law: tax_gentry_exemption
+    - key: merchants
+      name: 海商
+      influence: 20
+      loyalty: 55
+      income_share: 0.20
+      privileges: [priv_merchant_salt_license]
+      tax_law: tax_merchants_maritime
+    - key: peasants
+      name: 农民
+      influence: 8
+      loyalty: 30
+      income_share: 0.42
+      privileges: []
+      tax_law: tax_peasants_single_whip
+    - key: soldiers
+      name: 军人
+      influence: 35
+      loyalty: 35
+      income_share: 0.03
+      privileges: []
+      tax_law: tax_soldiers_mercenary
+    - key: clergy
+      name: 僧道
+      influence: 5
+      loyalty: 60
+      income_share: 0.01
+      privileges: [priv_clergy_exempt]
+      tax_law: tax_clergy_exempt
+
+  ZHENG:                     # 郑氏，厦门—台湾
+    - key: dynasty
+      name: 宗室
+      influence: 5
+      loyalty: 50
+      income_share: 0.03
+      privileges: []
+      tax_law: tax_dynasty_stipend
+    - key: nobles
+      name: 将领
+      influence: 5
+      loyalty: 50
+      income_share: 0.02
+      privileges: []
+      tax_law: tax_warlord_retinue
+    - key: officials
+      name: 文吏
+      influence: 5
+      loyalty: 45
+      income_share: 0.02
+      privileges: []
+      tax_law: tax_officials_meltage
+    - key: gentry
+      name: 士绅
+      influence: 10
+      loyalty: 45
+      income_share: 0.10
+      privileges: [priv_gentry_corvee_exempt]
+      tax_law: tax_gentry_exemption
+    - key: merchants
+      name: 海商
+      influence: 45
+      loyalty: 65
+      income_share: 0.55
+      privileges: [priv_merchant_salt_license]
+      tax_law: tax_zheng_sea_tithe
+    - key: peasants
+      name: 农民
+      influence: 10
+      loyalty: 40
+      income_share: 0.20
+      privileges: []
+      tax_law: tax_peasants_single_whip
+    - key: soldiers
+      name: 水师
+      influence: 25
+      loyalty: 70
+      income_share: 0.08
+      privileges: []
+      tax_law: tax_soldiers_mercenary
+
+  MONGOL:                    # 察哈尔蒙古
+    - key: dynasty
+      name: 汗室
+      influence: 10
+      loyalty: 60
+      income_share: 0.10
+      privileges: []
+      tax_law: tax_mongol_khan
+    - key: nobles
+      name: 台吉
+      influence: 40
+      loyalty: 55
+      income_share: 0.45
+      privileges: [priv_noble_manor]
+      tax_law: tax_mongol_herd
+    - key: officials
+      name: 必阇赤
+      influence: 5
+      loyalty: 40
+      income_share: 0.03
+      privileges: []
+      tax_law: tax_officials_thin_salary
+    - key: merchants
+      name: 商队
+      influence: 5
+      loyalty: 50
+      income_share: 0.07
+      privileges: []
+      tax_law: tax_merchants_inland_customs
+    - key: soldiers
+      name: 箭丁
+      influence: 30
+      loyalty: 60
+      income_share: 0.20
+      privileges: [priv_soldier_land]
+      tax_law: tax_soldiers_retinue
+    - key: clergy
+      name: 喇嘛
+      influence: 20
+      loyalty: 70
+      income_share: 0.15
+      privileges: [priv_clergy_exempt]
+      tax_law: tax_clergy_exempt
+
+  JOSEON:                    # 朝鲜
+    - key: dynasty
+      name: 王室
+      influence: 15
+      loyalty: 70
+      income_share: 0.03
+      privileges: []
+      tax_law: tax_dynasty_stipend
+    - key: nobles
+      name: 两班
+      influence: 40
+      loyalty: 65
+      income_share: 0.15
+      privileges: [priv_noble_manor]
+      tax_law: tax_nobles_manor
+    - key: officials
+      name: 官僚
+      influence: 25
+      loyalty: 55
+      income_share: 0.06
+      privileges: [priv_official_meltage]
+      tax_law: tax_officials_thin_salary
+    - key: gentry
+      name: 乡班
+      influence: 25
+      loyalty: 55
+      income_share: 0.20
+      privileges: [priv_gentry_corvee_exempt]
+      tax_law: tax_gentry_exemption
+    - key: merchants
+      name: 商人
+      influence: 8
+      loyalty: 50
+      income_share: 0.08
+      privileges: []
+      tax_law: tax_merchants_inland_customs
+    - key: peasants
+      name: 农民
+      influence: 5
+      loyalty: 35
+      income_share: 0.45
+      privileges: []
+      tax_law: tax_joseon_daedong
+    - key: soldiers
+      name: 军卒
+      influence: 10
+      loyalty: 55
+      income_share: 0.02
+      privileges: [priv_soldier_land]
+      tax_law: tax_soldiers_weisuo
+    - key: clergy
+      name: 僧
+      influence: 5
+      loyalty: 60
+      income_share: 0.01
+      privileges: [priv_clergy_exempt]
+      tax_law: tax_clergy_exempt
+
+  JAPAN:                     # 江户幕府
+    - key: dynasty
+      name: 天皇家
+      influence: 5
+      loyalty: 50
+      income_share: 0.02
+      privileges: []
+      tax_law: tax_dynasty_reduced
+    - key: nobles
+      name: 大名
+      influence: 45
+      loyalty: 60
+      income_share: 0.30
+      privileges: [priv_noble_manor]
+      tax_law: tax_nobles_manor
+    - key: officials
+      name: 奉行
+      influence: 10
+      loyalty: 45
+      income_share: 0.03
+      privileges: []
+      tax_law: tax_officials_meltage
+    - key: gentry
+      name: 乡士
+      influence: 5
+      loyalty: 40
+      income_share: 0.01
+      privileges: []
+      tax_law: tax_gentry_exemption
+    - key: merchants
+      name: 町人
+      influence: 15
+      loyalty: 55
+      income_share: 0.15
+      privileges: []
+      tax_law: tax_merchants_inland_customs
+    - key: peasants
+      name: 百姓
+      influence: 5
+      loyalty: 30
+      income_share: 0.40
+      privileges: []
+      tax_law: tax_japan_kokudaka
+    - key: soldiers
+      name: 武士
+      influence: 35
+      loyalty: 65
+      income_share: 0.08
+      privileges: []
+      tax_law: tax_soldiers_mercenary
+    - key: clergy
+      name: 寺社
+      influence: 10
+      loyalty: 55
+      income_share: 0.01
+      privileges: [priv_clergy_exempt]
+      tax_law: tax_clergy_exempt
+
+  TIBET:                     # 和硕特—格鲁派
+    - key: dynasty
+      name: 汗室
+      influence: 10
+      loyalty: 60
+      income_share: 0.07
+      privileges: []
+      tax_law: tax_tibet_khan
+    - key: nobles
+      name: 贵族
+      influence: 30
+      loyalty: 55
+      income_share: 0.25
+      privileges: [priv_noble_manor]
+      tax_law: tax_nobles_manor
+    - key: officials
+      name: 第巴
+      influence: 5
+      loyalty: 40
+      income_share: 0.03
+      privileges: []
+      tax_law: tax_officials_thin_salary
+    - key: merchants
+      name: 商队
+      influence: 5
+      loyalty: 45
+      income_share: 0.13
+      privileges: []
+      tax_law: tax_tibet_caravan
+    - key: soldiers
+      name: 蒙古骑兵
+      influence: 20
+      loyalty: 50
+      income_share: 0.12
+      privileges: []
+      tax_law: tax_soldiers_retinue
+    - key: clergy
+      name: 寺院
+      influence: 50
+      loyalty: 70
+      income_share: 0.40
+      privileges: [priv_clergy_exempt]
+      tax_law: tax_clergy_exempt
+
+  VOC:                       # 荷兰东印度公司
+    - key: dynasty
+      name: 股东
+      influence: 30
+      loyalty: 60
+      income_share: 0.15
+      privileges: []
+      tax_law: tax_voc_dividend
+    - key: officials
+      name: 雇员
+      influence: 15
+      loyalty: 50
+      income_share: 0.05
+      privileges: []
+      tax_law: tax_officials_meltage
+    - key: merchants
+      name: 商人
+      influence: 40
+      loyalty: 70
+      income_share: 0.50
+      privileges: []
+      tax_law: tax_voc_trade
+    - key: soldiers
+      name: 驻军
+      influence: 20
+      loyalty: 55
+      income_share: 0.10
+      privileges: []
+      tax_law: tax_soldiers_mercenary
+    - key: custom:natives
+      name: 土著
+      influence: 25
+      loyalty: 20
+      income_share: 0.20
+      privileges: []
+      tax_law: tax_voc_plantation
+
+  RUSSIA:                    # 沙俄远东
+    - key: dynasty
+      name: 沙皇
+      influence: 15
+      loyalty: 65
+      income_share: 0.04
+      privileges: []
+      tax_law: tax_dynasty_stipend
+    - key: nobles
+      name: 贵族
+      influence: 30
+      loyalty: 55
+      income_share: 0.25
+      privileges: [priv_noble_manor]
+      tax_law: tax_nobles_manor
+    - key: officials
+      name: 文官
+      influence: 10
+      loyalty: 40
+      income_share: 0.04
+      privileges: []
+      tax_law: tax_officials_thin_salary
+    - key: gentry
+      name: 地主
+      influence: 5
+      loyalty: 45
+      income_share: 0.03
+      privileges: [priv_gentry_corvee_exempt]
+      tax_law: tax_gentry_exemption
+    - key: merchants
+      name: 毛皮商
+      influence: 15
+      loyalty: 55
+      income_share: 0.15
+      privileges: []
+      tax_law: tax_russia_fur
+    - key: peasants
+      name: 农奴
+      influence: 25
+      loyalty: 20
+      income_share: 0.40
+      privileges: []
+      tax_law: tax_russia_poll
+    - key: soldiers
+      name: 哥萨克
+      influence: 25
+      loyalty: 35
+      income_share: 0.08
+      privileges: [priv_soldier_land]
+      tax_law: tax_soldiers_retinue
+    - key: clergy
+      name: 东正教会
+      influence: 10
+      loyalty: 60
+      income_share: 0.01
+      privileges: [priv_clergy_exempt]
+      tax_law: tax_clergy_exempt
+
+tax_laws:
+
+  - id: tax_warlord_retinue
+    estate: nobles
+    name: 将领食邑
+    desc: 以战养兵，将领各食其邑。兵为将有，朝廷但受其名。
+    rate: 0.03
+    efficiency: 0.55
+    evasion_base: 0.25
+    silver_share: 0.5
+    loyalty_drift: 0.2
+    influence_shift: 5
+    effects:
+      - add_modifier: { army_attack_pct: 5 }
+    ai_weight: 55
+
+  - id: tax_mongol_khan
+    estate: dynasty
+    name: 部民贡赋
+    desc: 汗室按部征马牛羊，随水草而居。贡无定额，亦无定所。
+    rate: 0.02
+    efficiency: 0.5
+    evasion_base: 0.25
+    silver_share: 0.1
+    loyalty_drift: 0.3
+    influence_shift: 3
+    effects:
+      - add_modifier: { cavalry_attack_pct: 3 }
+    ai_weight: 55
+
+  - id: tax_tibet_khan
+    estate: dynasty
+    name: 乌拉差役
+    desc: 以差役代赋，寺院与贵族各领其民。政令不出拉萨。
+    rate: 0.02
+    efficiency: 0.45
+    evasion_base: 0.3
+    silver_share: 0.3
+    loyalty_drift: 0.2
+    influence_shift: 3
+    effects:
+      - add_modifier: { stability_monthly: 0.05 }
+    ai_weight: 50
+
+  - id: tax_shun_confiscation
+    estate: gentry
+    name: 追赃助饷
+    desc: 拷掠缙绅，勒令输银。得银甚速，然士绅视大顺如寇仇。
+    rate: 0.15
+    efficiency: 0.5
+    evasion_base: 0.3
+    silver_share: 1.0
+    loyalty_drift: -4.0
+    influence_shift: -10
+    incidence: { estate: peasants, factor: 0.1 }
+    effects:
+      - add_modifier: { unrest_add: 1.0 }
+      - add_modifier: { corruption_add: 0.2 }
+    ai_weight: 60
+
+  - id: tax_shun_land_equal
+    estate: peasants
+    name: 均田免赋
+    desc: 迎闯王，不纳粮。得民心于一时，然无赋则无饷，无饷则无兵。
+    rate: 0.01
+    efficiency: 0.5
+    evasion_base: 0.2
+    silver_share: 0.2
+    loyalty_drift: 2.0
+    influence_shift: 5
+    effects:
+      - add_modifier: { manpower_add: 15000 }
+      - add_modifier: { tax_efficiency_pct: -5 }
+    ai_weight: 55
+
+  - id: tax_xi_terror
+    estate: gentry
+    name: 屠掠
+    desc: 以刀索财。士绅尽室而逃，蜀中千里无人。
+    rate: 0.20
+    efficiency: 0.4
+    evasion_base: 0.35
+    silver_share: 1.0
+    loyalty_drift: -6.0
+    influence_shift: -20
+    effects:
+      - add_modifier: { unrest_add: 2.0 }
+      - add_modifier: { pop_growth_pct: -3 }
+    ai_weight: 50
+
+  - id: tax_xi_forced_levy
+    estate: peasants
+    name: 括粮
+    desc: 按户搜粮，颗粒不留。军食足而民尽为盗。
+    rate: 0.12
+    efficiency: 0.35
+    evasion_base: 0.4
+    silver_share: 0.6
+    loyalty_drift: -5.0
+    influence_shift: -10
+    effects:
+      - add_modifier: { food_output_pct: -15 }
+    ai_weight: 55
+
+  - id: tax_zheng_sea_tithe
+    estate: merchants
+    name: 海贸抽分
+    desc: 以厦门、台湾为枢纽，抽东西洋商船之利。银货辐辏，而清廷之海禁如影随形。
+    rate: 0.10
+    efficiency: 0.8
+    evasion_base: 0.15
+    silver_share: 1.0
+    loyalty_drift: 0.5
+    influence_shift: 5
+    require:
+      any:
+        - controls: xiamen
+        - controls: anping
+    effects:
+      - add_modifier: { trade_efficiency_pct: 20 }
+    ai_weight: 70
+
+  - id: tax_mongol_herd
+    estate: nobles
+    name: 牧丁
+    desc: 台吉按部民征马牛羊。随水草而迁，税无定所。
+    rate: 0.03
+    efficiency: 0.6
+    evasion_base: 0.2
+    silver_share: 0.2
+    loyalty_drift: -0.5
+    influence_shift: 0
+    effects:
+      - add_modifier: { manpower_add: 6000, cavalry_attack_pct: 5 }
+    ai_weight: 60
+
+  - id: tax_japan_kokudaka
+    estate: peasants
+    name: 石高
+    desc: 检地定石高，按石征年贡。米为本位，商贾另课。
+    rate: 0.10
+    efficiency: 0.8
+    evasion_base: 0.1
+    silver_share: 0.3
+    loyalty_drift: -1.0
+    influence_shift: 0
+    effects:
+      - add_modifier: { food_output_pct: 8 }
+    ai_weight: 65
+
+  - id: tax_joseon_daedong
+    estate: peasants
+    name: 大同法
+    desc: 贡物折米，均役于田。两班之田亦在其中，故阻力极大。
+    rate: 0.06
+    efficiency: 0.7
+    evasion_base: 0.15
+    silver_share: 0.5
+    loyalty_drift: 0
+    influence_shift: -3
+    effects:
+      - add_modifier: { tax_efficiency_pct: 5 }
+    ai_weight: 55
+
+  - id: tax_tibet_caravan
+    estate: merchants
+    name: 茶马商道
+    desc: 以茶易马，寺院抽分。商队所至，即政令所及。
+    rate: 0.08
+    efficiency: 0.6
+    evasion_base: 0.25
+    silver_share: 0.8
+    loyalty_drift: 0
+    influence_shift: 3
+    effects:
+      - add_modifier: { trade_efficiency_pct: 12 }
+    ai_weight: 55
+
+  - id: tax_voc_dividend
+    estate: dynasty
+    name: 股东分红
+    desc: 十七人董事会坐收红利。巴达维亚的账房，比战舰更能决定远东的成败。
+    rate: 0.02
+    efficiency: 0.9
+    evasion_base: 0.05
+    silver_share: 1.0
+    loyalty_drift: 0.5
+    influence_shift: 5
+    effects:
+      - add_modifier: { trade_efficiency_pct: 10 }
+    ai_weight: 70
+
+  - id: tax_voc_trade
+    estate: merchants
+    name: 公司贸易
+    desc: 垄断香料与丝瓷，以武装商船开道。利润即国力。
+    rate: 0.10
+    efficiency: 0.85
+    evasion_base: 0.1
+    silver_share: 1.0
+    loyalty_drift: 0
+    influence_shift: 0
+    effects:
+      - add_modifier: { naval_attack_pct: 10 }
+    ai_weight: 70
+
+  - id: tax_voc_plantation
+    estate: custom:natives
+    name: 强制种植
+    desc: 令土著改种甘蔗香料，按丁征物。反抗者付之刀兵。
+    rate: 0.15
+    efficiency: 0.5
+    evasion_base: 0.3
+    silver_share: 0.9
+    loyalty_drift: -3.0
+    influence_shift: -5
+    effects:
+      - add_modifier: { unrest_add: 1.5 }
+    ai_weight: 60
+
+  - id: tax_russia_fur
+    estate: merchants
+    name: 毛皮税
+    desc: 以貂皮代银，实为对西伯利亚的掠夺式征税。
+    rate: 0.10
+    efficiency: 0.7
+    evasion_base: 0.2
+    silver_share: 0.8
+    loyalty_drift: 0
+    influence_shift: 3
+    effects:
+      - add_modifier: { trade_efficiency_pct: 10 }
+    ai_weight: 60
+
+  - id: tax_russia_poll
+    estate: peasants
+    name: 人头税
+    desc: 按丁纳银，农奴捆于土地。国库充盈，而彼得堡的阴影愈长。
+    rate: 0.05
+    efficiency: 0.6
+    evasion_base: 0.2
+    silver_share: 0.5
+    loyalty_drift: -0.8
+    influence_shift: 0
+    effects:
+      - add_modifier: { manpower_add: 5000 }
+    ai_weight: 55

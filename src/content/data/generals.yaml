@@ -1,0 +1,86 @@
+generals:
+  - { id: yuan_chonghuan, name: 袁崇焕, country: MING, attack: 7, defense: 8, maneuver: 5, siege: 6, loyalty: 60, traits: [善守, 骁勇] }
+  - { id: sun_chengzong, name: 孙承宗, country: MING, attack: 6, defense: 8, maneuver: 5, siege: 7, loyalty: 80, traits: [善守, 忠贞] }
+  - { id: hong_chengchou, name: 洪承畴, country: MING, attack: 7, defense: 6, maneuver: 6, siege: 5, loyalty: 45, traits: [谨慎] }
+  - { id: lu_xiangsheng, name: 卢象升, country: MING, attack: 8, defense: 6, maneuver: 6, siege: 5, loyalty: 90, traits: [骁勇, 忠贞] }
+  - { id: sun_chuanting, name: 孙传庭, country: MING, attack: 7, defense: 7, maneuver: 6, siege: 5, loyalty: 85, traits: [善攻] }
+  - { id: wu_sangui, name: 吴三桂, country: MING, attack: 7, defense: 6, maneuver: 8, siege: 4, loyalty: 35, traits: [跋扈] }
+  - { id: zuo_liangyu, name: 左良玉, country: MING, attack: 6, defense: 5, maneuver: 7, siege: 4, loyalty: 30, traits: [跋扈, 贪腐] }
+  - { id: mao_wenlong, name: 毛文龙, country: MING, attack: 6, defense: 5, maneuver: 7, siege: 3, loyalty: 40, traits: [水战] }
+
+  - { id: dorgon, name: 多尔衮, country: QING, attack: 8, defense: 7, maneuver: 8, siege: 6, loyalty: 85, traits: [善攻, 骁勇] }
+  - { id: dodo, name: 多铎, country: QING, attack: 8, defense: 6, maneuver: 8, siege: 5, loyalty: 80, traits: [骁勇] }
+  - { id: hooge, name: 豪格, country: QING, attack: 7, defense: 6, maneuver: 7, siege: 4, loyalty: 55, traits: [骁勇] }
+  - { id: oboi, name: 鳌拜, country: QING, attack: 8, defense: 5, maneuver: 6, siege: 4, loyalty: 75, traits: [骁勇, 跋扈] }
+  - { id: yuetuo, name: 岳托, country: QING, attack: 7, defense: 7, maneuver: 7, siege: 5, loyalty: 80, traits: [善守] }
+  - { id: jirgalang, name: 济尔哈朗, country: QING, attack: 6, defense: 7, maneuver: 6, siege: 5, loyalty: 75, traits: [谨慎] }
+  - { id: shang_kexi, name: 尚可喜, country: QING, attack: 6, defense: 6, maneuver: 5, siege: 4, loyalty: 55, traits: [善守] }
+  - { id: geng_jingzhong, name: 耿精忠, country: QING, attack: 5, defense: 5, maneuver: 5, siege: 3, loyalty: 30, traits: [跋扈] }
+
+  - { id: li_zicheng, name: 李自成, country: SHUN, attack: 8, defense: 6, maneuver: 8, siege: 5, loyalty: 90, traits: [骁勇, 善攻] }
+  - { id: liu_zongmin, name: 刘宗敏, country: SHUN, attack: 8, defense: 5, maneuver: 7, siege: 4, loyalty: 75, traits: [骁勇, 贪腐] }
+  - { id: li_guo, name: 李过, country: SHUN, attack: 7, defense: 6, maneuver: 7, siege: 3, loyalty: 85, traits: [骁勇] }
+  - { id: gao_yigong, name: 高一功, country: SHUN, attack: 6, defense: 6, maneuver: 6, siege: 3, loyalty: 80, traits: [忠贞] }
+  - { id: tian_jianxiu, name: 田见秀, country: SHUN, attack: 6, defense: 7, maneuver: 5, siege: 4, loyalty: 70, traits: [善守] }
+  - { id: hao_yaoqi, name: 郝摇旗, country: SHUN, attack: 6, defense: 5, maneuver: 6, siege: 3, loyalty: 60, traits: [骁勇] }
+
+  - { id: zhang_xianzhong, name: 张献忠, country: XI, attack: 8, defense: 5, maneuver: 7, siege: 4, loyalty: 90, traits: [骁勇, 跋扈] }
+  - { id: sun_kewang, name: 孙可望, country: XI, attack: 7, defense: 6, maneuver: 6, siege: 5, loyalty: 50, traits: [善攻] }
+  - { id: li_dingguo, name: 李定国, country: XI, attack: 9, defense: 7, maneuver: 8, siege: 5, loyalty: 60, traits: [骁勇, 善攻] }
+  - { id: liu_wenxiu, name: 刘文秀, country: XI, attack: 7, defense: 6, maneuver: 6, siege: 4, loyalty: 65, traits: [谨慎] }
+  - { id: ai_nengqi, name: 艾能奇, country: XI, attack: 6, defense: 5, maneuver: 6, siege: 3, loyalty: 65, traits: [骁勇] }
+
+  - { id: shi_kefa, name: 史可法, country: SMING, attack: 5, defense: 8, maneuver: 4, siege: 4, loyalty: 95, traits: [善守, 忠贞] }
+  - { id: he_tengjiao, name: 何腾蛟, country: SMING, attack: 5, defense: 6, maneuver: 5, siege: 3, loyalty: 80, traits: [忠贞] }
+  - { id: qu_shisi, name: 瞿式耜, country: SMING, attack: 4, defense: 7, maneuver: 4, siege: 3, loyalty: 90, traits: [善守, 忠贞] }
+  - { id: zhang_huangyan, name: 张煌言, country: SMING, attack: 6, defense: 6, maneuver: 7, siege: 3, loyalty: 85, traits: [水战] }
+  - { id: huang_degong, name: 黄得功, country: SMING, attack: 7, defense: 6, maneuver: 6, siege: 3, loyalty: 70, traits: [骁勇] }
+  - { id: li_dingguo_sm, name: 李定国, country: SMING, attack: 9, defense: 7, maneuver: 8, siege: 5, loyalty: 80, traits: [骁勇, 善攻] }
+
+  - { id: zheng_chenggong, name: 郑成功, country: ZHENG, attack: 8, defense: 7, maneuver: 9, siege: 5, loyalty: 95, traits: [水战, 善攻] }
+  - { id: zheng_jing, name: 郑经, country: ZHENG, attack: 6, defense: 6, maneuver: 7, siege: 4, loyalty: 85, traits: [水战] }
+  - { id: shi_lang, name: 施琅, country: ZHENG, attack: 7, defense: 6, maneuver: 8, siege: 4, loyalty: 45, traits: [水战, 谨慎] }
+  - { id: gan_hui, name: 甘辉, country: ZHENG, attack: 7, defense: 6, maneuver: 7, siege: 3, loyalty: 80, traits: [骁勇] }
+  - { id: chen_yonghua, name: 陈永华, country: ZHENG, attack: 4, defense: 6, maneuver: 5, siege: 4, loyalty: 90, traits: [谨慎] }
+  - { id: liu_guoxuan, name: 刘国轩, country: ZHENG, attack: 7, defense: 7, maneuver: 7, siege: 4, loyalty: 85, traits: [水战] }
+
+  - { id: ligdan, name: 林丹汗, country: MONGOL, attack: 7, defense: 6, maneuver: 9, siege: 3, loyalty: 80, traits: [骁勇] }
+  - { id: ejie, name: 额哲, country: MONGOL, attack: 5, defense: 5, maneuver: 7, siege: 2, loyalty: 50, traits: [谨慎] }
+  - { id: tusheet_khan, name: 土谢图汗, country: MONGOL, attack: 6, defense: 6, maneuver: 8, siege: 2, loyalty: 60, traits: [骁勇] }
+  - { id: chechen_khan, name: 车臣汗, country: MONGOL, attack: 6, defense: 5, maneuver: 8, siege: 2, loyalty: 60, traits: [骁勇] }
+  - { id: zhasaketu_khan, name: 札萨克图汗, country: MONGOL, attack: 5, defense: 5, maneuver: 7, siege: 2, loyalty: 55, traits: [谨慎] }
+
+  - { id: lin_qingye, name: 林庆业, country: JOSEON, attack: 7, defense: 6, maneuver: 6, siege: 4, loyalty: 85, traits: [忠贞] }
+  - { id: jin_shangxian, name: 金尚宪, country: JOSEON, attack: 4, defense: 6, maneuver: 4, siege: 3, loyalty: 90, traits: [忠贞] }
+  - { id: choi_myeonggil, name: 崔鸣吉, country: JOSEON, attack: 4, defense: 5, maneuver: 5, siege: 3, loyalty: 60, traits: [谨慎] }
+  - { id: won_doupyo, name: 元斗杓, country: JOSEON, attack: 6, defense: 6, maneuver: 6, siege: 3, loyalty: 70, traits: [善守] }
+  - { id: sim_giryom, name: 沈器远, country: JOSEON, attack: 5, defense: 5, maneuver: 5, siege: 3, loyalty: 50, traits: [谨慎] }
+
+  - { id: tokugawa_iemitsu, name: 德川家光, country: JAPAN, attack: 6, defense: 7, maneuver: 5, siege: 4, loyalty: 90, traits: [谨慎] }
+  - { id: ii_tadataka, name: 井伊直孝, country: JAPAN, attack: 7, defense: 6, maneuver: 6, siege: 4, loyalty: 85, traits: [骁勇] }
+  - { id: date_masamune, name: 伊达政宗, country: JAPAN, attack: 7, defense: 7, maneuver: 7, siege: 4, loyalty: 70, traits: [善攻] }
+  - { id: shimazu_iehi, name: 岛津家久, country: JAPAN, attack: 7, defense: 6, maneuver: 7, siege: 3, loyalty: 75, traits: [水战] }
+  - { id: mori_hidenari, name: 毛利秀就, country: JAPAN, attack: 6, defense: 6, maneuver: 6, siege: 3, loyalty: 70, traits: [善守] }
+  - { id: sakai_tadayo, name: 酒井忠世, country: JAPAN, attack: 5, defense: 6, maneuver: 5, siege: 3, loyalty: 85, traits: [谨慎] }
+
+  - { id: gushi_khan, name: 固始汗, country: TIBET, attack: 7, defense: 6, maneuver: 7, siege: 4, loyalty: 85, traits: [骁勇] }
+  - { id: dalai_lama, name: 达赖喇嘛, country: TIBET, attack: 3, defense: 6, maneuver: 4, siege: 2, loyalty: 95, traits: [忠贞] }
+  - { id: panchen_lama, name: 班禅, country: TIBET, attack: 3, defense: 6, maneuver: 4, siege: 2, loyalty: 90, traits: [忠贞] }
+  - { id: sonam_rabtan, name: 索南群培, country: TIBET, attack: 5, defense: 5, maneuver: 5, siege: 3, loyalty: 80, traits: [谨慎] }
+  - { id: galdan, name: 噶尔丹, country: TIBET, attack: 7, defense: 6, maneuver: 8, siege: 3, loyalty: 50, traits: [骁勇] }
+
+  - { id: frederik_coyett, name: 揆一, country: VOC, attack: 6, defense: 7, maneuver: 5, siege: 4, loyalty: 75, traits: [善守] }
+  - { id: antonio_van_diemen, name: 范迪门, country: VOC, attack: 6, defense: 6, maneuver: 7, siege: 4, loyalty: 80, traits: [谨慎] }
+  - { id: joan_maetsuycker, name: 马特索科尔, country: VOC, attack: 5, defense: 6, maneuver: 6, siege: 3, loyalty: 80, traits: [谨慎] }
+  - { id: francois_caron, name: 卡龙, country: VOC, attack: 4, defense: 5, maneuver: 5, siege: 3, loyalty: 75, traits: [水战] }
+  - { id: cornelis_speelman, name: 斯佩尔曼, country: VOC, attack: 6, defense: 6, maneuver: 7, siege: 3, loyalty: 80, traits: [水战] }
+
+  - { id: khabarov, name: 哈巴罗夫, country: RUSSIA, attack: 7, defense: 5, maneuver: 7, siege: 4, loyalty: 60, traits: [骁勇, 贪腐] }
+  - { id: stepanov, name: 斯捷潘诺夫, country: RUSSIA, attack: 6, defense: 5, maneuver: 6, siege: 3, loyalty: 55, traits: [骁勇] }
+  - { id: poyarkov, name: 波亚尔科夫, country: RUSSIA, attack: 6, defense: 5, maneuver: 6, siege: 3, loyalty: 55, traits: [谨慎] }
+  - { id: golovin, name: 戈洛文, country: RUSSIA, attack: 5, defense: 6, maneuver: 5, siege: 4, loyalty: 80, traits: [谨慎] }
+  - { id: albazin_voevoda, name: 雅克萨督军, country: RUSSIA, attack: 6, defense: 7, maneuver: 5, siege: 4, loyalty: 75, traits: [善守] }
+  - { id: nerchinsk_voevoda, name: 尼布楚督军, country: RUSSIA, attack: 5, defense: 6, maneuver: 5, siege: 4, loyalty: 75, traits: [善守] }
+
+  - { id: ava_king, name: 阿瓦王, country: NEU, attack: 5, defense: 6, maneuver: 5, siege: 3, loyalty: 70, traits: [善守] }
+  - { id: hue_lord, name: 顺化主, country: NEU, attack: 5, defense: 5, maneuver: 5, siege: 3, loyalty: 65, traits: [谨慎] }

@@ -1,0 +1,847 @@
+events:
+  # ── 灾荒与天时 ───────────────────────────────────────
+  - id: rand_famine_01
+    title: 赤地千里
+    desc: 陕西、河南连岁不雨，麦禾尽枯。流民扶老携幼，道殣相望。
+    historical_context: 崇祯年间华北连续旱灾，与小冰期叠加，成为民变的直接燃料。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1645-12-31 }
+        - stability: { lt: 45 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: relief
+        name: 发帑赈灾
+        tooltip: 耗银五万两，民心稍安。
+        ai_chance: 45
+        effect:
+          - add_treasury: -50000
+          - add_food: -100000
+          - add_stability: 5
+          - add_estate_loyalty: { estate: peasants, value: 6 }
+      - id: tax_cut
+        name: 缓征逋赋
+        tooltip: 国库少收，农民稍苏。
+        ai_chance: 30
+        effect:
+          - add_treasury: -25000
+          - add_estate_loyalty: { estate: peasants, value: 4 }
+          - add_estate_loyalty: { estate: gentry, value: -2 }
+      - id: ignore
+        name: 严催如故
+        tooltip: 不失岁入，但民怨沸腾。
+        ai_chance: 25
+        effect:
+          - add_estate_loyalty: { estate: peasants, value: -10 }
+          - add_modifier: { unrest_monthly: 0.5 }
+          - set_flag: famine_unrest
+
+  - id: rand_flood_01
+    title: 黄河决口
+    desc: 河决开封，漂没田庐。漕运受阻，饥民塞道。
+    historical_context: 崇祯十五年黄河决口，开封被淹，中原残破。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1645-12-31 }
+        - stability: { lt: 55 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: repair
+        name: 征夫修堤
+        ai_chance: 50
+        effect:
+          - add_treasury: -60000
+          - add_manpower: -5000
+          - add_stability: 4
+          - add_modifier: { famine_resistance: 0.05 }
+      - id: relocate
+        name: 迁民就食
+        ai_chance: 30
+        effect:
+          - add_treasury: -30000
+          - add_estate_loyalty: { estate: peasants, value: 3 }
+          - add_modifier: { unrest_monthly: 0.2 }
+      - id: neglect
+        name: 无力顾及
+        ai_chance: 20
+        effect:
+          - add_stability: -6
+          - add_estate_loyalty: { estate: peasants, value: -8 }
+
+  - id: rand_locust_01
+    title: 蝗蔽天日
+    desc: 飞蝗自东南来，所过禾稼一空。乡民击鼓逐之，不能止。
+    scope: country
+    country: any
+    trigger:
+      date: { after: 1628-01-01, before: 1645-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: buy_grain
+        name: 购粮平粜
+        ai_chance: 50
+        effect:
+          - add_treasury: -40000
+          - add_food: 60000
+          - add_stability: 3
+      - id: pray
+        name: 设坛祈禳
+        ai_chance: 25
+        effect:
+          - add_stability: 2
+          - add_mandate: 2
+          - add_treasury: -10000
+      - id: ignore
+        name: 听天由命
+        ai_chance: 25
+        effect:
+          - add_stability: -4
+          - add_estate_loyalty: { estate: peasants, value: -6 }
+
+  - id: rand_plague_01
+    title: 大疫
+    desc: 城中死者相枕，十室九空。医者束手，棺木尽绝。
+    historical_context: 崇祯末年华北鼠疫大流行，人口与军力同时崩坏。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1648-12-31 }
+        - stability: { lt: 60 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: quarantine
+        name: 隔离施药
+        ai_chance: 40
+        effect:
+          - add_treasury: -70000
+          - add_stability: 3
+          - add_modifier: { pop_growth_pct: -2 }
+      - id: temple
+        name: 设醮祈福
+        ai_chance: 30
+        effect:
+          - add_treasury: -20000
+          - add_mandate: 3
+          - add_estate_loyalty: { estate: clergy, value: 4 }
+      - id: ignore
+        name: 无力救治
+        ai_chance: 30
+        effect:
+          - add_stability: -8
+          - add_manpower: -10000
+          - add_modifier: { pop_growth_pct: -4 }
+
+  - id: rand_earthquake_01
+    title: 地动
+    desc: 京师地震，宫殿摇动，太庙鸱吻堕。朝野以为天谴。
+    scope: country
+    country: any
+    trigger:
+      date: { after: 1626-01-01, before: 1660-12-31 }
+    mtth: 900
+    fire_once: true
+    options:
+      - id: edict
+        name: 下诏罪己
+        ai_chance: 50
+        effect:
+          - add_stability: 4
+          - add_mandate: 4
+          - add_corruption: -3
+      - id: repair
+        name: 修葺宫庙
+        ai_chance: 30
+        effect:
+          - add_treasury: -50000
+          - add_stability: 2
+      - id: ignore
+        name: 不以为意
+        ai_chance: 20
+        effect:
+          - add_mandate: -4
+          - add_stability: -3
+
+  # ── 财政与阶级 ───────────────────────────────────────
+  - id: rand_corruption_01
+    title: 科道弹劾
+    desc: 御史劾奏户部堂官侵吞辽饷，牵连甚广。查则动摇，不查则民怨。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - corruption: { gte: 45 }
+        - date: { after: 1625-01-01, before: 1660-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: investigate
+        name: 严查到底
+        ai_chance: 40
+        effect:
+          - add_corruption: -8
+          - add_stability: -3
+          - add_faction_influence: { officials: -8, imperial: 5 }
+      - id: shelve
+        name: 留中不发
+        ai_chance: 40
+        effect:
+          - add_corruption: 3
+          - add_stability: 1
+          - add_faction_influence: { officials: 5 }
+      - id: purge
+        name: 借机清洗
+        ai_chance: 20
+        effect:
+          - add_corruption: -4
+          - add_stability: -5
+          - add_faction_influence: { officials: -15, imperial: 10 }
+
+  - id: rand_silver_01
+    title: 银贵钱贱
+    desc: 市上银价日高，钱价日贱。一条鞭以银计，农民完赋愈难。
+    historical_context: 17 世纪 30 年代后美洲白银流入下降，明末银钱比价剧烈波动。
+    scope: country
+    country: any
+    trigger:
+      date: { after: 1630-01-01, before: 1645-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: coin
+        name: 广铸制钱
+        ai_chance: 40
+        effect:
+          - add_modifier: { inflation_add: 3, tax_efficiency_pct: 2 }
+          - add_stability: -2
+      - id: tax_in_kind
+        name: 许以粮折银
+        ai_chance: 40
+        effect:
+          - add_treasury: -30000
+          - add_estate_loyalty: { estate: peasants, value: 5 }
+      - id: ignore
+        name: 听任市价
+        ai_chance: 20
+        effect:
+          - add_estate_loyalty: { estate: peasants, value: -6 }
+          - add_modifier: { unrest_monthly: 0.3 }
+
+  - id: rand_salt_01
+    title: 盐引壅滞
+    desc: 纲商困于积引，盐课拖欠。私盐充斥，官盐不行。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1620-01-01, before: 1660-12-31 }
+        - estate_loyalty: { merchants: { lt: 55 } }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: reform
+        name: 清理积引
+        ai_chance: 45
+        effect:
+          - add_treasury: 40000
+          - add_estate_loyalty: { estate: merchants, value: -5 }
+          - add_modifier: { tax_efficiency_pct: 2 }
+      - id: license
+        name: 增发盐引
+        ai_chance: 35
+        effect:
+          - add_treasury: 20000
+          - add_estate_loyalty: { estate: merchants, value: 4 }
+          - add_modifier: { trade_efficiency_pct: -3 }
+      - id: ignore
+        name: 维持旧额
+        ai_chance: 20
+        effect:
+          - add_treasury: -20000
+          - add_estate_loyalty: { estate: merchants, value: -3 }
+
+  - id: rand_estate_peasants_01
+    title: 农民抗税
+    desc: 乡民聚众围县衙，要求减征。为首者手持锄头，声称“不加赋则活，加赋则死”。
+    scope: estate
+    estate: peasants
+    trigger:
+      all:
+        - estate_loyalty: { peasants: { lt: 25 } }
+        - date: { after: 1625-01-01, before: 1670-12-31 }
+    mtth: 180
+    fire_once: true
+    options:
+      - id: back_down
+        name: 让步减征
+        ai_chance: 45
+        effect:
+          - add_treasury: -40000
+          - add_estate_loyalty: { estate: peasants, value: 10 }
+          - add_stability: 2
+      - id: crack_down
+        name: 派兵弹压
+        ai_chance: 55
+        effect:
+          - add_estate_loyalty: { estate: peasants, value: -12 }
+          - add_stability: -5
+          - add_modifier: { unrest_monthly: 0.4 }
+
+  - id: rand_estate_gentry_01
+    title: 绅衿抗税
+    desc: 江南士绅联名上书，称清丈扰民，实则惧隐田曝光。
+    scope: estate
+    estate: gentry
+    trigger:
+      all:
+        - estate_loyalty: { gentry: { lt: 25 } }
+        - estate_influence: { gentry: { gte: 30 } }
+    mtth: 180
+    fire_once: true
+    options:
+      - id: back_down
+        name: 暂缓清丈
+        ai_chance: 40
+        effect:
+          - add_estate_loyalty: { estate: gentry, value: 10 }
+          - add_modifier: { tax_efficiency_pct: -3 }
+      - id: crack_down
+        name: 拿问首事
+        ai_chance: 60
+        effect:
+          - add_estate_loyalty: { estate: gentry, value: -15 }
+          - add_stability: -4
+          - add_modifier: { tax_efficiency_pct: 5 }
+
+  - id: rand_estate_merchants_01
+    title: 商人罢市
+    desc: 关津抽分过重，商贾闭门罢市。城中米价一日三涨。
+    scope: estate
+    estate: merchants
+    trigger:
+      estate_loyalty: { merchants: { lt: 25 } }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: lower
+        name: 减免关税
+        ai_chance: 45
+        effect:
+          - add_treasury: -30000
+          - add_estate_loyalty: { estate: merchants, value: 10 }
+          - add_modifier: { trade_efficiency_pct: 4 }
+      - id: force
+        name: 强制开市
+        ai_chance: 55
+        effect:
+          - add_estate_loyalty: { estate: merchants, value: -12 }
+          - add_stability: -3
+
+  - id: rand_estate_soldiers_01
+    title: 兵变
+    desc: 欠饷经年，营兵鼓噪，杀参将，焚官署。
+    scope: estate
+    estate: soldiers
+    trigger:
+      all:
+        - estate_loyalty: { soldiers: { lt: 20 } }
+        - date: { after: 1625-01-01, before: 1670-12-31 }
+    mtth: 150
+    fire_once: true
+    options:
+      - id: pay
+        name: 补发欠饷
+        ai_chance: 40
+        effect:
+          - add_treasury: -80000
+          - add_estate_loyalty: { estate: soldiers, value: 12 }
+          - add_army_loyalty: 5
+      - id: suppress
+        name: 调兵镇压
+        ai_chance: 60
+        effect:
+          - add_estate_loyalty: { estate: soldiers, value: -15 }
+          - add_army_loyalty: -8
+          - add_stability: -5
+
+  - id: rand_estate_officials_01
+    title: 官员怠政
+    desc: 俸薄不足以养廉，州县官多弃印而去。政令不出衙门。
+    scope: estate
+    estate: officials
+    trigger:
+      estate_loyalty: { officials: { lt: 25 } }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: raise
+        name: 加给养廉
+        ai_chance: 45
+        effect:
+          - add_treasury: -50000
+          - add_estate_loyalty: { estate: officials, value: 10 }
+          - add_modifier: { corruption_add: -0.1 }
+      - id: punish
+        name: 严考成
+        ai_chance: 55
+        effect:
+          - add_estate_loyalty: { estate: officials, value: -10 }
+          - add_modifier: { tax_efficiency_pct: 3 }
+
+  - id: rand_estate_dynasty_01
+    title: 宗室索禄
+    desc: 藩王联名上疏，请补积欠宗禄。户部无银，宗室聚哭于宫门。
+    scope: estate
+    estate: dynasty
+    trigger:
+      estate_loyalty: { dynasty: { lt: 30 } }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: pay
+        name: 折色补发
+        ai_chance: 40
+        effect:
+          - add_treasury: -70000
+          - add_estate_loyalty: { estate: dynasty, value: 12 }
+      - id: refuse
+        name: 严旨申饬
+        ai_chance: 60
+        effect:
+          - add_estate_loyalty: { estate: dynasty, value: -12 }
+          - add_stability: -3
+
+  - id: rand_estate_nobles_01
+    title: 勋贵圈地
+    desc: 勋贵以“无主荒地”为名，圈占民田。失地农民聚众告状。
+    scope: estate
+    estate: nobles
+    trigger:
+      all:
+        - estate_influence: { nobles: { gte: 25 } }
+        - estate_loyalty: { peasants: { lt: 40 } }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: stop
+        name: 禁止圈地
+        ai_chance: 45
+        effect:
+          - add_estate_loyalty: { estate: nobles, value: -10 }
+          - add_estate_loyalty: { estate: peasants, value: 8 }
+          - add_modifier: { tax_efficiency_pct: 2 }
+      - id: allow
+        name: 默许
+        ai_chance: 55
+        effect:
+          - add_estate_loyalty: { estate: nobles, value: 8 }
+          - add_estate_loyalty: { estate: peasants, value: -8 }
+          - add_modifier: { unrest_monthly: 0.3 }
+
+  - id: rand_estate_clergy_01
+    title: 寺产争议
+    desc: 地方官请以寺产充饷，僧道聚众抗议，信众附和。
+    scope: estate
+    estate: clergy
+    trigger:
+      all:
+        - estate_loyalty: { clergy: { lt: 35 } }
+        - date: { after: 1620-01-01, before: 1670-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: seize
+        name: 没收寺产
+        ai_chance: 40
+        effect:
+          - add_treasury: 60000
+          - add_estate_loyalty: { estate: clergy, value: -20 }
+          - add_mandate: -3
+      - id: compromise
+        name: 限田留寺
+        ai_chance: 40
+        effect:
+          - add_treasury: 20000
+          - add_estate_loyalty: { estate: clergy, value: -5 }
+      - id: protect
+        name: 保护寺产
+        ai_chance: 20
+        effect:
+          - add_estate_loyalty: { estate: clergy, value: 8 }
+          - add_mandate: 2
+
+  - id: rand_estate_natives_01
+    title: 土著反抗
+    desc: 公司强征徭役，土著头人率众袭扰据点。
+    scope: estate
+    estate: custom:natives
+    country: VOC
+    trigger:
+      estate_loyalty: { custom:natives: { lt: 25 } }
+    mtth: 180
+    fire_once: true
+    options:
+      - id: negotiate
+        name: 与头人谈判
+        ai_chance: 45
+        effect:
+          - add_treasury: -30000
+          - add_estate_loyalty: { estate: custom:natives, value: 10 }
+      - id: punish
+        name: 派兵镇压
+        ai_chance: 55
+        effect:
+          - add_estate_loyalty: { estate: custom:natives, value: -12 }
+          - add_army_loyalty: 2
+          - add_modifier: { unrest_monthly: 0.4 }
+
+  # ── 军事与外交 ───────────────────────────────────────
+  - id: rand_mutiny_01
+    title: 欠饷哗变
+    desc: 军中缺饷数月，士卒劫掠村镇，声称“朝廷不给我饭吃，我自己找”。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - treasury: { lt: 50000 }
+        - estate_loyalty: { soldiers: { lt: 30 } }
+    mtth: 120
+    fire_once: true
+    options:
+      - id: pay
+        name: 借银发饷
+        ai_chance: 40
+        effect:
+          - add_treasury: -60000
+          - add_army_loyalty: 8
+          - add_estate_loyalty: { estate: soldiers, value: 8 }
+      - id: hang
+        name: 斩首示众
+        ai_chance: 60
+        effect:
+          - add_army_loyalty: -10
+          - add_stability: -4
+          - add_estate_loyalty: { estate: soldiers, value: -10 }
+
+  - id: rand_border_01
+    title: 边警
+    desc: 塞外骑兵越边墙，掠人畜。边将请增兵，户部请节费。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - is_at_war: true
+        - date: { after: 1620-01-01, before: 1670-12-31 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: reinforce
+        name: 增兵边防
+        ai_chance: 50
+        effect:
+          - add_treasury: -50000
+          - add_manpower: 5000
+          - add_modifier: { army_defense_pct: 3 }
+      - id: negotiate
+        name: 遣使议和
+        ai_chance: 30
+        effect:
+          - add_treasury: -20000
+          - add_estate_loyalty: { estate: nobles, value: 3 }
+      - id: ignore
+        name: 严旨斥责
+        ai_chance: 20
+        effect:
+          - add_stability: -3
+          - add_modifier: { devastation_add: 1 }
+
+  - id: rand_army_01
+    title: 将领跋扈
+    desc: 总兵拥兵自重，不听调遣，索饷索官。
+    scope: country
+    country: any
+    trigger:
+      estate_loyalty: { soldiers: { lt: 30 } }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: appease
+        name: 加官进爵
+        ai_chance: 45
+        effect:
+          - add_treasury: -40000
+          - add_army_loyalty: 6
+          - add_estate_loyalty: { estate: soldiers, value: 5 }
+      - id: check
+        name: 削其兵权
+        ai_chance: 40
+        effect:
+          - add_army_loyalty: -8
+          - add_stability: -4
+          - add_modifier: { army_attack_pct: -2 }
+
+  - id: rand_harvest_01
+    title: 丰年
+    desc: 风调雨顺，麦秋大熟。仓廪稍实，流民渐归。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1620-01-01, before: 1680-12-31 }
+        - stability: { gte: 40 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: store
+        name: 广积仓廪
+        ai_chance: 50
+        effect:
+          - add_food: 150000
+          - add_stability: 3
+          - add_estate_loyalty: { estate: peasants, value: 3 }
+      - id: tax
+        name: 趁机加征
+        ai_chance: 30
+        effect:
+          - add_treasury: 50000
+          - add_estate_loyalty: { estate: peasants, value: -5 }
+
+  - id: rand_scholar_01
+    title: 科场案
+    desc: 会试放榜，落第举子聚哭于贡院，指主考舞弊。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - stability: { lt: 55 }
+        - date: { after: 1620-01-01, before: 1660-12-31 }
+    mtth: 480
+    fire_once: true
+    options:
+      - id: retest
+        name: 重考
+        ai_chance: 45
+        effect:
+          - add_stability: 3
+          - add_corruption: -2
+          - add_faction_influence: { officials: -3 }
+      - id: suppress
+        name: 弹压
+        ai_chance: 55
+        effect:
+          - add_stability: -4
+          - add_faction_influence: { officials: 3 }
+
+  - id: rand_eunuch_01
+    title: 阉党复起
+    desc: 内廷宦官借矿税、监军之名重新伸手，朝臣侧目。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - corruption: { gte: 55 }
+        - date: { after: 1620-01-01, before: 1660-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: allow
+        name: 倚为耳目
+        ai_chance: 40
+        effect:
+          - add_authority: 5
+          - add_corruption: 5
+          - add_faction_influence: { eunuch: 10, donglin: -8 }
+      - id: curb
+        name: 裁抑中官
+        ai_chance: 60
+        effect:
+          - add_corruption: -5
+          - add_stability: 2
+          - add_faction_influence: { eunuch: -10, donglin: 6 }
+
+  - id: rand_trade_01
+    title: 海舶云集
+    desc: 月港、厦门海舶云集，白银与香料涌入。地方请设关抽税。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - estate_loyalty: { merchants: { gte: 50 } }
+        - date: { after: 1620-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: tax
+        name: 设关抽分
+        ai_chance: 50
+        effect:
+          - add_treasury: 50000
+          - add_estate_loyalty: { estate: merchants, value: -4 }
+          - add_modifier: { trade_efficiency_pct: 4 }
+      - id: open
+        name: 许其自由通商
+        ai_chance: 40
+        effect:
+          - add_estate_loyalty: { estate: merchants, value: 8 }
+          - add_modifier: { trade_efficiency_pct: 8 }
+          - add_modifier: { unrest_monthly: 0.1 }
+
+  - id: rand_imperial_01
+    title: 祥瑞
+    desc: 地方献白鹿、嘉禾，礼部请上表称贺。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - stability: { gte: 50 }
+        - date: { after: 1620-01-01, before: 1680-12-31 }
+    mtth: 720
+    fire_once: true
+    options:
+      - id: celebrate
+        name: 大宴群臣
+        ai_chance: 50
+        effect:
+          - add_treasury: -20000
+          - add_stability: 4
+          - add_mandate: 3
+      - id: decline
+        name: 却而不受
+        ai_chance: 50
+        effect:
+          - add_mandate: 2
+          - add_corruption: -2
+          - add_stability: 1
+
+  - id: hist_small_ice_age
+    title: 小冰期
+    desc: 连岁奇寒，江河封冻，农时尽失。天时不再，人事亦尽。
+    historical_context: 17 世纪小冰期与明末灾荒叠加，是结构性崩溃的气候背景。
+    scope: country
+    country: any
+    trigger:
+      date: { after: 1638-01-01, before: 1643-12-31 }
+    mtth: 60
+    fire_once: true
+    options:
+      - id: adapt
+        name: 推广耐寒作物
+        ai_chance: 45
+        effect:
+          - add_treasury: -50000
+          - add_modifier: { food_output_pct: -3, famine_resistance: 0.1 }
+      - id: pray
+        name: 祈禳
+        ai_chance: 30
+        effect:
+          - add_mandate: -3
+          - add_stability: -2
+      - id: ignore
+        name: 听天由命
+        ai_chance: 25
+        effect:
+          - add_modifier: { food_output_pct: -8, unrest_monthly: 0.3 }
+          - add_stability: -4
+
+  - id: hist_silver_crisis
+    title: 白银流入骤减
+    desc: 马尼拉大帆船贸易萎缩，日本银矿减产。市上银根奇紧，百业萧条。
+    historical_context: 17 世纪 30 年代全球白银流动变化，对明末财政造成连锁冲击。
+    scope: country
+    country: any
+    trigger:
+      date: { after: 1630-01-01, before: 1645-12-31 }
+    mtth: 45
+    fire_once: true
+    options:
+      - id: silver_tax
+        name: 以银为准，严征逋赋
+        ai_chance: 40
+        effect:
+          - add_treasury: 40000
+          - add_estate_loyalty: { estate: peasants, value: -8 }
+          - add_modifier: { tax_efficiency_pct: -3 }
+      - id: kind_tax
+        name: 允以实物折纳
+        ai_chance: 40
+        effect:
+          - add_treasury: -30000
+          - add_estate_loyalty: { estate: peasants, value: 5 }
+          - add_modifier: { trade_efficiency_pct: 2 }
+      - id: ignore
+        name: 不加干预
+        ai_chance: 20
+        effect:
+          - add_modifier: { inflation_add: 4, trade_efficiency_pct: -4 }
+
+  - id: hist_songjin
+    title: 松锦前线
+    desc: 松山、锦州之间，明清主力相持。洪承畴被困，援军逡巡。
+    historical_context: 1640–1642 年松锦大战，明九边精锐尽丧，关外局势不可逆转。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1643-12-31 }
+        - is_at_war: true
+    mtth: 30
+    fire_once: true
+    options:
+      - id: reinforce
+        name: 倾国增援
+        ai_chance: 45
+        effect:
+          - add_treasury: -150000
+          - add_manpower: 20000
+          - add_army_loyalty: 5
+          - set_flag: songjin_reinforced
+      - id: withdraw
+        name: 收缩防线
+        ai_chance: 35
+        effect:
+          - add_stability: -5
+          - add_modifier: { army_defense_pct: 4 }
+          - set_flag: songjin_withdrawn
+      - id: negotiate
+        name: 遣使议和
+        ai_chance: 20
+        effect:
+          - add_treasury: -50000
+          - add_relation: { target: QING, value: 10 }
+          - set_flag: songjin_negotiated
+
+  - id: hist_three_feudatories
+    title: 三藩之乱
+    desc: 吴三桂起兵云南，耿精忠、尚可喜响应。天下震动。
+    historical_context: 1673–1681 年三藩之乱，是清朝入关后最大内部危机。
+    scope: country
+    country: QING
+    trigger:
+      date: { after: 1673-01-01, before: 1682-12-31 }
+    mtth: 30
+    fire_once: true
+    options:
+      - id: crush
+        name: 坚决削藩
+        ai_chance: 60
+        effect:
+          - add_treasury: -300000
+          - add_stability: -10
+          - add_manpower: 50000
+          - set_flag: three_feudatories_crushed
+      - id: negotiate
+        name: 招抚三藩
+        ai_chance: 40
+        effect:
+          - add_treasury: -150000
+          - add_stability: 3
+          - add_estate_loyalty: { estate: nobles, value: 5 }
+          - set_flag: three_feudatories_negotiated
