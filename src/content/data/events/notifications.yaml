@@ -1,0 +1,46 @@
+events:
+  - id: focus_completed
+    title: 国策告成
+    desc: 一项长期国策终于完成，朝廷上下等待你的下一步安排。
+    historical_context: 国策不是按钮，而是数年乃至十数年的政治投注；完成时需要在朝堂上给出新的方向。
+    scope: country
+    country: any
+    trigger:
+      date: { before: 1616-01-01 }
+    fire_once: false
+    options:
+      - id: continue
+        name: 继续推行
+        tooltip: 记录国策成果，继续处理朝政。
+        ai_chance: 60
+        effect:
+          - add_stability: 1
+      - id: quiet
+        name: 低调收尾
+        tooltip: 不事张扬，避免朝议反复。
+        ai_chance: 40
+        effect:
+          - add_stability: 0
+
+  - id: research_completed
+    title: 新学告成
+    desc: 一项技术研究已经完成，工匠与官员正在等待推广或封存的决定。
+    historical_context: 明清之际的技术扩散依赖朝廷、军镇与工匠网络，研究完成只是第一步。
+    scope: country
+    country: any
+    trigger:
+      date: { before: 1616-01-01 }
+    fire_once: false
+    options:
+      - id: promote
+        name: 推广新法
+        tooltip: 记录研究成果，继续处理朝政。
+        ai_chance: 60
+        effect:
+          - add_stability: 1
+      - id: archive
+        name: 封存新法
+        tooltip: 暂不推广，留待后用。
+        ai_chance: 40
+        effect:
+          - add_stability: 0

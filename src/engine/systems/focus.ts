@@ -2,6 +2,7 @@ import type { ContentIndex, Focus } from '../../content/types';
 import { evaluateTrigger } from '../rules/triggers';
 import { applyEffects } from '../rules/effects';
 import { aggregateModifiers } from '../rules/modifiers';
+import { fireEvent } from './events';
 import type { GameState } from '../state/types';
 
 export function isFocusAvailable(state: GameState, content: ContentIndex, tag: string, focus: Focus): boolean {
@@ -21,6 +22,20 @@ export function isFocusAvailable(state: GameState, content: ContentIndex, tag: s
 export function availableFocuses(state: GameState, content: ContentIndex, tag: string): Focus[] {
   const focuses = content.focusesByCountry.get(tag) ?? [];
   return focuses.filter(focus => isFocusAvailable(state, content, tag, focus));
+}
+
+export function cancelFocus(state: GameState, tag: string): boolean {
+  const nation = state.countries[tag];
+  if (!nation?.focus) return false;
+  nation.focus = null;
+  state.log.push({
+    day: state.day,
+    category: 'politics',
+    country: tag,
+    text: '取消当前国策，进度清零',
+    severity: 'info',
+  });
+  return true;
 }
 
 export function startFocus(state: GameState, content: ContentIndex, tag: string, focusId: string): boolean {
@@ -62,5 +77,7 @@ export function advanceFocus(state: GameState, content: ContentIndex): void {
       text: `国策完成：${focus.name}`,
       severity: 'info',
     });
+    const completion = content.events.get('focus_completed');
+    if (completion) fireEvent(state, content, completion, nation.tag);
   }
 }

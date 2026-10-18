@@ -39,6 +39,12 @@ export function ResearchPanel() {
             <div className="row">
               <span>{tech.name}</span>
               <b>{Math.floor(slot.progress)} / {tech.costDays} 日</b>
+              <button
+                className="research-cancel"
+                onClick={() => command({ type: 'research.cancel', techId: slot.techId })}
+              >
+                取消
+              </button>
             </div>
             <progress value={progress} max={1} />
           </div>

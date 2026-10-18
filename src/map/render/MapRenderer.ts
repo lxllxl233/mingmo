@@ -873,9 +873,9 @@ export class MapRenderer {
     this.prefectureBorderLayer.clear();
     this.countryBorderLayer.clear();
     const scale = this.world.scale.x || 1;
-    const countryWidth = Math.max(0.1, 3.2 / scale);
-    const prefectureWidth = Math.max(0.05, 1.5 / scale);
-    const provinceWidth = Math.max(0.03, 0.65 / scale);
+    const countryWidth = Math.max(0.1, 3.4 / scale);
+    const prefectureWidth = Math.max(0.06, 2.4 / scale);
+    const provinceWidth = Math.max(0.025, 0.38 / scale);
     for (const edge of this.edges) {
       const a = this.state.provinces[edge.a];
       if (!a || edge.b === null) continue;
@@ -886,10 +886,10 @@ export class MapRenderer {
           .stroke({ width: countryWidth, color: 0x1f1913, alpha: 1 });
       } else if (this.content.provinces.get(edge.a)?.prefectureId !== this.content.provinces.get(edge.b)?.prefectureId) {
         this.prefectureBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: prefectureWidth, color: 0x5a4a32, alpha: 0.78 });
+          .stroke({ width: prefectureWidth, color: 0x2f2418, alpha: 0.92 });
       } else {
         this.provinceBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: provinceWidth, color: 0x5a5040, alpha: 0.48 });
+          .stroke({ width: provinceWidth, color: 0x6a5b48, alpha: 0.32 });
       }
     }
   }
@@ -1021,15 +1021,17 @@ export class MapRenderer {
       const text = new Text({
         text: name,
         style: new TextStyle({
-          fontFamily: '"Noto Serif SC", "Songti SC", serif',
+          fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
           fontSize: 38,
-          fill: 0x3a3226,
-          stroke: { color: 0xf2ead8, width: 2.4 },
+          fontWeight: '600',
+          fill: 0x2e261c,
+          stroke: { color: 0xf7efdf, width: 2.4 },
         }),
       });
       text.anchor.set(0.5);
+      text.resolution = 2;
       text.position.set(group.x / Math.max(1, group.count), group.y / Math.max(1, group.count));
-      this.provinceLabels.set(text, 14);
+      this.provinceLabels.set(text, 17);
       this.provinceLabelArea.set(text, group.area);
       this.provinceLabelLayer.addChild(text);
     }
@@ -1046,15 +1048,17 @@ export class MapRenderer {
       const text = new Text({
         text: def.name,
         style: new TextStyle({
-          fontFamily: '"Noto Serif SC", "Songti SC", serif',
+          fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
           fontSize: 32,
-          fill: 0x5a4c38,
-          stroke: { color: 0xf2ead8, width: 2 },
+          fontWeight: '600',
+          fill: 0x3a3024,
+          stroke: { color: 0xf7efdf, width: 2 },
         }),
       });
       text.anchor.set(0.5);
+      text.resolution = 3;
       text.position.set(centroid.x, centroid.y);
-      this.localLabels.set(text, 12);
+      this.localLabels.set(text, 18);
       this.localLabelArea.set(text, labelArea(points));
       this.localLabelLayer.addChild(text);
     }
@@ -1066,7 +1070,7 @@ export class MapRenderer {
     const used: Array<{ x: number; y: number }> = [];
     const provinceCandidates = [...this.provinceLabels.entries()]
       .sort((a, b) => (this.provinceLabelArea.get(b[0]) ?? 0) - (this.provinceLabelArea.get(a[0]) ?? 0));
-    const minProvinceDistance = 110 / scale;
+    const minProvinceDistance = 120 / scale;
     for (const [label, target] of provinceCandidates) {
       label.scale.set(target / (38 * scale));
       label.visible = false;
@@ -1079,7 +1083,7 @@ export class MapRenderer {
     const usedLocal: Array<{ x: number; y: number }> = [];
     const localCandidates = [...this.localLabels.entries()]
       .sort((a, b) => (this.localLabelArea.get(b[0]) ?? 0) - (this.localLabelArea.get(a[0]) ?? 0));
-    const minLocalDistance = 55 / scale;
+    const minLocalDistance = 75 / scale;
     for (const [label, target] of localCandidates) {
       label.scale.set(target / (32 * scale));
       label.visible = false;

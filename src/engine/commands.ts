@@ -4,8 +4,8 @@ import { applyEffects } from './rules/effects';
 import { declareWar, makePeace } from './rules/war';
 import { demandTribute } from './rules/vassals';
 import type { GameState } from './state/types';
-import { startFocus } from './systems/focus';
-import { startResearch } from './systems/research';
+import { cancelFocus, startFocus } from './systems/focus';
+import { cancelResearch, startResearch } from './systems/research';
 import { startTaxReform } from './systems/tax';
 import { chooseEventOption } from './systems/events';
 import { setArmyPath } from './systems/military';
@@ -13,8 +13,10 @@ import { enqueueTraining } from './systems/training';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
+  | { type: 'focus.cancel' }
   | { type: 'event.choose'; eventId: string; optionId: string }
   | { type: 'research.start'; techId: string }
+  | { type: 'research.cancel'; techId: string }
   | { type: 'tax.setLaw'; estate: string; lawId: string }
   | { type: 'decision.take'; decisionId: string }
   | { type: 'army.recruit'; province: string; template: string; size: number }
@@ -72,6 +74,9 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     case 'focus.start':
       if (!startFocus(state, content, tag, command.focusId)) throw new CommandError('focus unavailable');
       break;
+    case 'focus.cancel':
+      if (!cancelFocus(state, tag)) throw new CommandError('no active focus');
+      break;
     case 'event.choose':
       if (!chooseEventOption(state, content, command.eventId, command.optionId)) {
         throw new CommandError('event option unavailable');
@@ -79,6 +84,9 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       break;
     case 'research.start':
       if (!startResearch(state, content, tag, command.techId)) throw new CommandError('research unavailable');
+      break;
+    case 'research.cancel':
+      if (!cancelResearch(state, tag, command.techId)) throw new CommandError('research not active');
       break;
     case 'tax.setLaw':
       if (!startTaxReform(state, content, tag, command.estate, command.lawId, 50)) {

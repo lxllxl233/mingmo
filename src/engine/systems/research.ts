@@ -2,6 +2,7 @@ import type { ContentIndex, Tech } from '../../content/types';
 import { aggregateModifiers } from '../rules/modifiers';
 import { applyEffects } from '../rules/effects';
 import { evaluateTrigger } from '../rules/triggers';
+import { fireEvent } from './events';
 import type { GameState } from '../state/types';
 
 export function isTechAvailable(state: GameState, content: ContentIndex, tag: string, tech: Tech): boolean {
@@ -32,6 +33,22 @@ export function startResearch(state: GameState, content: ContentIndex, tag: stri
     category: 'politics',
     country: tag,
     text: `开始研究：${tech.name}`,
+    severity: 'info',
+  });
+  return true;
+}
+
+export function cancelResearch(state: GameState, tag: string, techId: string): boolean {
+  const nation = state.countries[tag];
+  if (!nation) return false;
+  const slot = nation.research.find(entry => entry.techId === techId);
+  if (!slot) return false;
+  nation.research = nation.research.filter(entry => entry.techId !== techId);
+  state.log.push({
+    day: state.day,
+    category: 'politics',
+    country: tag,
+    text: '取消一项研究，进度清零',
     severity: 'info',
   });
   return true;
@@ -69,6 +86,8 @@ export function advanceResearch(state: GameState, content: ContentIndex): void {
           text: `研究完成：${tech.name}`,
           severity: 'info',
         });
+        const completion = content.events.get('research_completed');
+        if (completion) fireEvent(state, content, completion, nation.tag);
       }
     }
   }

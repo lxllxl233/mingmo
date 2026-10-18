@@ -11,6 +11,7 @@ export function formatNumber(value: number, digits = 0): string {
 const MODIFIER_LABELS: Record<string, string> = {
   tax_efficiency_pct: '税收效率',
   stability_monthly: '稳定/月',
+  political_power_monthly: '政治点/月',
   corruption_drift: '腐败/月',
   corruption_monthly: '腐败/月',
   mandate_monthly: '天命/月',

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Focus } from '../../content/types';
 import { isFocusAvailable } from '../../engine/systems/focus';
 import { useGameStore } from '../state/store';
@@ -7,6 +8,7 @@ export function FocusPanel() {
   const game = useGameStore(state => state.game);
   const content = useGameStore(state => state.content);
   const command = useGameStore(state => state.command);
+  const [branchChoice, setBranchChoice] = useState<string | null>(null);
   if (!game) return null;
   const country = game.countries[game.playerTag];
   if (!country) return null;
@@ -20,6 +22,9 @@ export function FocusPanel() {
   const active = country.focus ? content.focuses.get(country.focus.id) : null;
   const completedCount = focuses.filter(focus => country.completedFocuses.includes(focus.id)).length;
   const activeProgress = active ? Math.min(1, (country.focus?.progress ?? 0) / Math.max(1, active.costDays)) : 0;
+  const branchEntries = [...branches.entries()];
+  const selectedBranch = branchChoice && branches.has(branchChoice) ? branchChoice : branchEntries[0]?.[0] ?? null;
+  const selectedNodes = selectedBranch ? branches.get(selectedBranch) ?? [] : [];
 
   return (
     <div>
@@ -38,44 +43,66 @@ export function FocusPanel() {
             <div className="focus-progress-label">
               <span>{active.name}</span>
               <b>{Math.floor(country.focus?.progress ?? 0)} / {active.costDays} 日</b>
+              <button className="focus-cancel" onClick={() => command({ type: 'focus.cancel' })}>取消国策</button>
             </div>
             <progress className="focus-progress" value={activeProgress} max={1} />
           </>
         )}
       </div>
-      <div className="focus-branches" style={{ padding: '0 16px 24px' }}>
-        {[...branches.entries()].map(([branch, nodes]) => (
-          <div className="focus-branch" key={branch}>
-            <h3>{branch}</h3>
-            {nodes.sort((a, b) => a.y - b.y).map(focus => {
-              const completed = country.completedFocuses.includes(focus.id);
-              const current = country.focus?.id === focus.id;
-              const available = isFocusAvailable(game, content, country.tag, focus);
-              const status = completed ? 'completed' : current ? 'active' : available ? 'available' : 'locked';
-              const missing = focus.prerequisites.filter(id => !country.completedFocuses.includes(id));
-              return (
-                <div
-                  key={focus.id}
-                  className={`focus-node ${status}`}
-                  onClick={() => {
-                    if (available) command({ type: 'focus.start', focusId: focus.id });
-                  }}
-                  title={focus.desc}
-                >
-                  <div className="fname">{focus.name}</div>
-                  <div className="fmeta">
+      <div className="focus-tabs">
+        {branchEntries.map(([branch, nodes]) => {
+          const done = nodes.filter(focus => country.completedFocuses.includes(focus.id)).length;
+          return (
+            <button
+              key={branch}
+              className={branch === selectedBranch ? 'active' : ''}
+              onClick={() => setBranchChoice(branch)}
+            >
+              {branch}
+              <small>{done}/{nodes.length}</small>
+            </button>
+          );
+        })}
+      </div>
+      <div className="focus-branch-panel">
+        <h3>{selectedBranch ?? '国策'}</h3>
+        <div className="focus-card-grid">
+          {selectedNodes.sort((a, b) => a.y - b.y).map(focus => {
+            const completed = country.completedFocuses.includes(focus.id);
+            const current = country.focus?.id === focus.id;
+            const available = isFocusAvailable(game, content, country.tag, focus);
+            const status = completed ? 'completed' : current ? 'active' : available ? 'available' : 'locked';
+            const missing = focus.prerequisites.filter(id => !country.completedFocuses.includes(id));
+            return (
+              <div
+                key={focus.id}
+                className={`focus-card ${status}`}
+                onClick={() => {
+                  if (available) command({ type: 'focus.start', focusId: focus.id });
+                }}
+              >
+                <div className="focus-card-head">
+                  <span className="focus-card-name">{focus.name}</span>
+                  <span className="focus-card-status">
                     {completed ? '已完成' : current ? `进行中 ${Math.floor(country.focus?.progress ?? 0)}/${focus.costDays}` : `${focus.costDays} 日`}
-                  </div>
-                  {missing.length > 0 && <div className="fmeta">缺：{missing.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>}
-                  {focus.mutuallyExclusive.length > 0 && (
-                    <div className="fmeta">互斥：{focus.mutuallyExclusive.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>
-                  )}
-                  <div className="fmeta">{effectsSummary(focus.completionEffect)}</div>
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        ))}
+                {focus.desc && <div className="focus-card-desc">{focus.desc}</div>}
+                {missing.length > 0 && <div className="focus-card-meta">前置：{missing.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>}
+                {focus.mutuallyExclusive.length > 0 && (
+                  <div className="focus-card-meta">互斥：{focus.mutuallyExclusive.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>
+                )}
+                <div className="focus-card-effect">{effectsSummary(focus.completionEffect)}</div>
+                {current && (
+                  <button className="focus-cancel" onClick={event => {
+                    event.stopPropagation();
+                    command({ type: 'focus.cancel' });
+                  }}>取消国策（进度清零）</button>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

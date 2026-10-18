@@ -3,7 +3,7 @@ import { areAtWar } from '../../engine/rules/war';
 import { relationKey } from '../../engine/state/types';
 import { controlledProvinceCount, ownedProvinceCount } from '../../engine/rules/geography';
 import { useGameStore } from '../state/store';
-import { formatNumber } from '../format';
+import { formatNumber, effectsSummary } from '../format';
 import { LeaderPortrait } from './LeaderPortrait';
 import { CountryFlag } from './CountryFlag';
 
@@ -97,6 +97,7 @@ export function CountryPanel() {
   const owned = Object.values(game.provinces).filter(province => province.owner === tag);
   const controlledProvinces = controlledProvinceCount(game, content, tag);
   const ownedProvinces = ownedProvinceCount(game, content, tag);
+  const activeFocus = country.focus ? content.focuses.get(country.focus.id) : null;
   const population = controlled.reduce((sum, province) => sum + province.population, 0);
   const armies = Object.values(game.armies).filter(army => army.tag === tag);
   const strength = armies.reduce((sum, army) => sum + army.composition.infantry
@@ -178,6 +179,26 @@ export function CountryPanel() {
         <div className="country-stat"><span>腐败 / 皇权</span><strong>{Math.round(country.corruption)} / {Math.round(country.authority)}</strong></div>
         <div className="country-stat"><span>军心 / 战争疲劳</span><strong>{Math.round(country.armyLoyalty)} / {Math.round(country.warExhaustion)}</strong></div>
         <div className="country-stat"><span>军队 / 兵力</span><strong>{armies.length} 支 / {formatNumber(strength)}</strong></div>
+      </section>
+
+      <section className="country-focus-card">
+        <h3>当前国策</h3>
+        {activeFocus && country.focus ? (
+          <>
+            <div className="country-focus-head">
+              <b>{activeFocus.name}</b>
+              <span>{Math.floor(country.focus.progress)} / {activeFocus.costDays} 日</span>
+            </div>
+            <progress value={Math.min(1, country.focus.progress / Math.max(1, activeFocus.costDays))} max={1} />
+            <p className="country-focus-effect">效果：{effectsSummary(activeFocus.completionEffect)}</p>
+            <p className="muted">{activeFocus.desc}</p>
+            {tag === game.playerTag && (
+              <button onClick={() => command({ type: 'focus.cancel' })}>取消国策（进度清零）</button>
+            )}
+          </>
+        ) : (
+          <p className="muted">当前没有进行中的国策。打开“国策”选择新的方向。</p>
+        )}
       </section>
 
       <div className="diplo-self">

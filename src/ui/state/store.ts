@@ -149,7 +149,12 @@ export const useGameStore = create<UiStore>((set, get) => ({
     }
     advanceDay(game, content);
     const next = { ...game };
-    set({ game: next, version: get().version + 1 });
+    const pendingAfterTick = next.pendingEvents.some(event => event.country === next.playerTag);
+    if (pendingAfterTick) {
+      set({ game: next, version: get().version + 1, speedBeforeEvent: speed, speed: 0 });
+    } else {
+      set({ game: next, version: get().version + 1 });
+    }
     if (isYearStart(game.day)) {
       try {
         saveLocal('auto', next);
