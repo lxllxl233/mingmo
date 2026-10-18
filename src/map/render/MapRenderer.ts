@@ -25,9 +25,6 @@ interface ArmyMarker {
   stackScale: number;
 }
 
-const CANVAS_WIDTH = 1000;
-const CANVAS_HEIGHT = 800;
-
 const TERRAIN_TINT: Record<string, { color: number; alpha: number }> = {
   plains: { color: 0x8a9a5a, alpha: 0.05 },
   hills: { color: 0x8a7444, alpha: 0.12 },
@@ -110,6 +107,7 @@ export class MapRenderer {
   private selectedArmy: string | null = null;
   private hoveredProvince: string | null = null;
   private diplomaticMode = false;
+  private diplomaticAnchor: string | null = null;
   private fitScale = 1;
   private ownerSignature = '';
   private hasDrawn = false;
@@ -133,8 +131,7 @@ export class MapRenderer {
     const app = new Application();
     await app.init({
       background: 0xd6ded5,
-      width: CANVAS_WIDTH,
-      height: CANVAS_HEIGHT,
+      resizeTo: this.host,
       antialias: true,
       autoDensity: true,
       resolution: Math.min(2, window.devicePixelRatio || 1),
@@ -193,8 +190,8 @@ export class MapRenderer {
       }
       if (points.length < 6) continue;
       this.otherLayer.poly(points)
-        .fill({ color: 0xd9d4c8, alpha: 1 })
-        .stroke({ width: 0.09, color: 0x9b9588, alpha: 0.9 });
+        .fill({ color: 0xf2efe6, alpha: 1 })
+        .stroke({ width: 0.09, color: 0xb8b2a4, alpha: 0.9 });
       const text = new Text({
         text: region.name,
         style: new TextStyle({
@@ -467,6 +464,7 @@ export class MapRenderer {
       if (province) this.onContextProvince(province);
     };
     app.canvas.addEventListener('contextmenu', this.contextHandler);
+    app.renderer.on('resize', () => this.fit());
   }
 
   private provinceAt(screenX: number, screenY: number): string | null {
@@ -497,16 +495,19 @@ export class MapRenderer {
 
   private fillColor(tag: string): number {
     if (!this.diplomaticMode || !this.state) return this.colorOf(tag);
-    if (tag === this.state.playerTag) return 0xe0c26a;
-    if (areAtWar(this.state, this.state.playerTag, tag)) return 0xa33a32;
-    const relation = this.state.relations[relationKey(this.state.playerTag, tag)] ?? 0;
+    const anchor = this.diplomaticAnchor ?? this.state.playerTag;
+    if (tag === anchor) return 0xe0c26a;
+    if (areAtWar(this.state, anchor, tag)) return 0xa33a32;
+    const relation = this.state.relations[relationKey(anchor, tag)] ?? 0;
     if (relation >= 20) return 0x3f6f9a;
     return 0x8a8578;
   }
 
-  setDiplomaticMode(enabled: boolean): void {
-    if (this.diplomaticMode === enabled) return;
+  setDiplomaticMode(enabled: boolean, anchor: string | null): void {
+    const nextAnchor = anchor ?? null;
+    if (this.diplomaticMode === enabled && this.diplomaticAnchor === nextAnchor) return;
     this.diplomaticMode = enabled;
+    this.diplomaticAnchor = nextAnchor;
     this.ownerSignature = '';
     if (this.state) this.redrawMap();
   }
@@ -684,6 +685,7 @@ export class MapRenderer {
     if (!this.state) return;
     this.trailLayer.clear();
     for (const army of Object.values(this.state.armies)) {
+      if (army.tag !== this.state.playerTag) continue;
       const selected = army.id === this.selectedArmy;
       if (!selected && army.movePath.length === 0) continue;
       const color = this.colorOf(army.tag);
@@ -862,6 +864,8 @@ export class MapRenderer {
         const offset = offsets[index] ?? { x: 0, y: 0 };
         marker.container.position.set(centroid.x + offset.x, centroid.y + offset.y);
         marker.container.zIndex = this.selectedArmy === army.id ? 10 : 0;
+        marker.container.eventMode = army.tag === this.state?.playerTag ? 'static' : 'none';
+        marker.container.cursor = army.tag === this.state?.playerTag ? 'pointer' : 'default';
         marker.selection.visible = this.selectedArmy === army.id;
         marker.stackScale = ordered.length > 4 ? 0.78 : 1;
         marker.label.text = strengthLabel(army);

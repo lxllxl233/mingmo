@@ -89,21 +89,16 @@ export function CountryPanel() {
   const wars = Object.values(game.wars).filter(war => war.attacker === tag || war.defender === tag);
   const playerWar = wars.find(war => war.attacker === game.playerTag || war.defender === game.playerTag);
   const isPlayer = tag === game.playerTag;
-  const relationToPlayer = tag === game.playerTag
+  const playerRelation = isPlayer
     ? 100
     : game.relations[relationKey(game.playerTag, tag)] ?? 0;
   const atWarWithPlayer = !isPlayer && areAtWar(game, game.playerTag, tag);
-  const statusToPlayer = atWarWithPlayer ? '交战' : relationToPlayer >= 20 ? '友好' : '中立';
-  const statusColor = isPlayer
-    ? '#e0c26a'
-    : atWarWithPlayer
-      ? '#a33a32'
-      : relationToPlayer >= 20 ? '#3f6f9a' : '#8a8578';
+  const statusToPlayer = atWarWithPlayer ? '交战' : playerRelation >= 20 ? '友好' : '中立';
   const diplomacy = Object.values(game.countries)
-    .filter(country => country.alive && country.tag !== game.playerTag)
+    .filter(country => country.alive && country.tag !== tag)
     .map(country => {
-      const relation = game.relations[relationKey(game.playerTag, country.tag)] ?? 0;
-      const war = areAtWar(game, game.playerTag, country.tag);
+      const relation = game.relations[relationKey(tag, country.tag)] ?? 0;
+      const war = areAtWar(game, tag, country.tag);
       return {
         tag: country.tag,
         name: content.countries.get(country.tag)?.name ?? country.tag,
@@ -147,14 +142,14 @@ export function CountryPanel() {
       </section>
 
       <div className="diplo-self">
-        <span className="dot" style={{ background: statusColor }} />
-        <span>{isPlayer ? '我国' : `对我国：${statusToPlayer}（关系 ${relationToPlayer}）`}</span>
+        <span className="dot" style={{ background: '#e0c26a' }} />
+        <span>{isPlayer ? '本国' : `本国 · 与我国：${statusToPlayer}（${playerRelation}）`}</span>
       </div>
       <div className="diplo-legend">
         <span><i className="dot war" />交战</span>
         <span><i className="dot friendly" />友好</span>
         <span><i className="dot neutral" />中立</span>
-        <span className="muted">地图按对我国关系着色</span>
+        <span className="muted">地图按 {def.name} 的关系着色</span>
       </div>
 
       <section>

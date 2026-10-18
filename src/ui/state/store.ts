@@ -12,6 +12,7 @@ import { sound } from '../../app/audio/sound';
 export type PanelKey =
   | 'province'
   | 'country'
+  | 'army'
   | 'estates'
   | 'budget'
   | 'focus'
@@ -49,6 +50,7 @@ interface UiStore {
   panel: PanelKey | null;
   countryFocus: string | null;
   diplomaticMode: boolean;
+  diplomaticAnchor: string | null;
   selectedProvince: string | null;
   selectedArmy: string | null;
   message: string | null;
@@ -76,6 +78,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   panel: null,
   countryFocus: null,
   diplomaticMode: false,
+  diplomaticAnchor: null,
   selectedProvince: null,
   selectedArmy: null,
   message: null,
@@ -90,6 +93,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       panel: null,
       countryFocus: null,
       diplomaticMode: false,
+      diplomaticAnchor: null,
       selectedProvince: game.countries[tag]?.capital ?? null,
       selectedArmy: null,
       message: null,
@@ -139,25 +143,54 @@ export const useGameStore = create<UiStore>((set, get) => ({
   selectProvince: provinceId => {
     const state = get();
     sound.play('click');
+    if (state.selectedArmy) {
+      set({
+        selectedArmy: null,
+        selectedProvince: provinceId,
+        countryFocus: null,
+        diplomaticMode: false,
+        diplomaticAnchor: null,
+        panel: provinceId ? 'province' : null,
+      });
+      return;
+    }
     if (state.panel === 'military') {
       set({ selectedProvince: provinceId });
       return;
     }
-    set({ selectedProvince: provinceId, selectedArmy: null, countryFocus: null, diplomaticMode: false, panel: provinceId ? 'province' : null });
+    set({ selectedProvince: provinceId, selectedArmy: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, panel: provinceId ? 'province' : null });
   },
   selectArmy: armyId => {
+    const { game } = get();
+    if (armyId && (!game || game.armies[armyId]?.tag !== game.playerTag)) {
+      sound.play('error');
+      set({ message: '只能选择本国军队' });
+      return;
+    }
     sound.play('click');
-    set({ selectedArmy: armyId, panel: 'military', countryFocus: null, diplomaticMode: false });
+    set({
+      selectedArmy: armyId,
+      panel: armyId ? 'army' : null,
+      countryFocus: null,
+      diplomaticMode: false,
+      diplomaticAnchor: null,
+    });
   },
   openCountry: tag => {
     sound.play('click');
-    set({ countryFocus: tag, diplomaticMode: true, panel: 'country', selectedArmy: null });
+    set({
+      countryFocus: tag,
+      diplomaticMode: true,
+      diplomaticAnchor: tag,
+      panel: 'country',
+      selectedArmy: null,
+    });
   },
   moveArmyTo: provinceId => {
     const { game, selectedArmy } = get();
     if (!game || !selectedArmy) return false;
     const army = game.armies[selectedArmy];
-    if (!army) return false;
+    if (!army || army.tag !== game.playerTag) return false;
     if (army.province === provinceId) {
       set({ message: '军团已在目标省份' });
       return false;
@@ -170,8 +203,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
     }
     return get().command({ type: 'army.move', armyId: selectedArmy, path });
   },
-  openPanel: panel => set({ panel, diplomaticMode: false }),
-  closePanel: () => set({ panel: null, diplomaticMode: false }),
+  openPanel: panel => set({ panel, diplomaticMode: false, diplomaticAnchor: null }),
+  closePanel: () => set({ panel: null, diplomaticMode: false, diplomaticAnchor: null }),
   dismissMessage: () => set({ message: null }),
   save: slot => {
     const { game } = get();
@@ -196,6 +229,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
         panel: null,
         countryFocus: null,
         diplomaticMode: false,
+        diplomaticAnchor: null,
         selectedProvince: game.countries[game.playerTag]?.capital ?? null,
         selectedArmy: null,
         message: `已读取 ${slot}`,
@@ -205,5 +239,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, panel: null, countryFocus: null, diplomaticMode: false, selectedProvince: null, selectedArmy: null, message: null }),
+  reset: () => set({ game: null, speed: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, selectedProvince: null, selectedArmy: null, message: null }),
 }));

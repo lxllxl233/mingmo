@@ -105,19 +105,15 @@ input, select {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: #cfd9d2;
 }
 .map-host canvas {
   display: block;
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 1;
-  width: auto !important;
-  height: auto !important;
-  max-width: 100%;
-  max-height: 100%;
+  width: 100% !important;
+  height: 100% !important;
 }
 .map-grain {
   position: absolute;
@@ -277,3 +273,13 @@ input, select {
 .diplo-row:hover, .diplo-row.active { background: rgba(184,137,46,.12); }
 .diplo-row .muted { margin-left: auto; }
 .diplo-row b { min-width: 28px; text-align: right; font-weight: 600; }
+
+.army-panel { overflow-y: auto; }
+.general-card { display: flex; gap: 12px; align-items: flex-start; padding: 10px; margin: 4px 0 10px; border: 1px solid var(--line); background: rgba(255,255,255,.3); }
+.general-info { min-width: 0; }
+.general-info h3 { margin: 2px 0 4px; font-size: 20px; letter-spacing: .06em; }
+.general-stats { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 11px; color: var(--ink-soft); }
+.general-picker { display: flex; flex-direction: column; gap: 4px; margin: 8px 0 12px; font-size: 12px; color: var(--ink-soft); }
+.general-picker select { width: 100%; }
+.army-composition { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; }
+.army-composition b { font-weight: 600; }

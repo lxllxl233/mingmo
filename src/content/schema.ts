@@ -296,6 +296,7 @@ export const generalSchema = z.object({
   siege: z.number().min(0).max(10),
   loyalty: z.number().min(0).max(100),
   traits: z.array(z.string()).default([]),
+  generic: z.boolean().optional().default(false),
 }).strict();
 
 export const namedModifierSchema = z.object({

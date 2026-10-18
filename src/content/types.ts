@@ -359,6 +359,7 @@ export interface General {
   siege: number;
   loyalty: number;
   traits: string[];
+  generic?: boolean;
 }
 
 export interface NamedModifier {

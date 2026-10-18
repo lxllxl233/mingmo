@@ -18,6 +18,7 @@ export type Command =
   | { type: 'army.recruit'; province: string; template: string; size: number }
   | { type: 'army.move'; armyId: string; path: string[] }
   | { type: 'army.stop'; armyId: string }
+  | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.makePeace'; warId: string };
 
@@ -89,10 +90,33 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       }
       break;
     case 'army.move':
+      if (state.armies[command.armyId]?.tag !== tag) throw new CommandError('army not found');
       if (!setArmyPath(state, content, command.armyId, command.path)) {
         throw new CommandError('invalid army path');
       }
       break;
+    case 'army.assignGeneral': {
+      const army = state.armies[command.armyId];
+      if (!army || army.tag !== tag) throw new CommandError('army not found');
+      if (command.generalId) {
+        const general = content.generals.get(command.generalId);
+        if (!general || general.country !== army.tag) throw new CommandError('general unavailable');
+        const used = Object.values(state.armies).some(entry =>
+          entry.id !== army.id && entry.general === command.generalId);
+        if (used) throw new CommandError('general already assigned');
+        army.general = command.generalId;
+      } else {
+        army.general = null;
+      }
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: tag,
+        text: `${army.name} ${command.generalId ? '更换将领' : '解除将领'}`,
+        severity: 'info',
+      });
+      break;
+    }
     case 'army.stop': {
       const army = state.armies[command.armyId];
       if (!army || army.tag !== tag) throw new CommandError('army not found');
