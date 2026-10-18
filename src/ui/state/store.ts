@@ -8,6 +8,7 @@ import { dispatch, type Command } from '../../engine/commands';
 import type { Difficulty, GameState } from '../../engine/state/types';
 import { loadLocal, saveLocal } from '../../app/save/save';
 import { sound } from '../../app/audio/sound';
+import { musicForFaction } from '../../app/audio/music';
 import { canMarchThrough } from '../../engine/rules/access';
 
 export type PanelKey =
@@ -61,6 +62,7 @@ interface UiStore {
   trainingRequest: { kind: 'land' | 'navy'; templateId: string } | null;
   selectedProvince: string | null;
   selectedArmy: string | null;
+  armyStack: string[] | null;
   message: string | null;
   start: (scenarioId: string, tag: string, seed?: number, difficulty?: Difficulty) => void;
   startSpectator: (scenarioId: string, seed?: number, difficulty?: Difficulty) => void;
@@ -69,6 +71,8 @@ interface UiStore {
   setSpeed: (speed: 0 | 1 | 2 | 4) => void;
   selectProvince: (provinceId: string | null) => void;
   selectArmy: (armyId: string | null) => void;
+  openArmyStack: (armyIds: string[]) => void;
+  closeArmyStack: () => void;
   openCountry: (tag: string) => void;
   moveArmyTo: (provinceId: string) => boolean;
   appendArmyWaypoint: (provinceId: string) => boolean;
@@ -100,10 +104,13 @@ export const useGameStore = create<UiStore>((set, get) => ({
   trainingRequest: null,
   selectedProvince: null,
   selectedArmy: null,
+  armyStack: null,
   message: null,
 
   start: (scenarioId, tag, seed = 42, difficulty = 'normal') => {
     const game = createInitialState(content, scenarioId, seed, tag, difficulty);
+    sound.unlock();
+    sound.setMusicPlaylist(musicForFaction(tag, scenarioId));
     sound.play('command');
     set({
       game,
@@ -118,12 +125,15 @@ export const useGameStore = create<UiStore>((set, get) => ({
       trainingRequest: null,
       selectedProvince: game.countries[tag]?.capital ?? null,
       selectedArmy: null,
+      armyStack: null,
       message: null,
     });
   },
 
   startSpectator: (scenarioId, seed = 42, difficulty = 'normal') => {
     const game = createInitialState(content, scenarioId, seed, 'MING', difficulty, true);
+    sound.unlock();
+    sound.setMusicPlaylist(musicForFaction('MING', scenarioId));
     sound.play('command');
     set({
       game,
@@ -138,6 +148,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       trainingRequest: null,
       selectedProvince: null,
       selectedArmy: null,
+      armyStack: null,
       message: '看海模式：全图视野，所有势力由 AI 推演。',
     });
   },
@@ -188,6 +199,10 @@ export const useGameStore = create<UiStore>((set, get) => ({
       }
     }
     if (next.ended) set({ speed: 0 });
+    const selected = get().selectedArmy;
+    if (selected && !next.armies[selected]) {
+      set({ selectedArmy: null, panel: null, armyStack: null });
+    }
   },
 
   setSpeed: speed => set({ speed, speedBeforeEvent: speed === 0 ? get().speedBeforeEvent : 0 }),
@@ -224,12 +239,17 @@ export const useGameStore = create<UiStore>((set, get) => ({
     if (selected) sound.playArmySelect(selected.tag, selected.composition);
     set({
       selectedArmy: armyId,
+      armyStack: null,
       panel: armyId ? 'army' : null,
       countryFocus: null,
       diplomaticMode: false,
       diplomaticAnchor: null,
     });
   },
+  openArmyStack: armyIds => {
+    set({ armyStack: [...armyIds], selectedArmy: null, panel: null });
+  },
+  closeArmyStack: () => set({ armyStack: null }),
   openCountry: tag => {
     sound.play('click');
     set({
@@ -367,5 +387,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, message: null }),
+  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, message: null }),
 }));

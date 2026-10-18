@@ -459,6 +459,20 @@ export function replenishArmies(state: GameState, content: ContentIndex): void {
 }
 
 
+export function cleanupEmptyArmies(state: GameState): void {
+  for (const army of Object.values(state.armies)) {
+    if (compositionTotal(army) > 0) continue;
+    delete state.armies[army.id];
+    state.log.push({
+      day: state.day,
+      category: 'military',
+      country: army.tag,
+      text: `${army.name} 已全军覆没`,
+      severity: 'danger',
+    });
+  }
+}
+
 export function setArmyPath(
   state: GameState,
   content: ContentIndex,

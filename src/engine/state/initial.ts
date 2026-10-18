@@ -82,6 +82,15 @@ export function createInitialState(
       modifiers: [],
     };
   }
+  for (const [tag, regionIds] of Object.entries(scenario.coreRegions ?? {})) {
+    for (const regionId of regionIds ?? []) {
+      for (const def of content.provinces.values()) {
+        if (def.regionId !== regionId) continue;
+        const province = provinces[def.id];
+        if (province && !province.cores.includes(tag)) province.cores.push(tag);
+      }
+    }
+  }
 
   const countries: Record<string, CountryState> = {};
   for (const def of content.countries.values()) {

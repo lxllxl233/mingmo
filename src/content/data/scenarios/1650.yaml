@@ -38,6 +38,18 @@ region_owners:
   reg_japan_east: JAPAN
   reg_taiwan: VOC
   reg_russia_far: RUSSIA
+core_regions:
+  MING: [reg_nanzhili, reg_zhejiang, reg_jiangxi, reg_huguang, reg_sichuan, reg_fujian, reg_guangdong, reg_guangxi, reg_yunnan, reg_guizhou]
+  QING: [reg_nvzhen, reg_liaodong, reg_beizhili, reg_shandong, reg_shanxi, reg_henan, reg_shaanxi, reg_hexi, reg_xuanda, reg_nanzhili, reg_zhejiang, reg_jiangxi, reg_huguang]
+  SMING: [reg_yunnan, reg_guizhou, reg_guangxi, reg_huguang]
+  XI: [reg_sichuan]
+  ZHENG: [reg_fujian, reg_taiwan]
+  MONGOL: [reg_mengnan, reg_mobei]
+  JOSEON: [reg_joseon]
+  JAPAN: [reg_japan_west, reg_japan_east]
+  TIBET: [reg_xizang, reg_weilate]
+  VOC: [reg_taiwan]
+  RUSSIA: [reg_russia_far]
 province_overrides:
   kunming: SMING
   guilin: SMING

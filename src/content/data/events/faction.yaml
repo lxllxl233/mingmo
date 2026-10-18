@@ -1,0 +1,683 @@
+events:
+  - id: flavor_ming_donglin
+    title: 东林与阉党
+    desc: 朝中清议与内廷旧党互相攻讦，票拟留中，政令不出都门。
+    historical_context: 崇祯初年清算阉党，但党争并未消失，反而使内阁与言路长期对立。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1644-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: purge
+        name: 再兴大狱
+        tooltip: 皇权集中，士林离心。
+        ai_chance: 45
+        effect:
+          - add_authority: 5
+          - add_stability: -4
+          - add_estate_loyalty: { estate: officials, value: -8 }
+      - id: balance
+        name: 调停两党
+        tooltip: 朝局稍安，但腐败加深。
+        ai_chance: 55
+        effect:
+          - add_stability: 3
+          - add_corruption: 2
+          - add_estate_loyalty: { estate: officials, value: 3 }
+
+  - id: flavor_ming_jiajiang
+    title: 辽饷加派
+    desc: 辽东军费无底，户部请再增田赋。加派可解燃眉，却会把更多农民推入流亡。
+    historical_context: 辽饷、剿饷、练饷三饷叠加，是明末财政崩溃与民变扩大的关键。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1644-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: levy
+        name: 再加辽饷
+        tooltip: 得银，失民心。
+        ai_chance: 60
+        effect:
+          - add_treasury: 120000
+          - add_stability: -6
+          - add_estate_loyalty: { estate: peasants, value: -10 }
+      - id: cut
+        name: 裁撤冗费
+        tooltip: 太仓少入，但民力稍苏。
+        ai_chance: 40
+        effect:
+          - add_treasury: -40000
+          - add_stability: 4
+          - add_estate_loyalty: { estate: peasants, value: 5 }
+
+  - id: flavor_qing_banner
+    title: 八旗增编
+    desc: 归附的蒙古、汉军日众，是否另编旗分，把他们纳入八旗军制？
+    historical_context: 皇太极时期扩编八旗与蒙古、汉军旗，把不同来源的兵力纳入同一套军制。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1645-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: expand
+        name: 增编旗分
+        tooltip: 兵源与军心上升，旗地压力增加。
+        ai_chance: 65
+        effect:
+          - add_manpower: 12000
+          - add_army_loyalty: 5
+          - add_stability: -2
+      - id: keep
+        name: 维持旧制
+        tooltip: 八旗保持纯粹，兵源增长较慢。
+        ai_chance: 35
+        effect:
+          - add_stability: 3
+          - add_army_loyalty: -2
+
+  - id: flavor_qing_hanjun
+    title: 汉军旗议
+    desc: 范文程等请以汉军别立旗分，用汉将治汉地。此举能安新附，却会引起旧旗猜忌。
+    historical_context: 汉军八旗的建立，使清朝得以用汉人官僚与军队治理关内。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1631-01-01, before: 1660-12-31 }
+    mtth: 380
+    fire_once: true
+    options:
+      - id: hanjun
+        name: 别立汉军
+        tooltip: 行政与兵源改善，旧旗不满。
+        ai_chance: 60
+        effect:
+          - add_manpower: 8000
+          - add_stability: 4
+          - add_estate_loyalty: { estate: officials, value: 5 }
+          - add_army_loyalty: -2
+      - id: old
+        name: 仍归旧旗
+        tooltip: 旧旗安心，新附失望。
+        ai_chance: 40
+        effect:
+          - add_army_loyalty: 3
+          - add_stability: -3
+
+  - id: flavor_shun_zhuizang
+    title: 追赃助饷
+    desc: 大顺军入城，旧明官员多藏银。追赃可速得军饷，也会让士绅视大顺为贼。
+    historical_context: 李自成在北京推行追赃助饷，短期筹款，长期失去士绅支持。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1643-01-01, before: 1647-12-31 }
+    mtth: 220
+    fire_once: true
+    options:
+      - id: extort
+        name: 严追赃银
+        tooltip: 得银，士绅离心。
+        ai_chance: 60
+        effect:
+          - add_treasury: 90000
+          - add_estate_loyalty: { estate: gentry, value: -12 }
+          - add_stability: -3
+      - id: restrain
+        name: 约束部将
+        tooltip: 军心稍降，民心稍安。
+        ai_chance: 40
+        effect:
+          - add_army_loyalty: -4
+          - add_stability: 4
+          - add_estate_loyalty: { estate: gentry, value: 6 }
+
+  - id: flavor_shun_juntian
+    title: 均田免赋
+    desc: 河南父老请大顺均田免赋。兑现可聚流民，却会触动地主与旧明官僚。
+    historical_context: 大顺以“均田免赋”为号召，在河南、陕西获得大量流民支持。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1643-01-01, before: 1647-12-31 }
+    mtth: 280
+    fire_once: true
+    options:
+      - id: promise
+        name: 均田免赋
+        tooltip: 民心大振，财政减少。
+        ai_chance: 55
+        effect:
+          - add_manpower: 10000
+          - add_stability: 5
+          - add_estate_loyalty: { estate: peasants, value: 12 }
+          - add_treasury: -30000
+      - id: tax
+        name: 照旧征粮
+        tooltip: 保住军粮，流民失望。
+        ai_chance: 45
+        effect:
+          - add_food: 40000
+          - add_stability: -3
+          - add_estate_loyalty: { estate: peasants, value: -8 }
+
+  - id: flavor_xi_discipline
+    title: 大西军纪
+    desc: 大西军入成都，诸将纵兵掠城。张献忠要立国，就不能只靠恐惧。
+    historical_context: 大西军以严酷著称，过度屠杀与掠夺削弱了其在四川的统治基础。
+    scope: country
+    country: XI
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1650-12-31 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: restrain
+        name: 约束军纪
+        tooltip: 民心稍安，部将不满。
+        ai_chance: 45
+        effect:
+          - add_army_loyalty: -3
+          - add_stability: 5
+          - add_estate_loyalty: { estate: peasants, value: 8 }
+      - id: terror
+        name: 以杀立威
+        tooltip: 军心上升，民心崩溃。
+        ai_chance: 55
+        effect:
+          - add_army_loyalty: 4
+          - add_stability: -8
+          - add_estate_loyalty: { estate: peasants, value: -12 }
+
+  - id: flavor_xi_grain
+    title: 成都粮道
+    desc: 成都平原粮足，但入川道路险远。是修栈道转运，还是就地征粮？
+    historical_context: 大西政权据蜀，粮道与军粮是能否长期割据的关键。
+    scope: country
+    country: XI
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1652-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: road
+        name: 修栈道
+        tooltip: 耗银，粮储增加。
+        ai_chance: 50
+        effect:
+          - add_treasury: -50000
+          - add_food: 80000
+          - add_stability: 3
+      - id: requisition
+        name: 就地征粮
+        tooltip: 得粮，民怨上升。
+        ai_chance: 50
+        effect:
+          - add_food: 60000
+          - add_stability: -4
+          - add_estate_loyalty: { estate: peasants, value: -8 }
+
+  - id: flavor_sming_legitimacy
+    title: 弘光朝议
+    desc: 南京诸臣争拥立、争正统。南明本可凭江南财赋立足，却先耗于朝争。
+    historical_context: 弘光政权建立后，马士英、阮大铖与东林党争不断，内耗严重。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1646-12-31 }
+    mtth: 200
+    fire_once: true
+    options:
+      - id: unity
+        name: 调停朝争
+        tooltip: 稳定上升，但需要让权。
+        ai_chance: 50
+        effect:
+          - add_stability: 4
+          - add_authority: -3
+          - add_estate_loyalty: { estate: officials, value: 5 }
+      - id: faction
+        name: 倚重马阮
+        tooltip: 皇权集中，士林离心。
+        ai_chance: 50
+        effect:
+          - add_authority: 4
+          - add_stability: -5
+          - add_estate_loyalty: { estate: officials, value: -8 }
+
+  - id: flavor_sming_zheng
+    title: 郑氏援师
+    desc: 郑芝龙拥兵海上，请以福建为饷源。南明需要他的船，也要防他尾大不掉。
+    historical_context: 南明依赖郑氏海商武装，但郑氏更关心福建沿海的贸易利益。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1662-12-31 }
+    mtth: 320
+    fire_once: true
+    options:
+      - id: rely
+        name: 倚郑氏
+        tooltip: 得兵源与银，中央权威下降。
+        ai_chance: 55
+        effect:
+          - add_manpower: 8000
+          - add_treasury: 40000
+          - add_authority: -5
+      - id: balance
+        name: 分权牵制
+        tooltip: 保持权威，援军减少。
+        ai_chance: 45
+        effect:
+          - add_authority: 3
+          - add_manpower: -3000
+
+  - id: flavor_zheng_trade
+    title: 海上税关
+    desc: 郑氏控制泉州、厦门，商船往来如织。设关抽税可养军，也会逼走海商。
+    historical_context: 郑氏以海上贸易养军，贸易网络是其抗清与取台的基础。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1683-12-31 }
+    mtth: 260
+    fire_once: true
+    options:
+      - id: tax
+        name: 设关抽税
+        tooltip: 银入增加，海商不满。
+        ai_chance: 55
+        effect:
+          - add_treasury: 70000
+          - add_stability: -3
+          - add_estate_loyalty: { estate: merchants, value: -6 }
+      - id: free
+        name: 轻税招徕
+        tooltip: 海商归附，短期银少。
+        ai_chance: 45
+        effect:
+          - add_treasury: 20000
+          - add_stability: 3
+          - add_estate_loyalty: { estate: merchants, value: 8 }
+
+  - id: flavor_zheng_taiwan
+    title: 台湾屯垦
+    desc: 台湾沃野，但瘴疠与原住民都在。屯垦可养兵，也可能重演殖民冲突。
+    historical_context: 郑成功取台后推行屯垦，明郑以台湾为抗清基地。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1661-01-01, before: 1683-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: settle
+        name: 移民屯垦
+        tooltip: 粮储与兵源增加，民怨上升。
+        ai_chance: 60
+        effect:
+          - add_food: 90000
+          - add_manpower: 5000
+          - add_stability: -4
+      - id: treaty
+        name: 与原住民约
+        tooltip: 稳定上升，开发较慢。
+        ai_chance: 40
+        effect:
+          - add_stability: 4
+          - add_food: 30000
+
+  - id: flavor_mongol_kurultai
+    title: 会盟诸部
+    desc: 察哈尔号令诸部，但科尔沁、喀尔喀各怀心思。会盟可重温汗权，也可能暴露分裂。
+    historical_context: 林丹汗试图统一蒙古，但诸部与后金联姻、结盟，汗权难以恢复。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1640-12-31 }
+    mtth: 260
+    fire_once: true
+    options:
+      - id: kurultai
+        name: 大会诸部
+        tooltip: 兵源与权威上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_manpower: 10000
+          - add_authority: 4
+          - add_treasury: -30000
+      - id: raid
+        name: 纵骑掠边
+        tooltip: 得银，诸部离心。
+        ai_chance: 45
+        effect:
+          - add_treasury: 50000
+          - add_army_loyalty: 3
+          - add_stability: -5
+
+  - id: flavor_mongol_pasture
+    title: 牧场之争
+    desc: 漠南草场紧张，部众请向明边请赏或向漠北迁徙。
+    historical_context: 小冰期与草场压力加剧蒙古诸部与明朝、后金的冲突。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1650-12-31 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: tribute
+        name: 向明请赏
+        tooltip: 得银，受制于明。
+        ai_chance: 50
+        effect:
+          - add_treasury: 40000
+          - add_authority: -3
+      - id: migrate
+        name: 逐水草而居
+        tooltip: 粮储增加，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_food: 50000
+          - add_stability: -3
+
+  - id: flavor_joseon_faction
+    title: 仁祖朝局
+    desc: 朝鲜在明清之间事大，内部却有尊明派与务实派。丙子耻未雪，北伐只是口号。
+    historical_context: 朝鲜仁祖朝经历丁卯、丙子之役，被迫臣服清朝，朝内对清政策分裂。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1660-12-31 }
+    mtth: 330
+    fire_once: true
+    options:
+      - id: real
+        name: 务实事清
+        tooltip: 稳定与财政改善，士林不满。
+        ai_chance: 55
+        effect:
+          - add_stability: 4
+          - add_treasury: 30000
+          - add_estate_loyalty: { estate: officials, value: -4 }
+      - id: north
+        name: 密议北伐
+        tooltip: 军心上升，外交风险。
+        ai_chance: 45
+        effect:
+          - add_army_loyalty: 5
+          - add_stability: -3
+          - add_relation: { target: QING, value: -10 }
+
+  - id: flavor_joseon_tribute
+    title: 贡路与岁币
+    desc: 清廷催贡人参、貂皮与岁币。如数缴纳可保边境，却加重百姓负担。
+    historical_context: 丙子之役后朝鲜向清朝岁贡，成为朝鲜财政与民生的长期负担。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1637-01-01, before: 1683-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: pay
+        name: 如数缴纳
+        tooltip: 边境安定，财政受损。
+        ai_chance: 60
+        effect:
+          - add_treasury: -40000
+          - add_relation: { target: QING, value: 10 }
+          - add_stability: -2
+      - id: delay
+        name: 拖延贡期
+        tooltip: 省下岁币，清廷不满。
+        ai_chance: 40
+        effect:
+          - add_treasury: 20000
+          - add_relation: { target: QING, value: -12 }
+
+  - id: flavor_japan_sakoku
+    title: 锁国令
+    desc: 幕府禁教、限港。锁国可保内部安定，也让日本对大陆变局反应迟缓。
+    historical_context: 德川幕府在 1630 年代强化锁国，只保留长崎等窗口。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1633-01-01, before: 1683-12-31 }
+    mtth: 320
+    fire_once: true
+    options:
+      - id: sakoku
+        name: 严守锁国
+        tooltip: 稳定上升，贸易减少。
+        ai_chance: 60
+        effect:
+          - add_stability: 5
+          - add_treasury: -30000
+          - add_estate_loyalty: { estate: merchants, value: -5 }
+      - id: window
+        name: 留长崎一窗
+        tooltip: 贸易与银入增加，保守派不满。
+        ai_chance: 40
+        effect:
+          - add_treasury: 50000
+          - add_stability: -2
+          - add_estate_loyalty: { estate: merchants, value: 5 }
+
+  - id: flavor_japan_ronin
+    title: 浪人渡海
+    desc: 明末战乱，日本浪人与商船窥伺东海。是默许他们出海，还是严禁？
+    historical_context: 日本锁国后仍有走私与浪人活动，东亚海域并不平静。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1683-12-31 }
+    mtth: 400
+    fire_once: true
+    options:
+      - id: ban
+        name: 严禁渡海
+        tooltip: 稳定上升，海贸机会减少。
+        ai_chance: 55
+        effect:
+          - add_stability: 3
+          - add_treasury: -20000
+      - id: allow
+        name: 默许出海
+        tooltip: 得银，外交风险。
+        ai_chance: 45
+        effect:
+          - add_treasury: 40000
+          - add_relation: { target: MING, value: -5 }
+          - add_stability: -2
+
+  - id: flavor_tibet_monastery
+    title: 寺院与汗廷
+    desc: 格鲁派寺院香火日盛，和硕特汗廷需要寺院的支持，也要防其势力过大。
+    historical_context: 固始汗与格鲁派结盟，形成政教合一的西藏秩序。
+    scope: country
+    country: TIBET
+    trigger:
+      all:
+        - date: { after: 1642-01-01, before: 1683-12-31 }
+    mtth: 380
+    fire_once: true
+    options:
+      - id: patron
+        name: 广施供养
+        tooltip: 稳定与影响力上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -30000
+          - add_stability: 5
+          - add_authority: 3
+      - id: limit
+        name: 限制寺院
+        tooltip: 财政改善，宗教势力不满。
+        ai_chance: 45
+        effect:
+          - add_treasury: 30000
+          - add_stability: -4
+
+  - id: flavor_tibet_trade
+    title: 茶马古道
+    desc: 汉地茶叶换藏地马匹，商队穿越高原。控制商道可养兵，也要应付地方土司。
+    historical_context: 茶马贸易是西藏与中原之间最重要的经济联系之一。
+    scope: country
+    country: TIBET
+    trigger:
+      all:
+        - date: { after: 1642-01-01, before: 1683-12-31 }
+    mtth: 420
+    fire_once: true
+    options:
+      - id: control
+        name: 设卡抽税
+        tooltip: 银入增加，商队不满。
+        ai_chance: 55
+        effect:
+          - add_treasury: 40000
+          - add_stability: -2
+      - id: open
+        name: 轻税通商
+        tooltip: 粮食与稳定增加。
+        ai_chance: 45
+        effect:
+          - add_food: 40000
+          - add_stability: 3
+
+  - id: flavor_voc_dividend
+    title: 公司红利
+    desc: 巴达维亚总部催缴红利，台湾商馆的糖、鹿皮与转口贸易必须交出更多利润。
+    historical_context: 荷兰东印度公司以股东红利为导向，台湾是其东亚转口贸易的一环。
+    scope: country
+    country: VOC
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1662-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: remit
+        name: 上缴红利
+        tooltip: 总部满意，本地建设放缓。
+        ai_chance: 55
+        effect:
+          - add_treasury: -40000
+          - add_stability: 3
+      - id: reinvest
+        name: 截留扩建
+        tooltip: 本地发展，总部不满。
+        ai_chance: 45
+        effect:
+          - add_treasury: 30000
+          - add_manpower: 2000
+          - add_stability: -2
+
+  - id: flavor_voc_fort
+    title: 热兰遮补给
+    desc: 热兰遮城兵少，补给靠巴达维亚。是加固城防，还是削减驻军省钱？
+    historical_context: 1661 年郑成功围热兰遮，荷军因补给与增援不足而降。
+    scope: country
+    country: VOC
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1662-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: fortify
+        name: 加固城防
+        tooltip: 耗银，防御增强。
+        ai_chance: 55
+        effect:
+          - add_treasury: -50000
+          - add_stability: 4
+          - add_army_loyalty: 3
+      - id: cut
+        name: 削减驻军
+        tooltip: 省钱，防御下降。
+        ai_chance: 45
+        effect:
+          - add_treasury: 30000
+          - add_army_loyalty: -5
+
+  - id: flavor_russia_fur
+    title: 毛皮税
+    desc: 哥萨克沿黑龙江征收毛皮，部落怨声载道。是加重贡赋，还是安抚当地？
+    historical_context: 沙俄远东扩张以毛皮贸易为财政基础，与当地部族冲突不断。
+    scope: country
+    country: RUSSIA
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1683-12-31 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: tax
+        name: 加征毛皮
+        tooltip: 银入增加，边地不稳。
+        ai_chance: 55
+        effect:
+          - add_treasury: 50000
+          - add_stability: -4
+      - id: gift
+        name: 抚恤部族
+        tooltip: 稳定上升，银入减少。
+        ai_chance: 45
+        effect:
+          - add_treasury: -30000
+          - add_stability: 4
+          - add_manpower: 2000
+
+  - id: flavor_russia_albazin
+    title: 雅克萨筑城
+    desc: 哥萨克请于雅克萨筑堡，作为黑龙江据点。清廷不会坐视，但堡垒能锁住航道。
+    historical_context: 雅克萨是沙俄在黑龙江流域的重要据点，最终引发雅克萨之战与尼布楚条约。
+    scope: country
+    country: RUSSIA
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1689-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: build
+        name: 筑雅克萨
+        tooltip: 军心与防御上升，清俄关系恶化。
+        ai_chance: 60
+        effect:
+          - add_treasury: -40000
+          - add_army_loyalty: 5
+          - add_relation: { target: QING, value: -15 }
+      - id: trade
+        name: 以贸易为先
+        tooltip: 银入增加，扩张放缓。
+        ai_chance: 40
+        effect:
+          - add_treasury: 40000
+          - add_relation: { target: QING, value: 5 }

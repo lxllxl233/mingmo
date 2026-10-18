@@ -325,6 +325,7 @@ export const scenarioSchema = z.object({
   playerHints: z.array(z.string()).default([]),
   playableTags: z.array(tag).default([]),
   regionOwners: z.record(z.string(), tag),
+  coreRegions: z.record(z.string(), z.array(z.string())).default({}),
   provinceOverrides: z.record(z.string(), tag).default({}),
   countryOverrides: z.record(z.string(), z.record(z.string(), z.unknown())).default({}),
   armies: z.array(z.object({

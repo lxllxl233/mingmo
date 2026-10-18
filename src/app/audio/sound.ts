@@ -23,6 +23,7 @@ class SoundEngine {
   private musicTimer: number | null = null;
   private musicPlaying = false;
   private musicVolume = 0.65;
+  private musicAudio: HTMLAudioElement | null = null;
   private voiceAudio: HTMLAudioElement | null = null;
 
   constructor() {
@@ -86,6 +87,7 @@ class SoundEngine {
 
   setMusicVolume(volume: number): void {
     this.musicVolume = Math.max(0, Math.min(1, volume));
+    if (this.musicAudio) this.musicAudio.volume = this.musicVolume;
     try {
       localStorage.setItem('jiashen.musicVolume', String(this.musicVolume));
     } catch {
@@ -113,6 +115,7 @@ class SoundEngine {
 
   setMusicLoop(loop: MusicLoop): void {
     this.musicLoop = loop;
+    if (this.musicAudio) this.musicAudio.loop = loop === 'single';
     if (loop === 'off') this.stopMusic();
     else this.restartMusic();
   }
@@ -123,14 +126,45 @@ class SoundEngine {
       window.clearInterval(this.musicTimer);
       this.musicTimer = null;
     }
+    if (this.musicAudio) this.musicAudio.pause();
   }
 
   private restartMusic(): void {
     this.stopMusic();
     if (this.muted || this.musicLoop === 'off' || this.musicTracks.length === 0) return;
     this.musicPlaying = true;
+    const track = this.musicTracks[this.musicIndex];
+    if (track?.file && this.startAudio(track)) return;
     this.playMusicPhrase();
     this.musicTimer = window.setInterval(() => this.nextMusicPhrase(), 7200);
+  }
+
+  private startAudio(track: MusicTrack): boolean {
+    if (!track.file || typeof Audio === 'undefined') return false;
+    try {
+      if (!this.musicAudio) this.musicAudio = new Audio();
+      this.musicAudio.pause();
+      this.musicAudio.src = track.file;
+      this.musicAudio.loop = this.musicLoop === 'single';
+      this.musicAudio.volume = this.musicVolume;
+      this.musicAudio.onended = () => {
+        if (!this.musicPlaying) return;
+        if (this.musicLoop === 'single') {
+          void this.musicAudio?.play();
+          return;
+        }
+        this.musicIndex = (this.musicIndex + 1) % this.musicTracks.length;
+        const next = this.musicTracks[this.musicIndex];
+        if (next) this.startAudio(next);
+      };
+      void this.musicAudio.play().catch(() => {
+        this.playMusicPhrase();
+        this.musicTimer = window.setInterval(() => this.nextMusicPhrase(), 7200);
+      });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private nextMusicPhrase(): void {

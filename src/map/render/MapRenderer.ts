@@ -6,6 +6,7 @@ import { areAtWar } from '../../engine/rules/war';
 
 type SelectProvinceHandler = (provinceId: string) => void;
 type SelectArmyHandler = (armyId: string) => void;
+type SelectArmyStackHandler = (armyIds: string[]) => void;
 type ContextProvinceHandler = (provinceId: string, ctrlKey: boolean) => void;
 export type MapMode = 'normal' | 'estates' | 'finance' | 'military' | 'diplomacy' | 'core';
 
@@ -51,6 +52,9 @@ interface ArmyMarker {
   stackScale: number;
   armyId: string;
   armyIds: string[];
+  targetX: number;
+  targetY: number;
+  positioned: boolean;
 }
 
 const TERRAIN_TINT: Record<string, { color: number; alpha: number }> = {
@@ -188,6 +192,7 @@ export class MapRenderer {
     private readonly content: ContentIndex,
     private readonly onSelectProvince: SelectProvinceHandler,
     private readonly onSelectArmy: SelectArmyHandler,
+    private readonly onSelectArmyStack: SelectArmyStackHandler,
     private readonly onContextProvince: ContextProvinceHandler,
   ) {}
 
@@ -245,6 +250,15 @@ export class MapRenderer {
     this.drawPorts();
     this.fit();
     this.bindPointer();
+    app.ticker.add(() => this.animateArmyMarkers());
+  }
+
+  private animateArmyMarkers(): void {
+    for (const marker of this.armyMarkers.values()) {
+      if (!marker.positioned) continue;
+      marker.container.position.x += (marker.targetX - marker.container.position.x) * 0.16;
+      marker.container.position.y += (marker.targetY - marker.container.position.y) * 0.16;
+    }
   }
 
   private drawLandBase(): void {
@@ -1285,6 +1299,10 @@ export class MapRenderer {
       const marker = this.armyMarkers.get(key);
       if (!marker) return;
       const ids = marker.armyIds;
+      if (ids.length > 1) {
+        this.onSelectArmyStack(ids);
+        return;
+      }
       const index = ids.indexOf(marker.armyId);
       const next = ids[(index + 1) % Math.max(1, ids.length)] ?? marker.armyId;
       if (next) this.onSelectArmy(next);
@@ -1292,7 +1310,7 @@ export class MapRenderer {
     this.armyLayer.addChild(container);
     const marker: ArmyMarker = {
       container, body, selection, label, stackScale: 1,
-      armyId: army.id, armyIds: [army.id],
+      armyId: army.id, armyIds: [army.id], targetX: 0, targetY: 0, positioned: false,
     };
     this.armyMarkers.set(key, marker);
     return marker;
@@ -1324,7 +1342,15 @@ export class MapRenderer {
       }
       marker.armyId = representative.id;
       marker.armyIds = ordered.map(army => army.id);
-      marker.container.position.set(centroid.x, centroid.y);
+      const nextId = representative.movePath[0];
+      const nextCentroid = nextId ? this.centroids.get(nextId) : null;
+      const travel = nextCentroid ? Math.min(0.82, Math.max(0, representative.moveProgress)) : 0;
+      marker.targetX = centroid.x + (nextCentroid ? (nextCentroid.x - centroid.x) * travel : 0);
+      marker.targetY = centroid.y + (nextCentroid ? (nextCentroid.y - centroid.y) * travel : 0);
+      if (!marker.positioned) {
+        marker.container.position.set(marker.targetX, marker.targetY);
+        marker.positioned = true;
+      }
       marker.container.zIndex = this.selectedArmy === representative.id ? 10 : 0;
       marker.container.eventMode = representative.tag === this.state.playerTag ? 'static' : 'none';
       marker.container.cursor = representative.tag === this.state.playerTag ? 'pointer' : 'default';

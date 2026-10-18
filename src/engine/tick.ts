@@ -1,6 +1,6 @@
 import type { ContentIndex } from '../content/types';
 import { LAST_DAY_INDEX, isMonthStart, isQuarterStart, isYearStart } from './core/clock';
-import { advanceArmies, replenishArmies } from './systems/military';
+import { advanceArmies, cleanupEmptyArmies, replenishArmies } from './systems/military';
 import { advanceCoreIntegration } from './systems/core';
 import { advanceTraining } from './systems/training';
 import { advanceFocus } from './systems/focus';
@@ -69,6 +69,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   advanceFocus(state, content);
   advanceResearch(state, content);
   advanceArmies(state, content);
+  cleanupEmptyArmies(state);
   replenishArmies(state, content);
   advanceCoreIntegration(state, content);
   advanceTraining(state, content);

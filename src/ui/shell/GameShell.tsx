@@ -11,6 +11,7 @@ import { WarDock } from '../panels/WarDock';
 import { ProvincePanel } from '../panels/ProvincePanel';
 import { CountryPanel } from '../panels/CountryPanel';
 import { ArmyPanel } from '../panels/ArmyPanel';
+import { ArmyStackPanel } from '../panels/ArmyStackPanel';
 import { EstatesPanel } from '../panels/EstatesPanel';
 import { CorePanel } from '../panels/CorePanel';
 import { BudgetPanel } from '../panels/BudgetPanel';
@@ -25,6 +26,7 @@ import { WarAlertModal } from '../overlays/WarAlertModal';
 import { EndModal } from '../overlays/EndModal';
 import { TrainingModal } from '../overlays/TrainingModal';
 import { SpectatorShell } from './SpectatorShell';
+import { SidebarIcon } from './SidebarIcon';
 
 const SIDEBAR: Array<{ key: PanelKey; label: string }> = [
   { key: 'focus', label: '国策' },
@@ -71,11 +73,24 @@ export function GameShell() {
   }, [game?.stats.battles]);
 
   useEffect(() => {
-    if (speed === 0) return;
-    const interval = speed === 1 ? 250 : speed === 2 ? 125 : 63;
+    if (!game || game.spectator || speed === 0) return;
+    const interval = speed === 1 ? 3000 : speed === 2 ? 1500 : 750;
     const handle = window.setInterval(() => tick(), interval);
     return () => window.clearInterval(handle);
-  }, [speed, tick]);
+  }, [speed, tick, game?.spectator]);
+
+  useEffect(() => {
+    if (!game || game.spectator) return;
+    const handle = (event: KeyboardEvent) => {
+      if (event.code !== 'Space') return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select, button')) return;
+      event.preventDefault();
+      setSpeed(speed === 0 ? 1 : 0);
+    };
+    window.addEventListener('keydown', handle);
+    return () => window.removeEventListener('keydown', handle);
+  }, [speed, setSpeed, game?.spectator]);
 
   useEffect(() => {
     if (!message) return;
@@ -115,6 +130,7 @@ export function GameShell() {
               className={panel === entry.key ? 'active' : ''}
               onClick={() => (panel === entry.key ? closePanel() : openPanel(entry.key))}
             >
+              <SidebarIcon kind={entry.key} />
               {entry.label}
             </button>
           ))}
@@ -151,7 +167,12 @@ export function GameShell() {
       <footer className="bottombar">
         <div className="speed">
           {([0, 1, 2, 4] as const).map(value => (
-            <button key={value} className={speed === value ? 'active' : ''} onClick={() => setSpeed(value)}>
+            <button
+              key={value}
+              title={value === 0 ? '暂停（空格）' : value === 1 ? '8 小时 / 秒' : value === 2 ? '16 小时 / 秒' : '32 小时 / 秒'}
+              className={speed === value ? 'active' : ''}
+              onClick={() => setSpeed(value)}
+            >
               {value === 0 ? '暂停' : `${value}x`}
             </button>
           ))}
@@ -182,6 +203,7 @@ export function GameShell() {
       )}
       {pending.length > 0 && <EventModal />}
       <WarAlertModal />
+      <ArmyStackPanel />
       <TrainingModal />
       {game.ended && <EndModal />}
       {message && <div className="toast">{message}</div>}

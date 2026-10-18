@@ -4,6 +4,7 @@ export interface MusicTrack {
   root: number;
   mode: 'minor' | 'major';
   notes: number[];
+  file?: string;
 }
 
 const MINOR = [0, 2, 3, 5, 7, 8, 10];
@@ -17,6 +18,7 @@ function makeTrack(id: string, name: string, root: number, mode: 'minor' | 'majo
     root,
     mode,
     notes: pattern.map(step => root * Math.pow(2, scale[step % scale.length]! / 12)),
+    file: `/audio/music/${id}.wav`,
   };
 }
 

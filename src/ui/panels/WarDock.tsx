@@ -1,4 +1,5 @@
 import { surrenderTendency, warScore, warsOf } from '../../engine/rules/war';
+import { armyStrengthOf } from '../../engine/systems/economy';
 import { useGameStore } from '../state/store';
 
 export function WarDock() {
@@ -25,19 +26,34 @@ export function WarDock() {
         const enemyCasualties = war.casualties[enemy] ?? 0;
         const enemyAttrition = war.attrition[enemy] ?? 0;
         const surrender = surrenderTendency(game, war, game.playerTag);
+        const occupiedByUs = Object.values(game.provinces).filter(province =>
+          province.controller === game.playerTag && province.owner === enemy).length;
+        const occupiedByThem = Object.values(game.provinces).filter(province =>
+          province.controller === enemy && province.owner === game.playerTag).length;
+        const ourStrength = armyStrengthOf(game, game.playerTag);
+        const enemyStrength = armyStrengthOf(game, enemy);
+        const days = game.day - war.startDay;
         return (
           <div className="war-dock-row" key={war.id}>
             <div className="war-dock-title">
               <b>{content.countries.get(enemy)?.name ?? enemy}</b>
-              <span>{war.warGoal || '战争'}</span>
+              <span>{war.warGoal || '战争'} · 第 {days} 日</span>
             </div>
             <div className="war-dock-stats">
-              <span>分 <b>{mine}</b> / {theirs}</span>
-              <span>伤亡 <b>{casualties.toLocaleString()}</b> / {enemyCasualties.toLocaleString()}</span>
+              <span>战争分 <b>{mine}</b> / {theirs}</span>
+              <span>投降倾向 <b className={surrender > 60 ? 'danger' : ''}>{surrender}%</b></span>
             </div>
             <div className="war-dock-stats">
+              <span>战斗伤亡 <b>{casualties.toLocaleString()}</b> / {enemyCasualties.toLocaleString()}</span>
               <span>非战斗减员 <b>{attrition.toLocaleString()}</b> / {enemyAttrition.toLocaleString()}</span>
-              <span>投降倾向 <b>{surrender}%</b></span>
+            </div>
+            <div className="war-dock-stats">
+              <span>占敌地区 <b>{occupiedByUs}</b> · 敌占我 <b>{occupiedByThem}</b></span>
+              <span>兵力 <b>{Math.round(ourStrength).toLocaleString()}</b> / {Math.round(enemyStrength).toLocaleString()}</span>
+            </div>
+            <div className="war-dock-stats">
+              <span>厌战 <b>{Math.round(game.countries[game.playerTag]?.warExhaustion ?? 0)}</b> / {Math.round(game.countries[enemy]?.warExhaustion ?? 0)}</span>
+              <button className="war-detail" onClick={() => openPanel('diplomacy')}>战报详情</button>
             </div>
           </div>
         );

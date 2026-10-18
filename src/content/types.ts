@@ -391,6 +391,7 @@ export interface ScenarioDef {
   playerHints: string[];
   playableTags: CountryTag[];
   regionOwners: Record<RegionId, CountryTag>;
+  coreRegions?: Partial<Record<CountryTag, RegionId[]>>;
   provinceOverrides: Record<ProvinceId, CountryTag>;
   countryOverrides: Record<CountryTag, Partial<CountryStarting>>;
   armies: Array<{ tag: CountryTag; template: ArmyTemplateId; province: ProvinceId; size: number }>;

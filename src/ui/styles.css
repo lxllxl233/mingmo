@@ -631,3 +631,26 @@ button:active { transform: translateY(1px); }
 .start-actions button { min-height: 30px; }
 @keyframes panel-in { from { opacity: .55; transform: translateX(5px); } to { opacity: 1; transform: none; } }
 .right-panel > .panel { animation: panel-in .16s ease-out; }
+
+.core-owners { margin: 7px 0; padding: 6px 0; border-top: 1px dashed var(--line); }
+.core-owners > span { font-size: 10px; letter-spacing: .08em; }
+.core-owners > div { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+.core-owner { display: inline-flex; align-items: center; gap: 3px; padding: 2px 5px; font-size: 10px; }
+
+.army-stack-overlay { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; background: rgba(31,28,24,.28); }
+.army-stack-popover { width: min(460px, 92vw); max-height: 70vh; overflow: auto; padding: 12px 14px; background: #f5ebd7; border: 1px solid #8b6a3f; box-shadow: 0 14px 40px rgba(31,28,24,.3); }
+.army-stack-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--line); }
+.army-stack-head b { color: var(--red); letter-spacing: .06em; }
+.army-stack-popover > p { margin: 6px 0; font-size: 11px; }
+.army-stack-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 4px; border: 0; border-bottom: 1px dashed var(--line); text-align: left; }
+.army-stack-row:hover { background: rgba(184,137,46,.12); }
+.army-stack-name { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.army-stack-name small { color: var(--ink-soft); font-size: 10px; }
+.army-stack-stance { font-size: 10px; color: #8a5a32; }
+
+.war-dock-stats .war-detail { margin-left: auto; padding: 1px 5px; font-size: 10px; }
+.war-dock-row { padding: 6px 0; }
+
+.sidebar button { writing-mode: horizontal-tb; text-orientation: initial; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 48px; padding: 6px 2px; font-size: 11px; letter-spacing: .06em; }
+.sidebar-icon { color: #7b5a32; flex: 0 0 auto; }
+.sidebar button.active .sidebar-icon { color: var(--red); }

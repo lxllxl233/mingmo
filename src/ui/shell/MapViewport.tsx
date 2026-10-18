@@ -54,6 +54,10 @@ export function MapViewport() {
     state.selectProvince(provinceId);
   }, []);
 
+  const handleArmyStack = useCallback((armyIds: string[]) => {
+    useGameStore.getState().openArmyStack(armyIds);
+  }, []);
+
   const handleContextProvince = useCallback((provinceId: string, ctrlKey: boolean) => {
     const state = useGameStore.getState();
     const game = state.game;
@@ -71,7 +75,7 @@ export function MapViewport() {
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleContextProvince);
+    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleArmyStack, handleContextProvince);
     rendererRef.current = renderer;
     let cancelled = false;
     void renderer.init().then(() => {
@@ -87,7 +91,7 @@ export function MapViewport() {
       renderer.destroy();
       rendererRef.current = null;
     };
-  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy]);
+  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy, handleArmyStack]);
 
   useEffect(() => {
     if (game && rendererRef.current) {

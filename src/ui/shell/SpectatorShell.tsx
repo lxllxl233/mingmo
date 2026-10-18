@@ -16,10 +16,22 @@ export function SpectatorShell() {
 
   useEffect(() => {
     if (speed === 0) return;
-    const interval = speed === 1 ? 250 : speed === 2 ? 125 : 63;
+    const interval = speed === 1 ? 3000 : speed === 2 ? 1500 : 750;
     const handle = window.setInterval(() => tick(), interval);
     return () => window.clearInterval(handle);
   }, [speed, tick]);
+
+  useEffect(() => {
+    const handle = (event: KeyboardEvent) => {
+      if (event.code !== 'Space') return;
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select, button')) return;
+      event.preventDefault();
+      setSpeed(speed === 0 ? 1 : 0);
+    };
+    window.addEventListener('keydown', handle);
+    return () => window.removeEventListener('keydown', handle);
+  }, [speed, setSpeed]);
 
   if (!game) return null;
   const alive = Object.values(game.countries).filter(country => country.alive);
@@ -61,7 +73,12 @@ export function SpectatorShell() {
       <footer className="spectator-bottom">
         <div className="speed">
           {([0, 1, 2, 4] as const).map(value => (
-            <button key={value} className={speed === value ? 'active' : ''} onClick={() => setSpeed(value)}>
+            <button
+              key={value}
+              title={value === 0 ? '暂停（空格）' : value === 1 ? '8 小时 / 秒' : value === 2 ? '16 小时 / 秒' : '32 小时 / 秒'}
+              className={speed === value ? 'active' : ''}
+              onClick={() => setSpeed(value)}
+            >
               {value === 0 ? '暂停' : `${value}x`}
             </button>
           ))}

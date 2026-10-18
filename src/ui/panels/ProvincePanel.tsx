@@ -1,4 +1,5 @@
 import { useGameStore } from '../state/store';
+import { CountryFlag } from './CountryFlag';
 
 const TERRAIN_NAMES: Record<string, string> = {
   plains: '平原',
@@ -58,6 +59,20 @@ export function ProvincePanel() {
           )}
         </>
       )}
+      <div className="core-owners">
+        <span className="muted">拥有核心的势力</span>
+        <div>
+          {province.cores.map(tag => {
+            const coreCountry = content.countries.get(tag);
+            return coreCountry ? (
+              <button key={tag} className="core-owner" onClick={() => useGameStore.getState().openCountry(tag)}>
+                <CountryFlag country={coreCountry} width={18} />
+                {coreCountry.name}
+              </button>
+            ) : null;
+          })}
+        </div>
+      </div>
       <div className="row"><span>人口 / 田亩</span><b>{province.population.toLocaleString()} / {def.landholding.toLocaleString()} 万亩</b></div>
       <div className="row"><span>发展度</span><b>{def.development}</b></div>
       <div className="row"><span>占优阶级</span><b>{estateName}</b></div>
