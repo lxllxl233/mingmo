@@ -20,6 +20,11 @@ export interface ProvinceState {
     progress: number;
     totalDays: number;
   } | null;
+  occupation?: {
+    country: string;
+    progress: number;
+    days: number;
+  } | null;
   unrest: number;
   devastation: number;
   modifiers: TimedModifier[];
@@ -146,6 +151,7 @@ export interface ArmyState {
   supply: number;
   sourceEstate: string;
   general: string | null;
+  entrenchment: number;
   stance: 'hold' | 'move' | 'siege' | 'battle';
 }
 

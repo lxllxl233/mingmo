@@ -78,6 +78,7 @@ export function createInitialState(
       population: province.population,
       cores: [owner],
       claims: [],
+      occupation: null,
       unrest: 5 + (hashSeed(province.id, seed, 'unrest') % 16),
       devastation: 0,
       modifiers: [],
@@ -213,6 +214,7 @@ export function createInitialState(
       supply: 100,
       sourceEstate: template.sourceEstate,
       general: general?.id ?? null,
+      entrenchment: 0,
       stance: 'hold',
     };
   }

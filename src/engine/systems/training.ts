@@ -54,6 +54,7 @@ function createArmy(
     supply: 100,
     sourceEstate: template.sourceEstate,
     general: pickGeneral(state, content, tag),
+    entrenchment: 0,
     stance: 'hold',
   };
   state.armies[id] = army;

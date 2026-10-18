@@ -679,3 +679,14 @@ button:active { transform: translateY(1px); }
 .focus-tree-detail h3 { margin: 2px 0 5px; color: var(--red); font-size: 17px; }
 .focus-tree-detail p { margin: 5px 0; font-size: 12px; line-height: 1.65; }
 .focus-tree-detail-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+.focus-hover-card { position: fixed; z-index: 80; width: 310px; padding: 10px 12px; border: 1px solid #8b6a3f; background: #fbf3e2; box-shadow: 0 10px 28px rgba(31,28,24,.25); pointer-events: none; }
+.focus-hover-card b { display: block; color: var(--red); font-size: 14px; }
+.focus-hover-card small { display: block; margin: 2px 0 6px; color: var(--ink-soft); font-size: 10px; }
+.focus-hover-card p { margin: 5px 0; font-size: 11px; line-height: 1.6; color: var(--ink); }
+.focus-hover-card em { display: block; margin-top: 6px; padding-top: 5px; border-top: 1px dashed var(--line); font-size: 10px; color: #4f6b42; font-style: normal; }
+
+.music-credit { margin-top: 6px; font-size: 9px; color: #8a7a60; text-align: right; }
+
+.battle-summary { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 5px 7px; margin: 4px 0; border: 1px dashed var(--line); font-size: 11px; color: var(--ink-soft); }
+.battle-summary b { color: var(--ink); }

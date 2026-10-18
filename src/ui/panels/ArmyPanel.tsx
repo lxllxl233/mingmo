@@ -122,6 +122,7 @@ export function ArmyPanel() {
       <section className="country-grid">
         <div className="country-stat"><span>兵力</span><strong>{formatNumber(strength)} / {formatNumber(army.maxStrength)}</strong></div>
         <div className="country-stat"><span>组织 / 补给</span><strong>{army.organization.toFixed(0)} / {army.supply.toFixed(0)}</strong></div>
+        <div className="country-stat"><span>战壕 / 训练</span><strong>{Math.round(army.entrenchment ?? 0)} / {army.training.toFixed(0)}</strong></div>
         <div className="country-stat"><span>训练 / 装备</span><strong>{army.training.toFixed(0)} / {army.equipment.toFixed(0)}</strong></div>
         <div className="country-stat"><span>行军目标</span><strong>{target ?? '驻扎'}</strong></div>
       </section>

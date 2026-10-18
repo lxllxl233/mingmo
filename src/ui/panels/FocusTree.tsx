@@ -31,6 +31,8 @@ export function FocusTree({ game, content, focuses, country }: {
   const [selectedId, setSelectedId] = useState<string | null>(
     country.focus?.id ?? focuses[0]?.id ?? null,
   );
+  const [hovered, setHovered] = useState<{ id: string; x: number; y: number } | null>(null);
+  const hoverFocus = hovered ? focuses.find(focus => focus.id === hovered.id) ?? null : null;
   const selected = focusedSelected(selectedId, focuses) ?? focuses[0] ?? null;
   const positions = new Map<string, { x: number; y: number }>();
   for (const focus of focuses) {
@@ -110,6 +112,9 @@ export function FocusTree({ game, content, focuses, country }: {
                 className={`focus-tree-node ${status}${exclusive ? ' exclusive' : ''}${selected?.id === focus.id ? ' selected' : ''}`}
                 style={{ left: pos.x, top: pos.y, width: NODE_WIDTH, minHeight: NODE_HEIGHT }}
                 onClick={() => setSelectedId(focus.id)}
+                onMouseEnter={event => setHovered({ id: focus.id, x: event.clientX, y: event.clientY })}
+                onMouseMove={event => setHovered({ id: focus.id, x: event.clientX, y: event.clientY })}
+                onMouseLeave={() => setHovered(null)}
                 title={focus.name}
               >
                 <FocusImage focusId={focus.id} branch={focus.branch} size={40} />
@@ -123,6 +128,24 @@ export function FocusTree({ game, content, focuses, country }: {
           })}
         </div>
       </div>
+      {hoverFocus && hovered && (
+        <div
+          className="focus-hover-card"
+          style={{
+            left: Math.min(hovered.x + 14, typeof window === 'undefined' ? 0 : window.innerWidth - 340),
+            top: Math.min(hovered.y + 14, typeof window === 'undefined' ? 0 : window.innerHeight - 250),
+          }}
+        >
+          <b>{hoverFocus.name}</b>
+          <small>{hoverFocus.branch} · 阶段 {hoverFocus.y + 1} / 7 · {hoverFocus.costDays} 日</small>
+          {hoverFocus.historicalContext && <p>{hoverFocus.historicalContext}</p>}
+          <p>{hoverFocus.desc}</p>
+          {hoverFocus.mutuallyExclusive.length > 0 && (
+            <p className="danger">互斥：{hoverFocus.mutuallyExclusive.map(id => content.focuses.get(id)?.name ?? id).join('、')}</p>
+          )}
+          <em>完成效果：{effectsSummary(hoverFocus.completionEffect) || '无直接数值效果'}</em>
+        </div>
+      )}
       {selected && (
         <div className="focus-tree-detail">
           <div className="focus-tree-detail-head">

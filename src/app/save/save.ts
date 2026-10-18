@@ -66,10 +66,14 @@ export function decodeSave(text: string): GameState {
   }
   for (const army of Object.values(parsed.state.armies)) {
     if (typeof army.templateId !== 'string') army.templateId = '';
+    if (typeof army.entrenchment !== 'number') army.entrenchment = 0;
     if (typeof army.maxStrength !== 'number') {
       army.maxStrength = army.composition.infantry + army.composition.firearm
         + army.composition.cavalry + army.composition.artillery + army.composition.naval;
     }
+  }
+  for (const province of Object.values(parsed.state.provinces)) {
+    if (province.occupation === undefined) province.occupation = null;
   }
   for (const war of parsed.state.wars) {
     if (!war.casualties) war.casualties = { [war.attacker]: 0, [war.defender]: 0 };

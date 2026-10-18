@@ -100,8 +100,19 @@ export function ProvincePanel() {
       {province.siege && (
         <div className="row"><span>围城</span><b>{province.siege.progress.toFixed(0)} / {def.fortLevel * 100}（{province.siege.days} 日）</b></div>
       )}
+      {province.occupation && (
+        <div className="row"><span>占领进度</span><b>{province.occupation.progress.toFixed(0)} / 100（{province.occupation.days} 日）</b></div>
+      )}
       <h3>驻军</h3>
       {armies.length === 0 && <p className="muted">无</p>}
+      {armies.length > 0 && (
+        <div className="battle-summary">
+          <span>战线宽度 <b>{content.balance.military.terrainWidth[def.terrain] ?? 20}</b></span>
+          <span>进攻方 <b>{armies.filter(army => army.tag !== province.controller).length}</b></span>
+          <span>防守方 <b>{armies.filter(army => army.tag === province.controller).length}</b></span>
+          <span>工事 <b>{def.isFort ? `要塞 ${def.fortLevel}` : '野战'}</b></span>
+        </div>
+      )}
       {armies.map(army => {
         const strength = army.composition.infantry + army.composition.firearm + army.composition.cavalry
           + army.composition.artillery + army.composition.naval;

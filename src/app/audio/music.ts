@@ -10,6 +10,36 @@ export interface MusicTrack {
 const MINOR = [0, 2, 3, 5, 7, 8, 10];
 const MAJOR = [0, 2, 4, 5, 7, 9, 11];
 
+const API_FILES: Record<string, string> = {
+  start_1: '/audio/music/api/guzheng_mahjong.mp3',
+  start_2: '/audio/music/api/li_bai.mp3',
+  scenario_1627: '/audio/music/api/guzheng_mahjong.mp3',
+  scenario_1644: '/audio/music/api/chaos.mp3',
+  scenario_1650: '/audio/music/api/erhu_old.mp3',
+  ming_1: '/audio/music/api/guzheng_mahjong.mp3',
+  ming_2: '/audio/music/api/li_bai.mp3',
+  ming_3: '/audio/music/api/chaos.mp3',
+  qing_1: '/audio/music/api/chaos.mp3',
+  qing_2: '/audio/music/api/chaos.mp3',
+  shun_1: '/audio/music/api/chaos.mp3',
+  shun_2: '/audio/music/api/chaos.mp3',
+  xi_1: '/audio/music/api/erhu_old.mp3',
+  sming_1: '/audio/music/api/erhu_old.mp3',
+  sming_2: '/audio/music/api/li_bai.mp3',
+  zheng_1: '/audio/music/api/nanyang.mp3',
+  zheng_2: '/audio/music/api/nanyang.mp3',
+  mongol_1: '/audio/music/api/erhu_old.mp3',
+  mongol_2: '/audio/music/api/nanyang.mp3',
+  joseon_1: '/audio/music/api/guzheng_mahjong.mp3',
+  joseon_2: '/audio/music/api/li_bai.mp3',
+  japan_1: '/audio/music/api/yume.mp3',
+  japan_2: '/audio/music/api/yume.mp3',
+  tibet_1: '/audio/music/api/li_bai.mp3',
+  voc_1: '/audio/music/api/nanyang.mp3',
+  russia_1: '/audio/music/api/chaos.mp3',
+  neu_1: '/audio/music/api/nanyang.mp3',
+};
+
 function makeTrack(id: string, name: string, root: number, mode: 'minor' | 'major', pattern: number[]): MusicTrack {
   const scale = mode === 'minor' ? MINOR : MAJOR;
   return {
@@ -18,7 +48,7 @@ function makeTrack(id: string, name: string, root: number, mode: 'minor' | 'majo
     root,
     mode,
     notes: pattern.map(step => root * Math.pow(2, scale[step % scale.length]! / 12)),
-    file: `/audio/music/${id}.wav`,
+    file: API_FILES[id] ?? `/audio/music/${id}.wav`,
   };
 }
 

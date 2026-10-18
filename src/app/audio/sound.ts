@@ -20,7 +20,6 @@ class SoundEngine {
   private musicTracks: MusicTrack[] = [];
   private musicIndex = 0;
   private musicLoop: MusicLoop = 'list';
-  private musicTimer: number | null = null;
   private musicPlaying = false;
   private musicVolume = 0.65;
   private musicAudio: HTMLAudioElement | null = null;
@@ -68,11 +67,7 @@ class SoundEngine {
         return;
       }
     }
-    if (this.context.state === 'suspended') {
-      void this.context.resume().then(() => {
-        if (this.musicPlaying) this.playMusicPhrase();
-      });
-    }
+    if (this.context.state === 'suspended') void this.context.resume();
   }
 
   getMusicState(): MusicState {
@@ -122,10 +117,6 @@ class SoundEngine {
 
   stopMusic(): void {
     this.musicPlaying = false;
-    if (this.musicTimer !== null) {
-      window.clearInterval(this.musicTimer);
-      this.musicTimer = null;
-    }
     if (this.musicAudio) this.musicAudio.pause();
   }
 
@@ -135,8 +126,7 @@ class SoundEngine {
     this.musicPlaying = true;
     const track = this.musicTracks[this.musicIndex];
     if (track?.file && this.startAudio(track)) return;
-    this.playMusicPhrase();
-    this.musicTimer = window.setInterval(() => this.nextMusicPhrase(), 7200);
+    this.musicPlaying = false;
   }
 
   private startAudio(track: MusicTrack): boolean {
@@ -158,58 +148,11 @@ class SoundEngine {
         if (next) this.startAudio(next);
       };
       void this.musicAudio.play().catch(() => {
-        this.playMusicPhrase();
-        this.musicTimer = window.setInterval(() => this.nextMusicPhrase(), 7200);
+        this.musicPlaying = false;
       });
       return true;
     } catch {
       return false;
-    }
-  }
-
-  private nextMusicPhrase(): void {
-    if (!this.musicPlaying || this.muted) return;
-    if (this.musicLoop === 'list' && this.musicTracks.length > 1) {
-      this.musicIndex = (this.musicIndex + 1) % this.musicTracks.length;
-    }
-    this.playMusicPhrase();
-  }
-
-  private playMusicPhrase(): void {
-    if (this.muted || this.context?.state !== 'running') return;
-    const track = this.musicTracks[this.musicIndex];
-    if (!track) return;
-    const notes = track.notes;
-    const style = /qing|mongol|russia/.test(track.id)
-      ? 'drums'
-      : /japan|zheng|voc/.test(track.id)
-        ? 'koto'
-        : /ming|shun|xi|sming/.test(track.id)
-          ? 'guzheng'
-          : 'strings';
-    for (let i = 0; i < notes.length; i += 1) {
-      const frequency = notes[i];
-      if (frequency === undefined) continue;
-      const at = i * 0.67;
-      if (style === 'koto') {
-        this.tone(frequency * 2, 0.52, 'triangle', 0.022 * this.musicVolume, frequency * 1.99, at);
-      } else if (style === 'drums') {
-        this.tone(frequency, 0.5, 'sawtooth', 0.014 * this.musicVolume, frequency * 0.998, at);
-      } else if (style === 'guzheng') {
-        this.tone(frequency, 0.7, 'triangle', 0.021 * this.musicVolume, frequency * 0.995, at);
-        this.tone(frequency * 2, 0.25, 'sine', 0.007 * this.musicVolume, frequency * 2, at);
-      } else {
-        this.tone(frequency, 0.85, 'sine', 0.017 * this.musicVolume, frequency * 0.999, at);
-      }
-      if (i % 2 === 0) {
-        this.tone(frequency / 2, 1.7, 'sine', 0.013 * this.musicVolume, frequency / 2, at);
-        this.tone(frequency * 0.75, 1.45, 'triangle', 0.006 * this.musicVolume, frequency * 0.75, at);
-      }
-      if (i % 4 === 0) {
-        this.tone(frequency / 4, 2.2, 'triangle', 0.009 * this.musicVolume, frequency / 4, at);
-        if (style === 'drums') this.noise(0.12, 420, 0.012 * this.musicVolume);
-      }
-      if (i % 8 === 4) this.noise(0.06, 1400, 0.006 * this.musicVolume);
     }
   }
 

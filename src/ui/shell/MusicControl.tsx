@@ -50,6 +50,7 @@ export function MusicControl() {
             />
             <b>{Math.round(state.volume * 100)}%</b>
           </label>
+          <div className="music-credit">曲目来自 ccMixter · CC BY 3.0</div>
         </div>
       )}
     </div>
