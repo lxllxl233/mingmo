@@ -723,3 +723,6 @@ button:active { transform: translateY(1px); }
 .army-list { display: flex; flex-direction: column; gap: 0; margin-top: 6px; }
 .army-list .army-stack-row { padding: 8px 3px; border-bottom: 1px dashed var(--line); }
 .army-list .army-stack-name b { font-size: 13px; }
+
+.spectator-country { width: 390px; min-width: 320px; overflow-y: auto; background: #f1e7d2; border-left: 1px solid var(--line); }
+.spectator-country .panel { padding: 10px 12px 24px; }

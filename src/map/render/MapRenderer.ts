@@ -790,14 +790,17 @@ export class MapRenderer {
     this.contextHandler = (event: MouseEvent) => {
       event.preventDefault();
       if (!this.app) return;
-      if (this.rightSelectStart || performance.now() < this.suppressContextUntil) return;
       const rect = this.app.canvas.getBoundingClientRect();
       const scaleX = this.app.screen.width / rect.width;
       const scaleY = this.app.screen.height / rect.height;
-      const province = this.provinceAt(
-        (event.clientX - rect.left) * scaleX,
-        (event.clientY - rect.top) * scaleY,
-      );
+      const screenX = (event.clientX - rect.left) * scaleX;
+      const screenY = (event.clientY - rect.top) * scaleY;
+      if (this.rightSelectStart && !this.rightSelectMoved) {
+        this.finishRightSelection(screenX, screenY, event.ctrlKey);
+        return;
+      }
+      if (this.rightSelectStart || performance.now() < this.suppressContextUntil) return;
+      const province = this.provinceAt(screenX, screenY);
       if (province) this.onContextProvince(province, event.ctrlKey);
     };
     app.canvas.addEventListener('contextmenu', this.contextHandler);
@@ -809,6 +812,8 @@ export class MapRenderer {
     this.rightSelectStart = null;
     this.rightSelectBox.clear();
     this.suppressContextUntil = performance.now() + 250;
+    this.dragging = false;
+    this.moved = true;
     if (!start) return;
     if (!this.rightSelectMoved) {
       const province = this.provinceAt(screenX, screenY);

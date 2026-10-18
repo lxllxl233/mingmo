@@ -5,6 +5,7 @@ import { MapViewport } from './MapViewport';
 import { MusicControl } from './MusicControl';
 import { CountryFlag } from '../panels/CountryFlag';
 import { BattleModal } from '../panels/BattleModal';
+import { CountryPanel } from '../panels/CountryPanel';
 
 export function SpectatorShell() {
   const game = useGameStore(state => state.game);
@@ -14,6 +15,8 @@ export function SpectatorShell() {
   const reset = useGameStore(state => state.reset);
   const content = useGameStore(state => state.content);
   const message = useGameStore(state => state.message);
+  const panel = useGameStore(state => state.panel);
+  const countryFocus = useGameStore(state => state.countryFocus);
 
   useEffect(() => {
     if (speed === 0) return;
@@ -58,18 +61,24 @@ export function SpectatorShell() {
       </header>
       <div className="spectator-main">
         <MapViewport />
-        <aside className="spectator-log">
-          <h3>世界观察</h3>
-          {message && <p className="spectator-message">{message}</p>}
-          {recent.map((entry, index) => (
-            <div className="spectator-log-row" key={`${entry.day}-${index}`}>
-              <small>{formatDate(entry.day)}</small>
-              <span className={entry.severity === 'danger' ? 'danger' : entry.severity === 'warning' ? 'warn' : ''}>
-                {entry.text}
-              </span>
-            </div>
-          ))}
-        </aside>
+        {panel === 'country' && countryFocus ? (
+          <aside className="spectator-country">
+            <CountryPanel />
+          </aside>
+        ) : (
+          <aside className="spectator-log">
+            <h3>世界观察</h3>
+            {message && <p className="spectator-message">{message}</p>}
+            {recent.map((entry, index) => (
+              <div className="spectator-log-row" key={`${entry.day}-${index}`}>
+                <small>{formatDate(entry.day)}</small>
+                <span className={entry.severity === 'danger' ? 'danger' : entry.severity === 'warning' ? 'warn' : ''}>
+                  {entry.text}
+                </span>
+              </div>
+            ))}
+          </aside>
+        )}
       </div>
       <footer className="spectator-bottom">
         <div className="speed">

@@ -104,7 +104,8 @@ export function CountryPanel() {
     + army.composition.firearm + army.composition.cavalry + army.composition.artillery + army.composition.naval, 0);
   const wars = Object.values(game.wars).filter(war => war.attacker === tag || war.defender === tag);
   const playerWar = wars.find(war => war.attacker === game.playerTag || war.defender === game.playerTag);
-  const isPlayer = tag === game.playerTag;
+  const isPlayer = !game.spectator && tag === game.playerTag;
+  const readOnly = game.spectator;
   const playerRelation = isPlayer
     ? 100
     : game.relations[relationKey(game.playerTag, tag)] ?? 0;
@@ -192,7 +193,7 @@ export function CountryPanel() {
             <progress value={Math.min(1, country.focus.progress / Math.max(1, activeFocus.costDays))} max={1} />
             <p className="country-focus-effect">效果：{effectsSummary(activeFocus.completionEffect)}</p>
             <p className="muted">{activeFocus.desc}</p>
-            {tag === game.playerTag && (
+            {!readOnly && tag === game.playerTag && (
               <button onClick={() => command({ type: 'focus.cancel' })}>取消国策（进度清零）</button>
             )}
           </>
@@ -203,7 +204,7 @@ export function CountryPanel() {
 
       <div className="diplo-self">
         <span className="dot" style={{ background: '#e0c26a' }} />
-        <span>{isPlayer ? '本国' : `本国 · 与我国：${statusToPlayer}（${playerRelation}）`}</span>
+        <span>{readOnly ? '观测势力' : isPlayer ? '本国' : `本国 · 与我国：${statusToPlayer}（${playerRelation}）`}</span>
       </div>
       <div className="diplo-legend">
         <span><i className="dot war" />交战</span>
@@ -252,7 +253,7 @@ export function CountryPanel() {
             <div className="war-row" key={war.id}>
               <span>{content.countries.get(enemy)?.name ?? enemy}</span>
               <span className="muted">疲劳 {Math.round(war.exhaustion[tag] ?? 0)}</span>
-              {enemy === game.playerTag && (
+              {!readOnly && enemy === game.playerTag && (
                 <button onClick={() => command({ type: 'diplomacy.makePeace', warId: war.id })}>议和</button>
               )}
             </div>
@@ -261,10 +262,10 @@ export function CountryPanel() {
       </section>
 
       <footer className="panel-actions">
-        {!isPlayer && !playerWar && (
+        {!readOnly && !isPlayer && !playerWar && (
           <button onClick={() => command({ type: 'diplomacy.declareWar', target: tag, cb: 'border_dispute' })}>宣战</button>
         )}
-        {!isPlayer && <button onClick={() => openCountry(game.playerTag)}>查看我国</button>}
+        {!readOnly && !isPlayer && <button onClick={() => openCountry(game.playerTag)}>查看我国</button>}
         <button className="ghost" onClick={closePanel}>返回地图</button>
       </footer>
     </div>
