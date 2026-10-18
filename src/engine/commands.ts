@@ -25,6 +25,7 @@ export type Command =
   | { type: 'army.navalMove'; armyId: string; portId: string }
   | { type: 'army.stop'; armyId: string }
   | { type: 'army.disband'; armyId: string }
+  | { type: 'army.forceMarch'; armyId: string }
   | { type: 'province.integrateCore'; provinceId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
@@ -188,6 +189,19 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
         category: 'military',
         country: tag,
         text: `解散军团：${army.name}`,
+        severity: 'info',
+      });
+      break;
+    }
+    case 'army.forceMarch': {
+      const army = state.armies[command.armyId];
+      if (!army || army.tag !== tag) throw new CommandError('army not found');
+      army.forcedMarch = !army.forcedMarch;
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: tag,
+        text: `${army.name} ${army.forcedMarch ? '进入急行军' : '解除急行军'}`,
         severity: 'info',
       });
       break;

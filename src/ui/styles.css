@@ -719,3 +719,7 @@ button:active { transform: translateY(1px); }
 .peace-province.lost { color: var(--ink-soft); opacity: .75; }
 
 .event-overlay { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px; background: rgba(31,28,24,.48); }
+
+.army-list { display: flex; flex-direction: column; gap: 0; margin-top: 6px; }
+.army-list .army-stack-row { padding: 8px 3px; border-bottom: 1px dashed var(--line); }
+.army-list .army-stack-name b { font-size: 13px; }

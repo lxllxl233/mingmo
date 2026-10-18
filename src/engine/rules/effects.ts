@@ -60,6 +60,7 @@ function spawnArmy(
     sourceEstate: template.sourceEstate,
     general: pickGeneral(state, content, tag),
     entrenchment: 0,
+    forcedMarch: false,
     stance: 'hold',
   };
 }

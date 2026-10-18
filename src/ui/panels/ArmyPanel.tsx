@@ -178,6 +178,13 @@ export function ArmyPanel() {
       <footer className="panel-actions">
         <button className="primary" onClick={() => openPanel('military')}>军事列表</button>
         <button onClick={() => command({ type: 'army.stop', armyId: army.id })}>停止</button>
+        <button
+          className={army.forcedMarch ? 'primary' : ''}
+          title="急行军：无视沿途敌对地区的占领，直接向终点推进；组织与补给持续下降"
+          onClick={() => command({ type: 'army.forceMarch', armyId: army.id })}
+        >
+          {army.forcedMarch ? '急行军中' : '急行军'}
+        </button>
         <button className="danger" onClick={() => {
           if (command({ type: 'army.disband', armyId: army.id })) selectArmy(null);
         }}>解散军团</button>

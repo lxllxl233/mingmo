@@ -15,6 +15,7 @@ export type PanelKey =
   | 'province'
   | 'country'
   | 'army'
+  | 'armyList'
   | 'core'
   | 'estates'
   | 'budget'
@@ -261,9 +262,9 @@ export const useGameStore = create<UiStore>((set, get) => ({
     });
   },
   openArmyStack: armyIds => {
-    set({ armyStack: [...armyIds], selectedArmy: null, panel: null });
+    set({ armyStack: [...armyIds], selectedArmy: null, panel: 'armyList' });
   },
-  closeArmyStack: () => set({ armyStack: null }),
+  closeArmyStack: () => set({ armyStack: null, panel: null }),
   openBattle: battleId => set({ selectedBattle: battleId, armyStack: null }),
   closeBattle: () => set({ selectedBattle: null }),
   openPeace: warId => set({

@@ -69,6 +69,7 @@ export function decodeSave(text: string): GameState {
   for (const army of Object.values(parsed.state.armies)) {
     if (typeof army.templateId !== 'string') army.templateId = '';
     if (typeof army.entrenchment !== 'number') army.entrenchment = 0;
+    if (typeof army.forcedMarch !== 'boolean') army.forcedMarch = false;
     if (army.navalOrigin === undefined) army.navalOrigin = null;
     if (typeof army.maxStrength !== 'number') {
       army.maxStrength = army.composition.infantry + army.composition.firearm

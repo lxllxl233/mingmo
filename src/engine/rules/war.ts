@@ -154,6 +154,44 @@ export function makePeace(
     }
   }
 
+  for (const tag of [war.attacker, war.defender]) {
+    const nation = state.countries[tag];
+    if (!nation) continue;
+    const hasProvince = Object.values(state.provinces).some(province => province.owner === tag);
+    if (!hasProvince) {
+      nation.alive = false;
+      for (const army of Object.values(state.armies)) {
+        if (army.tag === tag) delete state.armies[army.id];
+      }
+      continue;
+    }
+    const capital = state.provinces[nation.capital];
+    const fallback = Object.values(state.provinces).find(province =>
+      province.owner === tag || province.controller === tag);
+    const home = capital && (capital.owner === tag || capital.controller === tag)
+      ? capital.id
+      : fallback?.id;
+    if (!home) continue;
+    for (const army of Object.values(state.armies)) {
+      if (army.tag !== tag) continue;
+      const province = state.provinces[army.province];
+      if (province && (province.owner === tag || province.controller === tag)) continue;
+      army.province = home;
+      army.movePath = [];
+      army.moveProgress = 0;
+      army.stance = 'hold';
+      army.entrenchment = 0;
+      army.history = [home];
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: tag,
+        text: `${army.name} 和谈后撤回国都 ${content.provinces.get(home)?.name ?? home}`,
+        severity: 'info',
+      });
+    }
+  }
+
   const attackerName = content.countries.get(war.attacker)?.name ?? war.attacker;
   const defenderName = content.countries.get(war.defender)?.name ?? war.defender;
   const termLabel = terms === 'white' ? '白和' : terms === 'demand' ? '强制议和' : '按现状议和';

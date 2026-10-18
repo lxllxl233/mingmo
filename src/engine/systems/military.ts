@@ -389,8 +389,18 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
         army.entrenchment = Math.min(5, (army.entrenchment ?? 0) + 0.2);
       }
     }
+    if (army.forcedMarch && army.movePath.length > 0) {
+      army.organization = clamp(army.organization - 0.35, 0, 100);
+      army.supply = clamp(army.supply - 0.25, 0, 100);
+    }
 
-    if (army.movePath.length > 0) {
+    const provinceHere = state.provinces[army.province];
+    const hostileHere = provinceHere
+      ? provinceHere.controller !== army.tag
+        && provinceHere.controller !== 'NEU'
+        && areAtWar(state, army.tag, provinceHere.controller)
+      : false;
+    if (army.movePath.length > 0 && (army.forcedMarch || !hostileHere)) {
       const next = army.movePath[0];
       if (!next || !currentDef.neighbors.includes(next)) {
         army.movePath = [];
@@ -405,7 +415,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       const terrainFactor = movementFactor(army, nation, content, nextDef?.terrain ?? 'plains');
       army.stance = 'move';
       army.entrenchment = 0;
-      army.moveProgress += terrainFactor / (4 * cost);
+      army.moveProgress += (terrainFactor / (4 * cost)) * (army.forcedMarch ? 1.35 : 1);
       if (army.moveProgress >= 1) {
         army.history = [...army.history, army.province].slice(-8);
         army.province = next;
@@ -413,6 +423,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
         army.moveProgress = 0;
       }
     }
+    if (army.forcedMarch && army.movePath.length > 0) continue;
 
     const province = state.provinces[army.province];
     if (!province || province.controller === army.tag || province.owner === army.tag) {
@@ -510,6 +521,7 @@ export function recruitArmy(
     sourceEstate: template.sourceEstate,
     general: pickGeneral(state, content, tag),
     entrenchment: 0,
+    forcedMarch: false,
     stance: 'hold',
   };
   const estate = nation.estates[template.sourceEstate];

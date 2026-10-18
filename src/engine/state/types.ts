@@ -174,6 +174,7 @@ export interface ArmyState {
   sourceEstate: string;
   general: string | null;
   entrenchment: number;
+  forcedMarch: boolean;
   stance: 'hold' | 'move' | 'siege' | 'battle';
 }
 

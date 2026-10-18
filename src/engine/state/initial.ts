@@ -216,6 +216,7 @@ export function createInitialState(
       sourceEstate: template.sourceEstate,
       general: general?.id ?? null,
       entrenchment: 0,
+      forcedMarch: false,
       stance: 'hold',
     };
   }
