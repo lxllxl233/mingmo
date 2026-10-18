@@ -12,6 +12,17 @@ export function MapViewport() {
   const selectedArmy = useGameStore(state => state.selectedArmy);
   const diplomaticMode = useGameStore(state => state.diplomaticMode);
   const diplomaticAnchor = useGameStore(state => state.diplomaticAnchor);
+  const panel = useGameStore(state => state.panel);
+  const mapMode = panel === 'estates'
+    ? 'estates'
+    : panel === 'budget'
+      ? 'finance'
+      : panel === 'military'
+        ? 'military'
+        : panel === 'diplomacy' || diplomaticMode
+          ? 'diplomacy'
+          : 'normal';
+  const mapAnchor = panel === 'diplomacy' ? game?.playerTag ?? null : diplomaticAnchor;
   const selectProvince = useGameStore(state => state.selectProvince);
   const selectArmy = useGameStore(state => state.selectArmy);
 
@@ -39,10 +50,7 @@ export function MapViewport() {
       const state = useGameStore.getState().game;
       if (state) {
         renderer.setState(state, useGameStore.getState().selectedProvince, useGameStore.getState().selectedArmy);
-        renderer.setDiplomaticMode(
-          useGameStore.getState().diplomaticMode,
-          useGameStore.getState().diplomaticAnchor,
-        );
+        renderer.setMapMode(mapMode, mapAnchor);
       }
     });
     return () => {
@@ -59,12 +67,54 @@ export function MapViewport() {
   }, [game, version, selectedProvince, selectedArmy]);
 
   useEffect(() => {
-    rendererRef.current?.setDiplomaticMode(diplomaticMode, diplomaticAnchor);
-  }, [diplomaticMode, diplomaticAnchor]);
+    rendererRef.current?.setMapMode(mapMode, mapAnchor);
+  }, [mapMode, mapAnchor]);
 
   return (
     <div className="map-host" ref={hostRef}>
       <div className="map-grain" />
+      {mapMode !== 'normal' && (
+        <div className="map-mode-legend">
+          <b>
+            {mapMode === 'estates' && '阶级地图'}
+            {mapMode === 'finance' && '财政地图'}
+            {mapMode === 'military' && '军事地图'}
+            {mapMode === 'diplomacy' && '外交地图'}
+          </b>
+          {mapMode === 'estates' && (
+            <>
+              <span><i style={{ background: '#b8892e' }} />宗室贵族</span>
+              <span><i style={{ background: '#3f6f9a' }} />官僚</span>
+              <span><i style={{ background: '#5f7d4a' }} />士绅</span>
+              <span><i style={{ background: '#c46a2b' }} />商人</span>
+              <span><i style={{ background: '#9a7b4f' }} />农民</span>
+              <span><i style={{ background: '#a33a32' }} />军人</span>
+            </>
+          )}
+          {mapMode === 'finance' && (
+            <>
+              <span><i style={{ background: '#a33a32' }} />低发展</span>
+              <span><i style={{ background: '#d4b25a' }} />高发展</span>
+              <span className="muted">按省份发展度着色</span>
+            </>
+          )}
+          {mapMode === 'military' && (
+            <>
+              <span><i style={{ background: '#3f6f9a' }} />我军</span>
+              <span><i style={{ background: '#a33a32' }} />敌军</span>
+              <span><i style={{ background: '#8a8578' }} />无军</span>
+            </>
+          )}
+          {mapMode === 'diplomacy' && (
+            <>
+              <span><i style={{ background: '#a33a32' }} />交战</span>
+              <span><i style={{ background: '#3f6f9a' }} />友好</span>
+              <span><i style={{ background: '#8a8578' }} />中立</span>
+              <span><i style={{ background: '#e0c26a' }} />本国/目标</span>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

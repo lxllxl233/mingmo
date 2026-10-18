@@ -73,8 +73,8 @@ export function StartScreen() {
   return (
     <div className="start">
       <header>
-        <h1>甲申</h1>
-        <p className="subtitle">1616–1683 · 明末清初 · 省份级大战略</p>
+        <h1>明末 华夏震荡</h1>
+        <p className="subtitle">1616–1683 · 明清易代 · 省份级大战略</p>
       </header>
       <div className="start-grid">
         <section className="start-column">
@@ -97,6 +97,22 @@ export function StartScreen() {
               {scenario.playerHints.map(hint => <div key={hint}>· {hint}</div>)}
             </div>
           )}
+          {previewCountry && (
+            <div className="start-briefing">
+              <h3>开局态势 · {previewDef?.name ?? selectedTag}</h3>
+              <div className="briefing-grid">
+                <span>领袖 <b>{previewLeader}</b></span>
+                <span>国库 <b>{formatNumber(previewCountry.treasury)}</b></span>
+                <span>粮储 <b>{formatNumber(previewCountry.food)}</b></span>
+                <span>兵源 <b>{formatNumber(previewCountry.manpower)}</b></span>
+                <span>稳定 <b>{Math.round(previewCountry.stability)}</b></span>
+                <span>天命 <b>{Math.round(previewCountry.mandate)}</b></span>
+                <span>控制省份 <b>{previewProvinces}</b></span>
+                <span>军团 <b>{previewArmies}</b></span>
+                <span>战争 <b>{previewWars}</b></span>
+              </div>
+            </div>
+          )}
         </section>
         <section className="start-column">
           <h2>势力</h2>
@@ -116,22 +132,6 @@ export function StartScreen() {
             <label className="muted">随机种子 </label>
             <input value={seed} onChange={event => setSeed(event.target.value.replace(/[^0-9]/g, ''))} style={{ width: 120 }} />
           </div>
-          {previewCountry && (
-            <div className="start-briefing">
-              <h3>开局态势 · {previewDef?.name ?? selectedTag}</h3>
-              <div className="briefing-grid">
-                <span>领袖 <b>{previewLeader}</b></span>
-                <span>国库 <b>{formatNumber(previewCountry.treasury)}</b></span>
-                <span>粮储 <b>{formatNumber(previewCountry.food)}</b></span>
-                <span>兵源 <b>{formatNumber(previewCountry.manpower)}</b></span>
-                <span>稳定 <b>{Math.round(previewCountry.stability)}</b></span>
-                <span>天命 <b>{Math.round(previewCountry.mandate)}</b></span>
-                <span>控制省份 <b>{previewProvinces}</b></span>
-                <span>军团 <b>{previewArmies}</b></span>
-                <span>战争 <b>{previewWars}</b></span>
-              </div>
-            </div>
-          )}
         </section>
       </div>
       <footer className="start-actions">

@@ -1,4 +1,4 @@
-# 甲申 · 明末大战略提示词工程包
+# 明末 华夏震荡 · 明末大战略
 
 > **游戏已可运行。** 先看 [`docs/how-to-play.md`](docs/how-to-play.md)：
 > `pnpm install && pnpm dev`，浏览器打开 `http://127.0.0.1:5173`。

@@ -4,6 +4,7 @@ import { relationKey } from '../../engine/state/types';
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 import { LeaderPortrait } from './LeaderPortrait';
+import { CountryFlag } from './CountryFlag';
 
 const GOVERNMENTS: Record<string, string> = {
   monarchy: '君主制',
@@ -124,9 +125,12 @@ export function CountryPanel() {
   return (
     <div className="panel country-panel">
       <header className="panel-head">
-        <div>
-          <h2>{def.name}</h2>
-          <p className="muted">{tag} · {GOVERNMENTS[def.government] ?? def.government} · {RELIGIONS[def.religion] ?? def.religion} · {CULTURES[def.culture] ?? def.culture}</p>
+        <div className="country-title">
+          <CountryFlag country={def} width={66} />
+          <div>
+            <h2>{def.name}</h2>
+            <p className="muted">{tag} · {GOVERNMENTS[def.government] ?? def.government} · {RELIGIONS[def.religion] ?? def.religion} · {CULTURES[def.culture] ?? def.culture}</p>
+          </div>
         </div>
         <button onClick={closePanel}>关闭</button>
       </header>
