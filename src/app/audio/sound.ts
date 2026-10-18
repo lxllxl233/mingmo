@@ -8,6 +8,7 @@ export interface MusicState {
   index: number;
   loop: MusicLoop;
   playing: boolean;
+  volume: number;
 }
 
 const STORAGE_KEY = 'jiashen.muted';
@@ -21,10 +22,14 @@ class SoundEngine {
   private musicLoop: MusicLoop = 'list';
   private musicTimer: number | null = null;
   private musicPlaying = false;
+  private musicVolume = 0.65;
 
   constructor() {
     try {
       this.muted = localStorage.getItem(STORAGE_KEY) === '1';
+      const storedVolume = localStorage.getItem('jiashen.musicVolume');
+      const savedVolume = storedVolume === null ? 0.65 : Number(storedVolume);
+      if (Number.isFinite(savedVolume) && savedVolume >= 0 && savedVolume <= 1) this.musicVolume = savedVolume;
     } catch {
       this.muted = false;
     }
@@ -72,7 +77,17 @@ class SoundEngine {
       index: this.musicIndex,
       loop: this.musicLoop,
       playing: this.musicPlaying && !this.muted,
+      volume: this.musicVolume,
     };
+  }
+
+  setMusicVolume(volume: number): void {
+    this.musicVolume = Math.max(0, Math.min(1, volume));
+    try {
+      localStorage.setItem('jiashen.musicVolume', String(this.musicVolume));
+    } catch {
+      // 忽略隐私模式下的存储错误。
+    }
   }
 
   setMusicPlaylist(tracks: MusicTrack[], index = 0): void {
@@ -131,8 +146,46 @@ class SoundEngine {
     for (let i = 0; i < notes.length; i += 1) {
       const frequency = notes[i];
       if (frequency === undefined) continue;
-      this.tone(frequency, 0.9, 'sine', 0.012, frequency * 0.998, i * 0.72);
-      if (i % 4 === 0) this.tone(frequency / 2, 1.6, 'triangle', 0.006, frequency / 2, i * 0.72);
+      this.tone(frequency, 0.9, 'sine', 0.012 * this.musicVolume, frequency * 0.998, i * 0.72);
+      if (i % 4 === 0) this.tone(frequency / 2, 1.6, 'triangle', 0.006 * this.musicVolume, frequency / 2, i * 0.72);
+    }
+  }
+
+  playArmySelect(tag: string, composition: {
+    infantry: number;
+    firearm: number;
+    cavalry: number;
+    artillery: number;
+    naval: number;
+  }): void {
+    if (this.muted) return;
+    this.unlock();
+    const total = composition.infantry + composition.firearm + composition.cavalry
+      + composition.artillery + composition.naval;
+    let phrase = '集合！';
+    if (total > 0 && composition.naval / total >= 0.35) phrase = '扬帆！';
+    else if (total > 0 && composition.cavalry / total >= 0.3) phrase = '上马！';
+    else if (tag === 'QING') phrase = '列阵！';
+    else if (tag === 'MING') phrase = '列队！';
+    else if (tag === 'JAPAN') phrase = '整列！';
+    else if (tag === 'ZHENG') phrase = '扬帆！';
+    const pitch = tag === 'MING' ? 0.95 : tag === 'QING' ? 0.8 : tag === 'JAPAN' ? 1.15 : 1;
+    this.shout(phrase, pitch);
+    this.tone(96, 0.1, 'triangle', 0.025, 64);
+  }
+
+  private shout(text: string, pitch: number): void {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = 1.12;
+      utterance.pitch = pitch;
+      utterance.volume = this.muted ? 0 : 0.7;
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      // 系统语音不可用时保留鼓点提示。
     }
   }
 
@@ -186,13 +239,14 @@ class SoundEngine {
     const context = this.context;
     if (!context) return;
     const start = context.currentTime + delay;
+    const safeVolume = Math.max(0.0001, volume);
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.type = type;
     oscillator.frequency.setValueAtTime(startFrequency, start);
     oscillator.frequency.exponentialRampToValueAtTime(Math.max(1, endFrequency), start + duration);
     gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(volume, start + 0.012);
+    gain.gain.exponentialRampToValueAtTime(safeVolume, start + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
     oscillator.connect(gain).connect(context.destination);
     oscillator.start(start);

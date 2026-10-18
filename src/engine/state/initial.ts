@@ -9,6 +9,7 @@ import { parseDay } from '../core/clock';
 import type {
   ArmyState,
   CountryState,
+  Difficulty,
   EstateState,
   GameState,
   ProvinceState,
@@ -51,6 +52,7 @@ export function createInitialState(
   scenarioId: string,
   seed: number,
   playerTag: string,
+  difficulty: Difficulty = 'normal',
 ): GameState {
   const scenario: ScenarioDef | undefined = content.scenarios.get(scenarioId);
   if (!scenario) throw new Error(`unknown scenario ${scenarioId}`);
@@ -248,6 +250,8 @@ export function createInitialState(
     nextArmyId,
     nextTrainingId: 0,
     nextWarId: wars.length,
+    difficulty,
+    warAlerts: [],
     stats: {
       eventsFired: 0,
       battles: 0,

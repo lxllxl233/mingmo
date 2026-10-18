@@ -50,6 +50,10 @@ export function decodeSave(text: string): GameState {
     if (!Array.isArray(parsed.state.training)) parsed.state.training = [];
     if (typeof parsed.state.nextTrainingId !== 'number') parsed.state.nextTrainingId = 0;
   }
+  if (parsed.state.difficulty !== 'easy' && parsed.state.difficulty !== 'hard') {
+    parsed.state.difficulty = 'normal';
+  }
+  if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (parsed.version <= 4 && !parsed.state.truces) parsed.state.truces = {};
   if (parsed.version <= 5) {
     if (!parsed.state.vassals) parsed.state.vassals = {};

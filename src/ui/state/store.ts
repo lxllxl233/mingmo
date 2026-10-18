@@ -5,7 +5,7 @@ import { createInitialState } from '../../engine/state/initial';
 import { advanceDay } from '../../engine/tick';
 import { isYearStart } from '../../engine/core/clock';
 import { dispatch, type Command } from '../../engine/commands';
-import type { GameState } from '../../engine/state/types';
+import type { Difficulty, GameState } from '../../engine/state/types';
 import { loadLocal, saveLocal } from '../../app/save/save';
 import { sound } from '../../app/audio/sound';
 import { canMarchThrough } from '../../engine/rules/access';
@@ -61,7 +61,7 @@ interface UiStore {
   selectedProvince: string | null;
   selectedArmy: string | null;
   message: string | null;
-  start: (scenarioId: string, tag: string, seed?: number) => void;
+  start: (scenarioId: string, tag: string, seed?: number, difficulty?: Difficulty) => void;
   command: (command: Command) => boolean;
   tick: () => void;
   setSpeed: (speed: 0 | 1 | 2 | 4) => void;
@@ -78,6 +78,7 @@ interface UiStore {
   openPanel: (panel: PanelKey) => void;
   closePanel: () => void;
   dismissMessage: () => void;
+  acknowledgeWarAlert: () => void;
   save: (slot: string) => void;
   load: (slot: string) => void;
   reset: () => void;
@@ -99,8 +100,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
   selectedArmy: null,
   message: null,
 
-  start: (scenarioId, tag, seed = 42) => {
-    const game = createInitialState(content, scenarioId, seed, tag);
+  start: (scenarioId, tag, seed = 42, difficulty = 'normal') => {
+    const game = createInitialState(content, scenarioId, seed, tag, difficulty);
     sound.play('command');
     set({
       game,
@@ -148,10 +149,12 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ speedBeforeEvent: speed, speed: 0 });
       return;
     }
+    const alertCount = game.warAlerts.length;
     advanceDay(game, content);
     const next = { ...game };
     const pendingAfterTick = next.pendingEvents.some(event => event.country === next.playerTag);
-    if (pendingAfterTick) {
+    const newWarAlert = next.warAlerts.length > alertCount;
+    if (pendingAfterTick || newWarAlert) {
       set({ game: next, version: get().version + 1, speedBeforeEvent: speed, speed: 0 });
     } else {
       set({ game: next, version: get().version + 1 });
@@ -196,6 +199,8 @@ export const useGameStore = create<UiStore>((set, get) => ({
       return;
     }
     sound.play('click');
+    const selected = armyId ? game?.armies[armyId] : null;
+    if (selected) sound.playArmySelect(selected.tag, selected.composition);
     set({
       selectedArmy: armyId,
       panel: armyId ? 'army' : null,
@@ -291,6 +296,20 @@ export const useGameStore = create<UiStore>((set, get) => ({
   openPanel: panel => set({ panel, diplomaticMode: false, diplomaticAnchor: null }),
   closePanel: () => set({ panel: null, diplomaticMode: false, diplomaticAnchor: null }),
   dismissMessage: () => set({ message: null }),
+  acknowledgeWarAlert: () => {
+    const { game, speedBeforeEvent } = get();
+    if (!game || game.warAlerts.length === 0) return;
+    const next = { ...game, warAlerts: game.warAlerts.slice(1) };
+    const stillPaused = next.warAlerts.length > 0
+      || next.pendingEvents.some(event => event.country === next.playerTag);
+    set({
+      game: next,
+      version: get().version + 1,
+      speed: stillPaused ? 0 : speedBeforeEvent,
+      speedBeforeEvent: stillPaused ? speedBeforeEvent : 0,
+      message: null,
+    });
+  },
   save: slot => {
     const { game } = get();
     if (!game) return;

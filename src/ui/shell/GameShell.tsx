@@ -20,6 +20,7 @@ import { DiplomacyPanel } from '../panels/DiplomacyPanel';
 import { DecisionPanel } from '../panels/DecisionPanel';
 import { LogPanel } from '../panels/LogPanel';
 import { EventModal } from '../overlays/EventModal';
+import { WarAlertModal } from '../overlays/WarAlertModal';
 import { EndModal } from '../overlays/EndModal';
 import { TrainingModal } from '../overlays/TrainingModal';
 
@@ -175,6 +176,7 @@ export function GameShell() {
         </div>
       )}
       {pending.length > 0 && <EventModal />}
+      <WarAlertModal />
       <TrainingModal />
       {game.ended && <EndModal />}
       {message && <div className="toast">{message}</div>}

@@ -38,6 +38,18 @@ export function MusicControl() {
             <button className={state.loop === 'single' ? 'active' : ''} onClick={() => { sound.setMusicLoop('single'); refresh(); }}>单曲循环</button>
             <button className={state.loop === 'off' ? 'active' : ''} onClick={() => { sound.setMusicLoop('off'); refresh(); }}>关闭音乐</button>
           </div>
+          <label className="music-volume">
+            <span>音量</span>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={state.volume}
+              onChange={event => { sound.setMusicVolume(Number(event.target.value)); refresh(); }}
+            />
+            <b>{Math.round(state.volume * 100)}%</b>
+          </label>
         </div>
       )}
     </div>

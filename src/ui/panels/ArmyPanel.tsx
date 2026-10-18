@@ -5,6 +5,7 @@ import { GENERAL_TRAIT_INFO, generalTraitBonus } from '../../engine/rules/genera
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 import { GeneralPortrait } from './GeneralPortrait';
+import { ArmyTypeIcon } from './ArmyTypeIcon';
 
 const STANCE_NAMES: Record<string, string> = {
   hold: '驻扎',
@@ -55,9 +56,12 @@ export function ArmyPanel() {
   return (
     <div className="panel army-panel">
       <header className="panel-head">
-        <div>
-          <h2>{army.name}</h2>
-          <p className="muted">{province?.name ?? army.province} · {STANCE_NAMES[army.stance] ?? army.stance} · {def?.name ?? army.tag}</p>
+        <div className="army-title">
+          <ArmyTypeIcon composition={army.composition} size={34} />
+          <div>
+            <h2>{army.name}</h2>
+            <p className="muted">{province?.name ?? army.province} · {STANCE_NAMES[army.stance] ?? army.stance} · {def?.name ?? army.tag}</p>
+          </div>
         </div>
         <button onClick={closePanel}>关闭</button>
       </header>

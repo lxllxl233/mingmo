@@ -3,6 +3,7 @@ import { hasLocal } from '../../app/save/save';
 import { sound } from '../../app/audio/sound';
 import { START_MUSIC } from '../../app/audio/music';
 import { createInitialState } from '../../engine/state/initial';
+import type { Difficulty } from '../../engine/state/types';
 import { controlledProvinceCount } from '../../engine/rules/geography';
 import { formatNumber } from '../format';
 import { CountryFlag } from '../panels/CountryFlag';
@@ -40,6 +41,7 @@ export function StartScreen() {
   const [scenarioId, setScenarioId] = useState('1627');
   const [tag, setTag] = useState('MING');
   const [seed, setSeed] = useState('42');
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [phase, setPhase] = useState<'scenario' | 'faction'>('scenario');
 
   useEffect(() => {
@@ -71,11 +73,11 @@ export function StartScreen() {
   const preview = useMemo(() => {
     if (!scenario) return null;
     try {
-      return createInitialState(content, scenario.id, 42, selectedTag);
+      return createInitialState(content, scenario.id, 42, selectedTag, difficulty);
     } catch {
       return null;
     }
-  }, [content, scenario, selectedTag]);
+  }, [content, scenario, selectedTag, difficulty]);
   const previewCountry = preview?.countries[selectedTag];
   const previewDef = content.countries.get(selectedTag);
   const previewProvinces = preview && previewDef
@@ -151,6 +153,27 @@ export function StartScreen() {
         {phase === 'faction' && (
         <section className="start-column">
           <h2>势力 <small className="step-label">第二步</small></h2>
+          <div className="difficulty-picker">
+            <b>难度</b>
+            {([
+              ['easy', '简单'],
+              ['normal', '普通'],
+              ['hard', '困难'],
+            ] as const).map(([value, label]) => (
+              <button
+                key={value}
+                className={difficulty === value ? 'active' : ''}
+                onClick={() => setDifficulty(value)}
+              >
+                {label}
+              </button>
+            ))}
+            <p className="muted">
+              {difficulty === 'easy' && 'AI 更保守、更晚宣战、更少多线出兵；不获得任何资源或战斗加成。'}
+              {difficulty === 'normal' && 'AI 按史实性格行动；不获得任何资源或战斗加成。'}
+              {difficulty === 'hard' && 'AI 更早宣战、更会选择弱邻、更愿意多路出兵；不获得任何资源或战斗加成。'}
+            </p>
+          </div>
           <div className="faction-grid">
             {tags.map(country => {
               const leader = country.leadersByScenario?.[scenario?.id ?? ''] ?? country.leader;
@@ -184,7 +207,7 @@ export function StartScreen() {
         {hasLocal('auto') && <button onClick={() => load('auto')}>读取自动存档</button>}
         {hasLocal('manual') && <button onClick={() => load('manual')}>读取手动存档</button>}
         {phase === 'faction' && (
-          <button className="primary" onClick={() => start(scenarioId, selectedTag, Number(seed) || 42)}>
+          <button className="primary" onClick={() => start(scenarioId, selectedTag, Number(seed) || 42, difficulty)}>
             开始游戏
           </button>
         )}

@@ -3,6 +3,7 @@ import type { Focus } from '../../content/types';
 import { isFocusAvailable } from '../../engine/systems/focus';
 import { useGameStore } from '../state/store';
 import { effectsSummary } from '../format';
+import { FocusImage } from './FocusImage';
 
 export function FocusPanel() {
   const game = useGameStore(state => state.game);
@@ -31,6 +32,19 @@ export function FocusPanel() {
     )
     ?? selectedNodes[0]?.desc
     ?? '';
+  const orderedNodes = [...selectedNodes].sort((a, b) => a.y - b.y);
+  const exclusionPairs: Array<[Focus, Focus]> = [];
+  const seenPairs = new Set<string>();
+  for (const focus of orderedNodes) {
+    for (const partnerId of focus.mutuallyExclusive) {
+      const partner = focuses.find(node => node.id === partnerId);
+      if (!partner) continue;
+      const key = [focus.id, partner.id].sort().join('|');
+      if (seenPairs.has(key)) continue;
+      seenPairs.add(key);
+      exclusionPairs.push([focus, partner]);
+    }
+  }
 
   return (
     <div>
@@ -73,6 +87,33 @@ export function FocusPanel() {
       <div className="focus-branch-panel">
         <h3>{selectedBranch ?? '国策'}</h3>
         {branchIntro && <p className="focus-branch-desc">{branchIntro}</p>}
+        <div className="focus-route" aria-label="国策线路">
+          {orderedNodes.map((node, index) => {
+            const done = country.completedFocuses.includes(node.id);
+            const activeNow = country.focus?.id === node.id;
+            const exclusive = exclusionPairs.some(pair => pair[0].id === node.id || pair[1].id === node.id);
+            return (
+              <div className="focus-route-item" key={node.id}>
+                {index > 0 && <span className="focus-route-link" />}
+                <div className={`focus-route-step${done ? ' done' : activeNow ? ' active' : ''}${exclusive ? ' exclusive' : ''}`}>
+                  <span className="focus-route-dot">{index + 1}</span>
+                  <span>{node.name}</span>
+                  {exclusive && <small>互斥线</small>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {exclusionPairs.length > 0 && (
+          <div className="focus-exclusions">
+            <b>互斥线路</b>
+            {exclusionPairs.map(([left, right]) => (
+              <span key={`${left.id}-${right.id}`}>
+                {left.name} <i>⇄</i> {right.name}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="focus-card-grid">
           {selectedNodes.sort((a, b) => a.y - b.y).map(focus => {
             const completed = country.completedFocuses.includes(focus.id);
@@ -83,11 +124,13 @@ export function FocusPanel() {
             return (
               <div
                 key={focus.id}
-                className={`focus-card ${status}`}
+                className={`focus-card ${status}${focus.mutuallyExclusive.length > 0 ? ' exclusive' : ''}`}
                 onClick={() => {
                   if (available) command({ type: 'focus.start', focusId: focus.id });
                 }}
               >
+                <FocusImage focusId={focus.id} branch={focus.branch} />
+                <div className="focus-card-body">
                 <div className="focus-card-head">
                   <span className="focus-card-name">{focus.name}</span>
                   <span className="focus-card-status">
@@ -112,6 +155,7 @@ export function FocusPanel() {
                     command({ type: 'focus.cancel' });
                   }}>取消国策（进度清零）</button>
                 )}
+                </div>
               </div>
             );
           })}

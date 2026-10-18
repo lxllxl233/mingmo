@@ -61,6 +61,15 @@ export function declareWar(
   };
   state.nextWarId += 1;
   state.wars.push(war);
+  if (defender === state.playerTag) {
+    state.warAlerts.push({
+      warId: war.id,
+      attacker,
+      defender,
+      goal,
+      day: state.day,
+    });
+  }
   state.relations[relationKey(attacker, defender)] = -80;
   const attackerName = content.countries.get(attacker)?.name ?? attacker;
   const defenderName = content.countries.get(defender)?.name ?? defender;
@@ -87,6 +96,7 @@ export function makePeace(
   state.wars.splice(index, 1);
   state.relations[relationKey(war.attacker, war.defender)] = -25;
   state.truces[relationKey(war.attacker, war.defender)] = state.day + 365;
+  state.warAlerts = state.warAlerts.filter(alert => alert.warId !== warId);
   const attackerState = state.countries[war.attacker];
   const defenderState = state.countries[war.defender];
   if (attackerState) {

@@ -52,6 +52,16 @@ export interface AiState {
   stance: 'expand' | 'defend' | 'economy';
 }
 
+export type Difficulty = 'easy' | 'normal' | 'hard';
+
+export interface WarAlert {
+  warId: string;
+  attacker: string;
+  defender: string;
+  goal: string;
+  day: number;
+}
+
 export interface MonthlyReport {
   day: number;
   income: number;
@@ -219,6 +229,8 @@ export interface GameState {
   nextArmyId: number;
   nextTrainingId: number;
   nextWarId: number;
+  difficulty: Difficulty;
+  warAlerts: WarAlert[];
   stats: GameStats;
   ended: boolean;
   victory: VictoryResult | null;

@@ -38,6 +38,27 @@ function personalityFactor(personality: CountryDef['aiPersonality'], action: 'wa
   }
 }
 
+type AiProfile = {
+  warDelay: number;
+  minTreasury: number;
+  minStability: number;
+  strengthRatio: number;
+  armyTarget: number;
+  peaceExhaustion: number;
+  attackers: number;
+};
+
+function aiProfile(state: GameState): AiProfile {
+  switch (state.difficulty) {
+    case 'easy':
+      return { warDelay: 540, minTreasury: 150000, minStability: 40, strengthRatio: 1.6, armyTarget: 0.8, peaceExhaustion: 30, attackers: 1 };
+    case 'hard':
+      return { warDelay: 240, minTreasury: 70000, minStability: 25, strengthRatio: 0.45, armyTarget: 1.25, peaceExhaustion: 65, attackers: 3 };
+    default:
+      return { warDelay: 365, minTreasury: 100000, minStability: 30, strengthRatio: 0.85, armyTarget: 1, peaceExhaustion: 55, attackers: 2 };
+  }
+}
+
 function focusScore(state: GameState, content: ContentIndex, tag: string, focusId: string, base: number): number {
   const focus = content.focuses.get(focusId);
   if (!focus) return 0;
@@ -100,11 +121,12 @@ function manageTax(state: GameState, content: ContentIndex, tag: string): void {
 function manageArmy(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation) return;
+  const profile = aiProfile(state);
   const provinces = Object.values(state.provinces).filter(province => province.controller === tag).length;
   const atWar = warsOf(state, tag).length > 0;
-  const target = provinces * (atWar ? 500 : 250);
+  const target = provinces * (atWar ? 500 : 250) * profile.armyTarget;
   if (armyStrengthOf(state, tag) >= target) return;
-  if (nation.treasury < 120000 || nation.manpower < 2000) return;
+  if (nation.treasury < profile.minTreasury * 0.8 || nation.manpower < 2000) return;
   const template = AI_TEMPLATES[tag] ?? 'ming_guard';
   enqueueTraining(state, content, tag, nation.capital, template, 2);
 }
@@ -128,30 +150,36 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
   const def = content.countries.get(tag);
   if (!nation || !def) return;
   const wars = warsOf(state, tag);
+  const profile = aiProfile(state);
   if (wars.length > 0) {
     const capitalLost = state.provinces[nation.capital]?.controller !== tag;
     for (const war of [...wars]) {
-      if (nation.warExhaustion > 55 || capitalLost) makePeace(state, war.id, content);
+      if (nation.warExhaustion > profile.peaceExhaustion || capitalLost) makePeace(state, war.id, content);
     }
     return;
   }
-  if (state.day - nation.ai.lastWarDay < 365) return;
-  if (nation.treasury < 100000 || nation.stability < 30) return;
+  if (state.day - nation.ai.lastWarDay < profile.warDelay) return;
+  if (nation.treasury < profile.minTreasury || nation.stability < profile.minStability) return;
   const neighbors = neighborsOf(state, content, tag);
   const ownStrength = Math.max(1, armyStrengthOf(state, tag));
   const aggression = content.balance.ai.aggression * personalityFactor(def.aiPersonality, 'war');
-  for (const target of neighbors) {
-    if (target === 'NEU') continue;
-    const relation = state.relations[[tag, target].sort().join('|')] ?? 0;
-    if (relation > -20) continue;
-    const enemyStrength = Math.max(1, armyStrengthOf(state, target));
-    if (ownStrength / enemyStrength < 1.2 * aggression) continue;
-    if (areAtWar(state, tag, target)) continue;
-    declareWar(state, tag, target, '边境争端', content);
-    nation.ai.lastWarDay = state.day;
-    nation.ai.target = target;
-    return;
-  }
+  const requiredRatio = profile.strengthRatio / Math.max(0.35, aggression);
+  const candidates = neighbors
+    .filter(target => target !== 'NEU')
+    .map(target => ({
+      target,
+      relation: state.relations[[tag, target].sort().join('|')] ?? 0,
+      strength: Math.max(1, armyStrengthOf(state, target)),
+      atWar: areAtWar(state, tag, target),
+    }))
+    .filter(entry => entry.relation <= -20 && !entry.atWar)
+    .filter(entry => ownStrength / entry.strength >= requiredRatio);
+  candidates.sort((a, b) => a.strength - b.strength);
+  const target = candidates[0];
+  if (!target) return;
+  declareWar(state, tag, target.target, '边境争端', content);
+  nation.ai.lastWarDay = state.day;
+  nation.ai.target = target.target;
 }
 
 function findPathToEnemy(state: GameState, content: ContentIndex, tag: string, start: string): string[] | null {
@@ -222,7 +250,7 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
       if (path) setArmyPath(state, content, strongest.id, path);
     }
   }
-  for (const army of attackers) {
+  for (const army of attackers.slice(0, aiProfile(state).attackers)) {
     if (army.movePath.length > 0) continue;
     const path = findPathToEnemy(state, content, tag, army.province);
     if (path) setArmyPath(state, content, army.id, path);
