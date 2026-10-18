@@ -175,6 +175,39 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
       province.controller = effect.changeOwner.to;
       if (!province.cores.includes(effect.changeOwner.to)) province.cores.push(effect.changeOwner.to);
     }
+  } else if ('annexProvince' in effect) {
+    const target = state.provinces[effect.annexProvince.province];
+    const targetDef = content.provinces.get(effect.annexProvince.province);
+    if (!target || !targetDef) return;
+    if (effect.annexProvince.requireControl !== false && target.controller !== country) {
+      if (country === state.playerTag) {
+        state.log.push({
+          day: state.day,
+          category: 'politics',
+          country,
+          text: `无法吞并${targetDef.name}：尚未控制该地区`,
+          severity: 'warning',
+        });
+      }
+      return;
+    }
+    let annexed = 0;
+    for (const province of Object.values(state.provinces)) {
+      const def = content.provinces.get(province.id);
+      if (!def || def.prefectureId !== targetDef.prefectureId) continue;
+      if (province.controller !== country) continue;
+      province.owner = country;
+      province.controller = country;
+      if (!province.cores.includes(country)) province.cores.push(country);
+      annexed += 1;
+    }
+    state.log.push({
+      day: state.day,
+      category: 'politics',
+      country,
+      text: `将${content.prefectures.get(targetDef.prefectureId)?.name ?? targetDef.name}的 ${annexed} 个已控制地区正式并入版图`,
+      severity: 'info',
+    });
   } else if ('triggerEvent' in effect) {
     queueEvent(state, effect.triggerEvent.id, country, effect.triggerEvent.delayDays);
   } else if ('if' in effect) {

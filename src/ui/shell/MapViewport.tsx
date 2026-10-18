@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { MapRenderer } from '../../map/render/MapRenderer';
 import { useGameStore } from '../state/store';
 
@@ -52,8 +52,11 @@ export function MapViewport() {
     state.selectProvince(provinceId);
   }, []);
 
-  const handleContextProvince = useCallback((provinceId: string) => {
-    const state = useGameStore.getState();
+  const handleAppendWaypoint = useCallback((provinceId: string) => {
+    useGameStore.getState().appendArmyWaypoint(provinceId);
+  }, []);
+
+  const handleContextProvince = useCallback((provinceId: string) => {    const state = useGameStore.getState();
     const game = state.game;
     if (!game) return;
     if (state.selectedArmy && game.armies[state.selectedArmy]) {
@@ -68,7 +71,7 @@ export function MapViewport() {
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleContextProvince);
+    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleContextProvince, handleAppendWaypoint);
     rendererRef.current = renderer;
     let cancelled = false;
     void renderer.init().then(() => {
@@ -84,7 +87,7 @@ export function MapViewport() {
       renderer.destroy();
       rendererRef.current = null;
     };
-  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy]);
+  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy, handleAppendWaypoint]);
 
   useEffect(() => {
     if (game && rendererRef.current) {

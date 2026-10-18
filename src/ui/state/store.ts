@@ -69,6 +69,7 @@ interface UiStore {
   selectArmy: (armyId: string | null) => void;
   openCountry: (tag: string) => void;
   moveArmyTo: (provinceId: string) => boolean;
+  appendArmyWaypoint: (provinceId: string) => boolean;
   openTrainingPicker: (kind: 'land' | 'navy') => void;
   chooseTrainingTemplate: (templateId: string) => void;
   closeTrainingPicker: () => void;
@@ -229,6 +230,24 @@ export const useGameStore = create<UiStore>((set, get) => ({
       return false;
     }
     return get().command({ type: 'army.move', armyId: selectedArmy, path });
+  },
+  appendArmyWaypoint: provinceId => {
+    const { game, selectedArmy, content } = get();
+    if (!game || !selectedArmy) return false;
+    const army = game.armies[selectedArmy];
+    if (!army || army.tag !== game.playerTag) return false;
+    const from = army.movePath[army.movePath.length - 1] ?? army.province;
+    if (from === provinceId) return false;
+    const suffix = findPath(content, game, from, provinceId, army.tag);
+    if (!suffix || suffix.length === 0) {
+      sound.play('error');
+      set({ message: '无法追加这段行军路线：需要本国或交战地区' });
+      return false;
+    }
+    const path = [...army.movePath, ...suffix];
+    const ok = get().command({ type: 'army.move', armyId: selectedArmy, path });
+    if (ok) set({ message: '已追加行军路线（Ctrl+左键继续追加）' });
+    return ok;
   },
   openTrainingPicker: kind => {
     sound.play('click');

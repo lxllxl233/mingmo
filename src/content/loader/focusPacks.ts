@@ -35,6 +35,13 @@ function parseFocus(raw: unknown, path: string): FocusPackFocus {
   const desc = object['desc'];
   const focus: FocusPackFocus = { id, name, tier };
   if (typeof desc === 'string') focus.desc = desc;
+  const grants = object['grants'];
+  if (grants !== undefined) {
+    if (!Array.isArray(grants) || grants.some(value => typeof value !== 'string')) {
+      throw new ContentError('focus_packs', `${path}.grants`, 'expected an array of province ids');
+    }
+    focus.grants = grants as string[];
+  }
   return focus;
 }
 
@@ -177,7 +184,13 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
           prerequisites: tier > 0 && ids[tier - 1] ? [ids[tier - 1] as string] : [],
           prerequisitesAny: [],
           mutuallyExclusive: [],
-          completionEffect: effectsFor(branch.kind, tier, entry.id, decisionId, branch.modifier),
+          completionEffect: [
+            ...effectsFor(branch.kind, tier, entry.id, decisionId, branch.modifier),
+            ...(entry.grants ?? []).map(province => ({
+              annexProvince: { province, requireControl: true },
+            })),
+          ],
+          ...(entry.grants ? { grants: entry.grants } : {}),
           aiWillDo: {
             base: 40 + tier * 5,
             modifier: [

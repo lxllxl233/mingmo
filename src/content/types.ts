@@ -90,6 +90,7 @@ export type Effect =
   | { declareWar: { target: CountryTag; cb: string } }
   | { spawnArmy: { province: ProvinceId; template: ArmyTemplateId; size: number } }
   | { changeOwner: { province: ProvinceId; to: CountryTag } }
+  | { annexProvince: { province: ProvinceId; requireControl?: boolean } }
   | { triggerEvent: { id: EventId; delayDays: number } }
   | { if: { trigger: Trigger; then: Effect[]; else?: Effect[] } }
   | { randomList: Array<{ weight: number; effect: Effect[] }> };
@@ -261,6 +262,7 @@ export interface Focus {
   completionEffect: Effect[];
   aiWillDo: AiWeight;
   historicalContext?: string;
+  grants?: ProvinceId[];
   repeatable?: boolean;
 }
 
@@ -271,6 +273,7 @@ export interface FocusPackFocus {
   name: string;
   tier: number;
   desc?: string;
+  grants?: ProvinceId[];
 }
 
 export interface FocusPackBranch {

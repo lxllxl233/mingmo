@@ -95,6 +95,12 @@ export function FocusPanel() {
                   </span>
                 </div>
                 <div className="focus-card-meta">路线：{focus.branch} · 阶段 {focus.y + 1} / 7</div>
+                {focus.desc && !focus.desc.startsWith(`${focus.name}。`) && (
+                  <div className="focus-card-desc">{focus.desc}</div>
+                )}
+                {focus.grants && focus.grants.length > 0 && (
+                  <div className="focus-card-meta">扩张目标：{focus.grants.map(id => content.provinces.get(id)?.name ?? id).join('、')}（需先控制）</div>
+                )}
                 {missing.length > 0 && <div className="focus-card-meta">前置：{missing.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>}
                 {focus.mutuallyExclusive.length > 0 && (
                   <div className="focus-card-meta">互斥：{focus.mutuallyExclusive.map(id => content.focuses.get(id)?.name ?? id).join('、')}</div>

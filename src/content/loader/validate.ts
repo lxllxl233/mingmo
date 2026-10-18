@@ -34,7 +34,7 @@ const EFFECT_KEYS = new Set([
   'setTaxLaw', 'grantPrivilege', 'revokePrivilege', 'setFlag', 'clearFlag',
   'addModifier', 'addCountryModifier', 'addProvinceModifier', 'changeCapital',
   'unlockUnit', 'unlockDecision', 'addTech', 'addCore', 'addClaim',
-  'addRelation', 'declareWar', 'spawnArmy', 'changeOwner', 'triggerEvent',
+  'addRelation', 'declareWar', 'spawnArmy', 'changeOwner', 'annexProvince', 'triggerEvent',
   'if', 'randomList',
 ]);
 
@@ -214,6 +214,14 @@ export function validateEffect(value: unknown, file: string, path: string): void
     const record = asRecord(payload, file, `${path}.${key}`);
     expectString(field(record, 'province', file, path), file, `${path}.${key}.province`);
     expectString(field(record, 'to', file, path), file, `${path}.${key}.to`);
+    return;
+  }
+  if (key === 'annexProvince') {
+    const record = asRecord(payload, file, `${path}.${key}`);
+    expectString(field(record, 'province', file, path), file, `${path}.${key}.province`);
+    if (record['requireControl'] !== undefined && typeof record['requireControl'] !== 'boolean') {
+      fail(file, `${path}.${key}.requireControl`, 'expected boolean');
+    }
     return;
   }
   if (key === 'triggerEvent') {

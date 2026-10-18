@@ -7,6 +7,7 @@ import { areAtWar } from '../../engine/rules/war';
 type SelectProvinceHandler = (provinceId: string) => void;
 type SelectArmyHandler = (armyId: string) => void;
 type ContextProvinceHandler = (provinceId: string) => void;
+type AppendWaypointHandler = (provinceId: string) => void;
 export type MapMode = 'normal' | 'estates' | 'finance' | 'military' | 'diplomacy';
 
 const ESTATE_COLORS: Record<string, number> = {
@@ -186,6 +187,7 @@ export class MapRenderer {
     private readonly onSelectProvince: SelectProvinceHandler,
     private readonly onSelectArmy: SelectArmyHandler,
     private readonly onContextProvince: ContextProvinceHandler,
+    private readonly onAppendWaypoint: AppendWaypointHandler,
   ) {}
 
   async init(): Promise<void> {
@@ -699,7 +701,7 @@ export class MapRenderer {
     stage.on('pointerup', (event) => {
       if (event.button === 2) return;
       this.dragging = false;
-      if (!this.moved) this.pick(event.global.x, event.global.y);
+      if (!this.moved) this.pick(event.global.x, event.global.y, event.ctrlKey);
     });
     stage.on('pointerupoutside', () => {
       this.dragging = false;
@@ -754,9 +756,14 @@ export class MapRenderer {
     return null;
   }
 
-  private pick(screenX: number, screenY: number): void {
+  private pick(screenX: number, screenY: number, ctrlKey = false): void {
     const province = this.provinceAt(screenX, screenY);
-    if (province) this.onSelectProvince(province);
+    if (!province) return;
+    if (ctrlKey && this.selectedArmy) {
+      this.onAppendWaypoint(province);
+      return;
+    }
+    this.onSelectProvince(province);
   }
 
   private updateHover(screenX: number, screenY: number): void {
@@ -874,8 +881,8 @@ export class MapRenderer {
     this.countryBorderLayer.clear();
     const scale = this.world.scale.x || 1;
     const countryWidth = Math.max(0.1, 3 / scale);
-    const prefectureWidth = Math.max(0.04, 1.3 / scale);
-    const provinceWidth = Math.max(0.02, 0.28 / scale);
+    const prefectureWidth = Math.max(0.04, 1.1 / scale);
+    const provinceWidth = Math.max(0.02, 0.25 / scale);
     for (const edge of this.edges) {
       const a = this.state.provinces[edge.a];
       if (!a || edge.b === null) continue;
@@ -886,10 +893,10 @@ export class MapRenderer {
           .stroke({ width: countryWidth, color: 0x1f1913, alpha: 1 });
       } else if (this.content.provinces.get(edge.a)?.prefectureId !== this.content.provinces.get(edge.b)?.prefectureId) {
         this.prefectureBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: prefectureWidth, color: 0x6b5a44, alpha: 0.55 });
+          .stroke({ width: prefectureWidth, color: 0x7a6a54, alpha: 0.45 });
       } else {
         this.provinceBorderLayer.moveTo(edge.x1, edge.y1).lineTo(edge.x2, edge.y2)
-          .stroke({ width: provinceWidth, color: 0x7a6b56, alpha: 0.22 });
+          .stroke({ width: provinceWidth, color: 0x85765f, alpha: 0.18 });
       }
     }
   }
@@ -1023,15 +1030,15 @@ export class MapRenderer {
         style: new TextStyle({
           fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
           fontSize: 38,
-          fontWeight: '600',
+          fontWeight: '700',
           fill: 0x2e261c,
-          stroke: { color: 0xf7efdf, width: 2.4 },
+          stroke: { color: 0xf7efdf, width: 3.2 },
         }),
       });
       text.anchor.set(0.5);
-      text.resolution = 2;
+      text.resolution = 4;
       text.position.set(group.x / Math.max(1, group.count), group.y / Math.max(1, group.count));
-      this.provinceLabels.set(text, 17);
+      this.provinceLabels.set(text, 20);
       this.provinceLabelArea.set(text, group.area);
       this.provinceLabelLayer.addChild(text);
     }
@@ -1050,15 +1057,15 @@ export class MapRenderer {
         style: new TextStyle({
           fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
           fontSize: 32,
-          fontWeight: '600',
-          fill: 0x3a3024,
-          stroke: { color: 0xf7efdf, width: 2 },
+          fontWeight: '700',
+          fill: 0x2e261c,
+          stroke: { color: 0xf7efdf, width: 3 },
         }),
       });
       text.anchor.set(0.5);
-      text.resolution = 3;
+      text.resolution = 4;
       text.position.set(centroid.x, centroid.y);
-      this.localLabels.set(text, 18);
+      this.localLabels.set(text, 20);
       this.localLabelArea.set(text, labelArea(points));
       this.localLabelLayer.addChild(text);
     }
@@ -1070,7 +1077,7 @@ export class MapRenderer {
     const used: Array<{ x: number; y: number }> = [];
     const provinceCandidates = [...this.provinceLabels.entries()]
       .sort((a, b) => (this.provinceLabelArea.get(b[0]) ?? 0) - (this.provinceLabelArea.get(a[0]) ?? 0));
-    const minProvinceDistance = 120 / scale;
+    const minProvinceDistance = 140 / scale;
     for (const [label, target] of provinceCandidates) {
       label.scale.set(target / (38 * scale));
       label.visible = false;
@@ -1083,7 +1090,7 @@ export class MapRenderer {
     const usedLocal: Array<{ x: number; y: number }> = [];
     const localCandidates = [...this.localLabels.entries()]
       .sort((a, b) => (this.localLabelArea.get(b[0]) ?? 0) - (this.localLabelArea.get(a[0]) ?? 0));
-    const minLocalDistance = 75 / scale;
+    const minLocalDistance = 90 / scale;
     for (const [label, target] of localCandidates) {
       label.scale.set(target / (32 * scale));
       label.visible = false;
@@ -1102,7 +1109,6 @@ export class MapRenderer {
     for (const army of Object.values(this.state.armies)) {
       if (army.tag !== this.state.playerTag) continue;
       const selected = army.id === this.selectedArmy;
-      const color = this.colorOf(army.tag);
       const history = this.positions([...(army.history ?? []), army.province]);
       const planned = this.positions([army.province, ...army.movePath]);
       if (army.embarked && army.navalTarget) {
@@ -1123,7 +1129,9 @@ export class MapRenderer {
         }
       }
       if (planned.length > 1) {
-        this.strokeTrail(planned, 0.07 * lf, color, selected ? 0.7 : 0.45);
+        const routeColor = selected ? 0xffd27a : 0x2f91b8;
+        this.strokeTrail(planned, (selected ? 0.09 : 0.11) * lf, 0x1f1c18, selected ? 0.5 : 0.35);
+        this.strokeTrail(planned, (selected ? 0.07 : 0.075) * lf, routeColor, selected ? 0.9 : 0.85);
         if (selected) {
           this.strokeTrail(planned, 0.42 * lf, 0x1f1c18, 0.55);
           this.strokeTrail(planned, 0.22 * lf, 0xffd27a, 1);
@@ -1134,9 +1142,9 @@ export class MapRenderer {
               .stroke({ width: 0.04 * lf, color: 0x1f1c18, alpha: 0.9 });
           }
         } else {
-          this.strokeTrailArrows(planned, color, 0x1f1c18, lf * 0.65);
+          this.strokeTrailArrows(planned, routeColor, 0x1f1c18, lf * 0.65);
           this.trailLayer.circle(planned[0]!.x, planned[0]!.y, 0.055 * lf)
-            .fill({ color, alpha: 0.8 });
+            .fill({ color: routeColor, alpha: 0.85 });
         }
       }
     }
@@ -1281,6 +1289,11 @@ export class MapRenderer {
       event.stopPropagation();
       const marker = this.armyMarkers.get(key);
       if (!marker) return;
+      if (event.ctrlKey && this.selectedArmy) {
+        const targetArmy = this.state?.armies[marker.armyId];
+        if (targetArmy) this.onAppendWaypoint(targetArmy.province);
+        return;
+      }
       const ids = marker.armyIds;
       const index = ids.indexOf(marker.armyId);
       const next = ids[(index + 1) % Math.max(1, ids.length)] ?? marker.armyId;

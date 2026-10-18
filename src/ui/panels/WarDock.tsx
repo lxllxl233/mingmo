@@ -7,14 +7,14 @@ export function WarDock() {
   const openPanel = useGameStore(state => state.openPanel);
   if (!game) return null;
   const wars = warsOf(game, game.playerTag);
-  if (wars.length === 0) return null;
 
   return (
     <section className="war-dock">
       <div className="war-dock-head">
-        <b>战事</b>
+        <b>战争视图</b>
         <button onClick={() => openPanel('diplomacy')}>外交</button>
       </div>
+      {wars.length === 0 && <p className="war-dock-empty">当前没有战争。宣战后，这里会持续显示双方伤亡、非战斗减员与投降倾向。</p>}
       {wars.map(war => {
         const enemy = war.attacker === game.playerTag ? war.defender : war.attacker;
         const score = warScore(game, war);

@@ -511,3 +511,5 @@ input, select {
 .war-dock-title span { color: var(--ink-soft); }
 .war-dock-stats { display: flex; justify-content: space-between; gap: 6px; margin-top: 2px; color: var(--ink-soft); }
 .war-dock-stats b { color: var(--red); }
+
+.war-dock-empty { margin: 4px 0; font-size: 11px; line-height: 1.6; color: var(--ink-soft); }

@@ -42,7 +42,7 @@ focus_packs:
           - { id: ming_liaodong_4, name: 联蒙抗金, tier: 3 }
           - { id: ming_liaodong_5, name: 与清议和, tier: 4 }
           - { id: ming_liaodong_6, name: 决战辽东, tier: 5 }
-          - { id: ming_liaodong_7, name: 收复辽沈, tier: 6 }
+          - { id: ming_liaodong_7, name: 收复辽沈, tier: 6, desc: '辽沈是辽东的根，不是一次野战能拿回来的。此策要求明军已经控制沈阳、辽阳等核心地区，才把军事占领转为正式收复；否则只能继续围困。', grants: [shenyang] }
       - name: 民变
         kind: court
         desc: 剿与抚不是道德选择，是财政与时间的交换。
@@ -91,8 +91,8 @@ focus_packs:
         barrier: false
         desc: 八旗是清的根本，也是清的人口天花板。
         focuses:
-          - { id: qing_banner_1, name: 牛录编审, tier: 0 }
-          - { id: qing_banner_2, name: 旗地扩张, tier: 1 }
+          - { id: qing_banner_1, name: 牛录编审, tier: 0, desc: '牛录是八旗的基层军政组织，兼管户籍、兵役与旗地。编审牛录，就是清查壮丁、核定旗籍、重分旗地，把散居的部民固定为可征调的八旗户口；做得成，八旗兵源与军心都会更稳，但也会加深满汉土地矛盾。' }
+          - { id: qing_banner_2, name: 旗地扩张, tier: 1, desc: '旗地是八旗兵丁的生计，也是清朝入关前后最敏感的土地问题。扩张旗地意味着把辽西、北直隶的汉地划归旗人，短期能稳住八旗，长期会激化满汉冲突。', grants: [guangning] }
           - { id: qing_banner_3, name: 蒙古八旗, tier: 2 }
           - { id: qing_banner_4, name: 汉军八旗, tier: 3 }
           - { id: qing_banner_5, name: 火器营, tier: 4 }
@@ -116,7 +116,7 @@ focus_packs:
           - { id: qing_entry_1, name: 联蒙入塞, tier: 0 }
           - { id: qing_entry_2, name: 招降吴三桂, tier: 1 }
           - { id: qing_entry_3, name: 山海关决战, tier: 2 }
-          - { id: qing_entry_4, name: 定鼎北京, tier: 3 }
+          - { id: qing_entry_4, name: 定鼎北京, tier: 3, desc: '定鼎北京不是换一面旗，而是接管明朝的京师、官僚与仓场。只有实际控制北京及其周边，才能把占领变成正式版图与统治中心；否则只是又一次入塞。', grants: [beijing] }
           - { id: qing_entry_5, name: 南下追击, tier: 4 }
           - { id: qing_entry_6, name: 平定江南, tier: 5 }
           - { id: qing_entry_7, name: 一统天下, tier: 6 }
@@ -202,7 +202,7 @@ focus_packs:
         focuses:
           - { id: shun_east_1, name: 渡河东征, tier: 0 }
           - { id: shun_east_2, name: 破太原, tier: 1 }
-          - { id: shun_east_3, name: 取北京, tier: 2 }
+          - { id: shun_east_3, name: 取北京, tier: 2, desc: '北京是明朝的心脏，也是大顺从流寇转为朝廷的门槛。此策只在已经控制北京后才正式接管顺天府，否则仍是口号。', grants: [beijing] }
           - { id: shun_east_4, name: 山海关, tier: 3 }
           - { id: shun_east_5, name: 追亡逐北, tier: 4 }
           - { id: shun_east_6, name: 据守山西, tier: 5 }
@@ -242,7 +242,7 @@ focus_packs:
         kind: military
         desc: 四川四面皆山，守住是基业，守不住是坟墓。
         focuses:
-          - { id: xi_sichuan_1, name: 据成都, tier: 0 }
+          - { id: xi_sichuan_1, name: 据成都, tier: 0, desc: '成都是四川的粮仓与政治中心。只有实际控制成都及其属县，才能把大西军的流动作战变成以蜀为基业的割据。', grants: [chengdu] }
           - { id: xi_sichuan_2, name: 取重庆, tier: 1 }
           - { id: xi_sichuan_3, name: 定川西, tier: 2 }
           - { id: xi_sichuan_4, name: 征川南, tier: 3 }
@@ -418,7 +418,7 @@ focus_packs:
           - { id: zheng_taiwan_1, name: 澎湖, tier: 0 }
           - { id: zheng_taiwan_2, name: 鹿耳门, tier: 1 }
           - { id: zheng_taiwan_3, name: 赤嵌, tier: 2 }
-          - { id: zheng_taiwan_4, name: 安平, tier: 3 }
+          - { id: zheng_taiwan_4, name: 安平, tier: 3, desc: '安平是荷兰人在台湾的统治中心。此策只把郑军已经控制的安平地区正式纳入版图，不能凭空取得未攻下的热兰遮城。', grants: [anping] }
           - { id: zheng_taiwan_5, name: 屯垦, tier: 4 }
           - { id: zheng_taiwan_6, name: 原住民, tier: 5 }
           - { id: zheng_taiwan_7, name: 台湾基业, tier: 6 }
