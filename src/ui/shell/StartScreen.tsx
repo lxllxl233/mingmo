@@ -3,6 +3,8 @@ import { hasLocal } from '../../app/save/save';
 import { createInitialState } from '../../engine/state/initial';
 import { controlledProvinceCount } from '../../engine/rules/geography';
 import { formatNumber } from '../format';
+import { CountryFlag } from '../panels/CountryFlag';
+import { LeaderPortrait } from '../panels/LeaderPortrait';
 import { useGameStore } from '../state/store';
 
 const MECHANIC_LABELS: Record<string, string> = {
@@ -82,7 +84,7 @@ export function StartScreen() {
       </header>
       <div className="start-grid">
         <section className="start-column">
-          <h2>剧本</h2>
+          <h2>剧本 <small className="step-label">第一步</small></h2>
           {[...content.scenarios.values()].map(entry => (
             <div
               key={entry.id}
@@ -97,8 +99,10 @@ export function StartScreen() {
             </div>
           ))}
           {scenario && (
-            <div className="muted" style={{ marginTop: 12 }}>
-              {scenario.playerHints.map(hint => <div key={hint}>· {hint}</div>)}
+            <div className="scenario-detail">
+              <h3>{scenario.name} · {scenario.startDate}</h3>
+              <p>{scenario.description}</p>
+              {scenario.playerHints.map(hint => <div key={hint} className="scenario-hint">· {hint}</div>)}
             </div>
           )}
           {previewCountry && (
@@ -121,19 +125,26 @@ export function StartScreen() {
           )}
         </section>
         <section className="start-column">
-          <h2>势力</h2>
+          <h2>势力 <small className="step-label">第二步</small></h2>
           <div className="faction-grid">
-            {tags.map(country => (
-              <div
-                key={country.tag}
-                className={`faction-card${country.tag === selectedTag ? ' selected' : ''}`}
-                onClick={() => setTag(country.tag)}
-              >
-                <h3><span className="faction-dot" style={{ background: country.color }} />{country.name}</h3>
-                <p>{MECHANIC_LABELS[country.uniqueMechanic] ?? country.uniqueMechanic} · {PERSONALITY_LABELS[country.aiPersonality] ?? country.aiPersonality}</p>
-                <p className="goal">目标：{country.goal}</p>
-              </div>
-            ))}
+            {tags.map(country => {
+              const leader = country.leadersByScenario?.[scenario?.id ?? ''] ?? country.leader;
+              return (
+                <div
+                  key={country.tag}
+                  className={`faction-card${country.tag === selectedTag ? ' selected' : ''}`}
+                  onClick={() => setTag(country.tag)}
+                >
+                  <div className="faction-card-top">
+                    <CountryFlag country={country} width={34} />
+                    {leader && <LeaderPortrait leader={leader} size={28} />}
+                  </div>
+                  <h3>{country.name}</h3>
+                  <p className="faction-leader">领袖：{leader?.name ?? '—'} · {MECHANIC_LABELS[country.uniqueMechanic] ?? country.uniqueMechanic} · {PERSONALITY_LABELS[country.aiPersonality] ?? country.aiPersonality}</p>
+                  <p className="goal">{country.goal}</p>
+                </div>
+              );
+            })}
           </div>
           <div style={{ marginTop: 14 }}>
             <label className="muted">随机种子 </label>

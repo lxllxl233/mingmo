@@ -6,8 +6,7 @@ import { areAtWar } from '../../engine/rules/war';
 
 type SelectProvinceHandler = (provinceId: string) => void;
 type SelectArmyHandler = (armyId: string) => void;
-type ContextProvinceHandler = (provinceId: string) => void;
-type AppendWaypointHandler = (provinceId: string) => void;
+type ContextProvinceHandler = (provinceId: string, ctrlKey: boolean) => void;
 export type MapMode = 'normal' | 'estates' | 'finance' | 'military' | 'diplomacy';
 
 const ESTATE_COLORS: Record<string, number> = {
@@ -187,7 +186,6 @@ export class MapRenderer {
     private readonly onSelectProvince: SelectProvinceHandler,
     private readonly onSelectArmy: SelectArmyHandler,
     private readonly onContextProvince: ContextProvinceHandler,
-    private readonly onAppendWaypoint: AppendWaypointHandler,
   ) {}
 
   async init(): Promise<void> {
@@ -559,7 +557,7 @@ export class MapRenderer {
       }
       this.projected.set(id, flat);
       const count = points.length || 1;
-      this.centroids.set(id, { x: sx / count, y: sy / count });
+      this.centroids.set(id, interiorPoint(flat, sx / count, sy / count));
 
       const countPoints = flat.length / 2;
       for (let i = 0; i < countPoints; i += 1) {
@@ -701,7 +699,7 @@ export class MapRenderer {
     stage.on('pointerup', (event) => {
       if (event.button === 2) return;
       this.dragging = false;
-      if (!this.moved) this.pick(event.global.x, event.global.y, event.ctrlKey);
+      if (!this.moved) this.pick(event.global.x, event.global.y);
     });
     stage.on('pointerupoutside', () => {
       this.dragging = false;
@@ -741,7 +739,7 @@ export class MapRenderer {
         (event.clientX - rect.left) * scaleX,
         (event.clientY - rect.top) * scaleY,
       );
-      if (province) this.onContextProvince(province);
+      if (province) this.onContextProvince(province, event.ctrlKey);
     };
     app.canvas.addEventListener('contextmenu', this.contextHandler);
     app.renderer.on('resize', () => this.fit());
@@ -756,14 +754,9 @@ export class MapRenderer {
     return null;
   }
 
-  private pick(screenX: number, screenY: number, ctrlKey = false): void {
+  private pick(screenX: number, screenY: number): void {
     const province = this.provinceAt(screenX, screenY);
-    if (!province) return;
-    if (ctrlKey && this.selectedArmy) {
-      this.onAppendWaypoint(province);
-      return;
-    }
-    this.onSelectProvince(province);
+    if (province) this.onSelectProvince(province);
   }
 
   private updateHover(screenX: number, screenY: number): void {
@@ -1200,36 +1193,6 @@ export class MapRenderer {
     }
   }
 
-  private separateMarkers(): void {
-    // 深度放大时保持兵模严格落在省份质心，避免为了避让而漂到邻省。
-    if (this.world.scale.x >= 25) return;
-    const markers = [...this.armyMarkers.values()];
-    const minDistance = 3.4 * Math.min(1, 12 / this.world.scale.x);
-    for (let pass = 0; pass < 3; pass += 1) {
-      let moved = false;
-      for (let i = 0; i < markers.length; i += 1) {
-        const a = markers[i];
-        if (!a) continue;
-        for (let j = i + 1; j < markers.length; j += 1) {
-          const b = markers[j];
-          if (!b) continue;
-          const dx = b.container.position.x - a.container.position.x;
-          const dy = b.container.position.y - a.container.position.y;
-          const distance = Math.hypot(dx, dy);
-          if (distance >= minDistance) continue;
-          const angle = distance > 0.001 ? Math.atan2(dy, dx) : ((i + j) % 7) * 0.9;
-          const push = (minDistance - distance) / 2 + 0.01;
-          a.container.position.x -= Math.cos(angle) * push;
-          a.container.position.y -= Math.sin(angle) * push;
-          b.container.position.x += Math.cos(angle) * push;
-          b.container.position.y += Math.sin(angle) * push;
-          moved = true;
-        }
-      }
-      if (!moved) break;
-    }
-  }
-
   private ensureArmyMarker(key: string, tag: string, army: ArmyState): ArmyMarker {
     const existing = this.armyMarkers.get(key);
     if (existing) return existing;
@@ -1289,11 +1252,6 @@ export class MapRenderer {
       event.stopPropagation();
       const marker = this.armyMarkers.get(key);
       if (!marker) return;
-      if (event.ctrlKey && this.selectedArmy) {
-        const targetArmy = this.state?.armies[marker.armyId];
-        if (targetArmy) this.onAppendWaypoint(targetArmy.province);
-        return;
-      }
       const ids = marker.armyIds;
       const index = ids.indexOf(marker.armyId);
       const next = ids[(index + 1) % Math.max(1, ids.length)] ?? marker.armyId;
@@ -1342,7 +1300,6 @@ export class MapRenderer {
       marker.stackScale = 1 + Math.min(0.4, Math.max(0, count - 1) * 0.08);
       marker.label.text = `${strengthText(total)}${count > 1 ? ` ×${count}` : ''}`;
     }
-    this.separateMarkers();
     this.updateZoomScales();
     this.armyLayer.sortChildren();
     for (const [key, marker] of this.armyMarkers) {
@@ -1364,6 +1321,33 @@ export class MapRenderer {
     this.app?.destroy(true, { children: true });
     this.app = null;
   }
+}
+
+function interiorPoint(points: number[], fallbackX: number, fallbackY: number): { x: number; y: number } {
+  if (pointInPolygon(fallbackX, fallbackY, points)) return { x: fallbackX, y: fallbackY };
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (let i = 0; i < points.length; i += 2) {
+    const x = points[i] ?? 0;
+    const y = points[i + 1] ?? 0;
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+  }
+  const cx = (minX + maxX) / 2;
+  const cy = (minY + maxY) / 2;
+  for (let radius = 0.42; radius >= 0.05; radius -= 0.045) {
+    for (let step = 0; step < 24; step += 1) {
+      const angle = (step / 24) * Math.PI * 2;
+      const x = cx + Math.cos(angle) * (maxX - minX) * radius;
+      const y = cy + Math.sin(angle) * (maxY - minY) * radius;
+      if (pointInPolygon(x, y, points)) return { x, y };
+    }
+  }
+  return { x: fallbackX, y: fallbackY };
 }
 
 function labelArea(points: number[] | undefined): number {

@@ -2419,6 +2419,7 @@ provinces:
     supply_limit: 16165
     neighbors:
       - nagasaki
+      - osaka
   - id: hakata_a
     name: 博多东
     prefecture: pref_hakata
@@ -5037,6 +5038,8 @@ provinces:
     supply_limit: 16840
     neighbors:
       - hakata
+      - nagasaki_a
+      - ningbo
   - id: nagasaki_a
     name: 长崎东
     prefecture: pref_nagasaki
@@ -5053,6 +5056,7 @@ provinces:
     dominant_estate: nobles
     supply_limit: 15673
     neighbors:
+      - nagasaki
       - nagasaki_b
   - id: nagasaki_b
     name: 长崎西
@@ -5486,6 +5490,7 @@ provinces:
     supply_limit: 21222
     neighbors:
       - jiaxing_a
+      - nagasaki
       - ningbo_a
       - ningbo_b
       - taizhou_b
@@ -5847,15 +5852,16 @@ provinces:
     terrain: hills
     coastal: true
     river: false
-    is_port: false
+    is_port: true
     fort: false
     fort_level: 0
     population: 377306
     landholding: 377
     development: 48
-    dominant_estate: nobles
+    dominant_estate: merchants
     supply_limit: 16778
     neighbors:
+      - hakata
       - kyoto
       - kyoto_a
       - kyoto_b

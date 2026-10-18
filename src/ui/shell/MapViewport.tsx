@@ -52,15 +52,13 @@ export function MapViewport() {
     state.selectProvince(provinceId);
   }, []);
 
-  const handleAppendWaypoint = useCallback((provinceId: string) => {
-    useGameStore.getState().appendArmyWaypoint(provinceId);
-  }, []);
-
-  const handleContextProvince = useCallback((provinceId: string) => {    const state = useGameStore.getState();
+  const handleContextProvince = useCallback((provinceId: string, ctrlKey: boolean) => {
+    const state = useGameStore.getState();
     const game = state.game;
     if (!game) return;
     if (state.selectedArmy && game.armies[state.selectedArmy]) {
-      state.moveArmyTo(provinceId);
+      if (ctrlKey) state.appendArmyWaypoint(provinceId);
+      else state.moveArmyTo(provinceId);
       return;
     }
     const province = game.provinces[provinceId];
@@ -71,7 +69,7 @@ export function MapViewport() {
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleContextProvince, handleAppendWaypoint);
+    const renderer = new MapRenderer(host, content.geo, content, handleSelectProvince, handleSelectArmy, handleContextProvince);
     rendererRef.current = renderer;
     let cancelled = false;
     void renderer.init().then(() => {
@@ -87,7 +85,7 @@ export function MapViewport() {
       renderer.destroy();
       rendererRef.current = null;
     };
-  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy, handleAppendWaypoint]);
+  }, [content, selectProvince, selectArmy, handleContextProvince, handleSelectProvince, handleSelectArmy]);
 
   useEffect(() => {
     if (game && rendererRef.current) {

@@ -513,3 +513,13 @@ input, select {
 .war-dock-stats b { color: var(--red); }
 
 .war-dock-empty { margin: 4px 0; font-size: 11px; line-height: 1.6; color: var(--ink-soft); }
+
+.step-label { margin-left: 6px; font-size: 11px; letter-spacing: .08em; color: #8a6a3f; font-weight: 400; }
+.faction-card-top { display: flex; align-items: center; gap: 6px; float: right; margin-left: 8px; }
+.faction-card-top svg { flex: 0 0 auto; }
+.faction-leader { font-size: 11px; color: #6b4f2a; line-height: 1.5; }
+
+.scenario-detail { margin-top: 14px; padding: 10px 12px; border-left: 3px solid var(--red); background: rgba(255,255,255,.3); }
+.scenario-detail h3 { margin: 0 0 6px; color: var(--red); font-size: 14px; }
+.scenario-detail p { margin: 0 0 8px; font-size: 12px; line-height: 1.7; color: var(--ink); }
+.scenario-hint { font-size: 12px; line-height: 1.65; color: var(--ink-soft); }

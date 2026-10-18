@@ -99,13 +99,18 @@ const KEY_FORTS = new Set([
 const KEY_CAPITALS = new Set(['beijing', 'nanjing', 'xian', 'shenyang', 'edo', 'hanseong', 'lhasa']);
 const PORT_SEATS = new Set([
   'quanzhou', 'ningbo', 'guangzhou', 'nagasaki', 'hakata', 'anping', 'penghu',
-  'songjiang', 'fuzhou', 'tamsui',
+  'songjiang', 'fuzhou', 'tamsui', 'osaka',
 ]);
 const SEA_ROUTES = [
   { from: 'fuzhou', to: 'anping', name: '台湾海峡' },
   { from: 'quanzhou', to: 'penghu', name: '泉州—澎湖' },
   { from: 'penghu', to: 'anping', name: '澎湖—安平' },
   { from: 'tamsui', to: 'fuzhou', name: '淡水—福州' },
+  { from: 'osaka', to: 'hakata', name: '濑户内海' },
+  { from: 'hakata', to: 'nagasaki', name: '九州西海' },
+  { from: 'nagasaki', to: 'nagasaki_a', name: '长崎湾' },
+  { from: 'nagasaki_a', to: 'nagasaki_b', name: '长崎外海' },
+  { from: 'nagasaki', to: 'ningbo', name: '中日航线' },
 ];
 
 function keyOf(point: Point): string {
@@ -259,8 +264,10 @@ function main(): void {
   }
   for (const route of SEA_ROUTES) {
     if (!neighbors.has(route.from) || !neighbors.has(route.to)) continue;
-    neighbors.get(route.from)?.push(route.to);
-    neighbors.get(route.to)?.push(route.from);
+    const fromList = neighbors.get(route.from);
+    const toList = neighbors.get(route.to);
+    if (fromList && !fromList.includes(route.to)) fromList.push(route.to);
+    if (toList && !toList.includes(route.from)) toList.push(route.from);
   }
   for (const seed of seeds) {
     const list = neighbors.get(seed.id) ?? [];

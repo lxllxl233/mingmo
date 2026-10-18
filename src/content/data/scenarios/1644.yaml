@@ -6,7 +6,7 @@ player_hints:
   - 北京还能守多久，取决于山海关和吴三桂。
   - 大顺的追赃能立刻换来银子，也会立刻失去士绅。
   - 清入关不是必然，但关外的八旗不会等你。
-playable_tags: [MING, QING, SHUN, XI, SMING, ZHENG, MONGOL, JOSEON, JAPAN, TIBET, VOC, RUSSIA]
+playable_tags: [MING, QING, SHUN, XI, ZHENG, MONGOL, JOSEON, JAPAN, TIBET, VOC, RUSSIA]
 region_owners:
   reg_beizhili: SHUN
   reg_shandong: MING
@@ -39,8 +39,6 @@ region_owners:
   reg_taiwan: VOC
   reg_russia_far: RUSSIA
 province_overrides:
-  nanjing: SMING
-  suzhou: SMING
   penghu: ZHENG
   quanzhou: ZHENG
   chengdu: XI
@@ -73,8 +71,6 @@ armies:
   - { tag: MING, template: guanning_army, province: shanhaiguan, size: 2 }
   - { tag: XI, template: xi_army, province: chengdu, size: 3 }
   - { tag: XI, template: xi_army, province: chongqing, size: 2 }
-  - { tag: SMING, template: sming_army, province: nanjing, size: 2 }
-  - { tag: SMING, template: sming_army, province: suzhou, size: 1 }
   - { tag: ZHENG, template: zheng_navy, province: penghu, size: 2 }
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 1 }
   - { tag: ZHENG, template: zheng_navy, province: penghu, size: 1 }
@@ -100,4 +96,5 @@ initial_wars:
   - { attacker: SHUN, defender: MING, goal: 顺天 }
   - { attacker: QING, defender: MING, goal: 入关 }
 initial_events: []
+
 

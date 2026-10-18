@@ -6,7 +6,7 @@ player_hints:
   - 先看财政：太仓已不足以支撑九边。
   - 关宁锦防线与陕西流民，是两条同时流血的伤口。
   - 向士绅开刀能续命，但江南的反弹会比你预想的快。
-playable_tags: [MING, QING, SHUN, XI, SMING, ZHENG, MONGOL, JOSEON, JAPAN, TIBET, VOC, RUSSIA]
+playable_tags: [MING, QING, SHUN, XI, ZHENG, MONGOL, JOSEON, JAPAN, TIBET, VOC, RUSSIA]
 region_owners:
   reg_beizhili: MING
   reg_shandong: MING
@@ -47,7 +47,6 @@ province_overrides:
   ningyuan: MING
   yanan: SHUN
   chengdu: XI
-  nanjing: SMING
   quanzhou: ZHENG
 country_overrides:
   MING: { stability: 45, treasury: 1200000, food: 8000000, manpower: 200000, mandate: 65, corruption: 55, authority: 50, army_loyalty: 55 }
@@ -99,7 +98,6 @@ armies:
   - { tag: RUSSIA, template: russia_cossack, province: okhotsk, size: 1 }
   - { tag: SHUN, template: shun_rebel, province: yanan, size: 2 }
   - { tag: XI, template: xi_army, province: chengdu, size: 1 }
-  - { tag: SMING, template: sming_army, province: nanjing, size: 1 }
   - { tag: ZHENG, template: zheng_navy, province: quanzhou, size: 1 }
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 1 }
   - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
@@ -107,6 +105,7 @@ armies:
 initial_wars:
   - { attacker: QING, defender: MING, goal: 辽东 }
 initial_events: []
+
 
 
 

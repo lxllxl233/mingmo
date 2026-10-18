@@ -246,7 +246,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     }
     const path = [...army.movePath, ...suffix];
     const ok = get().command({ type: 'army.move', armyId: selectedArmy, path });
-    if (ok) set({ message: '已追加行军路线（Ctrl+左键继续追加）' });
+    if (ok) set({ message: '已追加行军路线（Ctrl+右键继续追加）' });
     return ok;
   },
   openTrainingPicker: kind => {
