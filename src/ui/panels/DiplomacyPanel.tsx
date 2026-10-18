@@ -8,6 +8,7 @@ export function DiplomacyPanel() {
   const game = useGameStore(state => state.game);
   const content = useGameStore(state => state.content);
   const command = useGameStore(state => state.command);
+  const openPeace = useGameStore(state => state.openPeace);
   const [target, setTarget] = useState('QING');
   const [warGoal, setWarGoal] = useState('边境争端');
   if (!game) return null;
@@ -84,12 +85,12 @@ export function DiplomacyPanel() {
               <span>投降倾向：我 <b>{mySurrender}%</b> · 敌 <b>{enemySurrender}%</b></span>
             </div>
             <div className="panel-actions">
-              <button onClick={() => command({ type: 'diplomacy.makePeace', warId: war.id, terms: 'white' })}>白和</button>
-              <button onClick={() => command({ type: 'diplomacy.makePeace', warId: war.id, terms: 'status' })}>按现状议和</button>
+              <button onClick={() => openPeace(war.id)}>白和</button>
+              <button onClick={() => openPeace(war.id)}>按现状议和</button>
               <button
                 className="primary"
                 disabled={myScore <= enemyScore}
-                onClick={() => command({ type: 'diplomacy.makePeace', warId: war.id, terms: 'demand' })}
+                onClick={() => openPeace(war.id)}
               >
                 强制议和
               </button>
@@ -121,7 +122,7 @@ export function DiplomacyPanel() {
                       const war = wars.find(entry =>
                         (entry.attacker === player && entry.defender === country.tag)
                         || (entry.defender === player && entry.attacker === country.tag));
-                      if (war) command({ type: 'diplomacy.makePeace', warId: war.id });
+                      if (war) openPeace(war.id);
                     }}>议和</button>
                   ) : (
                     <button

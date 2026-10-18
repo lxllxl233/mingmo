@@ -64,6 +64,7 @@ interface UiStore {
   selectedArmy: string | null;
   armyStack: string[] | null;
   selectedBattle: string | null;
+  peaceWarId: string | null;
   message: string | null;
   start: (scenarioId: string, tag: string, seed?: number, difficulty?: Difficulty) => void;
   startSpectator: (scenarioId: string, seed?: number, difficulty?: Difficulty) => void;
@@ -76,6 +77,8 @@ interface UiStore {
   closeArmyStack: () => void;
   openBattle: (battleId: string) => void;
   closeBattle: () => void;
+  openPeace: (warId: string) => void;
+  closePeace: () => void;
   openCountry: (tag: string) => void;
   moveArmyTo: (provinceId: string) => boolean;
   appendArmyWaypoint: (provinceId: string) => boolean;
@@ -109,6 +112,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   selectedArmy: null,
   armyStack: null,
   selectedBattle: null,
+  peaceWarId: null,
   message: null,
 
   start: (scenarioId, tag, seed = 42, difficulty = 'normal') => {
@@ -131,6 +135,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       selectedArmy: null,
       armyStack: null,
       selectedBattle: null,
+      peaceWarId: null,
       message: null,
     });
   },
@@ -155,6 +160,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       selectedArmy: null,
       armyStack: null,
       selectedBattle: null,
+      peaceWarId: null,
       message: '看海模式：全图视野，所有势力由 AI 推演。',
     });
   },
@@ -188,11 +194,13 @@ export const useGameStore = create<UiStore>((set, get) => ({
       return;
     }
     const alertCount = game.warAlerts.length;
+    const offerCount = game.peaceOffers.length;
     advanceDay(game, content);
     const next = { ...game };
     const pendingAfterTick = next.pendingEvents.some(event => event.country === next.playerTag);
     const newWarAlert = next.warAlerts.length > alertCount;
-    if (!next.spectator && (pendingAfterTick || newWarAlert)) {
+    const newPeaceOffer = next.peaceOffers.length > offerCount;
+    if (!next.spectator && (pendingAfterTick || newWarAlert || newPeaceOffer)) {
       set({ game: next, version: get().version + 1, speedBeforeEvent: speed, speed: 0 });
     } else {
       set({ game: next, version: get().version + 1 });
@@ -258,6 +266,23 @@ export const useGameStore = create<UiStore>((set, get) => ({
   closeArmyStack: () => set({ armyStack: null }),
   openBattle: battleId => set({ selectedBattle: battleId, armyStack: null }),
   closeBattle: () => set({ selectedBattle: null }),
+  openPeace: warId => set({
+    peaceWarId: warId,
+    speedBeforeEvent: get().speed !== 0 ? get().speed : get().speedBeforeEvent,
+    speed: 0,
+    panel: null,
+    armyStack: null,
+    selectedBattle: null,
+  }),
+  closePeace: () => {
+    const { speedBeforeEvent, game } = get();
+    const stillPaused = Boolean(game?.pendingEvents.length || game?.warAlerts.length || game?.peaceOffers.length);
+    set({
+      peaceWarId: null,
+      speed: stillPaused ? 0 : speedBeforeEvent,
+      speedBeforeEvent: stillPaused ? speedBeforeEvent : 0,
+    });
+  },
   openCountry: tag => {
     sound.play('click');
     set({
@@ -395,5 +420,5 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, message: null }),
+  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, peaceWarId: null, message: null }),
 }));

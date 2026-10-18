@@ -264,6 +264,7 @@ export function createInitialState(
     training: [],
     wars,
     battles: [],
+    peaceOffers: [],
     truces: {},
     vassals: scenario.id === '1627'
       ? { JOSEON: 'MING', NEU: 'MING' }

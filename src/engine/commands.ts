@@ -29,7 +29,8 @@ export type Command =
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.demandTribute'; vassal: string }
-  | { type: 'diplomacy.makePeace'; warId: string; terms?: 'white' | 'status' | 'demand' };
+  | { type: 'diplomacy.makePeace'; warId: string; terms?: 'white' | 'status' | 'demand'; provinceIds?: string[] }
+  | { type: 'diplomacy.rejectPeaceOffer'; offerId: string };
 
 export class CommandError extends Error {
   constructor(message: string) {
@@ -203,10 +204,19 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       }
       break;
     case 'diplomacy.makePeace':
-      if (!makePeace(state, command.warId, content, command.terms ?? 'status')) {
+      if (!makePeace(state, command.warId, content, command.terms ?? 'status', command.provinceIds)) {
         throw new CommandError('cannot make peace');
       }
+      state.peaceOffers = state.peaceOffers.filter(offer => offer.warId !== command.warId);
       break;
+    case 'diplomacy.rejectPeaceOffer': {
+      const offer = state.peaceOffers.find(entry => entry.id === command.offerId);
+      if (!offer) throw new CommandError('peace offer not found');
+      state.peaceOffers = state.peaceOffers.filter(entry => entry.id !== offer.id);
+      const proposer = state.countries[offer.proposer];
+      if (proposer) proposer.cooldowns[`peace-${offer.warId}`] = state.day + 180;
+      break;
+    }
     case 'diplomacy.demandTribute': {
       const result = demandTribute(state, content, tag, command.vassal);
       if (!result.ok) throw new CommandError(result.reason);

@@ -194,7 +194,22 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
   if (wars.length > 0) {
     const capitalLost = state.provinces[nation.capital]?.controller !== tag;
     for (const war of [...wars]) {
-      if (nation.warExhaustion > profile.peaceExhaustion || capitalLost) makePeace(state, war.id, content);
+      if (nation.warExhaustion > profile.peaceExhaustion || capitalLost) {
+        if (!state.spectator && (war.attacker === state.playerTag || war.defender === state.playerTag)) {
+          if ((nation.cooldowns[`peace-${war.id}`] ?? 0) <= state.day
+            && !state.peaceOffers.some(offer => offer.warId === war.id)) {
+            state.peaceOffers.push({
+              id: `peace_${war.id}_${state.day}`,
+              warId: war.id,
+              proposer: tag,
+              terms: 'status',
+              day: state.day,
+            });
+          }
+        } else {
+          makePeace(state, war.id, content);
+        }
+      }
     }
     return;
   }

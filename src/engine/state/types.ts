@@ -85,6 +85,14 @@ export interface BattleState {
   defenderOrganization: number;
 }
 
+export interface PeaceOffer {
+  id: string;
+  warId: string;
+  proposer: string;
+  terms: 'white' | 'status' | 'demand';
+  day: number;
+}
+
 export interface MonthlyReport {
   day: number;
   income: number;
@@ -247,6 +255,7 @@ export interface GameState {
   training: TrainingItem[];
   wars: WarState[];
   battles: BattleState[];
+  peaceOffers: PeaceOffer[];
   truces: Record<string, number>;
   vassals: Record<string, string>;
   lastTribute: Record<string, number>;

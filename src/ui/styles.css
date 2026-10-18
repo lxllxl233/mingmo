@@ -706,3 +706,16 @@ button:active { transform: translateY(1px); }
 .battle-sides b { font-size: 15px; }
 .battle-sides small { font-size: 10px; color: var(--ink-soft); }
 .battle-modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; padding: 7px; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); font-size: 11px; }
+
+.peace-modal { width: min(760px, 94vw); max-height: 88vh; overflow: auto; padding: 14px 16px; border: 1px solid #8b6a3f; background: #f7edd9; box-shadow: 0 18px 48px rgba(31,28,24,.35); }
+.peace-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; border-bottom: 1px solid var(--line); padding-bottom: 7px; }
+.peace-head h2 { margin: 2px 0; color: var(--red); font-size: 20px; }
+.peace-head p { margin: 2px 0; }
+.peace-score { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 8px 0; padding: 7px; background: rgba(184,137,46,.1); font-size: 11px; }
+.peace-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 8px 0; }
+.peace-columns h3 { margin: 0 0 5px; color: var(--red); font-size: 13px; }
+.peace-province { display: flex; align-items: center; gap: 6px; padding: 4px 2px; border-bottom: 1px dashed var(--line); font-size: 12px; }
+.peace-province small { margin-left: auto; color: var(--ink-soft); font-size: 10px; }
+.peace-province.lost { color: var(--ink-soft); opacity: .75; }
+
+.event-overlay { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 24px; background: rgba(31,28,24,.48); }

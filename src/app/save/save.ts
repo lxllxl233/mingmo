@@ -60,6 +60,7 @@ export function decodeSave(text: string): GameState {
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (!Array.isArray(parsed.state.battles)) parsed.state.battles = [];
+  if (!Array.isArray(parsed.state.peaceOffers)) parsed.state.peaceOffers = [];
   if (parsed.version <= 4 && !parsed.state.truces) parsed.state.truces = {};
   if (parsed.version <= 5) {
     if (!parsed.state.vassals) parsed.state.vassals = {};

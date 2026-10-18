@@ -87,6 +87,7 @@ export function makePeace(
   warId: string,
   content: ContentIndex,
   terms: PeaceTerms = 'status',
+  selectedProvinces?: readonly string[],
 ): boolean {
   const index = state.wars.findIndex(war => war.id === warId);
   if (index < 0) return false;
@@ -116,6 +117,12 @@ export function makePeace(
       || (province.owner === war.defender && province.controller === war.attacker);
     if (!atWarOccupation) continue;
     if (terms === 'white') {
+      province.controller = province.owner;
+      delete province.siege;
+      restored += 1;
+      continue;
+    }
+    if (selectedProvinces && !selectedProvinces.includes(province.id)) {
       province.controller = province.owner;
       delete province.siege;
       restored += 1;
