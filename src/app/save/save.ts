@@ -79,6 +79,17 @@ export function decodeSave(text: string): GameState {
     if (!war.casualties) war.casualties = { [war.attacker]: 0, [war.defender]: 0 };
     if (!war.attrition) war.attrition = { [war.attacker]: 0, [war.defender]: 0 };
   }
+  // 旧版按势力汇总伤亡时曾重复计数；将不可能超过现役规模的数量压回合理范围。
+  for (const war of parsed.state.wars) {
+    for (const tag of [war.attacker, war.defender]) {
+      const strength = Object.values(parsed.state.armies)
+        .filter(army => army.tag === tag)
+        .reduce((sum, army) => sum + (army.maxStrength || 0), 0);
+      const cap = Math.max(10000, strength * 6);
+      const value = war.casualties[tag] ?? 0;
+      if (value > cap) war.casualties[tag] = cap;
+    }
+  }
   return parsed.state;
 }
 
