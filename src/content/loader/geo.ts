@@ -4,6 +4,7 @@ export interface RawMapGeo {
   version: number;
   bounds: number[];
   provinces: Record<string, number[][]>;
+  land?: number[][][];
 }
 
 export function toMapGeo(raw: RawMapGeo): MapGeo {
@@ -20,5 +21,11 @@ export function toMapGeo(raw: RawMapGeo): MapGeo {
       return [lon, lat];
     });
   }
-  return { version: raw.version, bounds: [minLon, minLat, maxLon, maxLat], provinces };
+  const land = (raw.land ?? []).map(polygon => polygon.map(point => {
+    const lon = point[0];
+    const lat = point[1];
+    if (lon === undefined || lat === undefined) throw new Error('invalid land polygon point');
+    return [lon, lat] as [number, number];
+  }));
+  return { version: raw.version, bounds: [minLon, minLat, maxLon, maxLat], provinces, land };
 }

@@ -339,6 +339,7 @@ function main(): void {
     version: 1,
     generatedBy: 'scripts/gen-map.ts',
     bounds: [69, 14, 151, 56],
+    land: [MAINLAND, JAPAN, TAIWAN, HAINAN].map(polygon => polygon.map(([lon, lat]) => [lon, lat])),
     provinces: Object.fromEntries(
       seeds.map(seed => [
         seed.id,

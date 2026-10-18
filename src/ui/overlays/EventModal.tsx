@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { evaluateTrigger } from '../../engine/rules/triggers';
+import { sound } from '../../app/audio/sound';
 import { useGameStore } from '../state/store';
 import { effectsSummary } from '../format';
 
@@ -12,7 +13,10 @@ export function EventModal() {
   const event = pending ? content.events.get(pending.eventId) : undefined;
 
   useEffect(() => {
-    if (pending) setSpeed(0);
+    if (pending) {
+      setSpeed(0);
+      sound.play('event');
+    }
   }, [pending, setSpeed]);
 
   if (!game || !pending || !event) return null;
@@ -36,7 +40,10 @@ export function EventModal() {
                 key={option.id}
                 className="option"
                 disabled={!available}
-                onClick={() => command({ type: 'event.choose', eventId: event.id, optionId: option.id })}
+                onClick={() => {
+                  sound.play('choice');
+                  command({ type: 'event.choose', eventId: event.id, optionId: option.id });
+                }}
               >
                 <div className="opt-name">{option.name}</div>
                 {option.tooltip && <div className="opt-tip">{option.tooltip}</div>}

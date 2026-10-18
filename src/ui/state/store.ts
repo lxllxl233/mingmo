@@ -7,6 +7,7 @@ import { isYearStart } from '../../engine/core/clock';
 import { dispatch, type Command } from '../../engine/commands';
 import type { GameState } from '../../engine/state/types';
 import { loadLocal, saveLocal } from '../../app/save/save';
+import { sound } from '../../app/audio/sound';
 
 export type PanelKey =
   | 'province'
@@ -54,6 +55,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
 
   start: (scenarioId, tag, seed = 42) => {
     const game = createInitialState(content, scenarioId, seed, tag);
+    sound.play('command');
     set({
       game,
       version: 0,
@@ -72,11 +74,13 @@ export const useGameStore = create<UiStore>((set, get) => ({
       dispatch(game, command, content);
       const next = { ...game };
       set({ game: next, version: get().version + 1, message: null });
+      sound.play('command');
       if (next.pendingEvents.some(event => event.country === next.playerTag) && get().speed !== 0) {
         set({ speed: 0 });
       }
       return true;
     } catch (error) {
+      sound.play('error');
       set({ message: error instanceof Error ? error.message : '操作失败' });
       return false;
     }
@@ -105,13 +109,17 @@ export const useGameStore = create<UiStore>((set, get) => ({
   setSpeed: speed => set({ speed }),
   selectProvince: provinceId => {
     const state = get();
+    sound.play('click');
     if (state.panel === 'military') {
       set({ selectedProvince: provinceId });
       return;
     }
     set({ selectedProvince: provinceId, selectedArmy: null, panel: provinceId ? 'province' : null });
   },
-  selectArmy: armyId => set({ selectedArmy: armyId, panel: 'military' }),
+  selectArmy: armyId => {
+    sound.play('click');
+    set({ selectedArmy: armyId, panel: 'military' });
+  },
   openPanel: panel => set({ panel }),
   closePanel: () => set({ panel: null }),
   dismissMessage: () => set({ message: null }),
@@ -120,14 +128,17 @@ export const useGameStore = create<UiStore>((set, get) => ({
     if (!game) return;
     try {
       saveLocal(slot, game);
+      sound.play('save');
       set({ message: `已保存到 ${slot}` });
     } catch (error) {
+      sound.play('error');
       set({ message: error instanceof Error ? error.message : '保存失败' });
     }
   },
   load: slot => {
     try {
       const game = loadLocal(slot);
+      sound.play('save');
       set({
         game,
         version: get().version + 1,
@@ -138,6 +149,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
         message: `已读取 ${slot}`,
       });
     } catch (error) {
+      sound.play('error');
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },

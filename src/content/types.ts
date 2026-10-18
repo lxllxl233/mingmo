@@ -416,6 +416,7 @@ export interface MapGeo {
   version: number;
   bounds: [number, number, number, number];
   provinces: Record<ProvinceId, Array<[number, number]>>;
+  land: Array<Array<[number, number]>>;
 }
 
 export interface ContentIndex {

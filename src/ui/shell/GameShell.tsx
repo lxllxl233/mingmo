@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
+import { sound } from '../../app/audio/sound';
 import { useGameStore, type PanelKey } from '../state/store';
 import { TopBar } from './TopBar';
 import { MapViewport } from './MapViewport';
@@ -38,6 +39,19 @@ export function GameShell() {
   const dismissMessage = useGameStore(state => state.dismissMessage);
   const selectedProvince = useGameStore(state => state.selectedProvince);
   const content = useGameStore(state => state.content);
+  const battleCount = useRef(0);
+
+  useEffect(() => {
+    const unlock = () => sound.unlock();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    return () => window.removeEventListener('pointerdown', unlock);
+  }, []);
+
+  useEffect(() => {
+    const total = game?.stats.battles ?? 0;
+    if (total > battleCount.current) sound.play('battle');
+    battleCount.current = total;
+  }, [game?.stats.battles]);
 
   useEffect(() => {
     if (speed === 0) return;
@@ -58,7 +72,13 @@ export function GameShell() {
   const pending = game.pendingEvents.filter(event => event.country === game.playerTag);
 
   return (
-    <div className="game">
+    <div
+      className="game"
+      onPointerDown={event => {
+        const target = event.target as HTMLElement | null;
+        if (target?.closest('button')) sound.play('click');
+      }}
+    >
       <TopBar />
       <div className="game-main">
         <nav className="sidebar">

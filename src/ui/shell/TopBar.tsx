@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { formatDate } from '../../engine/core/clock';
+import { sound } from '../../app/audio/sound';
 import { useGameStore } from '../state/store';
 
 function number(value: number, digits = 0): string {
@@ -14,6 +16,7 @@ export function TopBar() {
   const save = useGameStore(state => state.save);
   const load = useGameStore(state => state.load);
   const reset = useGameStore(state => state.reset);
+  const [muted, setMuted] = useState(sound.isMuted);
   if (!game) return null;
   const country = game.countries[game.playerTag];
   const countryDef = content.countries.get(game.playerTag);
@@ -34,6 +37,16 @@ export function TopBar() {
       <span className={`stat${arrearsMonths > 3 ? ' danger' : ''}`}>欠饷 <b>{arrearsMonths.toFixed(1)}</b> 月</span>
       {pending > 0 && <span className="danger">待决事件 {pending}</span>}
       <span className="spacer" />
+      <button
+        title={muted ? '打开音效' : '关闭音效'}
+        onClick={() => {
+          const next = sound.toggleMuted();
+          setMuted(next);
+          if (!next) sound.play('click');
+        }}
+      >
+        {muted ? '♪̶' : '♪'}
+      </button>
       <button onClick={() => save('manual')}>存档</button>
       <button onClick={() => load('manual')}>读档</button>
       <button onClick={reset}>退出</button>
