@@ -1,0 +1,595 @@
+events:
+  - id: shared_e_spring_famine
+    title: 春荒
+    desc: 青黄不接，粮价飞涨。开仓平粜能安民，囤粮能保军。
+    historical_context: 明末清初小冰期导致春荒频发，粮价波动直接引发民变。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1680-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: open
+        name: 开仓平粜
+        tooltip: 稳定上升，粮储下降。
+        ai_chance: 55
+        effect:
+          - add_food: -50000
+          - add_stability: 2
+          - add_faction_influence: { farmers: 3 }
+      - id: hoard
+        name: 囤粮保军
+        tooltip: 军心上升，稳定下降。
+        ai_chance: 45
+        effect:
+          - add_army_loyalty: 2
+          - add_stability: -2
+
+  - id: shared_e_autumn_flood
+    title: 秋汛
+    desc: 秋汛冲毁堤坝，漕运受阻。修堤能保漕，改道能保城。
+    historical_context: 黄河与运河交汇地带水患频仍，漕运是明清财政命脉。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1680-12-31 }
+    mtth: 320
+    fire_once: true
+    options:
+      - id: repair
+        name: 修堤保漕
+        tooltip: 稳定上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -40000
+          - add_stability: 2
+      - id: reroute
+        name: 改道保城
+        tooltip: 省钱，粮食受损。
+        ai_chance: 45
+        effect:
+          - add_food: -50000
+          - add_stability: -2
+          - add_treasury: -10000
+
+  - id: shared_e_rice_price
+    title: 米价腾贵
+    desc: 米价一月三涨，市民聚众抢米。平抑物价能安城，放任能保商人。
+    historical_context: 白银流入减少与灾荒叠加，使明末清初米价剧烈波动。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1680-12-31 }
+    mtth: 330
+    fire_once: true
+    options:
+      - id: stabilize
+        name: 平抑米价
+        tooltip: 稳定上升，商人不满。
+        ai_chance: 55
+        effect:
+          - add_treasury: -20000
+          - add_stability: 2
+          - add_faction_influence: { merchants: -3 }
+      - id: free_market
+        name: 放任市价
+        tooltip: 商人支持，稳定下降。
+        ai_chance: 45
+        effect:
+          - add_treasury: 20000
+          - add_stability: -2
+          - add_faction_influence: { merchants: 3 }
+
+  - id: shared_e_craftsmen
+    title: 工匠短缺
+    desc: 军器局缺匠，火器与战船都造不出来。征匠能保军备，宽免能保民生。
+    historical_context: 明末清初火器与造船依赖匠户，战乱导致工匠流散。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1680-12-31 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: conscript
+        name: 征发工匠
+        tooltip: 军心与军备上升，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_army_loyalty: 2
+          - add_manpower: 1000
+          - add_stability: -2
+      - id: exempt
+        name: 宽免匠户
+        tooltip: 稳定上升，军备受损。
+        ai_chance: 50
+        effect:
+          - add_stability: 2
+          - add_army_loyalty: -1
+
+  - id: shared_e_artillery
+    title: 火器局
+    desc: 火器局请求扩炉铸炮。扩炉能强军，省钱能保财政。
+    historical_context: 明末大量引进红夷大炮，清军也迅速掌握铸炮技术。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1680-12-31 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: expand
+        name: 扩炉铸炮
+        tooltip: 军力上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -40000
+          - add_army_loyalty: 2
+          - add_modifier: { artillery_attack_pct: 2 }
+      - id: save
+        name: 节省军费
+        tooltip: 国库上升，军心下降。
+        ai_chance: 45
+        effect:
+          - add_treasury: 20000
+          - add_army_loyalty: -2
+
+  - id: shared_e_postal
+    title: 驿递废弛
+    desc: 驿站马匹不足，军报延误。整顿能保军情，裁驿能省钱。
+    historical_context: 明末裁驿导致驿卒失业，李自成本人即出身驿卒。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1680-12-31 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: repair
+        name: 整顿驿递
+        tooltip: 军情与稳定上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -20000
+          - add_stability: 1
+          - add_army_loyalty: 1
+      - id: cut
+        name: 裁撤驿站
+        tooltip: 省钱，稳定下降。
+        ai_chance: 45
+        effect:
+          - add_treasury: 20000
+          - add_stability: -2
+
+  - id: shared_e_grand_canal
+    title: 漕运梗阻
+    desc: 漕船滞留，京师缺粮。疏通能保漕，改海运能省费。
+    historical_context: 明清漕运依赖大运河，黄河泛滥与战乱常使漕运中断。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1680-12-31 }
+    mtth: 330
+    fire_once: true
+    options:
+      - id: dredge
+        name: 疏浚运河
+        tooltip: 粮食与稳定上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -40000
+          - add_food: 40000
+          - add_stability: 1
+      - id: sea_route
+        name: 改行海运
+        tooltip: 省钱，风险较高。
+        ai_chance: 45
+        effect:
+          - add_treasury: -10000
+          - add_food: 20000
+          - add_stability: -1
+
+  - id: shared_e_salt_smugglers
+    title: 盐枭
+    desc: 私盐贩子武装走私，地方官兵不敢查。清剿能增税，招安能安地方。
+    historical_context: 盐枭与海盗、会党结合，是明清东南沿海的顽疾。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1645-01-01, before: 1680-12-31 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: crackdown
+        name: 发兵清剿
+        tooltip: 税收与稳定上升，耗银。
+        ai_chance: 50
+        effect:
+          - add_treasury: 30000
+          - add_stability: 1
+          - add_manpower: -1000
+      - id: coopt
+        name: 招安盐枭
+        tooltip: 省钱，腐败上升。
+        ai_chance: 50
+        effect:
+          - add_treasury: 10000
+          - add_corruption: 2
+          - add_stability: -1
+
+  - id: shared_e_mining_tax
+    title: 矿税之争
+    desc: 矿监税使请求开矿增税，地方士绅强烈反对。
+    historical_context: 万历朝矿税监引发民变，明末财政仍依赖各类杂税。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1660-12-31 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: open_mine
+        name: 开矿增税
+        tooltip: 国库上升，稳定与士绅受损。
+        ai_chance: 50
+        effect:
+          - add_treasury: 50000
+          - add_stability: -3
+          - add_faction_influence: { gentry: -4 }
+      - id: stop
+        name: 停征矿税
+        tooltip: 稳定与士绅支持上升，国库下降。
+        ai_chance: 50
+        effect:
+          - add_stability: 2
+          - add_faction_influence: { gentry: 4 }
+          - add_treasury: -10000
+
+  - id: shared_e_academy
+    title: 书院讲学
+    desc: 士人请求修复书院、开坛讲学。支持能得士心，限制能防清议。
+    historical_context: 东林书院与复社等士人结社深刻影响晚明政治。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1680-12-31 }
+    mtth: 350
+    fire_once: true
+    options:
+      - id: support
+        name: 支持讲学
+        tooltip: 士绅支持、研究上升，皇权受限。
+        ai_chance: 50
+        effect:
+          - add_faction_influence: { gentry: 4, officials: 2 }
+          - add_stability: 1
+          - add_treasury: -10000
+      - id: restrict
+        name: 限制书院
+        tooltip: 皇权上升，士绅不满。
+        ai_chance: 50
+        effect:
+          - add_authority: 2
+          - add_faction_influence: { gentry: -4, officials: -2 }
+
+  - id: shared_e_monks
+    title: 僧道度牒
+    desc: 寺观请求发放度牒。发牒能得香税，限制能保丁口。
+    historical_context: 明清对僧道度牒管理时紧时松，寺观经济与人口始终是财政议题。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: issue
+        name: 发放度牒
+        tooltip: 得银，喇嘛与寺社支持。
+        ai_chance: 50
+        effect:
+          - add_treasury: 20000
+          - add_faction_influence: { clergy: 3 }
+      - id: limit
+        name: 限制出家
+        tooltip: 兵源与稳定上升，寺社不满。
+        ai_chance: 50
+        effect:
+          - add_manpower: 1000
+          - add_stability: 1
+          - add_faction_influence: { clergy: -3 }
+
+  - id: shared_e_bandits
+    title: 流寇复起
+    desc: 山区流寇复起，劫掠商路。清剿能保商路，招抚能省兵。
+    historical_context: 明末流寇与地方土匪界限模糊，剿抚之争贯穿始终。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1680-12-31 }
+    mtth: 320
+    fire_once: true
+    options:
+      - id: suppress
+        name: 发兵清剿
+        tooltip: 稳定上升，耗银损兵。
+        ai_chance: 50
+        effect:
+          - add_treasury: -30000
+          - add_manpower: -2000
+          - add_stability: 2
+      - id: pacify
+        name: 招抚流寇
+        tooltip: 兵源上升，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_manpower: 2000
+          - add_stability: -1
+          - add_army_loyalty: -1
+
+  - id: shared_e_pirates
+    title: 海盗劫掠
+    desc: 海盗劫掠商船，沿海贸易受阻。水师清剿能保海贸，招抚能省军费。
+    historical_context: 明末东南海盗与海商一体，郑氏集团即由海商武装发展而来。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1680-12-31 }
+    mtth: 330
+    fire_once: true
+    options:
+      - id: navy
+        name: 水师清剿
+        tooltip: 商人支持，耗银。
+        ai_chance: 50
+        effect:
+          - add_treasury: -30000
+          - add_faction_influence: { merchants: 3 }
+          - add_stability: 1
+      - id: coopt
+        name: 招抚海盗
+        tooltip: 省钱，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_treasury: 10000
+          - add_stability: -2
+          - add_faction_influence: { merchants: -2 }
+
+  - id: shared_e_border_trade
+    title: 边贸关门
+    desc: 边关请求关闭互市，以防奸细。关门能防渗透，开市能得马匹。
+    historical_context: 明末辽东马市与蒙古互市既是贸易，也是情报与军事博弈。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1680-12-31 }
+    mtth: 350
+    fire_once: true
+    options:
+      - id: close
+        name: 关闭互市
+        tooltip: 稳定上升，马匹与商人受损。
+        ai_chance: 50
+        effect:
+          - add_stability: 1
+          - add_manpower: -1000
+          - add_faction_influence: { merchants: -3 }
+      - id: open
+        name: 重开互市
+        tooltip: 马匹与商人支持，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_manpower: 2000
+          - add_faction_influence: { merchants: 3 }
+          - add_stability: -1
+
+  - id: shared_e_horse_plague
+    title: 马疫
+    desc: 军马染疫，骑兵战力下降。封锁马场能保马，征发民马能补缺。
+    historical_context: 战马是明清军队的重要战略资源，马疫常使骑兵战力骤降。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: quarantine
+        name: 封锁马场
+        tooltip: 军心上升，耗银。
+        ai_chance: 50
+        effect:
+          - add_treasury: -20000
+          - add_army_loyalty: 2
+      - id: requisition
+        name: 征发民马
+        tooltip: 兵源上升，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_manpower: 2000
+          - add_stability: -2
+          - add_faction_influence: { farmers: -2 }
+
+  - id: shared_e_armory_theft
+    title: 军械失窃
+    desc: 军器局失窃火器，疑有内鬼。严查能整肃军纪，掩盖能保面子。
+    historical_context: 明末军器局腐败严重，火器流失与以次充好屡见不鲜。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: investigate
+        name: 严查失窃
+        tooltip: 腐败下降，军心与稳定受损。
+        ai_chance: 50
+        effect:
+          - add_corruption: -2
+          - add_army_loyalty: -2
+          - add_stability: -1
+      - id: cover
+        name: 内部消化
+        tooltip: 军心稳定，腐败上升。
+        ai_chance: 50
+        effect:
+          - add_army_loyalty: 1
+          - add_corruption: 2
+
+  - id: shared_e_official_review
+    title: 官吏考成
+    desc: 朝廷考成地方官，州县怨声载道。严格考成能增税，放宽能安官场。
+    historical_context: 张居正考成法在明末已被扭曲为催科工具，地方苦于追比。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1680-12-31 }
+    mtth: 350
+    fire_once: true
+    options:
+      - id: strict
+        name: 严格考成
+        tooltip: 税收上升，官员不满。
+        ai_chance: 50
+        effect:
+          - add_treasury: 30000
+          - add_corruption: -1
+          - add_faction_influence: { officials: -4 }
+      - id: relax
+        name: 放宽考成
+        tooltip: 官员支持，税收下降。
+        ai_chance: 50
+        effect:
+          - add_faction_influence: { officials: 4 }
+          - add_treasury: -10000
+
+  - id: shared_e_royal_stipend
+    title: 宗室禄米
+    desc: 宗室人口膨胀，禄米压垮地方财政。削减能省钱，维持能安宗室。
+    historical_context: 明代宗室禄米是沉重财政负担，清代宗室制度有所不同但仍需供养。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: cut
+        name: 削减禄米
+        tooltip: 国库上升，宗室与稳定受损。
+        ai_chance: 50
+        effect:
+          - add_treasury: 40000
+          - add_stability: -2
+          - add_faction_influence: { royal_clan: -4 }
+      - id: maintain
+        name: 维持旧额
+        tooltip: 宗室支持，财政承压。
+        ai_chance: 50
+        effect:
+          - add_faction_influence: { royal_clan: 4 }
+          - add_treasury: -20000
+
+  - id: shared_e_river_corruption
+    title: 河工贪墨
+    desc: 河工银被层层克扣，堤坝年年修、年年决。查账能止损，掩盖能保工期。
+    historical_context: 河工是明清最大的工程开支之一，贪墨与豆腐渣工程屡禁不止。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: audit
+        name: 严查河工
+        tooltip: 腐败下降，工期延误。
+        ai_chance: 50
+        effect:
+          - add_corruption: -2
+          - add_treasury: -10000
+          - add_stability: -1
+      - id: cover
+        name: 先保工期
+        tooltip: 稳定上升，腐败上升。
+        ai_chance: 50
+        effect:
+          - add_stability: 1
+          - add_corruption: 2
+
+  - id: shared_e_sell_children
+    title: 卖儿鬻女
+    desc: 灾民卖儿鬻女，城中哭声不绝。官府赎买能安民心，禁止能保秩序。
+    historical_context: 明末清初极端饥荒中，卖儿鬻女与人相食的记载屡见史册。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: ransom
+        name: 官府赎买
+        tooltip: 稳定上升，耗银。
+        ai_chance: 50
+        effect:
+          - add_treasury: -30000
+          - add_stability: 3
+          - add_faction_influence: { farmers: 3 }
+      - id: ban
+        name: 禁止人口买卖
+        tooltip: 省钱，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_stability: -2
+          - add_faction_influence: { gentry: -2 }
+
+  - id: shared_e_rumor_case
+    title: 妖言案
+    desc: 有人散布“新天子将出”的谶语。大兴文字狱能震慑，宽宥能安人心。
+    historical_context: 明清易代之际谶纬与谣言盛行，官府常以妖言罪弹压。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1680-12-31 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: purge
+        name: 大兴妖言案
+        tooltip: 皇权上升，稳定与士绅受损。
+        ai_chance: 50
+        effect:
+          - add_authority: 2
+          - add_stability: -2
+          - add_faction_influence: { gentry: -3 }
+      - id: pardon
+        name: 宽宥不问
+        tooltip: 稳定上升，皇权受损。
+        ai_chance: 50
+        effect:
+          - add_stability: 2
+          - add_authority: -1

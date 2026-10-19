@@ -36,7 +36,7 @@ describe('content pipeline', () => {
   });
 
   it('loads a mechanic event for every playable faction', () => {
-    expect(content.events.size).toBeGreaterThanOrEqual(148);
+    expect(content.events.size).toBeGreaterThanOrEqual(200);
     const ids = [
       'MING_e_jisi_crisis', 'QING_e_haircut', 'SHUN_e_beijing_treasury',
       'SMING_e_hongguang', 'ZHENG_e_taiwan', 'MONGOL_e_chahar_submit',
