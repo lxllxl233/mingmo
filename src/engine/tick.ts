@@ -13,7 +13,7 @@ import { applyHistoricalTimeline } from './systems/history';
 import { runMonthlyPolitics } from './systems/politics';
 import { runMonthlyAi } from './systems/ai';
 import { evaluateVictory } from './victory';
-import { cleanupDefeatedNations, resolveFinishedWars } from './rules/war';
+import { cleanupDefeatedNations, resolveCapitalCapitulation, resolveFinishedWars } from './rules/war';
 import type { GameState } from './state/types';
 
 function updateTimedModifiers(state: GameState): void {
@@ -95,6 +95,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
 
   updateTimedModifiers(state);
   updateAlive(state, content);
+  resolveCapitalCapitulation(state, content);
   resolveFinishedWars(state, content);
   cleanupDefeatedNations(state);
   const player = state.countries[state.playerTag];
@@ -120,6 +121,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   }
   return state;
 }
+
 
 
 

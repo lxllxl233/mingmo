@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
 import { relationKey } from '../state/types';
 
@@ -263,4 +263,37 @@ export function cleanupDefeatedNations(state: GameState): void {
   }
 }
 
+
+export function resolveCapitalCapitulation(state: GameState, content: ContentIndex): void {
+  for (const nation of Object.values(state.countries)) {
+    if (!nation.alive) continue;
+    const capital = state.provinces[nation.capital];
+    if (!capital || capital.controller === nation.tag) continue;
+    if (Object.values(state.armies).some(army => army.tag === nation.tag)) continue;
+    const occupier = capital.controller;
+    if (!occupier || occupier === 'NEU' || occupier === nation.tag) continue;
+    const owned = Object.values(state.provinces).filter(province => province.owner === nation.tag);
+    if (owned.length === 0) continue;
+    for (const province of owned) {
+      province.owner = occupier;
+      province.controller = occupier;
+      province.occupation = null;
+      delete province.siege;
+    }
+    nation.alive = false;
+    for (const [id, army] of Object.entries(state.armies)) {
+      if (army.tag === nation.tag) delete state.armies[id];
+    }
+    state.training = state.training.filter(item => item.tag !== nation.tag);
+    const related = state.wars.filter(war => war.attacker === nation.tag || war.defender === nation.tag);
+    for (const war of related) makePeace(state, war.id, content, 'demand');
+    state.log.push({
+      day: state.day,
+      country: occupier,
+      category: 'diplomacy',
+      text: `${content.countries.get(nation.tag)?.name ?? nation.tag} 首都失陷且已无军队，残存领地全部投降`,
+      severity: 'danger',
+    });
+  }
+}
 
