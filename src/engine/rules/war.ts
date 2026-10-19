@@ -261,6 +261,10 @@ export function resolveFinishedWars(state: GameState, content: ContentIndex): vo
 
 export function cleanupDefeatedNations(state: GameState): void {
   for (const nation of Object.values(state.countries)) {
+    if (nation.tag === 'NEU') {
+      nation.alive = true;
+      continue;
+    }
     if (!nation.alive) {
       for (const [id, army] of Object.entries(state.armies)) {
         if (army.tag === nation.tag) delete state.armies[id];
@@ -270,6 +274,17 @@ export function cleanupDefeatedNations(state: GameState): void {
     }
     const controlled = Object.values(state.provinces).some(province => province.controller === nation.tag);
     if (controlled) continue;
+    // 无实际控制区时，把仍在名下的被占省转给占领者，避免“死国仍占地”。
+    const owned = Object.values(state.provinces).filter(province => province.owner === nation.tag);
+    const fallback = Object.values(state.countries).find(country => country.alive && country.tag !== 'NEU')?.tag ?? 'NEU';
+    for (const province of owned) {
+      const occupier = province.controller;
+      province.owner = occupier && state.countries[occupier]?.alive ? occupier : fallback;
+      province.controller = province.owner;
+      province.occupation = null;
+      delete province.siege;
+    }
+    if (owned.length > 0) touchMap(state);
     nation.alive = false;
     for (const [id, army] of Object.entries(state.armies)) {
       if (army.tag === nation.tag) delete state.armies[id];
@@ -288,6 +303,7 @@ export function cleanupDefeatedNations(state: GameState): void {
 
 export function resolveCapitalCapitulation(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
+    if (nation.tag === 'NEU') continue;
     if (!nation.alive) continue;
     const capital = state.provinces[nation.capital];
     if (!capital || capital.controller === nation.tag) continue;

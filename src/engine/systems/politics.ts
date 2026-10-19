@@ -161,6 +161,15 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       }
     }
 
+    const controlledCount = Object.values(state.provinces).filter(province => province.controller === nation.tag).length;
+    const territoryShare = controlledCount / Math.max(1, Object.keys(state.provinces).length);
+    if (territoryShare > 0.25) {
+      const over = territoryShare - 0.25;
+      nation.stability = clamp(nation.stability - over * 0.04, 0, 100);
+      nation.corruption = clamp(nation.corruption + over * 0.05, 0, 100);
+    }
+    const overextensionUnrest = Math.max(0, territoryShare - 0.25) * 0.25;
+
     let rebellions = 0;
     for (const entry of countryProvinceList(state, content, nation.tag)) {
       if (rebellions >= 1) break;
@@ -178,6 +187,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       const delta = taxPressure + stabilityPressure + devastationPressure - content.balance.economy.unrestDecay
         + (modifiers['unrest_monthly'] ?? 0)
         + (pressure?.unrestMonthly ?? 0)
+        + overextensionUnrest
         + provinceModifier;
       entry.state.unrest = clamp(entry.state.unrest + delta, 0, 100);
       entry.state.devastation = clamp(entry.state.devastation + (modifiers['devastation_monthly'] ?? 0), 0, 100);

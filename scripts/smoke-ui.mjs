@@ -1,12 +1,13 @@
 import { chromium } from 'playwright-core';
 
 const chrome = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const browserPath = process.env.UI_BROWSER ?? chrome;
 const baseUrl = process.env.JIASHEN_URL ?? 'http://127.0.0.1:5173';
 const width = Number(process.env.UI_WIDTH ?? 1440);
 const height = Number(process.env.UI_HEIGHT ?? 900);
 const suffix = `${width}x${height}`;
 
-const browser = await chromium.launch({ executablePath: chrome, headless: true });
+const browser = await chromium.launch({ executablePath: browserPath, headless: true });
 const page = await browser.newPage({ viewport: { width, height } });
 const errors = [];
 page.on('pageerror', error => errors.push(`pageerror: ${error.message}`));

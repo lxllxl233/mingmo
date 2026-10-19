@@ -240,9 +240,32 @@ function neighborsOf(state: GameState, content: ContentIndex, tag: string): stri
   return [...result];
 }
 
+function dominantTag(state: GameState): { tag: string; share: number } | null {
+  const counts = new Map<string, number>();
+  for (const province of Object.values(state.provinces)) {
+    counts.set(province.controller, (counts.get(province.controller) ?? 0) + 1);
+  }
+  let bestTag: string | null = null;
+  let bestCount = 0;
+  for (const [tag, count] of counts) {
+    if (!state.countries[tag]?.alive) continue;
+    if (count > bestCount) {
+      bestTag = tag;
+      bestCount = count;
+    }
+  }
+  if (!bestTag) return null;
+  return { tag: bestTag, share: bestCount / Math.max(1, Object.keys(state.provinces).length) };
+}
+
 function historicalWarTarget(state: GameState, tag: string): string | null {
   const alive = (target: string) => Boolean(state.countries[target]?.alive) && target !== tag;
   const year = fromDayIndex(state.day).year;
+  const dominant = dominantTag(state);
+  if (dominant && dominant.tag !== tag && dominant.share >= 0.38
+    && !areAllied(state, tag, dominant.tag)) {
+    return dominant.tag;
+  }
   if (state.scenarioId === '1627') {
     if (tag === 'QING') {
       if (year >= 1644 && alive('SHUN')) return 'SHUN';
@@ -645,6 +668,7 @@ function manageInvestments(state: GameState, content: ContentIndex, tag: string)
 
 export function runMonthlyAi(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
+    if (nation.tag === 'NEU') continue;
     if (!nation.alive || (!state.spectator && nation.tag === state.playerTag)) continue;
     manageFocus(state, content, nation.tag);
     manageResearch(state, content, nation.tag);

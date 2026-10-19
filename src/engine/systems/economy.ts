@@ -219,6 +219,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     const blockade = blockadePenalty(state, content, nation.tag);
     if (blockade > 0) totalTax *= 1 - blockade;
+    const overextension = Math.min(0.25, Math.max(0, (provinces.length - 120) / 480) * 0.4);
+    if (overextension > 0) totalTax *= 1 - overextension;
     totalTax += tradePostMonthlyIncome(state, content, nation.tag);
     totalTax += sakokuMonthlyIncome(state, content, nation.tag);
     const averageLoyalty = Object.values(nation.estates).reduce((sum, estate) => sum + estate.loyalty, 0)

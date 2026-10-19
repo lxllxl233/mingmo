@@ -97,6 +97,7 @@ function hasNonNeutralNeighbor(state: GameState, content: ContentIndex, nation: 
 
 export function advanceCrisis(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
+    if (nation.tag === 'NEU') continue;
     if (!nation.alive) continue;
     const report = nation.lastReport;
     const armyPay = report?.expenseArmy ?? 0;
