@@ -1,0 +1,22 @@
+import { loadContentFromDirectory } from '../../src/content/loader/node';
+import { createInitialState } from '../../src/engine/state/initial';
+import { dispatch } from '../../src/engine/commands';
+import { advanceDay } from '../../src/engine/tick';
+import { blockadedPorts, blockadePenalty } from '../../src/engine/rules/naval';
+import { declareWar } from '../../src/engine/rules/war';
+
+const content = loadContentFromDirectory();
+const state = createInitialState(content, '1627', 42, 'MING');
+declareWar(state, 'MING', 'VOC', 'test', content);
+const navy = Object.values(state.armies).find(army => army.tag === 'MING' && army.composition.naval > 0);
+if (!navy) throw new Error('missing navy');
+navy.province = 'fuzhou';
+navy.movePath = [];
+navy.embarked = false;
+console.log(`before port=${navy.province} naval=${navy.composition.naval}`);
+dispatch(state, { type: 'army.navalMove', armyId: navy.id, portId: 'anping' }, content);
+console.log(`embarked=${navy.embarked} target=${navy.navalTarget}`);
+for (let day = 0; day < 3; day += 1) advanceDay(state, content);
+console.log(`after port=${navy.province} embarked=${navy.embarked}`);
+navy.province = 'anping';
+console.log(`blockade ports=${blockadedPorts(state, content, 'VOC').join(',')} penalty=${blockadePenalty(state, content, 'VOC')}`);

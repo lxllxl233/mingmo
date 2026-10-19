@@ -149,8 +149,12 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       if (!origin?.isPort || !target?.isPort || command.portId === army.province) {
         throw new CommandError('naval move requires two ports');
       }
-      if (state.provinces[command.portId]?.controller !== tag) {
-        throw new CommandError('naval move requires a friendly port');
+      const targetState = state.provinces[command.portId];
+      const hostileLanding = Boolean(targetState
+        && targetState.controller !== tag
+        && areAtWar(state, tag, targetState.controller));
+      if (targetState?.controller !== tag && !hostileLanding) {
+        throw new CommandError('登陆目标必须是本国港口或交战方港口');
       }
       const fleet = Object.values(state.armies).some(entry =>
         entry.tag === tag && entry.province === army.province && entry.composition.naval > 0);

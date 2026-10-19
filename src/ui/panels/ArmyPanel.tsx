@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { General } from '../../content/types';
 import type { ArmyState } from '../../engine/state/types';
 import { GENERAL_TRAIT_INFO, generalTraitBonus } from '../../engine/rules/generalTraits';
+import { areAtWar } from '../../engine/rules/war';
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 import { GeneralPortrait } from './GeneralPortrait';
@@ -34,8 +35,11 @@ export function ArmyPanel() {
   const def = content.countries.get(army.tag);
   const province = content.provinces.get(army.province);
   const provinceState = game.provinces[army.province];
-  const ports = [...content.provinces.values()].filter(entry =>
-    entry.isPort && entry.id !== army.province && game.provinces[entry.id]?.controller === army.tag);
+  const ports = [...content.provinces.values()].filter(entry => {
+    if (!entry.isPort || entry.id === army.province) return false;
+    const controller = game.provinces[entry.id]?.controller;
+    return controller === army.tag || (controller !== undefined && areAtWar(game, army.tag, controller));
+  });
   const fleetPresent = Object.values(game.armies).some(entry =>
     entry.tag === army.tag && entry.province === army.province && entry.composition.naval > 0);
   const general = army.general ? content.generals.get(army.general) ?? null : null;
@@ -131,6 +135,11 @@ export function ArmyPanel() {
         <div className="country-stat"><span>状态</span><strong className={army.encircled ? 'danger' : ''}>{army.encircled ? `被围 ${army.encircledDays} 日` : '正常'}</strong></div>
       </section>
 
+      {army.composition.naval > 0 && provinceState && provinceState.controller !== army.tag
+        && areAtWar(game, army.tag, provinceState.controller) && (
+          <p className="good">正在封锁 {province?.name ?? army.province}：敌方港口税入下降。</p>
+        )}
+
       {!readOnly && province?.isFort && provinceState && provinceState.controller !== army.tag && (
         <section>
           <h3 className="section-title">围城方式</h3>
@@ -198,7 +207,9 @@ export function ArmyPanel() {
                 <select value={navalTarget} onChange={event => setNavalTarget(event.target.value)}>
                   <option value="">选择目标港口</option>
                   {ports.map(port => (
-                    <option key={port.id} value={port.id}>{port.name}</option>
+                    <option key={port.id} value={port.id}>
+                      {port.name}{game.provinces[port.id]?.controller !== army.tag ? '（敌港·登陆）' : ''}
+                    </option>
                   ))}
                 </select>
                 <button

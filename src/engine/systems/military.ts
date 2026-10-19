@@ -469,9 +469,20 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       if (army.navalProgress >= 1) {
         const target = army.navalTarget;
         const targetProvince = target ? state.provinces[target] : undefined;
-        if (target && targetProvince && targetProvince.controller === army.tag) {
+        const canLand = Boolean(targetProvince
+          && (targetProvince.controller === army.tag || areAtWar(state, army.tag, targetProvince.controller)));
+        if (target && targetProvince && canLand) {
           army.history = [...army.history, army.province].slice(-8);
           army.province = target;
+          if (targetProvince.controller !== army.tag) {
+            state.log.push({
+              day: state.day,
+              category: 'military',
+              country: army.tag,
+              text: `${army.name} 在 ${content.provinces.get(target)?.name ?? target} 登陆`,
+              severity: 'warning',
+            });
+          }
         } else if (army.navalOrigin && state.provinces[army.navalOrigin]?.controller === army.tag) {
           army.province = army.navalOrigin;
           state.log.push({
