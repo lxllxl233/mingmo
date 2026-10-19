@@ -162,6 +162,7 @@ export function createInitialState(
       modifiers: {},
       timedModifiers: [],
       cooldowns: {},
+      tradePosts: [],
       ai: { target: null, lastWarDay: -999, focusId: null, stance: 'expand' },
       monthlyHistory: [],
       lastReport: null,

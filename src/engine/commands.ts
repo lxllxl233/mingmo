@@ -17,6 +17,7 @@ import { favorCourtFaction, suppressCourtFaction, type CourtFaction } from './sy
 import { expandBanners, raiseBanners, reformBanners } from './systems/banners';
 import { extortGentry, landReform, pacifyGentry } from './systems/confiscation';
 import { compromiseCourt, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './systems/legitimacy';
+import { openTradePost, recruitMerchants, takeDividend } from './systems/trade';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -49,6 +50,9 @@ export type Command =
   | { type: 'legitimacy.compromise' }
   | { type: 'legitimacy.mobilize' }
   | { type: 'legitimacy.unite' }
+  | { type: 'trade.open'; portId: string }
+  | { type: 'trade.dividend' }
+  | { type: 'trade.recruit' }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -313,6 +317,20 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     }
     case 'legitimacy.unite': {
       if (!uniteLoyalists(state, tag)) throw new CommandError('需要郑氏或大西存活、30 政治点、5 万两且不在冷却');
+      break;
+    }
+    case 'trade.open': {
+      if (!openTradePost(state, content, tag, command.portId)) {
+        throw new CommandError('设埠需要 3 万两、10 政治点、本国港口且未满 6 处');
+      }
+      break;
+    }
+    case 'trade.dividend': {
+      if (!takeDividend(state, content, tag)) throw new CommandError('分红尚在冷却或没有商埠');
+      break;
+    }
+    case 'trade.recruit': {
+      if (!recruitMerchants(state, tag)) throw new CommandError('招抚海商需要 2 万两且不在冷却');
       break;
     }
     case 'province.integrateCore': {

@@ -89,6 +89,15 @@ if (await legitimacyButton.count() > 0) {
   await page.screenshot({ path: `ui-legitimacy-${suffix}.png` });
   await legitimacyButton.click();
 }
+
+const tradeButton = page.getByRole('button', { name: '海贸', exact: true });
+if (await tradeButton.count() > 0) {
+  await tradeButton.click();
+  await page.waitForTimeout(400);
+  console.log('trade:', (await page.locator('.trade-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
+  await page.screenshot({ path: `ui-trade-${suffix}.png` });
+  await tradeButton.click();
+}
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
 console.log('after-tick:', (await page.locator('.bottombar').innerText()).replace(/\s+/g, ' ').slice(0, 240));

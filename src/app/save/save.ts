@@ -66,6 +66,7 @@ export function decodeSave(text: string): GameState {
     }
 
     if (typeof nation.foodPurchasePct !== 'number') nation.foodPurchasePct = 30;
+    if (!Array.isArray(nation.tradePosts)) nation.tradePosts = [];
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (!Array.isArray(parsed.state.battles)) parsed.state.battles = [];

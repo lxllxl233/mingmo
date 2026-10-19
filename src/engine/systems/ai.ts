@@ -10,6 +10,7 @@ import { startCoreIntegration } from './core';
 import { startBuilding } from './buildings';
 import { confiscationCooldown, extortGentry, pacifyGentry } from './confiscation';
 import { compromiseCourt, legitimacyCooldown, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './legitimacy';
+import { dividendCooldown, openTradePost, recruitMerchants, takeDividend } from './trade';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
@@ -664,6 +665,22 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
         uniteLoyalists(state, nation.tag);
       } else if (nation.politicalPower >= 10 && nation.manpower < 60000) {
         mobilizeLoyalists(state, nation.tag);
+      }
+    }
+    if (nation.tag === 'ZHENG') {
+      if (nation.treasury > 200000 && nation.politicalPower >= 10 && nation.tradePosts.length < 6) {
+        const port = Object.values(state.provinces)
+          .filter(province => province.controller === 'ZHENG'
+            && content.provinces.get(province.id)?.isPort
+            && !nation.tradePosts.includes(province.id))
+          .sort((a, b) => (content.provinces.get(b.id)?.development ?? 0) - (content.provinces.get(a.id)?.development ?? 0))[0];
+        if (port) openTradePost(state, content, 'ZHENG', port.id);
+      }
+      if (dividendCooldown(state, 'ZHENG') === 0) {
+        if (nation.tradePosts.length > 0) takeDividend(state, content, 'ZHENG');
+        else if (nation.treasury > 120000 && (nation.factions['merchants'] ?? 0) < 45) {
+          recruitMerchants(state, 'ZHENG');
+        }
       }
     }
     manageRebelGrowth(state, content, nation.tag);

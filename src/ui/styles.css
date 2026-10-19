@@ -834,6 +834,10 @@ button:active { transform: translateY(1px); }
 .confiscation-actions { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
 .confiscation-actions button { text-align: left; font-size: 12px; padding: 5px 8px; }
 .confiscation-actions button:disabled { opacity: .45; }
+.trade-port { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px dashed var(--line); font-size: 12px; }
+.trade-port small { color: var(--ink-soft); font-size: 10px; }
+.trade-port button { padding: 3px 6px; font-size: 11px; }
+.trade-port button:disabled { opacity: .45; }
 
 .settings-card { width: min(560px, 94vw); }
 .setting-row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }

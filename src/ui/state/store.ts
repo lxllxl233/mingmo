@@ -29,6 +29,7 @@ export type PanelKey =
   | 'banner'
   | 'confiscation'
   | 'legitimacy'
+  | 'trade'
   | 'log';
 
 let suppressArmySelectionUntil = 0;

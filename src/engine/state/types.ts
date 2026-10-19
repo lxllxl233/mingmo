@@ -163,6 +163,7 @@ export interface CountryState {
   modifiers: Modifier;
   timedModifiers: TimedModifier[];
   cooldowns: Record<string, number>;
+  tradePosts: string[];
   ai: AiState;
   monthlyHistory: MonthlyReport[];
   lastReport: MonthlyReport | null;
