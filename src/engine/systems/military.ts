@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import { aggregateModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
@@ -341,8 +341,17 @@ function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): b
     const province = state.provinces[id];
     return province !== undefined && (province.controller === army.tag || province.owner === army.tag);
   };
-  if (!friendly(army.province)) return false;
-  if (def.isPort) return true;
+  if (!friendly(army.province)) {
+    if (!def.isCoastal) return false;
+    const seaSupplied = def.neighbors.some(neighbor => {
+      const neighborDef = content.provinces.get(neighbor);
+      return neighborDef?.isPort === true && friendly(neighbor);
+    });
+    if (!seaSupplied) return false;
+    return true;
+  } else if (def.isPort) {
+    return true;
+  }
   const capital = state.countries[army.tag]?.capital;
   const sources = new Set<string>();
   if (capital && friendly(capital)) sources.add(capital);
@@ -757,6 +766,7 @@ export function setArmyPath(
   army.stance = 'move';
   return true;
 }
+
 
 
 
