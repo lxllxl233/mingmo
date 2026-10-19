@@ -765,3 +765,5 @@ button:active { transform: translateY(1px); }
 .allocation-preview b { color: var(--red); }
 
 
+
+.stat-tooltip .estate-stability-line { font-size: 10px; padding-left: 6px; border-left: 2px solid var(--line); }

@@ -1,4 +1,4 @@
-﻿import { useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { controlledProvinceCount } from '../../engine/rules/geography';
@@ -65,9 +65,26 @@ export function TopBar() {
     .filter(province => province.cores.includes(game.playerTag))
     .reduce((sum, province) => sum + province.population, 0);
   const nonCorePopulation = totalPopulation - corePopulation;
-  const disloyalPopulation = controlledProvinces
-    .filter(province => province.unrest > 50)
-    .reduce((sum, province) => sum + province.population, 0);
+  const disloyalProvinces = controlledProvinces.filter(province => province.unrest >= 20);
+  const disloyalPopulation = disloyalProvinces.reduce((sum, province) => sum + province.population, 0);
+  const foodBalance = (report?.foodPurchased ?? 0) - (report?.foodArmy ?? 0);
+  const estateStability = country
+    ? Object.values(country.estates).map(estate => {
+      const config = content.countryEstates.get(country.tag)?.find(entry => entry.key === estate.key);
+      const weight = Math.max(1, estate.influence);
+      return {
+        key: estate.key,
+        name: config?.name ?? content.estateDefs.get(estate.key)?.name ?? estate.key,
+        loyalty: estate.loyalty,
+        influence: estate.influence,
+        weight,
+      };
+    }).sort((a, b) => b.loyalty * b.weight - a.loyalty * a.weight)
+    : [];
+  const stabilityWeight = estateStability.reduce((sum, estate) => sum + estate.weight, 0);
+  const stabilityTarget = stabilityWeight > 0
+    ? estateStability.reduce((sum, estate) => sum + estate.loyalty * estate.weight, 0) / stabilityWeight
+    : 0;
   const provinceGroups = controlledProvinceCount(game, content, game.playerTag);
   const playerTraining = game.training.filter(entry => entry.tag === game.playerTag);
   const trainingSilverDay = playerTraining.reduce((sum, entry) =>
@@ -106,6 +123,7 @@ export function TopBar() {
             <b>粮储 {number(country?.food ?? 0)} 石</b>
             <span>本月购粮 {number(report?.foodPurchased ?? 0)} 石</span>
             <span>军队口粮 {number(report?.foodArmy ?? 0)} 石</span>
+            <span>本月结余 <i className={foodBalance >= 0 ? 'good' : 'danger'}>{foodBalance >= 0 ? '+' : ''}{number(foodBalance)}</i> 石</span>
             <span>购粮支出 {number(report?.foodPurchaseSilver ?? 0)} 两</span>
             <span>训练日耗 {number(trainingFoodDay)} 石</span>
             <span>粮价系数 {content.balance.economy.grainPrice.toFixed(2)}</span>
@@ -122,7 +140,8 @@ export function TopBar() {
             <b>总人口 {Math.round(totalPopulation).toLocaleString()}</b>
             <span>核心人口 {Math.round(corePopulation).toLocaleString()}</span>
             <span>非核心人口 {Math.round(nonCorePopulation).toLocaleString()}</span>
-            <span className="danger">不忠诚人口 {Math.round(disloyalPopulation).toLocaleString()}</span>
+            <span className="danger">不忠诚人口（民怨≥20） {Math.round(disloyalPopulation).toLocaleString()}（{totalPopulation > 0 ? (disloyalPopulation / totalPopulation * 100).toFixed(1) : '0.0'}%）</span>
+            <span>不忠诚地区 {disloyalProvinces.length} / {controlledProvinces.length}</span>
             <small>人口与田地共同形成经济大盘；非核心与不忠诚人口提供的财政和兵源更低。</small>
           </>
         }
@@ -148,6 +167,12 @@ export function TopBar() {
             <b>稳定 {Math.round(country?.stability ?? 0)} / 100</b>
             <span>天命 {Math.round(country?.mandate ?? 0)} · 皇权 {Math.round(country?.authority ?? 0)}</span>
             <span>战争疲劳 {Math.round(country?.warExhaustion ?? 0)}</span>
+            <span>稳定目标 {stabilityTarget.toFixed(0)}（各阶级忠诚加权）</span>
+            {estateStability.map(estate => (
+              <span key={estate.key} className="estate-stability-line">
+                {estate.name} · 忠诚 {Math.round(estate.loyalty)} · 影响 {Math.round(estate.influence)} · 贡献 {(estate.loyalty * estate.weight / Math.max(1, stabilityWeight)).toFixed(1)}
+              </span>
+            ))}
             <small>稳定主要由各阶级忠诚按影响力加权驱动；税法、分配、缺粮与战争都会改变忠诚，进而改变稳定。稳定影响天命、税收与民怨。</small>
           </>
         }
@@ -196,4 +221,5 @@ export function TopBar() {
     </header>
   );
 }
+
 
