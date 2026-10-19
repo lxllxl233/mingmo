@@ -36,8 +36,11 @@ describe('content pipeline', () => {
   });
 
   it('loads a mechanic event for every playable faction', () => {
-    expect(content.events.size).toBeGreaterThanOrEqual(110);
+    expect(content.events.size).toBeGreaterThanOrEqual(148);
     const ids = [
+      'MING_e_jisi_crisis', 'QING_e_haircut', 'SHUN_e_beijing_treasury',
+      'SMING_e_hongguang', 'ZHENG_e_taiwan', 'MONGOL_e_chahar_submit',
+      'JAPAN_e_sakoku_edict', 'JOSEON_e_bingzi',
       'MING_e_court_deadlock', 'QING_e_banner_review', 'SHUN_e_confiscation_debate',
       'SMING_e_legitimacy_dispute', 'ZHENG_e_sea_route', 'MONGOL_e_kurultai',
       'JAPAN_e_sakoku_pressure', 'JOSEON_e_tribute_or_north',

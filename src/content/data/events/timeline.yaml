@@ -1,0 +1,1116 @@
+events:
+  # ── 大明 1627–1644 ─────────────────────────────────────────────
+  - id: MING_e_jisi_crisis
+    title: 己巳之变
+    desc: 后金绕道蒙古破关而入，京师戒严。勤王军云集，却缺饷、缺统一指挥。
+    historical_context: 1629 年皇太极绕开关宁防线入塞，崇祯急调各地勤王，袁崇焕下狱。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1629-11-01, before: 1630-06-30 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: mobilize
+        name: 急调勤王
+        tooltip: 稳住京师，但耗费国库、削弱边防。
+        ai_chance: 55
+        effect:
+          - add_treasury: -50000
+          - add_stability: 2
+          - add_faction_influence: { military: 4, donglin: -2 }
+          - spawn_army: { province: beijing, template: guanning_army, size: 2 }
+      - id: scorched
+        name: 坚壁清野
+        tooltip: 放弃关外粮道，保全京师；边军不满。
+        ai_chance: 45
+        effect:
+          - add_treasury: -20000
+          - add_stability: -2
+          - add_army_loyalty: 3
+          - add_faction_influence: { military: 3 }
+
+  - id: MING_e_kong_revolt
+    title: 孔有德之叛
+    desc: 登莱兵变，孔有德率部叛走。是招抚还是围剿，朝议争论不休。
+    historical_context: 1631 年孔有德在吴桥兵变，后降后金，带去大量火器与工匠。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1631-06-01, before: 1633-12-31 }
+    mtth: 120
+    fire_once: true
+    options:
+      - id: pardon
+        name: 招抚叛军
+        tooltip: 花钱安抚，保住火器工匠；军纪受损。
+        ai_chance: 50
+        effect:
+          - add_treasury: -40000
+          - add_stability: 1
+          - add_faction_influence: { military: -2, donglin: 2 }
+      - id: crush
+        name: 武力镇压
+        tooltip: 以大军围剿，耗银且损兵。
+        ai_chance: 50
+        effect:
+          - add_treasury: -60000
+          - add_manpower: -2000
+          - add_stability: -1
+          - add_army_loyalty: -2
+
+  - id: MING_e_songjin
+    title: 松锦之战
+    desc: 洪承畴被围松山，锦州告急。朝廷既怕丧师，又怕再次空耗国库。
+    historical_context: 1640–1642 年松锦决战，明军主力覆没，洪承畴降清。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1642-12-31 }
+    mtth: 120
+    fire_once: true
+    options:
+      - id: relieve
+        name: 全力救援
+        tooltip: 调集九边精锐，赌一场决战。
+        ai_chance: 50
+        effect:
+          - add_treasury: -100000
+          - add_manpower: -5000
+          - add_stability: -2
+          - add_army_loyalty: 3
+      - id: preserve
+        name: 保存实力
+        tooltip: 放弃锦州，退守宁远；天命与军心受损。
+        ai_chance: 50
+        effect:
+          - add_stability: -3
+          - add_mandate: -5
+          - add_army_loyalty: -3
+
+  - id: MING_e_sun_chuanting
+    title: 孙传庭出关
+    desc: 孙传庭在潼关练兵未成，朝廷却催他出关决战。催战可能丧师，固守又违旨。
+    historical_context: 1643 年孙传庭被迫出关，兵败潼关，关中门户洞开。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1643-01-01, before: 1644-01-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: push
+        name: 催战出关
+        tooltip: 迎合朝议，但准备不足。
+        ai_chance: 55
+        effect:
+          - add_mandate: -4
+          - add_stability: -3
+          - add_army_loyalty: -4
+          - add_faction_influence: { eunuch: 3, military: -3 }
+      - id: hold
+        name: 固守潼关
+        tooltip: 抗旨固守，争取练兵时间。
+        ai_chance: 45
+        effect:
+          - add_treasury: -30000
+          - add_stability: 1
+          - add_army_loyalty: 2
+          - add_faction_influence: { military: 4, eunuch: -3 }
+
+  # ── 大清 1627–1645 ─────────────────────────────────────────────
+  - id: QING_e_han_banners
+    title: 编汉军旗
+    desc: 汉军旗与绿营的数量已超过满洲旗丁。扩编能补兵源，却会改变八旗的成色。
+    historical_context: 皇太极编立汉军八旗，吸收汉人火器与官僚，为入关做准备。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1631-01-01, before: 1644-01-31 }
+    mtth: 150
+    fire_once: true
+    options:
+      - id: expand_han
+        name: 扩编汉军
+        tooltip: 兵源增加，汉臣支持；满洲旧贵不满。
+        ai_chance: 55
+        effect:
+          - add_manpower: 3000
+          - add_treasury: -30000
+          - add_faction_influence: { han_official: 5, manchu: -2 }
+      - id: keep_manchu
+        name: 保持满洲旧制
+        tooltip: 八旗与满洲旗分支持上升。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { banners: 5, han_official: -3 }
+          - add_stability: 1
+          - add_army_loyalty: 2
+
+  - id: QING_e_songjin_surrender
+    title: 松锦受降
+    desc: 洪承畴、祖大寿等明将降清。厚待能招徕更多汉官，严惩能立威。
+    historical_context: 松锦之战后，大批明军将领降清，成为入关先锋。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1642-01-01, before: 1645-12-31 }
+    mtth: 120
+    fire_once: true
+    options:
+      - id: treat_well
+        name: 厚待降将
+        tooltip: 汉臣与绿营支持上升，但耗费银两。
+        ai_chance: 60
+        effect:
+          - add_treasury: -30000
+          - add_faction_influence: { han_official: 6, green_standard: 4 }
+          - add_manpower: 2000
+      - id: punish
+        name: 立威严惩
+        tooltip: 军心上升，汉臣寒心。
+        ai_chance: 40
+        effect:
+          - add_army_loyalty: 3
+          - add_faction_influence: { han_official: -4, banners: 3 }
+
+  - id: QING_e_dorgon_regency
+    title: 多尔衮摄政
+    desc: 顺治年幼，多尔衮以摄政王身份总揽朝政。支持摄政还是恢复议政王大臣共治？
+    historical_context: 1643 年多尔衮摄政，随后率军入关，权力达到顶峰。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1643-01-01, before: 1646-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: support_regent
+        name: 支持摄政
+        tooltip: 皇权集中，八旗支持；宗室不满。
+        ai_chance: 55
+        effect:
+          - add_authority: 3
+          - add_faction_influence: { banners: 4, imperial: -3 }
+      - id: council
+        name: 议政王大臣共治
+        tooltip: 宗室支持，决策更慢。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { imperial: 4, banners: -2 }
+          - add_stability: 1
+
+  - id: QING_e_haircut
+    title: 剃发令
+    desc: 入关后推行剃发易服。厉行能立威，却会激起江南反抗；缓行能安抚，却损征服者威信。
+    historical_context: 1645 年清廷下剃发令，江南爆发大规模抗清。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1645-06-01, before: 1648-12-31 }
+    mtth: 100
+    fire_once: true
+    options:
+      - id: enforce
+        name: 厉行剃发
+        tooltip: 皇权与八旗支持上升，稳定下降。
+        ai_chance: 55
+        effect:
+          - add_authority: 3
+          - add_stability: -4
+          - add_faction_influence: { banners: 4, han_official: -3 }
+      - id: delay
+        name: 缓行安抚
+        tooltip: 稳定与汉臣支持上升，正统受损。
+        ai_chance: 45
+        effect:
+          - add_stability: 2
+          - add_mandate: -2
+          - add_faction_influence: { han_official: 3, banners: -2 }
+
+  # ── 大顺 1640–1645 ─────────────────────────────────────────────
+  - id: SHUN_e_land_to_peasants
+    title: 均田免赋
+    desc: 饥民要求分地，士绅要求保护田产。大顺必须在民心与粮饷之间取舍。
+    historical_context: 李自成以“均田免赋”号召流民，进入河南后声势大振。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1644-12-31 }
+    mtth: 120
+    fire_once: true
+    options:
+      - id: redistribute
+        name: 推行均田
+        tooltip: 农民支持、粮食增加；士绅反弹。
+        ai_chance: 55
+        effect:
+          - add_food: 80000
+          - add_stability: 2
+          - add_faction_influence: { farmers: 8, gentry: -6 }
+      - id: delay
+        name: 暂缓分地
+        tooltip: 士绅支持、得银；农民失望。
+        ai_chance: 45
+        effect:
+          - add_treasury: 30000
+          - add_faction_influence: { gentry: 5, farmers: -4 }
+
+  - id: SHUN_e_xiangyang_court
+    title: 襄阳建政
+    desc: 大顺军占领襄阳，诸将请李自成称王建号。称王能立正统，也会成为明军靶子。
+    historical_context: 1643 年李自成在襄阳称新顺王，建立政权机构。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1643-01-01, before: 1644-12-31 }
+    mtth: 100
+    fire_once: true
+    options:
+      - id: crown
+        name: 称王建号
+        tooltip: 正统与权威上升，武将支持。
+        ai_chance: 55
+        effect:
+          - add_mandate: 4
+          - add_authority: 2
+          - add_faction_influence: { military: 4, farmers: 2 }
+      - id: mobile
+        name: 继续流动作战
+        tooltip: 保持机动，稳定与正统受损。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { military: 5 }
+          - add_stability: -2
+          - add_mandate: -2
+
+  - id: SHUN_e_beijing_treasury
+    title: 北京追赃
+    desc: 大顺军入京，国库空虚，诸将主张拷掠勋戚与士绅。追赃能得巨银，却会毁掉民心。
+    historical_context: 李自成入北京后追赃助饷，短期得银，士绅转而引清兵入关。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1644-04-01, before: 1645-12-31 }
+    mtth: 60
+    fire_once: true
+    options:
+      - id: extort
+        name: 追赃助饷
+        tooltip: 得银十万，士绅与稳定重创。
+        ai_chance: 55
+        effect:
+          - add_treasury: 100000
+          - add_stability: -4
+          - add_faction_influence: { military: 5, gentry: -8 }
+      - id: restrain
+        name: 约束军纪
+        tooltip: 安抚士绅，军费更紧。
+        ai_chance: 45
+        effect:
+          - add_treasury: -20000
+          - add_stability: 3
+          - add_faction_influence: { gentry: 3, military: -2 }
+
+  - id: SHUN_e_jiugong
+    title: 九宫山
+    desc: 大顺军退出北京后一路西撤，李自成在九宫山遇袭。亲征能聚拢军心，分兵能保存火种。
+    historical_context: 1645 年李自成在湖北九宫山遇害，大顺余部后来联明抗清。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1645-01-01, before: 1646-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: campaign
+        name: 亲征聚拢
+        tooltip: 军心与兵源上升，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_manpower: 3000
+          - add_army_loyalty: 3
+          - add_stability: -2
+      - id: split
+        name: 分兵保存
+        tooltip: 稳定上升，兵力与武将支持下降。
+        ai_chance: 50
+        effect:
+          - add_manpower: -2000
+          - add_stability: 1
+          - add_faction_influence: { military: -3 }
+
+  # ── 南明 1644–1652 ─────────────────────────────────────────────
+  - id: SMING_e_hongguang
+    title: 弘光登基
+    desc: 北京陷落，南京诸臣拥立福王。拥立能快速立正统，廷议能安抚东林。
+    historical_context: 1644 年马士英等拥立福王朱由崧，弘光政权建立。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1644-05-01, before: 1645-12-31 }
+    mtth: 70
+    fire_once: true
+    options:
+      - id: crown
+        name: 拥立福王
+        tooltip: 正统与宗室上升，东林不满。
+        ai_chance: 55
+        effect:
+          - add_mandate: 5
+          - add_treasury: -30000
+          - add_faction_influence: { royal_clan: 5, donglin: -3 }
+      - id: debate
+        name: 廷议择君
+        tooltip: 东林支持，正统提升较慢。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { donglin: 5 }
+          - add_mandate: 2
+          - add_stability: 1
+
+  - id: SMING_e_four_towns
+    title: 江北四镇
+    desc: 江北四镇拥兵自重，索取粮饷。笼络能稳住防线，整编能收回兵权但可能激变。
+    historical_context: 弘光朝依赖江北四镇，军阀化严重，直接导致左良玉东下与扬州失守。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1644-06-01, before: 1645-06-30 }
+    mtth: 80
+    fire_once: true
+    options:
+      - id: buy_off
+        name: 笼络四镇
+        tooltip: 武将支持，军费与腐败上升。
+        ai_chance: 55
+        effect:
+          - add_treasury: -40000
+          - add_faction_influence: { military: 6 }
+          - add_corruption: 2
+      - id: reorganize
+        name: 整编四镇
+        tooltip: 稳定上升，武将不满。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { military: -4 }
+          - add_stability: 2
+          - add_corruption: -1
+
+  - id: SMING_e_longwu_zheng
+    title: 隆武与郑氏
+    desc: 隆武在福建依赖郑芝龙。倚郑能得海贸与军队，亲征能摆脱郑氏控制。
+    historical_context: 1645 年隆武帝在福州即位，郑芝龙掌握实权，后降清。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1645-08-01, before: 1646-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: rely_zheng
+        name: 倚重郑氏
+        tooltip: 商人、武将支持，国库增收；宗室不满。
+        ai_chance: 55
+        effect:
+          - add_treasury: 30000
+          - add_faction_influence: { merchants: 5, military: 4, royal_clan: -2 }
+      - id: campaign
+        name: 亲征北伐
+        tooltip: 正统与军心上升，耗费国库。
+        ai_chance: 45
+        effect:
+          - add_mandate: 3
+          - add_army_loyalty: 2
+          - add_treasury: -50000
+
+  - id: SMING_e_sun_li
+    title: 孙李合流
+    desc: 大西余部孙可望、李定国请求联明抗清。联合能得劲旅，分治能保正统。
+    historical_context: 1652 年大西军与南明永历政权联合，李定国两蹶名王。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1652-01-01, before: 1657-12-31 }
+    mtth: 80
+    fire_once: true
+    options:
+      - id: unite
+        name: 联合大西
+        tooltip: 兵源与武将支持上升，稳定下降。
+        ai_chance: 55
+        effect:
+          - add_manpower: 5000
+          - add_faction_influence: { military: 5 }
+          - add_stability: -1
+      - id: separate
+        name: 保持距离
+        tooltip: 稳定上升，军力与正统受损。
+        ai_chance: 45
+        effect:
+          - add_stability: 1
+          - add_faction_influence: { military: -3 }
+          - add_mandate: -2
+
+  # ── 郑氏 1633–1661 ─────────────────────────────────────────────
+  - id: ZHENG_e_liaoluo
+    title: 料罗湾海战
+    desc: 荷兰舰队与刘香联军进逼，郑芝龙必须决定是否正面迎战。
+    historical_context: 1633 年郑芝龙在料罗湾击败荷兰与海盗联军，确立东南海权。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1633-01-01, before: 1635-12-31 }
+    mtth: 100
+    fire_once: true
+    options:
+      - id: fight
+        name: 正面迎战
+        tooltip: 得银与军心，损失部分舰队。
+        ai_chance: 55
+        effect:
+          - add_treasury: 30000
+          - add_faction_influence: { military: 4, merchants: 2 }
+          - add_army_loyalty: 2
+      - id: avoid
+        name: 避战保船
+        tooltip: 稳定上升，商人失望。
+        ai_chance: 45
+        effect:
+          - add_treasury: -20000
+          - add_faction_influence: { merchants: -3 }
+          - add_stability: 1
+
+  - id: ZHENG_e_nanjing
+    title: 南京之役
+    desc: 郑成功率大军围南京，诸将请速攻，主帅却犹豫。北伐能定江南，保海能守根本。
+    historical_context: 1659 年郑成功围南京，因轻敌与迟疑失败，退回厦门。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1659-06-01, before: 1660-12-31 }
+    mtth: 60
+    fire_once: true
+    options:
+      - id: north
+        name: 全力北伐
+        tooltip: 兵源与军心上升，国库与稳定受损。
+        ai_chance: 55
+        effect:
+          - add_manpower: 5000
+          - add_treasury: -60000
+          - add_faction_influence: { military: 5 }
+          - add_stability: -2
+      - id: hold_sea
+        name: 回守海疆
+        tooltip: 国库与商人支持上升。
+        ai_chance: 45
+        effect:
+          - add_treasury: 30000
+          - add_faction_influence: { merchants: 4, military: -2 }
+
+  - id: ZHENG_e_taiwan
+    title: 收复台湾
+    desc: 荷兰人据守热兰遮城，台湾可作反清根本。东征能开新局，固守金厦能保现有海贸。
+    historical_context: 1661 年郑成功东征，驱逐荷兰东印度公司，建立明郑政权。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1661-01-01, before: 1662-12-31 }
+    mtth: 60
+    fire_once: true
+    options:
+      - id: east
+        name: 东征台湾
+        tooltip: 正统与军心上升，耗费国库。
+        ai_chance: 60
+        effect:
+          - add_manpower: 3000
+          - add_treasury: -50000
+          - add_mandate: 4
+          - add_faction_influence: { military: 4 }
+      - id: hold_xiamen
+        name: 固守金厦
+        tooltip: 稳定与国库上升，军心下降。
+        ai_chance: 40
+        effect:
+          - add_stability: 2
+          - add_treasury: 20000
+          - add_faction_influence: { military: -2 }
+
+  - id: ZHENG_e_sea_ban
+    title: 迁界禁海
+    desc: 清廷厉行迁界，沿海商路断绝。走私能续命，遵守能换喘息。
+    historical_context: 1661 年清廷为切断郑氏补给实行迁界禁海，沿海民生凋敝。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1661-06-01, before: 1665-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: smuggle
+        name: 继续走私
+        tooltip: 得银，商人支持；稳定与对清关系下降。
+        ai_chance: 55
+        effect:
+          - add_treasury: 40000
+          - add_faction_influence: { merchants: 5 }
+          - add_stability: -2
+          - add_relation: { target: QING, value: -10 }
+      - id: comply
+        name: 收缩自守
+        tooltip: 稳定上升，商人失望。
+        ai_chance: 45
+        effect:
+          - add_stability: 2
+          - add_treasury: -20000
+          - add_faction_influence: { merchants: -5 }
+
+  # ── 蒙古 1628–1642 ─────────────────────────────────────────────
+  - id: MONGOL_e_lin_move_west
+    title: 林丹汗西迁
+    desc: 察哈尔受到后金与科尔沁夹击，林丹汗决定西迁青海。西迁能避锋芒，留守能保汗帐。
+    historical_context: 1628 年林丹汗西迁，察哈尔部众离散，后金逐步吞并漠南。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1630-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: move_west
+        name: 西迁青海
+        tooltip: 兵源与机动上升，国库与稳定受损。
+        ai_chance: 55
+        effect:
+          - add_manpower: 3000
+          - add_treasury: -20000
+          - add_stability: -1
+      - id: stay
+        name: 留守汗帐
+        tooltip: 稳定上升，汗权受损。
+        ai_chance: 45
+        effect:
+          - add_stability: 2
+          - add_mandate: -2
+          - add_faction_influence: { military: -2 }
+
+  - id: MONGOL_e_chahar_submit
+    title: 察哈尔降清
+    desc: 后金大军压境，察哈尔诸部或降或逃。降清能保部众，抵抗能保汗权。
+    historical_context: 1634 年林丹汗病逝，其子额哲降清，察哈尔汗统终结。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1634-01-01, before: 1636-12-31 }
+    mtth: 70
+    fire_once: true
+    options:
+      - id: submit
+        name: 降清保部
+        tooltip: 对清关系上升，汗权与贵族支持下降。
+        ai_chance: 50
+        effect:
+          - add_relation: { target: QING, value: 20 }
+          - add_mandate: -5
+          - add_stability: 2
+          - add_faction_influence: { nobles: -3 }
+      - id: resist
+        name: 抵抗到底
+        tooltip: 军心与兵源上升，对清关系恶化。
+        ai_chance: 50
+        effect:
+          - add_faction_influence: { military: 5 }
+          - add_manpower: 2000
+          - add_relation: { target: QING, value: -20 }
+          - add_stability: -2
+
+  - id: MONGOL_e_khalkha_league
+    title: 喀尔喀会盟
+    desc: 喀尔喀三部与卫拉特诸部遣使会盟。会盟能重振汗权，各自为政能保实力。
+    historical_context: 1640 年喀尔喀与卫拉特会盟，制定《卫拉特法典》，但未能形成统一汗权。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1642-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: league
+        name: 会盟诸部
+        tooltip: 汗权与贵族支持上升，耗费银两。
+        ai_chance: 55
+        effect:
+          - add_mandate: 4
+          - add_faction_influence: { nobles: 5 }
+          - add_treasury: -20000
+      - id: separate
+        name: 各自为政
+        tooltip: 军力上升，汗权下降。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { military: 3 }
+          - add_mandate: -2
+          - add_stability: -1
+
+  - id: MONGOL_e_gushi_tibet
+    title: 和硕特入藏
+    desc: 固始汗应格鲁派之请入藏，蒙古诸部必须决定是否支持。
+    historical_context: 1642 年固始汗入藏，建立和硕特汗庭与格鲁派联合统治。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1642-01-01, before: 1645-12-31 }
+    mtth: 80
+    fire_once: true
+    options:
+      - id: support
+        name: 支持入藏
+        tooltip: 喇嘛与汗权支持上升，耗费银两。
+        ai_chance: 55
+        effect:
+          - add_faction_influence: { clergy: 6 }
+          - add_mandate: 3
+          - add_treasury: -20000
+      - id: wait
+        name: 观望
+        tooltip: 稳定与军力上升，喇嘛失望。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { military: 2, clergy: -3 }
+          - add_stability: 1
+
+  # ── 日本 1637–1644 ─────────────────────────────────────────────
+  - id: JAPAN_e_shimabara
+    title: 岛原之乱
+    desc: 岛原、天草农民因重税与禁教起事。镇压能立威，招抚能省兵。
+    historical_context: 1637–1638 年岛原之乱是江户幕府最大规模内乱，此后禁教更严。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1637-10-01, before: 1638-12-31 }
+    mtth: 60
+    fire_once: true
+    options:
+      - id: crush
+        name: 武力镇压
+        tooltip: 稳定与寺社支持上升，耗银损兵。
+        ai_chance: 60
+        effect:
+          - add_stability: 2
+          - add_treasury: -30000
+          - add_manpower: -2000
+          - add_faction_influence: { clergy: 3 }
+      - id: pardon
+        name: 招抚减税
+        tooltip: 省兵，寺社不满。
+        ai_chance: 40
+        effect:
+          - add_treasury: -20000
+          - add_stability: 1
+          - add_faction_influence: { clergy: -2 }
+
+  - id: JAPAN_e_sakoku_edict
+    title: 锁国令
+    desc: 幕府要求全面禁止南蛮贸易与基督教。锁国能安内，有限开国能得贸易银。
+    historical_context: 1639 年幕府颁布锁国令，仅留长崎与荷兰、中国通商。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1639-01-01, before: 1642-12-31 }
+    mtth: 70
+    fire_once: true
+    options:
+      - id: close
+        name: 全面锁国
+        tooltip: 稳定与寺社支持上升，商人失望。
+        ai_chance: 60
+        effect:
+          - add_stability: 3
+          - add_faction_influence: { clergy: 4, merchants: -5 }
+      - id: limited_open
+        name: 有限开国
+        tooltip: 国库与商人支持上升，稳定与寺社受损。
+        ai_chance: 40
+        effect:
+          - add_treasury: 30000
+          - add_faction_influence: { merchants: 5, clergy: -4 }
+          - add_stability: -2
+
+  - id: JAPAN_e_nagasaki_factory
+    title: 长崎商馆
+    desc: 荷兰商馆请求扩大贸易。允许能得银，限制能安寺社。
+    historical_context: 1641 年荷兰商馆迁至出岛，成为日本对西方唯一窗口。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1641-01-01, before: 1645-12-31 }
+    mtth: 80
+    fire_once: true
+    options:
+      - id: allow
+        name: 允许扩馆
+        tooltip: 得银，商人支持；寺社不满。
+        ai_chance: 50
+        effect:
+          - add_treasury: 40000
+          - add_faction_influence: { merchants: 5, clergy: -3 }
+      - id: restrict
+        name: 限制贸易
+        tooltip: 稳定与寺社支持上升，商人失望。
+        ai_chance: 50
+        effect:
+          - add_stability: 2
+          - add_faction_influence: { clergy: 4, merchants: -3 }
+
+  - id: JAPAN_e_ryukyu
+    title: 琉球朝贡
+    desc: 琉球同时向明与日本朝贡。维持能保贸易与正统，切断能立威。
+    historical_context: 琉球在明清与萨摩之间维持两属状态，1609 年后受萨摩控制。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1646-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: keep
+        name: 维持朝贡
+        tooltip: 正统与国库上升，对明关系改善。
+        ai_chance: 55
+        effect:
+          - add_mandate: 2
+          - add_treasury: 10000
+          - add_relation: { target: MING, value: 10 }
+          - add_faction_influence: { merchants: 3 }
+      - id: cut
+        name: 切断朝贡
+        tooltip: 稳定上升，贸易与对明关系受损。
+        ai_chance: 45
+        effect:
+          - add_stability: 1
+          - add_treasury: -10000
+          - add_relation: { target: MING, value: -10 }
+          - add_faction_influence: { merchants: -3 }
+
+  # ── 朝鲜 1636–1650 ─────────────────────────────────────────────
+  - id: JOSEON_e_bingzi
+    title: 丙子之役
+    desc: 清军入侵，朝鲜退守南汉山城。坚守能保气节，议和能保社稷。
+    historical_context: 1636 年皇太极亲征朝鲜，史称丙子之役，朝鲜被迫屈服。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1636-12-01, before: 1637-06-30 }
+    mtth: 50
+    fire_once: true
+    options:
+      - id: hold
+        name: 坚守山城
+        tooltip: 军心与稳定受损，武臣支持。
+        ai_chance: 45
+        effect:
+          - add_stability: -3
+          - add_manpower: -3000
+          - add_army_loyalty: 3
+          - add_faction_influence: { military: 3 }
+      - id: negotiate
+        name: 议和
+        tooltip: 对清关系上升，正统与武臣受损。
+        ai_chance: 55
+        effect:
+          - add_relation: { target: QING, value: 15 }
+          - add_stability: 2
+          - add_mandate: -3
+          - add_faction_influence: { military: -4, nobles: 3 }
+
+  - id: JOSEON_e_samjeondo
+    title: 三田渡之盟
+    desc: 在三田渡向皇太极行三跪九叩礼。事大能保国，暗中尊明能保民心。
+    historical_context: 1637 年朝鲜在三田渡投降，成为清朝藩属，但内部仍尊明。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1637-01-01, before: 1640-12-31 }
+    mtth: 60
+    fire_once: true
+    options:
+      - id: submit
+        name: 事大称臣
+        tooltip: 对清关系与贵族支持上升，正统受损。
+        ai_chance: 55
+        effect:
+          - add_relation: { target: QING, value: 20 }
+          - add_faction_influence: { nobles: 4, military: -5 }
+          - add_mandate: -4
+      - id: secret_ming
+        name: 暗中尊明
+        tooltip: 正统上升，对清关系恶化。
+        ai_chance: 45
+        effect:
+          - add_relation: { target: MING, value: 10 }
+          - add_relation: { target: QING, value: -10 }
+          - add_mandate: 2
+          - add_stability: -1
+
+  - id: JOSEON_e_assist_qing
+    title: 助剿明军
+    desc: 清廷要求朝鲜出兵助剿明军余部。出兵能换信任，拖延能保民心。
+    historical_context: 清廷多次征调朝鲜军队助剿，朝鲜消极应付。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1644-06-01, before: 1646-12-31 }
+    mtth: 80
+    fire_once: true
+    options:
+      - id: send
+        name: 出兵助剿
+        tooltip: 对清关系上升，耗银损兵。
+        ai_chance: 50
+        effect:
+          - add_relation: { target: QING, value: 15 }
+          - add_manpower: -2000
+          - add_treasury: -20000
+          - add_faction_influence: { military: 2 }
+      - id: delay
+        name: 拖延观望
+        tooltip: 稳定上升，对清关系恶化。
+        ai_chance: 50
+        effect:
+          - add_relation: { target: QING, value: -10 }
+          - add_stability: 2
+          - add_faction_influence: { military: -2 }
+
+  - id: JOSEON_e_north_debate
+    title: 北伐论
+    desc: 孝宗与部分大臣密议北伐。备战能雪耻，休养能保民。
+    historical_context: 朝鲜孝宗曾筹划北伐，但国力有限，最终未付诸实施。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1659-12-31 }
+    mtth: 90
+    fire_once: true
+    options:
+      - id: prepare
+        name: 密筹北伐
+        tooltip: 兵源与武臣支持上升，对清关系恶化。
+        ai_chance: 45
+        effect:
+          - add_manpower: 4000
+          - add_faction_influence: { military: 5 }
+          - add_relation: { target: QING, value: -15 }
+          - add_stability: -1
+      - id: rest
+        name: 休养生息
+        tooltip: 稳定与国库上升，武臣失望。
+        ai_chance: 55
+        effect:
+          - add_stability: 2
+          - add_treasury: 20000
+          - add_faction_influence: { military: -3 }
+
+  # ── 跨势力 ─────────────────────────────────────────────────────
+  - id: shared_e_silver_famine
+    title: 银荒
+    desc: 海外白银输入骤减，市面银贵钱贱，税银难征。
+    historical_context: 17 世纪全球贸易波动与日本锁国使白银输入减少，加剧明末财政危机。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1660-12-31 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: tax
+        name: 加征折银
+        tooltip: 得银，稳定与腐败恶化。
+        ai_chance: 55
+        effect:
+          - add_treasury: 60000
+          - add_stability: -3
+          - add_corruption: 2
+      - id: economize
+        name: 节流
+        tooltip: 稳定上升，国库支出。
+        ai_chance: 45
+        effect:
+          - add_treasury: -20000
+          - add_stability: 1
+
+  - id: shared_e_plague
+    title: 大疫
+    desc: 华北爆发瘟疫，村落十室九空。赈济能保民，隔离能保军。
+    historical_context: 1630–1640 年代华北鼠疫与饥荒叠加，人口锐减。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1645-12-31 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: relief
+        name: 开仓赈济
+        tooltip: 稳定上升，耗粮损兵。
+        ai_chance: 55
+        effect:
+          - add_treasury: -40000
+          - add_manpower: -2000
+          - add_stability: 2
+      - id: quarantine
+        name: 封城隔离
+        tooltip: 省粮，稳定下降。
+        ai_chance: 45
+        effect:
+          - add_treasury: -10000
+          - add_manpower: -1000
+          - add_stability: -2
+
+  - id: shared_e_refugees
+    title: 流民潮
+    desc: 饥民成群南下，地方请求赈济或驱赶。
+    historical_context: 明末流民是农民军的主要兵源，也是地方治安的难题。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1660-12-31 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: settle
+        name: 招抚安置
+        tooltip: 兵源与稳定上升，耗粮。
+        ai_chance: 55
+        effect:
+          - add_food: -50000
+          - add_manpower: 3000
+          - add_stability: 1
+      - id: drive
+        name: 驱赶出境
+        tooltip: 省粮，稳定下降。
+        ai_chance: 45
+        effect:
+          - add_stability: -2
+          - add_faction_influence: { military: 2 }
+
+  - id: shared_e_exam
+    title: 开科取士
+    desc: 战乱之后，士人要求开科。开科能收士心，停科能省钱。
+    historical_context: 明清易代期间，科举时断时续，士人观望新朝。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1645-01-01, before: 1665-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: open
+        name: 开科取士
+        tooltip: 士绅支持、稳定上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -20000
+          - add_estate_loyalty: { estate: gentry, value: 5 }
+          - add_stability: 2
+      - id: postpone
+        name: 停科省钱
+        tooltip: 得银，士绅失望。
+        ai_chance: 45
+        effect:
+          - add_treasury: 10000
+          - add_estate_loyalty: { estate: gentry, value: -5 }
+          - add_stability: -1
+
+  - id: shared_e_sea_ban
+    title: 海禁之议
+    desc: 沿海官员请求厉行海禁，海商则要求弛禁通商。
+    historical_context: 明末清初海禁与迁界反复，东南沿海依赖走私与朝贡贸易。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1655-01-01, before: 1680-12-31 }
+    mtth: 260
+    fire_once: true
+    options:
+      - id: ban
+        name: 厉行海禁
+        tooltip: 稳定与国库上升，商人失望。
+        ai_chance: 50
+        effect:
+          - add_treasury: 20000
+          - add_stability: 1
+          - add_faction_influence: { merchants: -6 }
+      - id: relax
+        name: 弛禁通商
+        tooltip: 商人支持、国库增收，稳定下降。
+        ai_chance: 50
+        effect:
+          - add_treasury: 40000
+          - add_faction_influence: { merchants: 5 }
+          - add_stability: -1
+
+  - id: shared_e_missionary
+    title: 西士来朝
+    desc: 耶稣会士携历法与火器之学问入朝。留用能得新知，驱逐能安礼教。
+    historical_context: 明末清初传教士参与历法、铸炮与外交，也引发礼教争议。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1627-01-01, before: 1660-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: employ
+        name: 留用西士
+        tooltip: 研究与税收上升，士绅不安。
+        ai_chance: 45
+        effect:
+          - add_modifier: { research_speed_pct: 2, tax_efficiency_pct: 1 }
+          - add_faction_influence: { gentry: -2 }
+      - id: expel
+        name: 驱逐西士
+        tooltip: 稳定与士绅支持上升。
+        ai_chance: 55
+        effect:
+          - add_stability: 1
+          - add_faction_influence: { gentry: 3 }
