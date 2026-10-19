@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { estatePopulationShare, minimumAllocationShare } from '../../engine/systems/economy';
+import { estatePopulationShare, minimumAllocationShare, stabilityFactor } from '../../engine/systems/economy';
 import { canUseTaxLaw } from '../../engine/systems/tax';
 import { useGameStore } from '../state/store';
 
@@ -138,18 +138,22 @@ export function EstatesPanel() {
         </div>
         <div className="allocation-overview">
           <div className="row"><span>总人口</span><b>{Math.round(totalPopulation).toLocaleString()}</b></div>
-          <div className="row"><span>田地</span><b>{Math.round(totalFields).toLocaleString()} 亩</b></div>
+          <div className="row"><span>田地</span><b>{Math.round(totalFields).toLocaleString()} 万亩</b></div>
           <div className="row"><span>经济大盘</span><b>{Math.round(report?.economicPie ?? 0).toLocaleString()} 两 / 月</b></div>
           <div className="row"><span>未分配</span><b className={unallocated > 0.2 ? 'warn' : ''}>{(unallocated * 100).toFixed(1)}%</b></div>
-          <div className="row"><span>稳定影响</span><b>{(55 + country.stability * 0.45).toFixed(0)}%</b></div>
+          <div className="row"><span>稳定系数</span><b>{(stabilityFactor(country.stability) * 100).toFixed(0)}%</b></div>
+          <div className="row"><span>税收总额</span><b>{Math.round(report?.income ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>军饷</span><b className="danger">-{Math.round(report?.expenseArmy ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>购粮</span><b className="danger">-{Math.round(report?.foodPurchaseSilver ?? 0).toLocaleString()}</b></div>
           <div className="row"><span>腐败侵蚀</span><b className="danger">-{Math.round(report?.corruptionLoss ?? 0).toLocaleString()}</b></div>
           <div className="row"><span>忠诚维稳</span><b className="danger">-{Math.round(report?.loyaltyCost ?? 0).toLocaleString()}</b></div>
-          <div className="row"><span>最终银收</span><b className="good">{Math.round(report?.net ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>库藏火耗</span><b className="danger">-{Math.round(report?.expenseHoard ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>最终净银</span><b className={(report?.net ?? 0) >= 0 ? 'good' : 'danger'}>{Math.round(report?.net ?? 0).toLocaleString()}</b></div>
         </div>
       </div>
       <div className="allocation-preview">
         <span>当前分配预计温饱 <b className={foodMonths < 1 ? 'danger' : 'good'}>{foodMonths.toFixed(1)} 个月</b></span>
-        <span>预计月净银 <b className={projectedNet < 0 ? 'danger' : ''}>{Math.round(projectedNet).toLocaleString()} 两</b></span>
+        <span>预计月净银（不含火耗） <b className={projectedNet < 0 ? 'danger' : ''}>{Math.round(projectedNet).toLocaleString()} 两</b></span>
         <span>预计购粮 <b>{Math.round(projectedFood).toLocaleString()} 石</b></span>
       </div>
 

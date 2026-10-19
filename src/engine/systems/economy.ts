@@ -1,4 +1,4 @@
-﻿import type { ContentIndex, TaxLaw } from '../../content/types';
+import type { ContentIndex, TaxLaw } from '../../content/types';
 import type { CountryState, GameState, MonthlyReport } from '../state/types';
 import { aggregateModifiers } from '../rules/modifiers';
 
@@ -105,6 +105,10 @@ export function estatePopulationShare(content: ContentIndex, tag: string, estate
   const total = configs.reduce((sum, config) => sum + (POPULATION_WEIGHTS[config.key] ?? 0.05), 0);
   return total > 0 ? (POPULATION_WEIGHTS[estateKey] ?? 0.05) / total : 0;
 }
+export function stabilityFactor(stability: number): number {
+  return 0.38 + Math.max(0, Math.min(100, stability)) / 220;
+}
+
 export function minimumAllocationShare(influence: number): number {
   return Math.min(45, 2 + Math.max(0, influence) * 0.13);
 }
@@ -160,8 +164,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       baseByRegion[regionId] = (baseByRegion[regionId] ?? 0) + contribution;
     }
 
-    const stabilityFactor = 0.38 + clamp(nation.stability, 0, 100) / 220;
-    const pie = base * stabilityFactor;
+    const stabilityMultiplier = stabilityFactor(nation.stability);
+    const pie = base * stabilityMultiplier;
     const { shares, unallocated } = normalizedAllocation(content, nation);
     let totalTax = 0;
     const silverByEstate: Record<string, number> = {};
@@ -368,6 +372,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
   }
 }
+
 
 
 
