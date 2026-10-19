@@ -1,4 +1,4 @@
-﻿import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
+import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
 import type { ContentIndex, MapGeo } from '../../content/types';
 import type { ArmyState, GameState } from '../../engine/state/types';
 import { relationKey } from '../../engine/state/types';
@@ -1179,7 +1179,6 @@ export class MapRenderer {
           fontSize: 38,
           fontWeight: '600',
           fill: 0x332a20,
-          stroke: { color: 0xf7efdf, width: 1.8 },
           letterSpacing: 1,
         }),
       });
@@ -1207,7 +1206,6 @@ export class MapRenderer {
           fontSize: 32,
           fontWeight: '600',
           fill: 0x3a3026,
-          stroke: { color: 0xf7efdf, width: 1.5 },
           letterSpacing: 0.5,
         }),
       });
@@ -1480,19 +1478,19 @@ export class MapRenderer {
         fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
         fontSize: 40,
         fontWeight: '700',
-        fill: 0x2b2118,
-        stroke: { color: 0xf7edd9, width: 2.2 },
+        fill: 0xf7edd9,
+        stroke: { color: 0x1f1c18, width: 1.8 },
       }),
     });
     label.anchor.set(0.5);
-    label.scale.set(0.66 / 40);
-    label.position.set(0, 0.68);
+    label.scale.set(0.7 / 40);
+    label.position.set(0, 0.66);
     label.resolution = 4;
 
     const labelBg = new Graphics();
-    labelBg.roundRect(-0.98, 0.42, 1.96, 0.56, 0.1)
-      .fill({ color: 0xf7edd9, alpha: 0.94 })
-      .stroke({ width: 0.03, color, alpha: 0.9 });
+    labelBg.roundRect(-1.27, 0.36, 2.54, 0.56, 0.1)
+      .fill({ color: 0x241f19, alpha: 0.92 })
+      .stroke({ width: 0.035, color, alpha: 0.95 });
 
     const faction = new Text({
       text: FACTION_MARKS[tag] ?? tag.slice(0, 1),
