@@ -1,4 +1,4 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
 import { relationKey } from '../state/types';
 
@@ -164,16 +164,18 @@ export function makePeace(
       continue;
     }
     const capital = state.provinces[nation.capital];
-    const fallback = Object.values(state.provinces).find(province =>
-      province.owner === tag || province.controller === tag);
-    const home = capital && (capital.owner === tag || capital.controller === tag)
-      ? capital.id
-      : fallback?.id;
-    if (!home) continue;
+    const fallback = Object.values(state.provinces).find(province => province.controller === tag);
+    const home = capital && capital.controller === tag ? capital.id : fallback?.id;
+    if (!home) {
+      for (const [id, army] of Object.entries(state.armies)) {
+        if (army.tag === tag) delete state.armies[id];
+      }
+      continue;
+    }
     for (const army of Object.values(state.armies)) {
       if (army.tag !== tag) continue;
       const province = state.provinces[army.province];
-      if (province && (province.owner === tag || province.controller === tag)) continue;
+      if (province && province.controller === tag) continue;
       army.province = home;
       army.movePath = [];
       army.moveProgress = 0;
@@ -260,4 +262,5 @@ export function cleanupDefeatedNations(state: GameState): void {
     });
   }
 }
+
 
