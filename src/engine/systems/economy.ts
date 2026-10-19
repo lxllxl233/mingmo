@@ -221,7 +221,11 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const armyPay = monthlyArmyPay(state, content, nation.tag);
     const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth
       * (content.countries.get(nation.tag)?.government === 'rebel' ? 0.7 : 1);
-    const availableBeforeFood = Math.max(0, totalTax - corruptionLoss - loyaltyCost);
+    const pressure = content.countries.get(nation.tag)?.pressure;
+    const pressureCost = pressure
+      ? pressure.silverPerMonth + provinces.length * pressure.silverPerProvince
+      : 0;
+    const availableBeforeFood = Math.max(0, totalTax - corruptionLoss - loyaltyCost - pressureCost);
     const foodPurchaseSilver = availableBeforeFood * clamp(nation.foodPurchasePct, 0, 100) / 100;
     const foodOutput = government.food * (1 + clamp(modifiers['food_output_pct'] ?? 0, -80, 100) / 100);
     const grainPrice = Math.max(0.1, content.balance.economy.grainPrice * (1 + nation.inflation / 200));
@@ -230,7 +234,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const hoardCap = 500000 + provinces.length * 4000;
     const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.25 : 0;
     const net = availableBeforeFood - foodPurchaseSilver - armyPay - hoardLoss;
-    const expense = corruptionLoss + loyaltyCost + armyPay + foodPurchaseSilver + hoardLoss;
+    const expense = corruptionLoss + loyaltyCost + pressureCost + armyPay + foodPurchaseSilver + hoardLoss;
     nation.food += foodPurchased;
     nation.treasury += net;
 
@@ -386,7 +390,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       expenseDynasty: 0,
       expenseRelief: 0,
       expenseHoard: hoardLoss,
-      expenseCourt: 0,
+      expenseCourt: pressureCost,
       foodIncome: foodPurchased,
       foodArmy: armyFood,
       foodCivilian: 0,

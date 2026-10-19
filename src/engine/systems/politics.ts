@@ -44,6 +44,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
     const modifiers = aggregateCountryModifiers(state, content, nation.tag);
+    const pressure = content.countries.get(nation.tag)?.pressure;
     driftFactions(nation);
     const politicalGain = monthlyPoliticalGain(nation.authority, nation.stability)
       + (modifiers['political_power_monthly'] ?? 0);
@@ -70,7 +71,8 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       nation.authority = clamp(nation.authority - 0.1, 0, 100);
     }
     nation.authority = clamp(nation.authority + (modifiers['authority_monthly'] ?? 0), 0, 100);
-    nation.corruption = clamp(nation.corruption, 0, content.balance.politics.maxCorruption);
+    nation.corruption = clamp(nation.corruption + (pressure?.corruptionMonthly ?? 0), 0, content.balance.politics.maxCorruption);
+    nation.stability = clamp(nation.stability + (pressure?.stabilityMonthly ?? 0), 0, 100);
 
     let rebellions = 0;
     for (const entry of countryProvinceList(state, content, nation.tag)) {
@@ -88,6 +90,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       );
       const delta = taxPressure + stabilityPressure + devastationPressure - content.balance.economy.unrestDecay
         + (modifiers['unrest_monthly'] ?? 0)
+        + (pressure?.unrestMonthly ?? 0)
         + provinceModifier;
       entry.state.unrest = clamp(entry.state.unrest + delta, 0, 100);
       entry.state.devastation = clamp(entry.state.devastation + (modifiers['devastation_monthly'] ?? 0), 0, 100);

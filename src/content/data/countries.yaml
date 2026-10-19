@@ -26,6 +26,12 @@ countries:
       inflation: 10
       research_slots: 2
       currency: 两
+    pressure:
+      silver_per_month: 15000
+      silver_per_province: 20
+      stability_monthly: -0.02
+      corruption_monthly: 0.01
+      unrest_monthly: 0.04
 
   - tag: QING
     name: 大清

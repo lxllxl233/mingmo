@@ -119,6 +119,9 @@ armies:
   - { tag: QING, template: qing_banner, province: shenyang, size: 6 }
   - { tag: QING, template: qing_banner, province: liaoyang, size: 3 }
   - { tag: QING, template: qing_banner, province: guangning, size: 3 }
+  - { tag: QING, template: qing_banner, province: shenyang, size: 4 }
+  - { tag: QING, template: qing_banner, province: liaoyang, size: 2 }
+  - { tag: QING, template: qing_green, province: shenyang, size: 2 }
   - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 3 }
   - { tag: MONGOL, template: mongol_cavalry, province: ordos, size: 2 }
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 1 }

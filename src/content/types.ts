@@ -189,6 +189,14 @@ export interface LeaderProfile {
   timeline: Array<{ year: number; text: string }>;
 }
 
+export interface StructuralPressure {
+  silverPerMonth: number;
+  silverPerProvince: number;
+  stabilityMonthly: number;
+  corruptionMonthly: number;
+  unrestMonthly: number;
+}
+
 export interface CountryDef {
   tag: CountryTag;
   name: string;
@@ -205,6 +213,7 @@ export interface CountryDef {
   background: string;
   outcome: string;
   starting: CountryStarting;
+  pressure?: StructuralPressure;
   leader?: LeaderDef;
   leadersByScenario?: Record<string, LeaderDef>;
 }

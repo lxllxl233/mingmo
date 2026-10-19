@@ -114,6 +114,13 @@ export const countrySchema = z.object({
   background: z.string().max(240).default(''),
   outcome: z.string().max(240).default(''),
   starting: countryStartingSchema,
+  pressure: z.object({
+    silverPerMonth: z.number().min(0).default(0),
+    silverPerProvince: z.number().min(0).default(0),
+    stabilityMonthly: z.number().default(0),
+    corruptionMonthly: z.number().default(0),
+    unrestMonthly: z.number().default(0),
+  }).strict().optional(),
   leader: leaderSchema.optional(),
   leadersByScenario: z.record(z.string(), leaderSchema).optional(),
 }).strict();
