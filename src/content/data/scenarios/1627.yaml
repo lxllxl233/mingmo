@@ -85,7 +85,7 @@ province_overrides:
   chengdu: XI
   quanzhou: ZHENG
 country_overrides:
-  MING: { stability: 35, treasury: 800000, food: 1500000, manpower: 180000, mandate: 55, corruption: 70, authority: 40, army_loyalty: 45 }
+  MING: { stability: 35, treasury: 800000, food: 600000, manpower: 180000, mandate: 55, corruption: 70, authority: 40, army_loyalty: 45 }
   QING: { stability: 60, treasury: 500000, food: 300000, manpower: 80000, mandate: 40, corruption: 30, authority: 70, army_loyalty: 80 }
   SHUN: { stability: 55, treasury: 200000, food: 100000, manpower: 30000, mandate: 30, corruption: 45, authority: 45, army_loyalty: 55 }
   XI: { stability: 45, treasury: 150000, food: 80000, manpower: 20000, mandate: 20, corruption: 50, authority: 40, army_loyalty: 50 }
@@ -143,6 +143,7 @@ initial_wars:
   - { attacker: SHUN, defender: MING, goal: 陕西民变 }
   - { attacker: XI, defender: MING, goal: 四川割据 }
 initial_events: []
+
 
 
 

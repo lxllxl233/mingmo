@@ -1,10 +1,10 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import type { ArmyState, GameState } from '../state/types';
 import { pickGeneral } from './military';
 import { FOREIGN_TRAINING_LIMIT, isForeignTemplate } from '../rules/armyTemplates';
 
 const SILVER_PER_SIZE = 5000;
-const FOOD_PER_SIZE = 600;
+const FOOD_PER_SIZE = 1800;
 const MANPOWER_PER_SIZE = 1000;
 const TRAINING_RATIO = 0.6;
 const DAYS_PER_SIZE = 45;
@@ -154,3 +154,5 @@ export function advanceTraining(state: GameState, content: ContentIndex): void {
     }
   }
 }
+
+

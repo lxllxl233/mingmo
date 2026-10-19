@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+﻿import { useState, type ReactNode } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { controlledProvinceCount } from '../../engine/rules/geography';
@@ -148,7 +148,7 @@ export function TopBar() {
             <b>稳定 {Math.round(country?.stability ?? 0)} / 100</b>
             <span>天命 {Math.round(country?.mandate ?? 0)} · 皇权 {Math.round(country?.authority ?? 0)}</span>
             <span>战争疲劳 {Math.round(country?.warExhaustion ?? 0)}</span>
-            <small>稳定低于 30 会触发严重政治风险；稳定影响天命、税收与民怨。</small>
+            <small>稳定主要由各阶级忠诚按影响力加权驱动；税法、分配、缺粮与战争都会改变忠诚，进而改变稳定。稳定影响天命、税收与民怨。</small>
           </>
         }
       />
@@ -196,3 +196,4 @@ export function TopBar() {
     </header>
   );
 }
+

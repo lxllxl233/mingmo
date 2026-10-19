@@ -258,7 +258,6 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       - (nation.fiscalCrisisDays > 0 ? 0.04 : 0)
       + (nation.treasury > hoardCap ? -0.03 : nation.treasury > 150000 ? 0.01 : -0.01);
     nation.economicMomentum = clamp(nation.economicMomentum * 0.985 + momentumTrend * 0.08, -1, 1);
-    nation.stability = clamp(nation.stability + (government.stability - 1) * 0.08, 0, 100);
 
     for (const estate of Object.values(nation.estates)) {
       const law = lawOf(content, nation, estate.key);
@@ -279,13 +278,20 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       0,
       100,
     );
+    const loyaltyWeight = Object.values(nation.estates).reduce((sum, estate) => sum + Math.max(1, estate.influence), 0);
+    const weightedLoyalty = Object.values(nation.estates).reduce(
+      (sum, estate) => sum + estate.loyalty * Math.max(1, estate.influence),
+      0,
+    ) / Math.max(1, loyaltyWeight);
+    const stabilityTarget = clamp(weightedLoyalty * government.stability, 0, 100);
     nation.stability = clamp(
       nation.stability
-      + content.balance.economy.stabilityDrift
+      + (stabilityTarget - nation.stability) * 0.12
+      + content.balance.economy.stabilityDrift * 0.4
       + (modifiers['stability_monthly'] ?? 0)
-      + (nation.treasury > 0 ? 0.03 : -0.12)
-      + (foodShortage ? -0.2 : 0.01)
-      - nation.warExhaustion / 800,
+      + (nation.treasury > 0 ? 0.02 : -0.08)
+      + (foodShortage ? -0.25 : 0.01)
+      - nation.warExhaustion / 1000,
       0,
       100,
     );

@@ -1,5 +1,6 @@
-﻿import { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { estatePopulationShare, minimumAllocationShare } from '../../engine/systems/economy';
+import { canUseTaxLaw } from '../../engine/systems/tax';
 import { useGameStore } from '../state/store';
 
 const ESTATE_COLORS = ['#9e2b25', '#b8892e', '#3f6f9a', '#6f8a5a', '#c46a2b', '#7a5f9a', '#4f8b86', '#8a7a60'];
@@ -203,11 +204,18 @@ export function EstatesPanel() {
                   disabled={estate.reform !== null || estate.cooldownDays > 0}
                   onChange={event => command({ type: 'tax.setLaw', estate: config.key, lawId: event.target.value })}
                 >
-                  {laws.map(law => (
-                    <option key={law.id} value={law.id}>
-                      {law.name} · {(law.rate * 100).toFixed(1)}%
-                    </option>
-                  ))}
+                  {laws.map(law => {
+                    const available = law.id === estate.taxLaw
+                      || (country.politicalPower >= 50
+                        && canUseTaxLaw(game, content, country.tag, config.key, law.id));
+                    return (
+                      <option key={law.id} value={law.id} disabled={!available}>
+                        {law.name} · {(law.rate * 100).toFixed(1)}%
+                        {' '}· 忠诚{law.loyaltyDrift >= 0 ? '+' : ''}{law.loyaltyDrift.toFixed(1)}
+                        {!available && law.id !== estate.taxLaw ? '（条件不足）' : ''}
+                      </option>
+                    );
+                  })}
                 </select>
               </label>
             </div>
@@ -249,6 +257,7 @@ export function EstatesPanel() {
     </div>
   );
 }
+
 
 
 
