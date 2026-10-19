@@ -30,6 +30,7 @@ export type Command =
   | { type: 'army.stop'; armyId: string }
   | { type: 'army.disband'; armyId: string }
   | { type: 'army.forceMarch'; armyId: string }
+  | { type: 'army.setSiegeMode'; armyId: string; mode: 'siege' | 'assault' | 'bombard' | 'negotiate' }
   | { type: 'province.integrateCore'; provinceId: string }
   | { type: 'province.build'; provinceId: string; buildingId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
@@ -224,6 +225,20 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
         category: 'military',
         country: tag,
         text: `${army.name} ${army.forcedMarch ? '进入急行军' : '解除急行军'}`,
+        severity: 'info',
+      });
+      break;
+    }
+    case 'army.setSiegeMode': {
+      const army = state.armies[command.armyId];
+      if (!army || army.tag !== tag) throw new CommandError('army not found');
+      army.siegeMode = command.mode;
+      const labels = { siege: '围困', assault: '强攻', bombard: '炮击', negotiate: '招降' } as const;
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: tag,
+        text: `${army.name} 围城方式改为${labels[command.mode]}`,
         severity: 'info',
       });
       break;

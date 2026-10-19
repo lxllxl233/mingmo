@@ -578,9 +578,27 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       const artillery = army.composition.artillery;
       const general = army.general ? content.generals.get(army.general) : undefined;
       const traits = generalTraitBonus(general?.traits ?? []);
-      const siegeSpeed = (8 + artillery / 120)
+      const siegeSpeedBase = (8 + artillery / 120)
         * (1 + traits.siegePct / 100)
         * (1 + (armyModifiers['siege_speed_pct'] ?? 0) / 100);
+      const mode = army.siegeMode ?? 'siege';
+      let siegeSpeed = siegeSpeedBase;
+      if (mode === 'assault') {
+        siegeSpeed *= 2.4;
+        army.organization = clamp(army.organization - 1.5, 0, 100);
+        loseStrength(army, Math.max(1, Math.ceil(compositionTotal(army) * 0.003)));
+      } else if (mode === 'bombard') {
+        siegeSpeed *= army.composition.artillery >= 100 ? 1.8 : 0.7;
+        army.supply = clamp(army.supply - 0.8, 0, 100);
+      } else if (mode === 'negotiate') {
+        const nation = state.countries[army.tag];
+        if (nation && nation.treasury >= 5000) {
+          nation.treasury -= 5000;
+          siegeSpeed *= 1.3;
+        } else {
+          siegeSpeed *= 0.5;
+        }
+      }
       siege.progress += siegeSpeed;
       siege.days += 1;
       if (siege.progress >= currentDef.fortLevel * 100) {

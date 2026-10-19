@@ -33,6 +33,7 @@ export function ArmyPanel() {
   const readOnly = game.spectator;
   const def = content.countries.get(army.tag);
   const province = content.provinces.get(army.province);
+  const provinceState = game.provinces[army.province];
   const ports = [...content.provinces.values()].filter(entry =>
     entry.isPort && entry.id !== army.province && game.provinces[entry.id]?.controller === army.tag);
   const fleetPresent = Object.values(game.armies).some(entry =>
@@ -129,6 +130,30 @@ export function ArmyPanel() {
         <div className="country-stat"><span>行军目标</span><strong>{target ?? '驻扎'}</strong></div>
         <div className="country-stat"><span>状态</span><strong className={army.encircled ? 'danger' : ''}>{army.encircled ? `被围 ${army.encircledDays} 日` : '正常'}</strong></div>
       </section>
+
+      {!readOnly && province?.isFort && provinceState && provinceState.controller !== army.tag && (
+        <section>
+          <h3 className="section-title">围城方式</h3>
+          <div className="siege-modes">
+            {([
+              ['siege', '围困', '稳，但慢'],
+              ['assault', '强攻', '快，但伤亡大'],
+              ['bombard', '炮击', '需炮兵，快，耗补给'],
+              ['negotiate', '招降', '花银，视财力'],
+            ] as const).map(([mode, label, tip]) => (
+              <button
+                key={mode}
+                className={(army.siegeMode ?? 'siege') === mode ? 'active' : ''}
+                title={tip}
+                onClick={() => command({ type: 'army.setSiegeMode', armyId: army.id, mode })}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="muted">强攻加速但每日伤亡；炮击需要炮兵；招降每日耗银 5000 两。</p>
+        </section>
+      )}
 
       {army.encircled && (
         <p className="danger">

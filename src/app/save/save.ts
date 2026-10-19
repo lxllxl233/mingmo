@@ -81,6 +81,7 @@ export function decodeSave(text: string): GameState {
     if (typeof army.templateId !== 'string') army.templateId = '';
     if (typeof army.entrenchment !== 'number') army.entrenchment = 0;
     if (typeof army.forcedMarch !== 'boolean') army.forcedMarch = false;
+    if (army.siegeMode === undefined) army.siegeMode = 'siege';
     if (typeof army.encircled !== 'boolean') army.encircled = false;
     if (typeof army.encircledDays !== 'number') army.encircledDays = 0;
     if (army.navalOrigin === undefined) army.navalOrigin = null;

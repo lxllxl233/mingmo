@@ -168,6 +168,8 @@ export interface CountryState {
   lastReport: MonthlyReport | null;
 }
 
+export type SiegeMode = 'siege' | 'assault' | 'bombard' | 'negotiate';
+
 export interface ArmyState {
   id: string;
   tag: string;
@@ -199,6 +201,7 @@ export interface ArmyState {
   general: string | null;
   entrenchment: number;
   forcedMarch: boolean;
+  siegeMode?: SiegeMode;
   stance: 'hold' | 'move' | 'siege' | 'battle';
 }
 
