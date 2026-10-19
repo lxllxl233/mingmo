@@ -9,6 +9,7 @@ import { advanceResearch } from './systems/research';
 import { advanceTaxReforms } from './systems/tax';
 import { processEvents } from './systems/events';
 import { runMonthlyEconomy } from './systems/economy';
+import { applyHistoricalTimeline } from './systems/history';
 import { runMonthlyPolitics } from './systems/politics';
 import { runMonthlyAi } from './systems/ai';
 import { evaluateVictory } from './victory';
@@ -78,6 +79,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   processEvents(state, content);
 
   if (isMonthStart(state.day)) {
+    applyHistoricalTimeline(state, content);
     runMonthlyEconomy(state, content);
     runMonthlyPolitics(state, content);
     updateWarExhaustion(state);
@@ -115,3 +117,4 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   }
   return state;
 }
+

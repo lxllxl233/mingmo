@@ -1,4 +1,4 @@
-import type { ContentIndex, CountryDef, Tech } from '../../content/types';
+﻿import type { ContentIndex, CountryDef, Tech } from '../../content/types';
 import type { GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { armyStrengthOf } from './economy';
@@ -12,6 +12,7 @@ import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { canMarchThrough } from '../rules/access';
 import { evaluateTrigger } from '../rules/triggers';
 import { isHistoricalFocus } from '../../content/historical';
+import { fromDayIndex } from '../core/clock';
 
 const AI_TEMPLATES: Record<string, string> = {
   MING: 'ming_guard',
@@ -169,30 +170,70 @@ function neighborsOf(state: GameState, content: ContentIndex, tag: string): stri
 
 function historicalWarTarget(state: GameState, tag: string): string | null {
   const alive = (target: string) => Boolean(state.countries[target]?.alive) && target !== tag;
+  const year = fromDayIndex(state.day).year;
   if (state.scenarioId === '1627') {
-    if (tag === 'QING' && alive('MING')) return 'MING';
-    if (tag === 'MING' && alive('QING')) return 'QING';
-    if (tag === 'SHUN' && alive('MING')) return 'MING';
-    if (tag === 'XI' && alive('MING')) return 'MING';
+    if (tag === 'QING') {
+      if (year >= 1644 && alive('SHUN')) return 'SHUN';
+      if (alive('MING')) return 'MING';
+      if (alive('SHUN')) return 'SHUN';
+      if (alive('SMING')) return 'SMING';
+      if (alive('ZHENG')) return 'ZHENG';
+      return null;
+    }
+    if (tag === 'MING') {
+      if (alive('QING')) return 'QING';
+      if (alive('SHUN')) return 'SHUN';
+      if (alive('XI')) return 'XI';
+      return null;
+    }
+    if (tag === 'SHUN') {
+      if (year < 1644 && alive('MING')) return 'MING';
+      if (alive('QING')) return 'QING';
+      if (alive('MING')) return 'MING';
+      if (alive('XI')) return 'XI';
+      return null;
+    }
+    if (tag === 'XI') {
+      if (year >= 1644 && alive('QING')) return 'QING';
+      if (alive('MING')) return 'MING';
+      if (alive('QING')) return 'QING';
+      return null;
+    }
+    if (tag === 'SMING') return alive('QING') ? 'QING' : alive('SHUN') ? 'SHUN' : null;
+    if (tag === 'ZHENG') return year >= 1644 && alive('QING') ? 'QING' : alive('VOC') ? 'VOC' : null;
   }
   if (state.scenarioId === '1644') {
-    if (tag === 'QING') return alive('SHUN') ? 'SHUN' : alive('MING') ? 'MING' : null;
-    if (tag === 'SHUN' && alive('MING')) return 'MING';
-    if (tag === 'MING' && alive('SHUN')) return 'SHUN';
-    if (tag === 'XI' && alive('MING')) return 'MING';
+    if (tag === 'QING') {
+      if (alive('SHUN')) return 'SHUN';
+      if (alive('MING')) return 'MING';
+      if (alive('XI')) return 'XI';
+      if (alive('SMING')) return 'SMING';
+      if (alive('ZHENG')) return 'ZHENG';
+      return null;
+    }
+    if (tag === 'SHUN') {
+      if (alive('MING')) return 'MING';
+      if (alive('QING')) return 'QING';
+      return null;
+    }
+    if (tag === 'XI') return alive('MING') ? 'MING' : alive('QING') ? 'QING' : null;
   }
   if (state.scenarioId === '1650') {
-    if (tag === 'QING') return alive('SMING') ? 'SMING' : alive('ZHENG') ? 'ZHENG' : null;
+    if (tag === 'QING') {
+      if (alive('SMING')) return 'SMING';
+      if (alive('ZHENG')) return 'ZHENG';
+      if (alive('XI')) return 'XI';
+      return null;
+    }
     if (tag === 'SMING' && alive('QING')) return 'QING';
     if (tag === 'ZHENG' && alive('QING')) return 'QING';
   }
   return null;
 }
-
 const HISTORICAL_TARGETS: Record<string, Record<string, string[]>> = {
   '1627': {
     MING: ['QING', 'SHUN', 'XI'], QING: ['MING'], SHUN: ['MING'], XI: ['MING'],
-    MONGOL: ['QING', 'MING'], TIBET: ['MONGOL'], ZHENG: ['VOC'], VOC: ['ZHENG'],
+    MONGOL: ['MING'], TIBET: ['MONGOL'], ZHENG: ['VOC'], VOC: ['ZHENG'],
   },
   '1644': {
     MING: ['QING', 'SHUN', 'XI'], QING: ['SHUN', 'MING', 'XI'], SHUN: ['MING', 'QING'],
@@ -205,8 +246,8 @@ const HISTORICAL_TARGETS: Record<string, Record<string, string[]>> = {
 };
 
 const HISTORICAL_EXPANSION_CAP: Record<string, number> = {
-  MING: 120, QING: 120, SHUN: 60, XI: 50, SMING: 30, ZHENG: 20,
-  MONGOL: 8, JOSEON: 6, JAPAN: 12, TIBET: 10, VOC: 5, RUSSIA: 6,
+  MING: 360, QING: 480, SHUN: 300, XI: 180, SMING: 200, ZHENG: 120,
+  MONGOL: 40, JOSEON: 30, JAPAN: 60, TIBET: 50, VOC: 30, RUSSIA: 30,
 };
 
 function historicalTargets(state: GameState, tag: string): string[] | null {
@@ -252,10 +293,8 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
     }
     return;
   }
-  if (state.day - nation.ai.lastWarDay < (state.spectator ? Math.min(240, profile.warDelay) : profile.warDelay)) return;
-  if (nation.treasury < profile.minTreasury || nation.stability < profile.minStability) return;
   const scripted = historicalWarTarget(state, tag);
-  if (scripted && !areAtWar(state, tag, scripted)) {
+  if (scripted && !areAtWar(state, tag, scripted) && state.day - nation.ai.lastWarDay >= 90) {
     const war = declareWar(state, tag, scripted, '历史疆界', content);
     if (war) {
       nation.ai.lastWarDay = state.day;
@@ -263,6 +302,8 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
       return;
     }
   }
+  if (state.day - nation.ai.lastWarDay < (state.spectator ? Math.min(240, profile.warDelay) : profile.warDelay)) return;
+  if (nation.treasury < profile.minTreasury || nation.stability < profile.minStability) return;
   const neighbors = neighborsOf(state, content, tag);
   const ownStrength = Math.max(1, armyStrengthOf(state, tag));
   const aggression = content.balance.ai.aggression * personalityFactor(def.aiPersonality, 'war');
@@ -418,3 +459,7 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageMovement(state, content, nation.tag);
   }
 }
+
+
+
+

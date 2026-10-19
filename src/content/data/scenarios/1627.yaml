@@ -1,4 +1,4 @@
-id: "1627"
+﻿id: "1627"
 name: 崇祯元年
 start_date: 1627-10-01
 description: 阉党初败，辽东糜烂，陕西饥民方起。大明仍有牌可打。
@@ -112,9 +112,9 @@ armies:
   - { tag: MING, template: guanning_army, province: jinzhou, size: 2 }
   - { tag: MING, template: guanning_army, province: ningyuan, size: 1 }
   - { tag: MING, template: ming_navy, province: fuzhou, size: 2 }
-  - { tag: QING, template: qing_banner, province: shenyang, size: 4 }
-  - { tag: QING, template: qing_banner, province: liaoyang, size: 2 }
-  - { tag: QING, template: qing_banner, province: guangning, size: 2 }
+  - { tag: QING, template: qing_banner, province: shenyang, size: 6 }
+  - { tag: QING, template: qing_banner, province: liaoyang, size: 3 }
+  - { tag: QING, template: qing_banner, province: guangning, size: 3 }
   - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 3 }
   - { tag: MONGOL, template: mongol_cavalry, province: ordos, size: 2 }
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 1 }
@@ -144,6 +144,7 @@ initial_wars:
   - { attacker: SHUN, defender: MING, goal: 陕西民变 }
   - { attacker: XI, defender: MING, goal: 四川割据 }
 initial_events: []
+
 
 
 
