@@ -846,11 +846,12 @@ events:
           - add_estate_loyalty: { estate: nobles, value: 5 }
           - set_flag: three_feudatories_negotiated
 
-  # ©¤©¤ ĞÂ¾­¼Ã£ºÁ¸Ê³¡¢¸¯°ÜÓë·ÖÅä ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
+
+  # â”€â”€ æ–°ç»æµï¼šç²®é£Ÿã€è…è´¥ä¸åˆ†é… â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   - id: econ_granary_crisis
-    title: ¾©²Ö¸æ¼±
-    desc: ¾üÁ¸½«¾¡£¬»§²¿Çë²¦Òø¹ºÁ¸¡£²Ö³¡Óë±ßÕò¶¼ÔÚµÈÃ×ÏÂ¹ø£¬³¯Í¢±ØĞëÔÚÒø¡¢Á¸ÓëÃñĞÄÖ®¼äÈ¡Éá¡£
-    historical_context: Ã÷Ä©Ì«²ÖÓë¾©²Ö³¤ÆÚÈë²»·ó³ö£¬¾üâÃÓë¾üÁ¸³£±»Í¬Ê±ÍÏÇ·¡£
+    title: äº¬ä»“å‘Šæ€¥
+    desc: å†›ç²®å°†å°½ï¼Œæˆ·éƒ¨è¯·æ‹¨é“¶è´­ç²®ã€‚ä»“åœºä¸è¾¹é•‡éƒ½åœ¨ç­‰ç±³ä¸‹é”…ï¼Œæœå»·å¿…é¡»åœ¨é“¶ã€ç²®ä¸æ°‘å¿ƒä¹‹é—´å–èˆã€‚
+    historical_context: æ˜æœ«å¤ªä»“ä¸äº¬ä»“é•¿æœŸå…¥ä¸æ•·å‡ºï¼Œå†›é¥·ä¸å†›ç²®å¸¸è¢«åŒæ—¶æ‹–æ¬ ã€‚
     scope: country
     country: any
     trigger:
@@ -861,8 +862,8 @@ events:
     fire_once: true
     options:
       - id: emergency_buy
-        name: ¼Ó¼Û¹ºÁ¸
-        tooltip: ¶¯ÓÃ¹ú¿â½ô¼±¹ºÁ¸£¬¾üĞÄÉÔÎÈ£¬µ«Å©ÃñÒª³Ğµ£¼ÓÅÉ¡£
+        name: åŠ ä»·è´­ç²®
+        tooltip: åŠ¨ç”¨å›½åº“ç´§æ€¥è´­ç²®ï¼Œå†›å¿ƒç¨ç¨³ï¼Œä½†å†œæ°‘è¦æ‰¿æ‹…åŠ æ´¾ã€‚
         ai_chance: 50
         effect:
           - add_treasury: -80000
@@ -870,16 +871,16 @@ events:
           - add_army_loyalty: 3
           - add_estate_loyalty: { estate: peasants, value: -2 }
       - id: requisition
-        name: ÑÏÕ÷ÃñÁ¸
-        tooltip: ²»ÎÊÓĞŸo£¬ÏÈ¹©¾üĞè£»Å©ÃñÖÒ³ÏÏÂ½µ£¬ÃñÔ¹ÉÏÉı¡£
+        name: ä¸¥å¾æ°‘ç²®
+        tooltip: ä¸é—®æœ‰æ— ï¼Œå…ˆä¾›å†›éœ€ï¼›å†œæ°‘å¿ è¯šä¸‹é™ï¼Œæ°‘æ€¨ä¸Šå‡ã€‚
         ai_chance: 30
         effect:
           - add_food: 180000
           - add_estate_loyalty: { estate: peasants, value: -8 }
           - add_modifier: { unrest_monthly: 0.3 }
       - id: cut_ration
-        name: Ï÷¼õ¾üÁ¸
-        tooltip: ±£×¡¹ú¿â£¬µ«¾üĞÄÓëÎÈ¶¨ÊÜËğ¡£
+        name: å‰Šå‡å†›ç²®
+        tooltip: ä¿ä½å›½åº“ï¼Œä½†å†›å¿ƒä¸ç¨³å®šå—æŸã€‚
         ai_chance: 20
         effect:
           - add_army_loyalty: -5
@@ -887,9 +888,9 @@ events:
           - add_modifier: { army_attack_pct: -2 }
 
   - id: econ_corruption_scandal
-    title: Ì°Ä«ÊÂ·¢
-    desc: ¿ÆµÀ¹Ùµ¯ÛÀ»§²¿Óë²Ö³¡ÇÖÍÌÇ®Á¸£¬ÕË²áÓëÊµÊÕÏà²îÉõÔ¶¡£³¹²é»áµÃ×ïÒ»ÅúÈË£¬²»²éÔò¸¯°Ü¼ÌĞøÇÖÊ´Ë°ÊÕ¡£
-    historical_context: Ã÷Ä©Ç®Á¸Õ÷½â²ã²ã¼ÓºÄ£¬²Ö³¡ÓëÖİÏØñãÀôÇÖÍÌÊÇ³£Ì¬¡£
+    title: è´ªå¢¨äº‹å‘
+    desc: ç§‘é“å®˜å¼¹åŠ¾æˆ·éƒ¨ä¸ä»“åœºä¾µåé’±ç²®ï¼Œè´¦å†Œä¸å®æ”¶ç›¸å·®ç”šè¿œã€‚å½»æŸ¥ä¼šå¾—ç½ªä¸€æ‰¹äººï¼Œä¸æŸ¥åˆ™è…è´¥ç»§ç»­ä¾µèš€ç¨æ”¶ã€‚
+    historical_context: æ˜æœ«é’±ç²®å¾è§£å±‚å±‚åŠ è€—ï¼Œä»“åœºä¸å·å¿èƒ¥åä¾µåæ˜¯å¸¸æ€ã€‚
     scope: country
     country: any
     trigger:
@@ -900,8 +901,8 @@ events:
     fire_once: true
     options:
       - id: investigate
-        name: ³¹²é²Ö³¡
-        tooltip: ¸¯°ÜÏÂ½µ£¬¹ÙÁÅÓëÊ¿Éğ²»Âú¡£
+        name: å½»æŸ¥ä»“åœº
+        tooltip: è…è´¥ä¸‹é™ï¼Œå®˜åƒšä¸å£«ç»…ä¸æ»¡ã€‚
         ai_chance: 45
         effect:
           - add_corruption: -8
@@ -909,16 +910,16 @@ events:
           - add_estate_loyalty: { estate: gentry, value: -2 }
           - add_modifier: { tax_efficiency_pct: 3 }
       - id: cover_up
-        name: ÁôÖĞ²»·¢
-        tooltip: ±£×¡³¯¾ÖÑÕÃæ£¬µ«¸¯°Ü¼ÌĞøÀ©É¢¡£
+        name: ç•™ä¸­ä¸å‘
+        tooltip: ä¿ä½æœå±€é¢œé¢ï¼Œä½†è…è´¥ç»§ç»­æ‰©æ•£ã€‚
         ai_chance: 35
         effect:
           - add_corruption: 4
           - add_authority: 2
           - add_estate_loyalty: { estate: officials, value: 2 }
       - id: blame_eunuch
-        name: ÚÃ¹ıÄÚ»Â
-        tooltip: »ÊÈ¨¼¯ÖĞ£¬Ê¿Éğ²»·ş¡£
+        name: è¯¿è¿‡å†…å®¦
+        tooltip: çš‡æƒé›†ä¸­ï¼Œå£«ç»…ä¸æœã€‚
         ai_chance: 20
         effect:
           - add_authority: 5
@@ -926,9 +927,9 @@ events:
           - add_estate_loyalty: { estate: gentry, value: -4 }
 
   - id: econ_allocation_dispute
-    title: ·ÖÅäÖ®Õù
-    desc: ¹ú¿â·ÖÅä¸ø¸÷½×¼¶µÄ·İ¶îÒı·¢ÕùÒé¡£Ê¿ÉğÒªÇóÎ¬³Ö¾ÉÀı£¬Å©ÃñÔòÒªÇó¼õÇá¸ºµ£¡£³¯Í¢±ØĞëÖØĞÂÆ½ºâ¡£
-    historical_context: Ã÷Ä©¼ÓÅÉÓë¾ùÌï¾ùË°Ö®Õù£¬±¾ÖÊÊÇ²Æ¸»·ÖÅäÓëË°»ùÖ®Õù¡£
+    title: åˆ†é…ä¹‹äº‰
+    desc: å›½åº“åˆ†é…ç»™å„é˜¶çº§çš„ä»½é¢å¼•å‘äº‰è®®ã€‚å£«ç»…è¦æ±‚ç»´æŒæ—§ä¾‹ï¼Œå†œæ°‘åˆ™è¦æ±‚å‡è½»è´Ÿæ‹…ã€‚æœå»·å¿…é¡»é‡æ–°å¹³è¡¡ã€‚
+    historical_context: æ˜æœ«åŠ æ´¾ä¸å‡ç”°å‡ç¨ä¹‹äº‰ï¼Œæœ¬è´¨æ˜¯è´¢å¯Œåˆ†é…ä¸ç¨åŸºä¹‹äº‰ã€‚
     scope: country
     country: any
     trigger:
@@ -939,8 +940,8 @@ events:
     fire_once: true
     options:
       - id: shift_to_peasants
-        name: ÉÔ¿íÃñÁ¦
-        tooltip: Å©ÃñÖÒ³Ï»ØÉı£¬Ê¿ÉğÓë¹ÙÁÅ²»Âú£¬Ë°ÊÕĞ§ÂÊ¶ÌÆÚÏÂ½µ¡£
+        name: ç¨å®½æ°‘åŠ›
+        tooltip: å†œæ°‘å¿ è¯šå›å‡ï¼Œå£«ç»…ä¸å®˜åƒšä¸æ»¡ï¼Œç¨æ”¶æ•ˆç‡çŸ­æœŸä¸‹é™ã€‚
         ai_chance: 45
         effect:
           - add_estate_loyalty: { estate: peasants, value: 7 }
@@ -948,16 +949,16 @@ events:
           - add_estate_loyalty: { estate: officials, value: -2 }
           - add_modifier: { tax_efficiency_pct: -2 }
       - id: uphold_gentry
-        name: Î¬³Ö¾ÉÀı
-        tooltip: Ê¿ÉğÖ§³Ö£¬Å©Ãñ¼ÌĞøÊ§Ñª¡£
+        name: ç»´æŒæ—§ä¾‹
+        tooltip: å£«ç»…æ”¯æŒï¼Œå†œæ°‘ç»§ç»­å¤±è¡€ã€‚
         ai_chance: 35
         effect:
           - add_estate_loyalty: { estate: gentry, value: 5 }
           - add_estate_loyalty: { estate: peasants, value: -6 }
           - add_modifier: { unrest_monthly: 0.2 }
       - id: compromise
-        name: Ë«·½¸÷ÈÃÒ»²½
-        tooltip: Ğ¡·ù»ººÍ£¬µ«ÎÊÌâÃ»ÓĞ½â¾ö¡£
+        name: åŒæ–¹å„è®©ä¸€æ­¥
+        tooltip: å°å¹…ç¼“å’Œï¼Œä½†é—®é¢˜æ²¡æœ‰è§£å†³ã€‚
         ai_chance: 20
         effect:
           - add_estate_loyalty: { estate: peasants, value: 3 }

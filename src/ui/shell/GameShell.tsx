@@ -202,10 +202,10 @@ export function GameShell() {
         </div>
       )}
       {pending.length > 0 && <EventModal />}
-      <WarAlertModal />
-      <BattleModal />
-      <PeaceModal />
-      <TrainingModal />
+      {pending.length === 0 && <WarAlertModal />}
+      {pending.length === 0 && <BattleModal />}
+      {pending.length === 0 && <PeaceModal />}
+      {pending.length === 0 && <TrainingModal />}
       {game.ended && <EndModal />}
       {message && <div className="toast">{message}</div>}
     </div>
