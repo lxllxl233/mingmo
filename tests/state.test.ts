@@ -36,7 +36,7 @@ describe('initial state', () => {
   it('keeps the Ming state above water at the start', () => {
     const ming = state.countries['MING'];
     expect(ming).toBeDefined();
-    expect(ming?.treasury).toBe(800000);
+    expect(ming?.treasury).toBe(600000);
     expect(ming?.estates['peasants']?.loyalty).toBe(30);
     const owned = Object.values(state.provinces).filter(province => province.owner === 'MING');
     expect(owned.length).toBeGreaterThan(200);
@@ -55,4 +55,5 @@ describe('initial state', () => {
     }
   });
 });
+
 

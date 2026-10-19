@@ -4,7 +4,7 @@
     population_value_per_person: 0.025
     grain_price: 0.6
     admin_capacity_base: 50
-    army_upkeep_per_man_month: 0.3
+    army_upkeep_per_man_month: 1.2
     army_food_per_man_month: 2.4
     official_salary_per_province_month: 200
     dynasty_stipend_base_month: 100000
@@ -66,5 +66,6 @@
     min_army_ratio: 0.6
     peace_exhaustion: 60
     recruit_treasury_floor: 100000
+
 
 
