@@ -9,6 +9,7 @@ import { enqueueTraining } from './training';
 import { startCoreIntegration } from './core';
 import { startBuilding } from './buildings';
 import { confiscationCooldown, extortGentry, pacifyGentry } from './confiscation';
+import { compromiseCourt, legitimacyCooldown, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './legitimacy';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
@@ -651,6 +652,19 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     if (nation.tag === 'SHUN' && confiscationCooldown(state, nation.tag) === 0) {
       if (nation.treasury < 80000) extortGentry(state, content, nation.tag);
       else if (nation.stability < 35 && nation.treasury > 150000) pacifyGentry(state, nation.tag);
+    }
+    if (nation.tag === 'SMING' && legitimacyCooldown(state, nation.tag) === 0) {
+      const partnerAlive = ['ZHENG', 'XI'].some(partner =>
+        state.countries[partner]?.alive && !areAllied(state, nation.tag, partner));
+      if (nation.mandate < 45 && nation.politicalPower >= 20 && nation.treasury >= 60000) {
+        proclaimEmperor(state, nation.tag);
+      } else if (nation.stability < 40 && nation.politicalPower >= 5) {
+        compromiseCourt(state, nation.tag);
+      } else if (partnerAlive && nation.politicalPower >= 20 && nation.treasury >= 50000) {
+        uniteLoyalists(state, nation.tag);
+      } else if (nation.politicalPower >= 10 && nation.manpower < 60000) {
+        mobilizeLoyalists(state, nation.tag);
+      }
     }
     manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);

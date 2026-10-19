@@ -28,6 +28,7 @@ export type PanelKey =
   | 'court'
   | 'banner'
   | 'confiscation'
+  | 'legitimacy'
   | 'log';
 
 let suppressArmySelectionUntil = 0;

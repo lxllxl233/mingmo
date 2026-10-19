@@ -16,6 +16,7 @@ import { startBuilding } from './systems/buildings';
 import { favorCourtFaction, suppressCourtFaction, type CourtFaction } from './systems/court';
 import { expandBanners, raiseBanners, reformBanners } from './systems/banners';
 import { extortGentry, landReform, pacifyGentry } from './systems/confiscation';
+import { compromiseCourt, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './systems/legitimacy';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -44,6 +45,10 @@ export type Command =
   | { type: 'confiscation.extort' }
   | { type: 'confiscation.land' }
   | { type: 'confiscation.relief' }
+  | { type: 'legitimacy.proclaim' }
+  | { type: 'legitimacy.compromise' }
+  | { type: 'legitimacy.mobilize' }
+  | { type: 'legitimacy.unite' }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -292,6 +297,22 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     }
     case 'confiscation.relief': {
       if (!pacifyGentry(state, tag)) throw new CommandError('安民需要 5 万两且不在冷却');
+      break;
+    }
+    case 'legitimacy.proclaim': {
+      if (!proclaimEmperor(state, tag)) throw new CommandError('拥立新帝需要 30 政治点、10 万两且不在冷却');
+      break;
+    }
+    case 'legitimacy.compromise': {
+      if (!compromiseCourt(state, tag)) throw new CommandError('廷议妥协需要 15 政治点且不在冷却');
+      break;
+    }
+    case 'legitimacy.mobilize': {
+      if (!mobilizeLoyalists(state, tag)) throw new CommandError('号召勤王需要 20 政治点且不在冷却');
+      break;
+    }
+    case 'legitimacy.unite': {
+      if (!uniteLoyalists(state, tag)) throw new CommandError('需要郑氏或大西存活、30 政治点、5 万两且不在冷却');
       break;
     }
     case 'province.integrateCore': {

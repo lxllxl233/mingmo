@@ -19,6 +19,11 @@ console.log('title:', await page.title());
 console.log('start-screen:', await page.locator('.start').count());
 await page.screenshot({ path: `ui-start-${suffix}.png` });
 
+const scenario = process.env.UI_SCENARIO;
+if (scenario) {
+  await page.locator('.scenario-card').filter({ hasText: scenario }).first().click();
+  await page.waitForTimeout(250);
+}
 await page.getByRole('button', { name: '进入势力选择' }).click();
 await page.waitForTimeout(300);
 const faction = process.env.UI_FACTION;
@@ -74,6 +79,15 @@ if (await shunButton.count() > 0) {
   console.log('shun:', (await page.locator('.shun-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
   await page.screenshot({ path: `ui-shun-${suffix}.png` });
   await shunButton.click();
+}
+
+const legitimacyButton = page.getByRole('button', { name: '正统', exact: true });
+if (await legitimacyButton.count() > 0) {
+  await legitimacyButton.click();
+  await page.waitForTimeout(400);
+  console.log('legitimacy:', (await page.locator('.legitimacy-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
+  await page.screenshot({ path: `ui-legitimacy-${suffix}.png` });
+  await legitimacyButton.click();
 }
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
