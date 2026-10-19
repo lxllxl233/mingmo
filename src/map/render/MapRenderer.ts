@@ -1358,6 +1358,20 @@ export class MapRenderer {
         totalLength += length;
       }
       if (totalLength < 1) continue;
+      const first = curve[0];
+      const second = curve[1];
+      if (first && second) {
+        const firstDx = second.x - first.x;
+        const firstDy = second.y - first.y;
+        const firstLength = Math.hypot(firstDx, firstDy);
+        if (firstLength > 0.01) {
+          const firstWidth = baseWidth * 1.15 * 0.5;
+          const nx = -firstDy / firstLength;
+          const ny = firstDx / firstLength;
+          left.push({ x: first.x + nx * firstWidth, y: first.y + ny * firstWidth });
+          right.push({ x: first.x - nx * firstWidth, y: first.y - ny * firstWidth });
+        }
+      }
       for (let i = 1; i < curve.length; i += 1) {
         const from = curve[i - 1];
         const to = curve[i];
