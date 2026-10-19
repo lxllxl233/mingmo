@@ -124,15 +124,14 @@ function effectsFor(
       ];
     case 'economy':
       return [
-        { addTreasury: 50000 * scale },
-        { addModifier: { tax_efficiency_pct: 2 * scale } },
+        { addModifier: { tax_efficiency_pct: 2 * scale, food_output_pct: 1.5 * scale } },
         { addEstateLoyalty: { estate: 'peasants', value: -scale } },
         ...common,
       ];
     case 'military':
       return [
         { addManpower: 2000 * scale },
-        { addModifier: { army_attack_pct: 2 * scale, discipline_pct: scale } },
+        { addModifier: { army_attack_pct: 2 * scale, discipline_pct: scale, army_upkeep_pct: -scale } },
         { addArmyLoyalty: 2 * scale },
         ...common,
       ];
@@ -152,8 +151,7 @@ function effectsFor(
       ];
     case 'navy':
       return [
-        { addTreasury: 20000 * scale },
-        { addModifier: { naval_attack_pct: 3 * scale, trade_efficiency_pct: 2 * scale } },
+        { addModifier: { naval_attack_pct: 3 * scale, trade_efficiency_pct: 2 * scale, food_output_pct: scale } },
         ...common,
       ];
     case 'unique':
@@ -245,3 +243,4 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
   }
   return { focuses, decisions };
 }
+

@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import { aggregateModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
@@ -42,7 +42,7 @@ function recordAttrition(state: GameState, tag: string, losses: number): void {
   }
 }
 
-function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<string, number>): number {
+function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<string, number>, corruption: number): number {
   const c = army.composition;
   const base = c.infantry * content.balance.military.baseAttack
     + c.firearm * content.balance.military.firearmAttack
@@ -53,7 +53,9 @@ function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<s
   const command = 1 + (general?.attack ?? 0) * 0.015;
   const traits = generalTraitBonus(general?.traits ?? []);
   return base * quality * command
-    * (1 + ((modifiers['army_attack_pct'] ?? 0) + traits.attackPct) / 100);
+    * (1 + ((modifiers['army_attack_pct'] ?? 0) + traits.attackPct) / 100)
+    * (1 + clamp(modifiers['discipline_pct'] ?? 0, -50, 100) / 100 * 0.6)
+    * (1 - clamp(corruption, 0, 100) / 100 * 0.15);
 }
 
 function defenseValue(
@@ -61,6 +63,7 @@ function defenseValue(
   content: ContentIndex,
   modifiers: Record<string, number>,
   terrain: keyof typeof content.balance.military.terrainDefense,
+  corruption: number,
 ): number {
   const c = army.composition;
   const base = c.infantry * content.balance.military.baseDefense
@@ -74,6 +77,8 @@ function defenseValue(
   const traits = generalTraitBonus(general?.traits ?? []);
   return base * quality * terrainBonus * command
     * (1 + ((modifiers['army_defense_pct'] ?? 0) + traits.defensePct) / 100)
+    * (1 + clamp(modifiers['discipline_pct'] ?? 0, -50, 100) / 100 * 0.6)
+    * (1 - clamp(corruption, 0, 100) / 100 * 0.15)
     * (1 + Math.min(0.2, (army.entrenchment ?? 0) * 0.025));
 }
 
@@ -191,9 +196,9 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
       return mods;
     };
     const attackPower = frontAttackers.reduce((sum, army) =>
-      sum + attackValue(army, content, modsFor(army.tag)), 0);
+      sum + attackValue(army, content, modsFor(army.tag), state.countries[army.tag]?.corruption ?? 0), 0);
     const defensePower = frontDefenders.reduce((sum, army) =>
-      sum + defenseValue(army, content, modsFor(army.tag), def.terrain), 0);
+      sum + defenseValue(army, content, modsFor(army.tag), def.terrain, state.countries[army.tag]?.corruption ?? 0), 0);
     const defenderHit = (attackPower / (defensePower + 100)) * 7 * Math.max(0.6, frontAttackers.length / Math.max(1, frontDefenders.length));
     const attackerHit = (defensePower / (attackPower + 100)) * 4.2 * Math.max(0.6, frontDefenders.length / Math.max(1, frontAttackers.length));
     const beforeStrength = new Map<string, number>();
@@ -623,3 +628,5 @@ export function setArmyPath(
   army.stance = 'move';
   return true;
 }
+
+

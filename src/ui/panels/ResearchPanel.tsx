@@ -1,5 +1,5 @@
-import type { Tech } from '../../content/types';
-import { isTechAvailable } from '../../engine/systems/research';
+﻿import type { Tech } from '../../content/types';
+import { RESEARCH_FUNDING_PER_SLOT_DAY, isTechAvailable } from '../../engine/systems/research';
 import { useGameStore } from '../state/store';
 import { effectsSummary } from '../format';
 
@@ -28,7 +28,7 @@ export function ResearchPanel() {
   return (
     <div className="panel">
       <h2>科研</h2>
-      <p className="muted">研究槽 {country.research.length} / {country.researchSlots}。同一科技完成后才会解锁后继。</p>
+      <p className="muted">研究槽 {country.research.length} / {country.researchSlots}。同一科技完成后才会解锁后继。研究日耗 {country.research.length * RESEARCH_FUNDING_PER_SLOT_DAY} 两；国库不足会大幅减速，腐败也会轻微拖慢研究。</p>
       <div className="research-summary">
         <span>已完成 <b>{completedCount}</b> / {totalTechs}</span>
         <span>进行中 <b>{country.research.length}</b></span>
@@ -85,3 +85,4 @@ export function ResearchPanel() {
     </div>
   );
 }
+

@@ -845,3 +845,121 @@ events:
           - add_stability: 3
           - add_estate_loyalty: { estate: nobles, value: 5 }
           - set_flag: three_feudatories_negotiated
+
+  # ── 新经济：粮食、腐败与分配 ──────────────────────────
+  - id: econ_granary_crisis
+    title: 京仓告急
+    desc: 军粮将尽，户部请拨银购粮。仓场与边镇都在等米下锅，朝廷必须在银、粮与民心之间取舍。
+    historical_context: 明末太仓与京仓长期入不敷出，军饷与军粮常被同时拖欠。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - has_flag: food_shortage
+        - date: { after: 1625-01-01, before: 1670-12-31 }
+    mtth: 120
+    fire_once: true
+    options:
+      - id: emergency_buy
+        name: 加价购粮
+        tooltip: 动用国库紧急购粮，军心稍稳，但农民要承担加派。
+        ai_chance: 50
+        effect:
+          - add_treasury: -80000
+          - add_food: 250000
+          - add_army_loyalty: 3
+          - add_estate_loyalty: { estate: peasants, value: -2 }
+      - id: requisition
+        name: 严征民粮
+        tooltip: 不问有無，先供军需；农民忠诚下降，民怨上升。
+        ai_chance: 30
+        effect:
+          - add_food: 180000
+          - add_estate_loyalty: { estate: peasants, value: -8 }
+          - add_modifier: { unrest_monthly: 0.3 }
+      - id: cut_ration
+        name: 削减军粮
+        tooltip: 保住国库，但军心与稳定受损。
+        ai_chance: 20
+        effect:
+          - add_army_loyalty: -5
+          - add_stability: -3
+          - add_modifier: { army_attack_pct: -2 }
+
+  - id: econ_corruption_scandal
+    title: 贪墨事发
+    desc: 科道官弹劾户部与仓场侵吞钱粮，账册与实收相差甚远。彻查会得罪一批人，不查则腐败继续侵蚀税收。
+    historical_context: 明末钱粮征解层层加耗，仓场与州县胥吏侵吞是常态。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - corruption: { gt: 60 }
+        - date: { after: 1625-01-01, before: 1670-12-31 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: investigate
+        name: 彻查仓场
+        tooltip: 腐败下降，官僚与士绅不满。
+        ai_chance: 45
+        effect:
+          - add_corruption: -8
+          - add_estate_loyalty: { estate: officials, value: -4 }
+          - add_estate_loyalty: { estate: gentry, value: -2 }
+          - add_modifier: { tax_efficiency_pct: 3 }
+      - id: cover_up
+        name: 留中不发
+        tooltip: 保住朝局颜面，但腐败继续扩散。
+        ai_chance: 35
+        effect:
+          - add_corruption: 4
+          - add_authority: 2
+          - add_estate_loyalty: { estate: officials, value: 2 }
+      - id: blame_eunuch
+        name: 诿过内宦
+        tooltip: 皇权集中，士绅不服。
+        ai_chance: 20
+        effect:
+          - add_authority: 5
+          - add_corruption: -3
+          - add_estate_loyalty: { estate: gentry, value: -4 }
+
+  - id: econ_allocation_dispute
+    title: 分配之争
+    desc: 国库分配给各阶级的份额引发争议。士绅要求维持旧例，农民则要求减轻负担。朝廷必须重新平衡。
+    historical_context: 明末加派与均田均税之争，本质是财富分配与税基之争。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - estate_loyalty: { peasants: { lt: 35 } }
+        - date: { after: 1625-01-01, before: 1670-12-31 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: shift_to_peasants
+        name: 稍宽民力
+        tooltip: 农民忠诚回升，士绅与官僚不满，税收效率短期下降。
+        ai_chance: 45
+        effect:
+          - add_estate_loyalty: { estate: peasants, value: 7 }
+          - add_estate_loyalty: { estate: gentry, value: -4 }
+          - add_estate_loyalty: { estate: officials, value: -2 }
+          - add_modifier: { tax_efficiency_pct: -2 }
+      - id: uphold_gentry
+        name: 维持旧例
+        tooltip: 士绅支持，农民继续失血。
+        ai_chance: 35
+        effect:
+          - add_estate_loyalty: { estate: gentry, value: 5 }
+          - add_estate_loyalty: { estate: peasants, value: -6 }
+          - add_modifier: { unrest_monthly: 0.2 }
+      - id: compromise
+        name: 双方各让一步
+        tooltip: 小幅缓和，但问题没有解决。
+        ai_chance: 20
+        effect:
+          - add_estate_loyalty: { estate: peasants, value: 3 }
+          - add_estate_loyalty: { estate: gentry, value: -2 }
+          - add_stability: 1

@@ -1,4 +1,4 @@
-import { useGameStore } from '../state/store';
+﻿import { useGameStore } from '../state/store';
 import { ArmyTypeIcon } from './ArmyTypeIcon';
 import { formatNumber } from '../format';
 
@@ -59,3 +59,4 @@ export function ArmyListPanel() {
     </div>
   );
 }
+

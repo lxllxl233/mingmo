@@ -1,9 +1,11 @@
-import type { ContentIndex, Tech } from '../../content/types';
+﻿import type { ContentIndex, Tech } from '../../content/types';
 import { aggregateModifiers } from '../rules/modifiers';
 import { applyEffects } from '../rules/effects';
 import { evaluateTrigger } from '../rules/triggers';
 import { fireEvent } from './events';
 import type { GameState } from '../state/types';
+
+export const RESEARCH_FUNDING_PER_SLOT_DAY = 120;
 
 export function isTechAvailable(state: GameState, content: ContentIndex, tag: string, tech: Tech): boolean {
   const nation = state.countries[tag];
@@ -59,7 +61,12 @@ export function advanceResearch(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
     const modifiers = aggregateModifiers(nation, content);
-    const speed = Math.max(0.1, 1 + (modifiers['research_speed_pct'] ?? 0) / 100);
+    const fundingNeed = nation.research.length * RESEARCH_FUNDING_PER_SLOT_DAY;
+    const fundingPaid = Math.min(fundingNeed, nation.treasury);
+    nation.treasury -= fundingPaid;
+    const fundingFactor = fundingNeed > 0 ? 0.3 + 0.7 * (fundingPaid / fundingNeed) : 1;
+    const corruptionFactor = 1 - Math.max(0, Math.min(100, nation.corruption)) / 100 * 0.1;
+    const speed = Math.max(0.1, (1 + (modifiers['research_speed_pct'] ?? 0) / 100) * fundingFactor * corruptionFactor);
     const completed: string[] = [];
     for (const slot of nation.research) {
       const tech = content.techs.get(slot.techId);
@@ -93,3 +100,4 @@ export function advanceResearch(state: GameState, content: ContentIndex): void {
     }
   }
 }
+

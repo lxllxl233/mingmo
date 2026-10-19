@@ -1,4 +1,4 @@
-import type { ContentIndex, TaxLaw } from '../../content/types';
+﻿import type { ContentIndex, TaxLaw } from '../../content/types';
 import type { CountryState, GameState, MonthlyReport } from '../state/types';
 import { aggregateModifiers } from '../rules/modifiers';
 
@@ -205,7 +205,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth;
     const availableAfterFixed = Math.max(0, totalTax - corruptionLoss - loyaltyCost - armyPay);
     const foodPurchaseSilver = availableAfterFixed * clamp(nation.foodPurchasePct, 0, 100) / 100;
-    const foodPurchased = foodPurchaseSilver / Math.max(0.1, content.balance.economy.grainPrice);
+    const foodOutput = government.food * (1 + clamp(modifiers['food_output_pct'] ?? 0, -80, 100) / 100);
+    const foodPurchased = foodPurchaseSilver / Math.max(0.1, content.balance.economy.grainPrice) * Math.max(0.2, foodOutput);
+    const famineResistance = clamp(modifiers['famine_resistance'] ?? 0, 0, 0.8);
     const hoardCap = 500000 + provinces.length * 4000;
     const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.08 : 0;
     const net = availableAfterFixed - foodPurchaseSilver - hoardLoss;
@@ -232,15 +234,15 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     if (nation.food < armyFood) {
       nation.food = 0;
       foodShortage = true;
-      nation.stability = clamp(nation.stability - 0.4, 0, 100);
-      nation.armyLoyalty = clamp(nation.armyLoyalty - 0.2, 0, 100);
+      nation.stability = clamp(nation.stability - 0.4 * (1 - famineResistance), 0, 100);
+      nation.armyLoyalty = clamp(nation.armyLoyalty - 0.2 * (1 - famineResistance), 0, 100);
     } else {
       nation.food -= armyFood;
     }
     nation.flags['food_shortage'] = foodShortage;
     if (foodShortage) {
       for (const estate of Object.values(nation.estates)) {
-        estate.loyalty = clamp(estate.loyalty - 0.8, 0, 100);
+        estate.loyalty = clamp(estate.loyalty - 0.8 * (1 - famineResistance), 0, 100);
       }
     }
     const silverByRegion: Record<string, number> = {};
@@ -366,6 +368,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
   }
 }
+
 
 
 
