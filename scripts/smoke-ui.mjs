@@ -1,3 +1,4 @@
+import { mkdirSync } from 'node:fs';
 import { chromium, firefox } from 'playwright-core';
 
 const chrome = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -7,6 +8,9 @@ const baseUrl = process.env.JIASHEN_URL ?? 'http://127.0.0.1:5173';
 const width = Number(process.env.UI_WIDTH ?? 1440);
 const height = Number(process.env.UI_HEIGHT ?? 900);
 const suffix = `${browserKind}-${width}x${height}`;
+const shotDir = process.env.UI_SHOT_DIR ?? 'out/screenshots';
+const shot = name => `${shotDir}/${name}`;
+mkdirSync(shotDir, { recursive: true });
 
 const engine = browserKind === 'firefox' ? firefox : chromium;
 const browser = await engine.launch(browserPath ? { executablePath: browserPath, headless: true } : { headless: true });
@@ -20,7 +24,7 @@ page.on('console', message => {
 await page.goto(baseUrl, { waitUntil: 'networkidle' });
 console.log('title:', await page.title());
 console.log('start-screen:', await page.locator('.start').count());
-await page.screenshot({ path: `ui-start-${suffix}.png` });
+await page.screenshot({ path: shot(`ui-start-${suffix}.png`) });
 
 const scenario = process.env.UI_SCENARIO;
 if (scenario) {
@@ -41,20 +45,20 @@ if (await skip.count() > 0) await skip.first().click();
 await page.waitForTimeout(1000);
 console.log('topbar:', (await page.locator('.topbar').innerText()).replace(/\s+/g, ' ').slice(0, 240));
 console.log('canvas:', await page.locator('.map-host canvas').count());
-await page.screenshot({ path: `ui-game-${suffix}.png` });
+await page.screenshot({ path: shot(`ui-game-${suffix}.png`) });
 
 const box = await page.locator('.map-host').boundingBox();
 if (box) {
   await page.mouse.click(box.x + box.width * 0.57, box.y + box.height * 0.43);
   await page.waitForTimeout(500);
   console.log('panel:', (await page.locator('.right-panel').innerText()).replace(/\s+/g, ' ').slice(0, 300));
-  await page.screenshot({ path: `ui-panel-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-panel-${suffix}.png`) });
 }
 
 await page.getByRole('button', { name: '国策', exact: true }).click();
 await page.waitForTimeout(400);
 console.log('focus-nodes:', await page.locator('.focus-tree-node').count());
-await page.screenshot({ path: `ui-focus-${suffix}.png` });
+await page.screenshot({ path: shot(`ui-focus-${suffix}.png`) });
 await page.getByRole('button', { name: '关闭', exact: true }).first().click();
 
 const courtButton = page.getByRole('button', { name: '朝议', exact: true });
@@ -62,7 +66,7 @@ if (await courtButton.count() > 0) {
   await courtButton.click();
   await page.waitForTimeout(400);
   console.log('court:', (await page.locator('.court-panel').innerText()).replace(/\s+/g, ' ').slice(0, 200));
-  await page.screenshot({ path: `ui-court-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-court-${suffix}.png`) });
   await courtButton.click();
 }
 
@@ -71,7 +75,7 @@ if (await bannerButton.count() > 0) {
   await bannerButton.click();
   await page.waitForTimeout(400);
   console.log('banner:', (await page.locator('.banner-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
-  await page.screenshot({ path: `ui-banner-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-banner-${suffix}.png`) });
   await bannerButton.click();
 }
 
@@ -80,7 +84,7 @@ if (await shunButton.count() > 0) {
   await shunButton.click();
   await page.waitForTimeout(400);
   console.log('shun:', (await page.locator('.shun-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
-  await page.screenshot({ path: `ui-shun-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-shun-${suffix}.png`) });
   await shunButton.click();
 }
 
@@ -89,7 +93,7 @@ if (await legitimacyButton.count() > 0) {
   await legitimacyButton.click();
   await page.waitForTimeout(400);
   console.log('legitimacy:', (await page.locator('.legitimacy-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
-  await page.screenshot({ path: `ui-legitimacy-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-legitimacy-${suffix}.png`) });
   await legitimacyButton.click();
 }
 
@@ -98,7 +102,7 @@ if (await tradeButton.count() > 0) {
   await tradeButton.click();
   await page.waitForTimeout(400);
   console.log('trade:', (await page.locator('.trade-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
-  await page.screenshot({ path: `ui-trade-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-trade-${suffix}.png`) });
   await tradeButton.click();
 }
 
@@ -107,7 +111,7 @@ if (await leagueButton.count() > 0) {
   await leagueButton.click();
   await page.waitForTimeout(400);
   console.log('league:', (await page.locator('.league-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
-  await page.screenshot({ path: `ui-league-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-league-${suffix}.png`) });
   await leagueButton.click();
 }
 
@@ -116,7 +120,7 @@ if (await sakokuButton.count() > 0) {
   await sakokuButton.click();
   await page.waitForTimeout(400);
   console.log('sakoku:', (await page.locator('.sakoku-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
-  await page.screenshot({ path: `ui-sakoku-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-sakoku-${suffix}.png`) });
   await sakokuButton.click();
 }
 
@@ -125,13 +129,13 @@ if (await tributeButton.count() > 0) {
   await tributeButton.click();
   await page.waitForTimeout(400);
   console.log('tribute:', (await page.locator('.tribute-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
-  await page.screenshot({ path: `ui-tribute-${suffix}.png` });
+  await page.screenshot({ path: shot(`ui-tribute-${suffix}.png`) });
   await tributeButton.click();
 }
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
 console.log('after-tick:', (await page.locator('.bottombar').innerText()).replace(/\s+/g, ' ').slice(0, 240));
-await page.screenshot({ path: `ui-tick-${suffix}.png` });
+await page.screenshot({ path: shot(`ui-tick-${suffix}.png`) });
 
 console.log('errors:', errors.length ? errors.join('\n') : 'none');
 await browser.close();

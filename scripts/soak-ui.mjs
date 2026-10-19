@@ -1,9 +1,13 @@
+import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright-core';
 
 const chrome = process.env.UI_BROWSER ?? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const baseUrl = process.env.JIASHEN_URL ?? 'http://127.0.0.1:5173';
 const minutes = Number(process.env.SOAK_MINUTES ?? 10);
 const speed = process.env.SOAK_SPEED ?? '32x';
+const shotDir = process.env.UI_SHOT_DIR ?? 'out/screenshots';
+const shot = name => `${shotDir}/${name}`;
+mkdirSync(shotDir, { recursive: true });
 const browser = await chromium.launch({ executablePath: chrome, headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const errors = [];
@@ -35,7 +39,7 @@ while (Date.now() - started < minutes * 60_000) {
   console.log(JSON.stringify(samples[samples.length - 1]));
 }
 
-await page.screenshot({ path: 'ui-soak.png' });
+await page.screenshot({ path: shot('ui-soak.png') });
 console.log(`soakMinutes=${minutes} samples=${samples.length} errors=${errors.length}`);
 if (errors.length > 0) console.log(errors.slice(0, 10).join('\n'));
 await browser.close();

@@ -4,6 +4,8 @@ dist/
 .esbuild-tmp/
 coverage/
 out/
+# 开发期 UI 截图 / 地图预览一律写入 out/screenshots/、out/（见 scripts/smoke-ui.mjs）。
+# 下面两条仅兜底，防止临时脚本把截图又落回仓库根目录。
 ui-*.png
 map-preview.*
 *.local

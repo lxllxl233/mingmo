@@ -19,6 +19,24 @@
 3. **逐里程碑推进。** 每个阶段单独一轮，粘贴 [`prompts/03-phases.md`](prompts/03-phases.md)
    里对应的一节，并附上「当前仓库状态 + 上一阶段验收结果」。
 
+## 目录结构
+
+| 路径 | 内容 | 入库 |
+|---|---|---|
+| `src/engine/` | 纯逻辑：规则、模拟、状态（不引用 React / Pixi） | 是 |
+| `src/content/` | 内容数据与 schema（省份、国策、事件、科技等） | 是 |
+| `src/ui/`、`src/map/`、`src/app/` | 界面组件、地图渲染、应用装配 | 是 |
+| `tests/` | Vitest 单测 + 架构边界检查 | 是 |
+| `scripts/` | 地图生成、无头模拟、内容审计、UI smoke | 是 |
+| `docs/` | 设计、进度、QA、Steam 计划 | 是 |
+| `prompts/`、`examples/` | 分层提示词与可直接校验的示例内容 | 是 |
+| `public/` | 音乐与语音素材 | 是 |
+| `out/` | 生成物：模拟报告、QA 矩阵、`screenshots/` | 否（gitignore） |
+| `.dev-build/`、`.esbuild-tmp/`、`dist/` | 构建缓存与产物 | 否（gitignore） |
+
+> UI 截图统一落在 `out/screenshots/`（`pnpm smoke:ui`、`scripts/soak-ui.mjs` 自动创建），
+> 不再写回仓库根目录。
+
 ## 文件地图
 
 | 文件 | 作用 | 读者 |
