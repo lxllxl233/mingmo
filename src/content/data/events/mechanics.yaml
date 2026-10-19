@@ -1,0 +1,248 @@
+events:
+  - id: MING_e_court_deadlock
+    title: 朝议僵持
+    desc: 辽东急报与陕西灾情同时送到御前，东林与阉党却在廷上互相攻讦。皇帝必须决定先听谁的。
+    historical_context: 崇祯朝党争不断，廷议常常压过边情；皇帝在士林与内廷之间反复摇摆。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1627-06-01, before: 1644-01-31 }
+    mtth: 180
+    fire_once: true
+    options:
+      - id: support_donglin
+        name: 支持东林
+        tooltip: 起用清流，安抚士林；内廷与厂卫不满。
+        ai_chance: 45
+        effect:
+          - add_faction_influence: { donglin: 6, eunuch: -4 }
+          - add_stability: 2
+          - add_corruption: -2
+          - add_political_power: 2
+      - id: rely_on_eunuch
+        name: 倚重厂卫
+        tooltip: 用内廷压制言官，皇权更集中，但腐败加深。
+        ai_chance: 35
+        effect:
+          - add_faction_influence: { eunuch: 6, donglin: -4 }
+          - add_authority: 3
+          - add_corruption: 2
+      - id: shelve
+        name: 留中不发
+        tooltip: 不表态，等边情自行明朗；士气与效率受损。
+        ai_chance: 20
+        effect:
+          - add_stability: -1
+          - add_political_power: 3
+
+  - id: QING_e_banner_review
+    title: 旗务清查
+    desc: 入关在即，旗地、旗丁与汉军旗的数目对不上。八旗贵胄要求扩编，汉臣要求整饬。
+    historical_context: 皇太极整顿八旗与汉军，既靠旗人打仗，也靠汉官治理州县。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1627-06-01, before: 1662-12-31 }
+    mtth: 200
+    fire_once: true
+    options:
+      - id: expand_banners
+        name: 扩编八旗
+        tooltip: 新旗丁入册，兵源增加，但耗费银两。
+        ai_chance: 50
+        effect:
+          - add_faction_influence: { banners: 5, manchu: 3, green_standard: -2 }
+          - add_manpower: 3000
+          - add_treasury: -30000
+          - add_army_loyalty: 2
+      - id: rectify_banners
+        name: 整饬旗务
+        tooltip: 清查旗地，起用汉臣；八旗贵胄不满。
+        ai_chance: 50
+        effect:
+          - add_faction_influence: { han_official: 5, banners: -3 }
+          - add_corruption: -2
+          - add_stability: 1
+          - add_political_power: 2
+
+  - id: SHUN_e_confiscation_debate
+    title: 追赃之议
+    desc: 大顺军进了城，粮饷仍不够。将领主张继续拷掠士绅，文吏则劝先安民心。
+    historical_context: 李自成入北京后追赃助饷，短期得银巨万，却迅速失去士绅支持。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1640-01-01, before: 1662-12-31 }
+    mtth: 150
+    fire_once: true
+    options:
+      - id: extort
+        name: 继续追赃
+        tooltip: 立刻得银，但士绅与稳定受损。
+        ai_chance: 55
+        effect:
+          - add_treasury: 80000
+          - add_faction_influence: { military: 5, gentry: -5 }
+          - add_stability: -3
+          - add_corruption: 2
+      - id: pacify
+        name: 先安民心
+        tooltip: 发银赈济，争取士绅，但军费更紧。
+        ai_chance: 45
+        effect:
+          - add_treasury: -30000
+          - add_faction_influence: { gentry: 6, farmers: -2 }
+          - add_stability: 3
+
+  - id: SMING_e_legitimacy_dispute
+    title: 拥立之争
+    desc: 南京诸臣为拥立哪一支宗室争吵不休。拥立新帝能提振正统，廷议妥协则能安抚东林。
+    historical_context: 弘光、隆武、绍武、永历相继而立，南明始终被正统之争消耗。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1644-06-01, before: 1662-12-31 }
+    mtth: 150
+    fire_once: true
+    options:
+      - id: proclaim
+        name: 拥立新帝
+        tooltip: 正统与宗室支持上升，但耗银且东林不满。
+        ai_chance: 50
+        effect:
+          - add_mandate: 4
+          - add_stability: 2
+          - add_treasury: -50000
+          - add_faction_influence: { royal_clan: 5, donglin: -3 }
+      - id: compromise
+        name: 廷议妥协
+        tooltip: 安抚东林与士绅，正统提升较慢。
+        ai_chance: 50
+        effect:
+          - add_mandate: 2
+          - add_stability: 1
+          - add_faction_influence: { donglin: 5, gentry: 3, royal_clan: -2 }
+
+  - id: ZHENG_e_sea_route
+    title: 南洋商路
+    desc: 海商带来吕宋与日本的消息：开放商路能得厚利，但会分散海防、得罪保守派。
+    historical_context: 郑氏以山海五商与东西洋贸易养军，海贸是其政权的财政命脉。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1644-06-01, before: 1683-12-31 }
+    mtth: 180
+    fire_once: true
+    options:
+      - id: open_route
+        name: 开放商路
+        tooltip: 商人支持、国库增收，但稳定略降。
+        ai_chance: 60
+        effect:
+          - add_treasury: 60000
+          - add_faction_influence: { merchants: 6, military: -2 }
+          - add_stability: -1
+      - id: guard_coast
+        name: 禁海自守
+        tooltip: 集中海防，稳定上升，但商人失望。
+        ai_chance: 40
+        effect:
+          - add_stability: 2
+          - add_faction_influence: { merchants: -5, military: 3 }
+
+  - id: MONGOL_e_kurultai
+    title: 会盟之争
+    desc: 察哈尔诸部首领齐聚，有人主张会盟重振汗权，有人主张直接掠边取粮。
+    historical_context: 林丹汗试图以会盟与征讨重建蒙古汗权，但诸部离心，后金又不断招抚。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1627-06-01, before: 1662-12-31 }
+    mtth: 180
+    fire_once: true
+    options:
+      - id: kurultai
+        name: 召开会盟
+        tooltip: 汗权与贵族支持上升，但耗费政治资源。
+        ai_chance: 55
+        effect:
+          - add_mandate: 4
+          - add_stability: 2
+          - add_faction_influence: { nobles: 5, clergy: 3 }
+          - add_political_power: -5
+      - id: raid
+        name: 掠边取粮
+        tooltip: 立刻得银粮，但稳定下降，明/清敌意上升。
+        ai_chance: 45
+        effect:
+          - add_treasury: 50000
+          - add_food: 100000
+          - add_stability: -2
+          - add_faction_influence: { military: 5, nobles: -2 }
+          - add_relation: { target: MING, value: -10 }
+          - add_relation: { target: QING, value: -10 }
+
+  - id: JAPAN_e_sakoku_pressure
+    title: 锁国压力
+    desc: 长崎的荷兰商馆与南蛮寺同时施压。开国能得贸易银，禁教能安寺社。
+    historical_context: 德川幕府在锁国与禁教之间维持秩序，只留长崎对荷兰、中国有限通商。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1683-12-31 }
+    mtth: 200
+    fire_once: true
+    options:
+      - id: open_trade
+        name: 开国通商
+        tooltip: 商人支持、国库增收，但寺社与稳定受损。
+        ai_chance: 45
+        effect:
+          - add_treasury: 50000
+          - add_faction_influence: { merchants: 5, clergy: -4 }
+          - add_stability: -1
+      - id: persecute
+        name: 禁教锁国
+        tooltip: 寺社支持、稳定上升，但商人失望。
+        ai_chance: 55
+        effect:
+          - add_stability: 2
+          - add_faction_influence: { clergy: 5, merchants: -4 }
+          - add_mandate: 1
+
+  - id: JOSEON_e_tribute_or_north
+    title: 事大与北伐
+    desc: 清使催促朝鲜出兵助剿，义兵则请求北伐雪丙子之耻。朝堂必须选择。
+    historical_context: 朝鲜在清朝宗藩体系下被迫助剿，内部尊明与北伐情绪长期存在。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1630-01-01, before: 1683-12-31 }
+    mtth: 200
+    fire_once: true
+    options:
+      - id: submit
+        name: 事大助剿
+        tooltip: 对清关系与稳定上升，武臣不满。
+        ai_chance: 55
+        effect:
+          - add_relation: { target: QING, value: 10 }
+          - add_stability: 2
+          - add_faction_influence: { nobles: 4, military: -3 }
+      - id: north
+        name: 北伐雪耻
+        tooltip: 兵源与武臣支持上升，但清廷敌意加深。
+        ai_chance: 45
+        effect:
+          - add_manpower: 4000
+          - add_faction_influence: { military: 5, nobles: -3 }
+          - add_relation: { target: QING, value: -15 }
+          - add_stability: -1

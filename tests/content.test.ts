@@ -34,4 +34,14 @@ describe('content pipeline', () => {
     expect(content.scenarios.get('1644')?.startDate).toBe('1644-01-01');
     expect(content.scenarios.get('1650')?.startDate).toBe('1650-01-01');
   });
+
+  it('loads a mechanic event for every playable faction', () => {
+    expect(content.events.size).toBeGreaterThanOrEqual(110);
+    const ids = [
+      'MING_e_court_deadlock', 'QING_e_banner_review', 'SHUN_e_confiscation_debate',
+      'SMING_e_legitimacy_dispute', 'ZHENG_e_sea_route', 'MONGOL_e_kurultai',
+      'JAPAN_e_sakoku_pressure', 'JOSEON_e_tribute_or_north',
+    ];
+    for (const id of ids) expect(content.events.has(id), id).toBe(true);
+  });
 });
