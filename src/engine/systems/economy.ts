@@ -89,6 +89,22 @@ function lawOf(content: ContentIndex, nation: CountryState, estateKey: string): 
   return estate ? content.taxLaws.get(estate.taxLaw) : undefined;
 }
 
+const POPULATION_WEIGHTS: Record<string, number> = {
+  dynasty: 0.015,
+  nobles: 0.035,
+  officials: 0.045,
+  gentry: 0.14,
+  merchants: 0.06,
+  peasants: 0.56,
+  soldiers: 0.08,
+  clergy: 0.04,
+};
+
+export function estatePopulationShare(content: ContentIndex, tag: string, estateKey: string): number {
+  const configs = content.countryEstates.get(tag) ?? [];
+  const total = configs.reduce((sum, config) => sum + (POPULATION_WEIGHTS[config.key] ?? 0.05), 0);
+  return total > 0 ? (POPULATION_WEIGHTS[estateKey] ?? 0.05) / total : 0;
+}
 export function minimumAllocationShare(influence: number): number {
   return Math.min(45, 2 + Math.max(0, influence) * 0.13);
 }
@@ -144,7 +160,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       baseByRegion[regionId] = (baseByRegion[regionId] ?? 0) + contribution;
     }
 
-    const stabilityFactor = 0.55 + clamp(nation.stability, 0, 100) / 220;
+    const stabilityFactor = 0.38 + clamp(nation.stability, 0, 100) / 220;
     const pie = base * stabilityFactor;
     const { shares, unallocated } = normalizedAllocation(content, nation);
     let totalTax = 0;
@@ -183,8 +199,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     const averageLoyalty = Object.values(nation.estates).reduce((sum, estate) => sum + estate.loyalty, 0)
       / Math.max(1, Object.values(nation.estates).length);
-    const corruptionLoss = totalTax * clamp(nation.corruption / 250, 0, 0.7);
-    const loyaltyCost = totalTax * (1 - averageLoyalty / 100) * 0.24;
+    const corruptionLoss = totalTax * clamp(nation.corruption / 135, 0, 0.85);
+    const loyaltyCost = totalTax * (1 - averageLoyalty / 100) * 0.42;
     const armyPay = monthlyArmyPay(state, content, nation.tag);
     const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth;
     const availableAfterFixed = Math.max(0, totalTax - corruptionLoss - loyaltyCost - armyPay);
@@ -248,8 +264,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       const law = lawOf(content, nation, estate.key);
       if (!law) continue;
       const sensitivity = content.estateDefs.get(estate.key)?.sensitivity ?? 1;
+      const fairness = ((shares[estate.key] ?? 0) - estatePopulationShare(content, nation.tag, estate.key)) * 3;
       const pressure = (estate.customaryRate - law.rate) * sensitivity * 4;
-      estate.loyalty = clamp(estate.loyalty + pressure + law.loyaltyDrift * 0.3, 0, 100);
+      estate.loyalty = clamp(estate.loyalty + fairness + pressure + law.loyaltyDrift * 0.3, 0, 100);
       estate.customaryRate += (law.rate - estate.customaryRate) * 0.02;
       estate.effectiveRate = law.rate;
     }
@@ -343,6 +360,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
   }
 }
+
+
+
 
 
 

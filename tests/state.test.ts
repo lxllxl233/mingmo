@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+﻿import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
 import { parseDay } from '../src/engine/core/clock';
@@ -36,7 +36,7 @@ describe('initial state', () => {
   it('keeps the Ming state above water at the start', () => {
     const ming = state.countries['MING'];
     expect(ming).toBeDefined();
-    expect(ming?.treasury).toBe(1200000);
+    expect(ming?.treasury).toBe(800000);
     expect(ming?.estates['peasants']?.loyalty).toBe(30);
     const owned = Object.values(state.provinces).filter(province => province.owner === 'MING');
     expect(owned.length).toBeGreaterThan(200);
@@ -55,3 +55,4 @@ describe('initial state', () => {
     }
   });
 });
+

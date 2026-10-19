@@ -1,19 +1,8 @@
-import { useState } from 'react';
-import { minimumAllocationShare } from '../../engine/systems/economy';
+﻿import { useRef, useState } from 'react';
+import { estatePopulationShare, minimumAllocationShare } from '../../engine/systems/economy';
 import { useGameStore } from '../state/store';
 
 const ESTATE_COLORS = ['#9e2b25', '#b8892e', '#3f6f9a', '#6f8a5a', '#c46a2b', '#7a5f9a', '#4f8b86', '#8a7a60'];
-const POPULATION_WEIGHTS: Record<string, number> = {
-  dynasty: 0.015,
-  nobles: 0.035,
-  officials: 0.045,
-  gentry: 0.14,
-  merchants: 0.06,
-  peasants: 0.56,
-  soldiers: 0.08,
-  clergy: 0.04,
-};
-
 function piePath(start: number, end: number): string {
   const center = 50;
   const radius = 46;
@@ -31,7 +20,18 @@ export function EstatesPanel() {
   const game = useGameStore(state => state.game);
   const content = useGameStore(state => state.content);
   const command = useGameStore(state => state.command);
+  const setSpeed = useGameStore(state => state.setSpeed);
   const [hovered, setHovered] = useState<number | null>(null);
+  const resumeSpeed = useRef<0 | 1 | 2 | 4 | 8 | 16 | 32>(0);
+  const pauseForDrag = () => {
+    const speed = useGameStore.getState().speed;
+    if (speed !== 0) resumeSpeed.current = speed;
+    setSpeed(0);
+  };
+  const resumeAfterDrag = () => {
+    if (resumeSpeed.current > 0) setSpeed(resumeSpeed.current);
+    resumeSpeed.current = 0;
+  };
   if (!game) return null;
   const country = game.countries[game.playerTag];
   if (!country) return null;
@@ -41,7 +41,7 @@ export function EstatesPanel() {
   const totalPopulation = controlled.reduce((sum, province) => sum + province.population, 0);
   const totalFields = controlled.reduce((sum, province) =>
     sum + (content.provinces.get(province.id)?.landholding ?? 0), 0);
-  const populationWeights = configs.map(config => POPULATION_WEIGHTS[config.key] ?? 0.05);
+  const populationWeights = configs.map(config => estatePopulationShare(content, country.tag, config.key));
   const populationWeightTotal = populationWeights.reduce((sum, value) => sum + value, 0);
   const raw = configs.map((config, index) => ({
     ...config,
@@ -56,6 +56,22 @@ export function EstatesPanel() {
   const scale = rawTotal > 100 ? 100 / rawTotal : 1;
   const shares = raw.map(config => config.value * scale / 100);
   const unallocated = Math.max(0, 1 - shares.reduce((sum, value) => sum + value, 0));
+  const lastAllocation = report?.allocation ?? {};
+  const lastTax = report?.taxByEstate ?? {};
+  const projectedTax = raw.reduce((sum, config, index) => {
+    const previous = lastAllocation[config.key] ?? shares[index] ?? 0;
+    const tax = lastTax[config.key] ?? 0;
+    return sum + (previous > 0 ? tax * (shares[index] ?? 0) / previous : 0);
+  }, 0);
+  const projectedRatio = (report?.income ?? 0) > 0 ? projectedTax / (report?.income ?? 1) : 1;
+  const projectedCorruption = (report?.corruptionLoss ?? 0) * projectedRatio;
+  const projectedLoyaltyCost = (report?.loyaltyCost ?? 0) * projectedRatio;
+  const projectedArmy = report?.expenseArmy ?? 0;
+  const projectedAvailable = Math.max(0, projectedTax - projectedCorruption - projectedLoyaltyCost - projectedArmy);
+  const projectedFoodSilver = projectedAvailable * country.foodPurchasePct / 100;
+  const projectedFood = projectedFoodSilver / Math.max(0.1, content.balance.economy.grainPrice);
+  const projectedNet = projectedAvailable - projectedFoodSilver;
+  const foodMonths = (country.food + projectedFood) / Math.max(1, report?.foodArmy ?? 1);
   const pieSlices = [
     ...raw.map((config, index) => ({
       label: config.name,
@@ -130,6 +146,11 @@ export function EstatesPanel() {
           <div className="row"><span>最终银收</span><b className="good">{Math.round(report?.net ?? 0).toLocaleString()}</b></div>
         </div>
       </div>
+      <div className="allocation-preview">
+        <span>当前分配预计温饱 <b className={foodMonths < 1 ? 'danger' : 'good'}>{foodMonths.toFixed(1)} 个月</b></span>
+        <span>预计月净银 <b className={projectedNet < 0 ? 'danger' : ''}>{Math.round(projectedNet).toLocaleString()} 两</b></span>
+        <span>预计购粮 <b>{Math.round(projectedFood).toLocaleString()} 石</b></span>
+      </div>
 
       <h3>阶级分配</h3>
       {raw.length === 0 && <p className="muted">本国没有可分配阶级。</p>}
@@ -140,6 +161,8 @@ export function EstatesPanel() {
           .filter(law => law.country === undefined || law.country === country.tag)
           .sort((a, b) => a.rate - b.rate);
         const currentLaw = content.taxLaws.get(estate.taxLaw);
+        const populationShare = totalPopulation > 0 ? config.population / totalPopulation : 0;
+        const loyaltyPreview = (shares[index]! - populationShare) * 3;
         return (
           <div className="allocation-card" key={config.key}>
             <div className="allocation-card-head">
@@ -155,6 +178,10 @@ export function EstatesPanel() {
               max={100}
               step={0.5}
               value={config.value}
+              onPointerDown={pauseForDrag}
+              onPointerUp={resumeAfterDrag}
+              onTouchStart={pauseForDrag}
+              onTouchEnd={resumeAfterDrag}
               onChange={event => command({
                 type: 'economy.setAllocation',
                 estate: config.key,
@@ -164,6 +191,7 @@ export function EstatesPanel() {
             <div className="allocation-metrics">
               <span>人口 {Math.round(config.population).toLocaleString()}（{totalPopulation > 0 ? (config.population / totalPopulation * 100).toFixed(1) : '0.0'}%）</span>
               <span>忠诚 {estate.loyalty.toFixed(0)}</span>
+              <span className={loyaltyPreview < 0 ? 'danger' : 'good'}>分配忠诚影响 {loyaltyPreview >= 0 ? '+' : ''}{loyaltyPreview.toFixed(2)}/月</span>
               <span>本阶级收入 {Math.round(estate.income / 12).toLocaleString()} 两/月</span>
               <span>实际入库 {Math.round(estate.collected).toLocaleString()} 两/月</span>
             </div>
@@ -204,6 +232,10 @@ export function EstatesPanel() {
           max={100}
           step={1}
           value={country.foodPurchasePct}
+          onPointerDown={pauseForDrag}
+          onPointerUp={resumeAfterDrag}
+          onTouchStart={pauseForDrag}
+          onTouchEnd={resumeAfterDrag}
           onChange={event => command({ type: 'economy.setFoodPurchasePct', value: Number(event.target.value) })}
         />
         <small>
@@ -217,6 +249,10 @@ export function EstatesPanel() {
     </div>
   );
 }
+
+
+
+
 
 
 
