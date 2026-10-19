@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
 import { advanceDay } from '../src/engine/tick';
@@ -34,14 +34,14 @@ describe('event chains', () => {
     const first = state.pendingEvents.find(event => event.eventId === 'MING_e_jiashen_1');
     expect(first).toBeDefined();
     expect(chooseEventOption(state, content, 'MING_e_jiashen_1', 'summon_wu')).toBe(true);
-    expect(state.countries['MING']?.flags['wu_sangui_summoned']).toBe(true);
+    expect(state.countries['MING']?.flags['jiashen_started']).toBe(true);
 
     state.day = parseDay('1644-03-02');
     advanceDay(state, content);
     const second = state.pendingEvents.find(event => event.eventId === 'MING_e_jiashen_2');
     expect(second).toBeDefined();
     expect(chooseEventOption(state, content, 'MING_e_jiashen_2', 'open_to_qing')).toBe(true);
-    expect(state.countries['MING']?.flags['wu_sangui_defected']).toBe(true);
+    expect(state.provinces['shanhaiguan']?.owner).toBe('QING');
   });
 });
 

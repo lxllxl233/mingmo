@@ -37,8 +37,6 @@ events:
         effect:
           - add_estate_loyalty: { estate: peasants, value: -10 }
           - add_modifier: { unrest_monthly: 0.5 }
-          - set_flag: famine_unrest
-
   - id: rand_flood_01
     title: 黄河决口
     desc: 河决开封，漂没田庐。漕运受阻，饥民塞道。
@@ -803,22 +801,18 @@ events:
           - add_treasury: -150000
           - add_manpower: 20000
           - add_army_loyalty: 5
-          - set_flag: songjin_reinforced
       - id: withdraw
         name: 收缩防线
         ai_chance: 35
         effect:
           - add_stability: -5
           - add_modifier: { army_defense_pct: 4 }
-          - set_flag: songjin_withdrawn
       - id: negotiate
         name: 遣使议和
         ai_chance: 20
         effect:
           - add_treasury: -50000
           - add_relation: { target: QING, value: 10 }
-          - set_flag: songjin_negotiated
-
   - id: hist_three_feudatories
     title: 三藩之乱
     desc: 吴三桂起兵云南，耿精忠、尚可喜响应。天下震动。
@@ -837,7 +831,6 @@ events:
           - add_treasury: -300000
           - add_stability: -10
           - add_manpower: 50000
-          - set_flag: three_feudatories_crushed
       - id: negotiate
         name: 招抚三藩
         ai_chance: 40
@@ -845,9 +838,6 @@ events:
           - add_treasury: -150000
           - add_stability: 3
           - add_estate_loyalty: { estate: nobles, value: 5 }
-          - set_flag: three_feudatories_negotiated
-
-
   # ── 新经济：粮食、腐败与分配 ──────────────────────────
   - id: econ_granary_crisis
     title: 京仓告急

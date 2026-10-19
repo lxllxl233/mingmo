@@ -192,7 +192,8 @@ function auditContent(content: ContentIndex): AuditResult {
       result.focusDeadOnly.push(focus.id);
     }
     const material = focus.completionEffect.filter(effect => !isRecord(effect) || !('setFlag' in effect));
-    const signature = JSON.stringify(material);
+    // 跨势力/跨分支同层国策共享基础效果是刻意对称；只检查同一分支内部是否重复。
+    const signature = `${focus.country}|${focus.branch}|${JSON.stringify(material)}`;
     const group = result.focusMaterialGroups.get(signature) ?? [];
     group.push(focus.id);
     result.focusMaterialGroups.set(signature, group);

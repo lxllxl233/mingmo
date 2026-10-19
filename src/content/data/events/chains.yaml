@@ -19,7 +19,6 @@ events:
         ai_chance: 40
         effect:
           - set_flag: jiashen_started
-          - set_flag: wu_sangui_summoned
           - add_treasury: -200000
           - add_stability: 3
           - spawn_army: { province: beijing, template: guanning_army, size: 3 }
@@ -30,7 +29,6 @@ events:
         ai_chance: 20
         effect:
           - set_flag: jiashen_started
-          - set_flag: capital_moved
           - add_stability: -15
           - add_mandate: -20
           - change_capital: nanjing
@@ -41,7 +39,6 @@ events:
         ai_chance: 40
         effect:
           - set_flag: jiashen_started
-          - set_flag: beijing_last_stand
           - add_stability: 10
           - add_mandate: 5
           - trigger_event: { id: MING_e_jiashen_2, delay_days: 20 }
@@ -62,7 +59,6 @@ events:
         name: 许吴三桂开关
         ai_chance: 45
         effect:
-          - set_flag: wu_sangui_defected
           - add_stability: -10
           - add_mandate: -10
           - change_owner: { province: shanhaiguan, to: QING }
@@ -71,7 +67,6 @@ events:
         name: 严令据守
         ai_chance: 55
         effect:
-          - set_flag: shanhaiguan_held
           - add_treasury: -50000
           - add_army_loyalty: 3
           - trigger_event: { id: MING_e_jiashen_3, delay_days: 30 }
@@ -92,8 +87,6 @@ events:
         name: 死社稷
         ai_chance: 50
         effect:
-          - set_flag: jiashen_resolved
-          - set_flag: capital_fallen
           - add_stability: -20
           - add_mandate: -30
           - change_owner: { province: beijing, to: SHUN }
@@ -102,8 +95,6 @@ events:
         name: 南渡
         ai_chance: 50
         effect:
-          - set_flag: jiashen_resolved
-          - set_flag: capital_moved
           - add_stability: -8
           - add_mandate: -15
           - change_capital: nanjing
@@ -128,7 +119,6 @@ events:
         ai_chance: 65
         effect:
           - set_flag: qing_succession
-          - set_flag: dorgon_regent
           - add_stability: 5
           - add_authority: 5
           - trigger_event: { id: QING_e_entry_2, delay_days: 30 }
@@ -137,7 +127,6 @@ events:
         ai_chance: 35
         effect:
           - set_flag: qing_succession
-          - set_flag: haoge_khan
           - add_stability: -8
           - add_authority: -5
           - trigger_event: { id: QING_e_entry_2, delay_days: 30 }
@@ -186,7 +175,6 @@ events:
         name: 为崇祯复仇
         ai_chance: 55
         effect:
-          - set_flag: qing_legitimacy
           - add_mandate: 10
           - add_stability: 5
           - change_owner: { province: beijing, to: QING }
@@ -194,7 +182,6 @@ events:
         name: 直接南下
         ai_chance: 45
         effect:
-          - set_flag: qing_conquest
           - add_mandate: 3
           - add_modifier: { unrest_monthly: 0.5 }
           - change_owner: { province: beijing, to: QING }
@@ -219,7 +206,6 @@ events:
         ai_chance: 70
         effect:
           - set_flag: shun_emperor
-          - set_flag: shun_eastward
           - add_stability: 5
           - add_mandate: 10
           - trigger_event: { id: SHUN_e_east_2, delay_days: 15 }
@@ -277,7 +263,6 @@ events:
         name: 遣使招降
         ai_chance: 35
         effect:
-          - set_flag: shun_negotiated
           - add_stability: 3
           - add_treasury: -30000
           - change_owner: { province: beijing, to: SHUN }
@@ -285,7 +270,6 @@ events:
         name: 强攻北京
         ai_chance: 65
         effect:
-          - set_flag: shun_took_beijing
           - add_stability: -5
           - add_treasury: -50000
           - change_owner: { province: beijing, to: SHUN }
@@ -317,7 +301,6 @@ events:
         ai_chance: 40
         effect:
           - set_flag: xi_chengdu
-          - set_flag: xi_appease
           - add_stability: 8
           - add_estate_loyalty: { estate: gentry, value: 5 }
           - trigger_event: { id: XI_e_sichuan_2, delay_days: 30 }
@@ -347,7 +330,6 @@ events:
         ai_chance: 60
         effect:
           - set_flag: xi_emperor
-          - set_flag: xi_terror
           - add_stability: -5
           - add_estate_loyalty: { estate: gentry, value: -15 }
           - add_modifier: { unrest_monthly: 0.6 }
@@ -369,7 +351,6 @@ events:
         name: 联明抗清
         ai_chance: 45
         effect:
-          - set_flag: xi_ally_ming
           - add_relation: { target: SMING, value: 30 }
           - add_treasury: -50000
           - add_stability: 3
@@ -377,7 +358,6 @@ events:
         name: 独立支撑
         ai_chance: 55
         effect:
-          - set_flag: xi_alone
           - add_manpower: 10000
           - add_stability: -5
           - add_modifier: { army_attack_pct: 3 }
@@ -401,7 +381,6 @@ events:
         ai_chance: 55
         effect:
           - set_flag: sming_founded
-          - set_flag: fuwang_emperor
           - add_stability: 5
           - add_faction_influence: { donglin: -5, military: 5 }
           - trigger_event: { id: SMING_e_legit_2, delay_days: 20 }
@@ -410,7 +389,6 @@ events:
         ai_chance: 45
         effect:
           - set_flag: sming_founded
-          - set_flag: luwang_emperor
           - add_stability: 2
           - add_faction_influence: { donglin: 8, military: -5 }
           - trigger_event: { id: SMING_e_legit_2, delay_days: 20 }
@@ -431,7 +409,6 @@ events:
         name: 倚重史可法
         ai_chance: 50
         effect:
-          - set_flag: shi_kefa
           - add_stability: 6
           - add_estate_loyalty: { estate: gentry, value: 5 }
           - trigger_event: { id: SMING_e_legit_3, delay_days: 30 }
@@ -439,7 +416,6 @@ events:
         name: 倚重马士英
         ai_chance: 50
         effect:
-          - set_flag: ma_shiying
           - add_corruption: 5
           - add_faction_influence: { military: 8, donglin: -8 }
           - trigger_event: { id: SMING_e_legit_3, delay_days: 30 }
@@ -460,7 +436,6 @@ events:
         name: 加派养兵
         ai_chance: 55
         effect:
-          - set_flag: sming_four_towns
           - add_treasury: -100000
           - add_estate_loyalty: { estate: peasants, value: -8 }
           - add_army_loyalty: 5
@@ -468,7 +443,6 @@ events:
         name: 裁抑藩镇
         ai_chance: 45
         effect:
-          - set_flag: sming_curb_warlords
           - add_stability: -5
           - add_army_loyalty: -8
           - add_modifier: { army_defense_pct: 3 }
@@ -492,7 +466,6 @@ events:
         ai_chance: 65
         effect:
           - set_flag: zheng_taiwan_plan
-          - set_flag: zheng_east
           - add_treasury: -100000
           - add_stability: 5
           - trigger_event: { id: ZHENG_e_taiwan_2, delay_days: 30 }
@@ -550,7 +523,6 @@ events:
         name: 允其体面撤走
         ai_chance: 50
         effect:
-          - set_flag: zheng_taiwan
           - add_stability: 8
           - add_treasury: 50000
           - change_owner: { province: anping, to: ZHENG }
@@ -558,7 +530,6 @@ events:
         name: 没收公司财产
         ai_chance: 50
         effect:
-          - set_flag: zheng_taiwan
           - add_treasury: 150000
           - add_stability: -3
           - change_owner: { province: anping, to: ZHENG }
@@ -641,7 +612,6 @@ events:
         name: 编入八旗
         ai_chance: 50
         effect:
-          - set_flag: mongol_banners
           - add_treasury: 100000
           - add_relation: { target: QING, value: 30 }
           - add_modifier: { cavalry_attack_pct: 5 }
@@ -649,7 +619,6 @@ events:
         name: 西迁卫拉特
         ai_chance: 50
         effect:
-          - set_flag: mongol_west
           - add_treasury: -50000
           - add_modifier: { cavalry_attack_pct: 8, stability_monthly: -0.05 }
 
@@ -672,7 +641,6 @@ events:
         ai_chance: 55
         effect:
           - set_flag: joseon_bingzi
-          - set_flag: joseon_fight
           - add_stability: 5
           - add_manpower: 10000
           - trigger_event: { id: JOSEON_e_bingzi_2, delay_days: 15 }
@@ -681,7 +649,6 @@ events:
         ai_chance: 45
         effect:
           - set_flag: joseon_bingzi
-          - set_flag: joseon_negotiate
           - add_stability: -5
           - add_treasury: -50000
           - trigger_event: { id: JOSEON_e_bingzi_2, delay_days: 15 }
@@ -732,7 +699,6 @@ events:
         name: 忍辱事清
         ai_chance: 65
         effect:
-          - set_flag: joseon_tributary
           - add_stability: -5
           - add_treasury: -100000
           - add_relation: { target: QING, value: 30 }
@@ -740,7 +706,6 @@ events:
         name: 阴结明朝
         ai_chance: 35
         effect:
-          - set_flag: joseon_secret_ming
           - add_stability: 3
           - add_relation: { target: MING, value: 30 }
           - add_relation: { target: QING, value: -20 }
@@ -822,14 +787,12 @@ events:
         name: 维持现状
         ai_chance: 60
         effect:
-          - set_flag: japan_sakoku_done
           - add_treasury: 50000
           - add_modifier: { trade_efficiency_pct: 4 }
       - id: open
         name: 暗中扩贸
         ai_chance: 40
         effect:
-          - set_flag: japan_sakoku_done
           - add_treasury: 100000
           - add_modifier: { trade_efficiency_pct: 8, stability_monthly: -0.03 }
 
@@ -910,7 +873,6 @@ events:
         name: 结好清朝
         ai_chance: 55
         effect:
-          - set_flag: tibet_qing_tribute
           - add_treasury: 50000
           - add_relation: { target: QING, value: 30 }
           - add_mandate: 5
@@ -918,7 +880,6 @@ events:
         name: 依靠和硕特
         ai_chance: 45
         effect:
-          - set_flag: tibet_mongol_guard
           - add_manpower: 5000
           - add_modifier: { army_defense_pct: 5 }
 
@@ -941,7 +902,6 @@ events:
         ai_chance: 60
         effect:
           - set_flag: voc_zeelandia
-          - set_flag: voc_defend
           - add_treasury: -50000
           - trigger_event: { id: VOC_e_zeelandia_2, delay_days: 20 }
       - id: negotiate
@@ -949,7 +909,6 @@ events:
         ai_chance: 40
         effect:
           - set_flag: voc_zeelandia
-          - set_flag: voc_negotiate
           - add_treasury: -30000
           - trigger_event: { id: VOC_e_zeelandia_2, delay_days: 30 }
 
@@ -998,14 +957,12 @@ events:
         name: 撤往巴达维亚
         ai_chance: 55
         effect:
-          - set_flag: voc_taiwan_lost
           - add_treasury: -50000
           - add_modifier: { trade_efficiency_pct: -5 }
       - id: reinforce
         name: 再派舰队
         ai_chance: 45
         effect:
-          - set_flag: voc_taiwan_lost
           - add_treasury: -150000
           - add_modifier: { naval_attack_pct: 8 }
           - add_manpower: 5000
@@ -1087,7 +1044,6 @@ events:
         name: 议定边界
         ai_chance: 55
         effect:
-          - set_flag: russia_nerchinsk
           - add_treasury: 100000
           - add_relation: { target: QING, value: 30 }
           - add_modifier: { trade_efficiency_pct: 8 }
@@ -1095,20 +1051,19 @@ events:
         name: 继续东扩
         ai_chance: 45
         effect:
-          - set_flag: russia_expand
           - add_manpower: 10000
           - add_modifier: { army_attack_pct: 4, stability_monthly: -0.05 }
 
 event_chains:
-  - { id: MING_chain_jiashen, name: 甲申, stages: [MING_e_jiashen_1, MING_e_jiashen_2, MING_e_jiashen_3], on_complete: [{ set_flag: jiashen_resolved }] }
-  - { id: QING_chain_entry, name: 入关, stages: [QING_e_entry_1, QING_e_entry_2, QING_e_entry_3], on_complete: [{ set_flag: qing_entry_done }] }
-  - { id: SHUN_chain_east, name: 东征, stages: [SHUN_e_east_1, SHUN_e_east_2, SHUN_e_east_3], on_complete: [{ set_flag: shun_east_done }] }
-  - { id: XI_chain_sichuan, name: 四川, stages: [XI_e_sichuan_1, XI_e_sichuan_2, XI_e_sichuan_3], on_complete: [{ set_flag: xi_sichuan_done }] }
-  - { id: SMING_chain_legit, name: 继统, stages: [SMING_e_legit_1, SMING_e_legit_2, SMING_e_legit_3], on_complete: [{ set_flag: sming_legit_done }] }
-  - { id: ZHENG_chain_taiwan, name: 取台, stages: [ZHENG_e_taiwan_1, ZHENG_e_taiwan_2, ZHENG_e_taiwan_3], on_complete: [{ set_flag: zheng_taiwan_done }] }
-  - { id: MONGOL_chain_lin, name: 林丹汗, stages: [MONGOL_e_lin_1, MONGOL_e_lin_2, MONGOL_e_lin_3], on_complete: [{ set_flag: mongol_lin_done }] }
-  - { id: JOSEON_chain_bingzi, name: 丙子, stages: [JOSEON_e_bingzi_1, JOSEON_e_bingzi_2, JOSEON_e_bingzi_3], on_complete: [{ set_flag: joseon_bingzi_done }] }
-  - { id: JAPAN_chain_sakoku, name: 锁国, stages: [JAPAN_e_sakoku_1, JAPAN_e_sakoku_2, JAPAN_e_sakoku_3], on_complete: [{ set_flag: japan_sakoku_done }] }
-  - { id: TIBET_chain_gushi, name: 固始汗, stages: [TIBET_e_gushi_1, TIBET_e_gushi_2, TIBET_e_gushi_3], on_complete: [{ set_flag: tibet_gushi_done }] }
-  - { id: VOC_chain_zeelandia, name: 热兰遮, stages: [VOC_e_zeelandia_1, VOC_e_zeelandia_2, VOC_e_zeelandia_3], on_complete: [{ set_flag: voc_zeelandia_done }] }
-  - { id: RUSSIA_chain_albazin, name: 雅克萨, stages: [RUSSIA_e_albazin_1, RUSSIA_e_albazin_2, RUSSIA_e_albazin_3], on_complete: [{ set_flag: russia_albazin_done }] }
+  - { id: MING_chain_jiashen, name: 甲申, stages: [MING_e_jiashen_1, MING_e_jiashen_2, MING_e_jiashen_3], on_complete: [] }
+  - { id: QING_chain_entry, name: 入关, stages: [QING_e_entry_1, QING_e_entry_2, QING_e_entry_3], on_complete: [] }
+  - { id: SHUN_chain_east, name: 东征, stages: [SHUN_e_east_1, SHUN_e_east_2, SHUN_e_east_3], on_complete: [] }
+  - { id: XI_chain_sichuan, name: 四川, stages: [XI_e_sichuan_1, XI_e_sichuan_2, XI_e_sichuan_3], on_complete: [] }
+  - { id: SMING_chain_legit, name: 继统, stages: [SMING_e_legit_1, SMING_e_legit_2, SMING_e_legit_3], on_complete: [] }
+  - { id: ZHENG_chain_taiwan, name: 取台, stages: [ZHENG_e_taiwan_1, ZHENG_e_taiwan_2, ZHENG_e_taiwan_3], on_complete: [] }
+  - { id: MONGOL_chain_lin, name: 林丹汗, stages: [MONGOL_e_lin_1, MONGOL_e_lin_2, MONGOL_e_lin_3], on_complete: [] }
+  - { id: JOSEON_chain_bingzi, name: 丙子, stages: [JOSEON_e_bingzi_1, JOSEON_e_bingzi_2, JOSEON_e_bingzi_3], on_complete: [] }
+  - { id: JAPAN_chain_sakoku, name: 锁国, stages: [JAPAN_e_sakoku_1, JAPAN_e_sakoku_2, JAPAN_e_sakoku_3], on_complete: [] }
+  - { id: TIBET_chain_gushi, name: 固始汗, stages: [TIBET_e_gushi_1, TIBET_e_gushi_2, TIBET_e_gushi_3], on_complete: [] }
+  - { id: VOC_chain_zeelandia, name: 热兰遮, stages: [VOC_e_zeelandia_1, VOC_e_zeelandia_2, VOC_e_zeelandia_3], on_complete: [] }
+  - { id: RUSSIA_chain_albazin, name: 雅克萨, stages: [RUSSIA_e_albazin_1, RUSSIA_e_albazin_2, RUSSIA_e_albazin_3], on_complete: [] }

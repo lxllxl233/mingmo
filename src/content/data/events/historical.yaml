@@ -56,8 +56,6 @@ events:
           - add_treasury: 50000
           - add_stability: -8
           - add_estate_loyalty: { estate: peasants, value: -12 }
-          - set_flag: shaanxi_famine
-
   - id: hist_kong_youde_1631
     title: 吴桥兵变
     desc: 孔有德部因欠饷哗变，据登州反明。是招抚还是剿灭？
@@ -107,7 +105,6 @@ events:
           - add_mandate: 5
           - add_stability: 4
           - add_treasury: -60000
-          - set_flag: shun_state
       - id: mobile
         name: 继续流动作战
         tooltip: 保持机动力，军心上升，稳定略降。
