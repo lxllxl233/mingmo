@@ -96,7 +96,7 @@ export function minimumAllocationShare(influence: number): number {
 function normalizedAllocation(
   content: ContentIndex,
   nation: CountryState,
-): { shares: Record<string, number>; minimums: Record<string, number> } {
+): { shares: Record<string, number>; minimums: Record<string, number>; unallocated: number } {
   const configs = content.countryEstates.get(nation.tag) ?? [];
   const keys = configs.length > 0 ? configs.map(config => config.key) : Object.keys(nation.estates);
   const raw: Record<string, number> = {};
@@ -108,15 +108,15 @@ function normalizedAllocation(
     raw[key] = Math.max(minimums[key], nation.allocation[key] ?? 100 / Math.max(1, keys.length));
   }
   const total = Object.values(raw).reduce((sum, value) => sum + value, 0);
+  const scale = total > 100 ? 100 / total : 1;
   const shares: Record<string, number> = {};
   for (const key of Object.keys(raw)) {
-    const value = total > 0 ? (raw[key]! / total) : 0;
-    shares[key] = value;
-    nation.allocation[key] = Math.round(value * 1000) / 10;
+    const percent = raw[key]! * scale;
+    shares[key] = percent / 100;
+    nation.allocation[key] = Math.round(percent * 10) / 10;
   }
-  return { shares, minimums };
+  return { shares, minimums, unallocated: Math.max(0, 1 - Object.values(shares).reduce((sum, value) => sum + value, 0)) };
 }
-
 export function runMonthlyEconomy(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
@@ -146,15 +146,11 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     const stabilityFactor = 0.55 + clamp(nation.stability, 0, 100) / 220;
     const pie = base * stabilityFactor;
-    const { shares } = normalizedAllocation(content, nation);
+    const { shares, unallocated } = normalizedAllocation(content, nation);
     let totalTax = 0;
-    let corruptionLoss = 0;
-    let loyaltyCost = 0;
-    let foodNeedFactor = 0;
     const silverByEstate: Record<string, number> = {};
     const foodByEstate: Record<string, number> = {};
     const taxByEstate: Record<string, number> = {};
-
     for (const estate of Object.values(nation.estates)) {
       const law = lawOf(content, nation, estate.key);
       const share = shares[estate.key] ?? 0;
@@ -171,45 +167,40 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
         0.8,
       );
       const efficiency = law.estate === 'merchants' ? tradeEfficiency : 1;
-
-      const collectedBeforeDeductions = gross
+      let tax = gross
         * law.efficiency
         * (1 - evasion)
         * taxEfficiency
         * efficiency;
-      const corrupt = collectedBeforeDeductions * clamp(nation.corruption / 250, 0, 0.7);
-      const stabilityCost = collectedBeforeDeductions * (1 - estate.loyalty / 100) * 0.24;
-      let tax = collectedBeforeDeductions - corrupt - stabilityCost;
       if (estate.loyalty < 30) tax *= 0.5 + estate.loyalty / 60;
       if (estate.reform) tax *= 0.8;
       tax = Math.max(0, tax);
       estate.collected = tax;
       totalTax += tax;
-      corruptionLoss += corrupt;
-      loyaltyCost += stabilityCost;
       silverByEstate[estate.key] = tax;
       taxByEstate[estate.key] = tax;
-      foodByEstate[estate.key] = (allocatedAnnual / 12) / Math.max(0.1, content.balance.economy.grainPrice);
-      foodNeedFactor += (nation.estateFoodPlan[estate.key] === 'subsidy'
-        ? 1.15
-        : nation.estateFoodPlan[estate.key] === 'ration' ? 0.8 : 1) * share;
     }
 
+    const averageLoyalty = Object.values(nation.estates).reduce((sum, estate) => sum + estate.loyalty, 0)
+      / Math.max(1, Object.values(nation.estates).length);
+    const corruptionLoss = totalTax * clamp(nation.corruption / 250, 0, 0.7);
+    const loyaltyCost = totalTax * (1 - averageLoyalty / 100) * 0.24;
     const armyPay = monthlyArmyPay(state, content, nation.tag);
     const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth;
-    const population = provinces.reduce((sum, entry) => sum + entry.state.population, 0);
-    const civilianFood = population * content.balance.economy.foodPerPersonMonth * foodNeedFactor;
-    const foodNeed = civilianFood + armyFood;
-    const availableForFood = Math.max(0, totalTax - armyPay);
-    const foodPurchaseSilver = availableForFood * clamp(nation.foodPurchasePct, 0, 100) / 100;
+    const availableAfterFixed = Math.max(0, totalTax - corruptionLoss - loyaltyCost - armyPay);
+    const foodPurchaseSilver = availableAfterFixed * clamp(nation.foodPurchasePct, 0, 100) / 100;
     const foodPurchased = foodPurchaseSilver / Math.max(0.1, content.balance.economy.grainPrice);
-    nation.food += foodPurchased;
-
     const hoardCap = 500000 + provinces.length * 4000;
     const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.08 : 0;
-    const expense = armyPay + hoardLoss;
-    const net = totalTax - armyPay - foodPurchaseSilver - hoardLoss;
+    const net = availableAfterFixed - foodPurchaseSilver - hoardLoss;
+    const expense = corruptionLoss + loyaltyCost + armyPay + foodPurchaseSilver + hoardLoss;
+    nation.food += foodPurchased;
     nation.treasury += net;
+
+    for (const estate of Object.values(nation.estates)) {
+      const share = shares[estate.key] ?? 0;
+      foodByEstate[estate.key] = foodPurchased * share;
+    }
 
     if (nation.treasury < 0) {
       const shortfall = -nation.treasury;
@@ -222,21 +213,20 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
 
     let foodShortage = false;
-    if (nation.food < foodNeed) {
+    if (nation.food < armyFood) {
       nation.food = 0;
       foodShortage = true;
-      nation.stability = clamp(nation.stability - 0.9, 0, 100);
+      nation.stability = clamp(nation.stability - 0.4, 0, 100);
+      nation.armyLoyalty = clamp(nation.armyLoyalty - 0.2, 0, 100);
     } else {
-      nation.food -= foodNeed;
+      nation.food -= armyFood;
     }
     nation.flags['food_shortage'] = foodShortage;
-    for (const estate of Object.values(nation.estates)) {
-      const plan = nation.estateFoodPlan[estate.key] ?? 'market';
-      if (foodShortage) estate.loyalty = clamp(estate.loyalty - 2, 0, 100);
-      else if (plan === 'subsidy') estate.loyalty = clamp(estate.loyalty + 0.12, 0, 100);
-      else if (plan === 'ration') estate.loyalty = clamp(estate.loyalty - 0.18, 0, 100);
+    if (foodShortage) {
+      for (const estate of Object.values(nation.estates)) {
+        estate.loyalty = clamp(estate.loyalty - 0.8, 0, 100);
+      }
     }
-
     const silverByRegion: Record<string, number> = {};
     const foodByRegion: Record<string, number> = {};
     for (const [regionId, regionBase] of Object.entries(baseByRegion)) {
@@ -246,8 +236,6 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
 
     nation.manpower += weightedPopulation * content.balance.economy.manpowerRegenRate * government.manpower;
-    const averageLoyalty = Object.values(nation.estates).reduce((sum, estate) => sum + estate.loyalty, 0)
-      / Math.max(1, Object.values(nation.estates).length);
     const momentumTrend = (nation.stability - 50) / 240
       + (averageLoyalty - 50) / 420
       - nation.warExhaustion / 260
@@ -323,6 +311,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       allocation: { ...shares },
       taxByEstate,
       economicPie: pie / 12,
+      unallocated,
       corruptionLoss,
       loyaltyCost,
       foodPurchaseSilver,
@@ -335,7 +324,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       expenseCourt: 0,
       foodIncome: foodPurchased,
       foodArmy: armyFood,
-      foodCivilian: civilianFood,
+      foodCivilian: 0,
       arrears: nation.arrears,
     };
     nation.lastReport = report;
@@ -354,6 +343,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
   }
 }
+
+
+
 
 
 

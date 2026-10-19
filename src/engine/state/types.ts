@@ -1,4 +1,4 @@
-import type { Modifier } from '../../content/types';
+﻿import type { Modifier } from '../../content/types';
 
 export interface TimedModifier {
   id: string;
@@ -105,6 +105,7 @@ export interface MonthlyReport {
   allocation?: Record<string, number>;
   taxByEstate?: Record<string, number>;
   economicPie?: number;
+  unallocated?: number;
   corruptionLoss?: number;
   loyaltyCost?: number;
   foodPurchaseSilver?: number;
@@ -142,7 +143,6 @@ export interface CountryState {
   foodCrisisDays: number;
   allocation: Record<string, number>;
   foodPurchasePct: number;
-  estateFoodPlan: Record<string, 'market' | 'subsidy' | 'ration'>;
   estates: Record<string, EstateState>;
   factions: Record<string, number>;
   focus: { id: string; progress: number } | null;
@@ -298,3 +298,5 @@ export function armyStrength(army: ArmyState): number {
   const c = army.composition;
   return c.infantry + c.firearm + c.cavalry + c.artillery + c.naval;
 }
+
+

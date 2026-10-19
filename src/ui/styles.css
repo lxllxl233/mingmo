@@ -735,8 +735,14 @@ button:active { transform: translateY(1px); }
 .war-dock.collapsed .war-dock-head { border-bottom: 0; }
 
 .allocation-top { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: center; margin: 10px 0 14px; }
-.allocation-pie { width: 142px; height: 142px; border-radius: 50%; border: 2px solid var(--line); box-shadow: inset 0 0 0 5px rgba(247,237,217,.8); position: relative; }
-.allocation-pie-hole { position: absolute; inset: 30px; border-radius: 50%; background: #f1e7d2; display: grid; place-content: center; text-align: center; border: 1px solid var(--line); }
+.allocation-pie-wrap { width: 150px; height: 150px; position: relative; }
+.allocation-pie-svg { width: 150px; height: 150px; overflow: visible; }
+.allocation-pie-svg path { cursor: help; transition: filter .12s ease; }
+.allocation-pie-svg path:hover { filter: brightness(1.08) saturate(1.12); }
+.allocation-pie-tooltip { pointer-events: none; position: absolute; left: 154px; top: 0; z-index: 5; width: 155px; padding: 7px 8px; background: #f7edd9; border: 1px solid #8b6a3f; box-shadow: 0 4px 12px rgba(31,28,24,.22); display: flex; flex-direction: column; gap: 2px; font-size: 10px; }
+.allocation-pie-tooltip b { color: var(--red); font-size: 12px; }
+.allocation-pie-tooltip span { color: var(--ink-soft); }
+.allocation-pie-hole { pointer-events: none; position: absolute; inset: 30px; border-radius: 50%; background: #f1e7d2; display: grid; place-content: center; text-align: center; border: 1px solid var(--line); }
 .allocation-pie-hole b { color: var(--red); font-size: 24px; line-height: 1; }
 .allocation-pie-hole small { color: var(--ink-soft); font-size: 10px; }
 .allocation-overview { display: flex; flex-direction: column; gap: 2px; }
@@ -751,4 +757,6 @@ button:active { transform: translateY(1px); }
 .allocation-controls label { display: flex; flex-direction: column; gap: 3px; font-size: 10px; color: var(--ink-soft); }
 .allocation-controls select { width: 100%; }
 .allocation-food { border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 8px 0; margin: 5px 0 10px; }
+
+
 

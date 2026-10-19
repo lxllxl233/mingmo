@@ -1,4 +1,4 @@
-const GLYPHS: Record<string, string> = {
+﻿const GLYPHS: Record<string, string> = {
   focus: 'M5 3h8v2H7v10h8V8h2v9H5zM11 3l3 1-1 3-2-1z',
   core: 'M9 2l2.1 4.3L16 7l-3.5 3.4.8 4.8L9 12.9 4.7 15.2l.8-4.8L2 7l4.9-.7z',
   research: 'M7 2h4v4l3 7a2 2 0 0 1-1.8 3H5.8A2 2 0 0 1 4 13l3-7zM7 4h4',
@@ -17,3 +17,4 @@ export function SidebarIcon({ kind }: { kind: string }) {
     </svg>
   );
 }
+

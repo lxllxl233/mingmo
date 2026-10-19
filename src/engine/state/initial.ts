@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   ContentIndex,
   CountryStarting,
   EstateKey,
@@ -100,11 +100,9 @@ export function createInitialState(
     const configs = content.countryEstates.get(def.tag) ?? [];
     const estates: Record<string, EstateState> = {};
     const allocation: Record<string, number> = {};
-    const estateFoodPlan: Record<string, 'market' | 'subsidy' | 'ration'> = {};
     for (const config of configs) {
       estates[config.key] = buildEstate(content, config.key, config);
       allocation[config.key] = Math.round(config.incomeShare * 1000) / 10;
-      estateFoodPlan[config.key] = 'market';
     }
     const owned = Object.entries(owners).filter(([, owner]) => owner === def.tag);
     let capital = def.capital;
@@ -140,7 +138,6 @@ export function createInitialState(
       foodCrisisDays: 0,
       allocation,
       foodPurchasePct: 30,
-      estateFoodPlan,
       estates,
       factions,
       focus: null,
@@ -331,3 +328,5 @@ export function createInitialState(
   }
   return state;
 }
+
+

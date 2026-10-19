@@ -21,7 +21,6 @@ export type Command =
   | { type: 'tax.setLaw'; estate: string; lawId: string }
   | { type: 'economy.setAllocation'; estate: string; value: number }
   | { type: 'economy.setFoodPurchasePct'; value: number }
-  | { type: 'economy.setEstateFoodPlan'; estate: string; plan: 'market' | 'subsidy' | 'ration' }
   | { type: 'decision.take'; decisionId: string }
   | { type: 'army.recruit'; province: string; template: string; size: number }
   | { type: 'army.move'; armyId: string; path: string[] }
@@ -111,12 +110,6 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       const nation = state.countries[tag];
       if (!nation) throw new CommandError('country not found');
       nation.foodPurchasePct = Math.max(0, Math.min(100, command.value));
-      break;
-    }
-    case 'economy.setEstateFoodPlan': {
-      const nation = state.countries[tag];
-      if (!nation || !nation.estates[command.estate]) throw new CommandError('estate not found');
-      nation.estateFoodPlan[command.estate] = command.plan;
       break;
     }
     case 'decision.take':
@@ -264,3 +257,5 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
   }
   return state;
 }
+
+

@@ -106,7 +106,6 @@ export function TopBar() {
             <b>粮储 {number(country?.food ?? 0)} 石</b>
             <span>本月购粮 {number(report?.foodPurchased ?? 0)} 石</span>
             <span>军队口粮 {number(report?.foodArmy ?? 0)} 石</span>
-            <span>民用口粮 {number(report?.foodCivilian ?? 0)} 石</span>
             <span>购粮支出 {number(report?.foodPurchaseSilver ?? 0)} 两</span>
             <span>训练日耗 {number(trainingFoodDay)} 石</span>
             <span>粮价系数 {content.balance.economy.grainPrice.toFixed(2)}</span>

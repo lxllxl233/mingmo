@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 import type { ContentIndex } from '../../content/types';
 import { content } from '../../content/browser';
 import { createInitialState } from '../../engine/state/initial';
@@ -499,5 +499,6 @@ export const useGameStore = create<UiStore>((set, get) => ({
   },
   reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, peaceWarId: null, message: null }),
 }));
+
 
 
