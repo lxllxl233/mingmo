@@ -150,6 +150,17 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       if ((nation.factions['clergy'] ?? 0) > 50) nation.stability = clamp(nation.stability + 0.01, 0, 100);
     }
 
+    if (nation.tag === 'JOSEON') {
+      if (nation.flags['joseon_north'] === true) {
+        nation.armyLoyalty = clamp(nation.armyLoyalty + 0.03, 0, 100);
+        nation.stability = clamp(nation.stability - 0.02, 0, 100);
+        nation.manpower += 200;
+      } else {
+        nation.stability = clamp(nation.stability + 0.01, 0, 100);
+        nation.corruption = clamp(nation.corruption - 0.01, 0, 100);
+      }
+    }
+
     let rebellions = 0;
     for (const entry of countryProvinceList(state, content, nation.tag)) {
       if (rebellions >= 1) break;

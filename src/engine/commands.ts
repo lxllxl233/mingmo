@@ -20,6 +20,7 @@ import { compromiseCourt, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } f
 import { openTradePost, recruitMerchants, takeDividend } from './systems/trade';
 import { holdKurultai, marriagePact, organizeBanners, raidBorder } from './systems/league';
 import { nagasakiTrade, persecuteChristians, toggleSakoku } from './systems/sakoku';
+import { northernExpedition, sendTribute, submitToQing } from './systems/tribute';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -62,6 +63,9 @@ export type Command =
   | { type: 'sakoku.toggle' }
   | { type: 'sakoku.nagasaki' }
   | { type: 'sakoku.persecute' }
+  | { type: 'joseon.submit' }
+  | { type: 'joseon.north' }
+  | { type: 'joseon.tribute' }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -368,6 +372,18 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     }
     case 'sakoku.persecute': {
       if (!persecuteChristians(state, tag)) throw new CommandError('禁教需要 10 政治点且不在冷却');
+      break;
+    }
+    case 'joseon.submit': {
+      if (!submitToQing(state, tag)) throw new CommandError('事大需要 5 政治点、清廷存活且不在冷却');
+      break;
+    }
+    case 'joseon.north': {
+      if (!northernExpedition(state, tag)) throw new CommandError('北伐需要 10 政治点且不在冷却');
+      break;
+    }
+    case 'joseon.tribute': {
+      if (!sendTribute(state, tag)) throw new CommandError('朝贡需要银 2 万、粮 2 万石、清廷存活且不在冷却');
       break;
     }
     case 'province.integrateCore': {

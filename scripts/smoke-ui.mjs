@@ -116,6 +116,15 @@ if (await sakokuButton.count() > 0) {
   await page.screenshot({ path: `ui-sakoku-${suffix}.png` });
   await sakokuButton.click();
 }
+
+const tributeButton = page.getByRole('button', { name: '事大', exact: true });
+if (await tributeButton.count() > 0) {
+  await tributeButton.click();
+  await page.waitForTimeout(400);
+  console.log('tribute:', (await page.locator('.tribute-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
+  await page.screenshot({ path: `ui-tribute-${suffix}.png` });
+  await tributeButton.click();
+}
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
 console.log('after-tick:', (await page.locator('.bottombar').innerText()).replace(/\s+/g, ' ').slice(0, 240));

@@ -32,6 +32,7 @@ export type PanelKey =
   | 'trade'
   | 'league'
   | 'sakoku'
+  | 'tribute'
   | 'log';
 
 let suppressArmySelectionUntil = 0;

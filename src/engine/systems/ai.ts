@@ -13,6 +13,7 @@ import { compromiseCourt, legitimacyCooldown, mobilizeLoyalists, proclaimEmperor
 import { dividendCooldown, openTradePost, recruitMerchants, takeDividend } from './trade';
 import { holdKurultai, leagueCooldown, marriagePact, organizeBanners, raidBorder } from './league';
 import { isJapanOpen, nagasakiTrade, persecuteChristians, sakokuCooldown, toggleSakoku } from './sakoku';
+import { isJoseonNorth, northernExpedition, sendTribute, submitToQing, tributeCooldown } from './tribute';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
@@ -700,6 +701,16 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
         nagasakiTrade(state, content, 'JAPAN');
       } else if (nation.politicalPower >= 10) {
         persecuteChristians(state, 'JAPAN');
+      }
+    }
+    if (nation.tag === 'JOSEON' && tributeCooldown(state, 'JOSEON') === 0) {
+      const atWarWithQing = areAtWar(state, 'JOSEON', 'QING');
+      if (atWarWithQing && !isJoseonNorth(state) && nation.stability > 35 && nation.politicalPower >= 10) {
+        northernExpedition(state, 'JOSEON');
+      } else if (!isJoseonNorth(state) && nation.treasury > 80000) {
+        sendTribute(state, 'JOSEON');
+      } else if (isJoseonNorth(state) && state.countries['QING']?.alive) {
+        submitToQing(state, 'JOSEON');
       }
     }
     manageRebelGrowth(state, content, nation.tag);

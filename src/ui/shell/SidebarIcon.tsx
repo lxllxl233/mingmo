@@ -13,6 +13,7 @@ const GLYPHS: Record<string, string> = {
   trade: 'M2 13h14l-2 3H4zM4 13l2-6h6l2 6M7 7V4h4v3',
   league: 'M2 14l4-9 3 5 3-7 4 11z',
   sakoku: 'M4 3h10v12H4zM7 3v12M4 8h10',
+  tribute: 'M3 5h10v3H3zM4 8h8v6H4zM6 11h4',
   decisions: 'M3 15h7M6 15V6l4-2 4 2v9M8 8h4M8 11h4',
   log: 'M4 2h9v14H4zM6 5h5M6 8h5M6 11h5',
 };

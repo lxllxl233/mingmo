@@ -28,6 +28,7 @@ import { LegitimacyPanel } from '../panels/LegitimacyPanel';
 import { TradePanel } from '../panels/TradePanel';
 import { LeaguePanel } from '../panels/LeaguePanel';
 import { SakokuPanel } from '../panels/SakokuPanel';
+import { TributePanel } from '../panels/TributePanel';
 import { LogPanel } from '../panels/LogPanel';
 import { EventModal } from '../overlays/EventModal';
 import { WarAlertModal } from '../overlays/WarAlertModal';
@@ -180,6 +181,7 @@ export function GameShell() {
     ...(game.playerTag === 'ZHENG' ? [{ key: 'trade' as PanelKey, label: '海贸' }] : []),
     ...(game.playerTag === 'MONGOL' ? [{ key: 'league' as PanelKey, label: '盟旗' }] : []),
     ...(game.playerTag === 'JAPAN' ? [{ key: 'sakoku' as PanelKey, label: '锁国' }] : []),
+    ...(game.playerTag === 'JOSEON' ? [{ key: 'tribute' as PanelKey, label: '事大' }] : []),
   ];
 
   return (
@@ -233,6 +235,7 @@ export function GameShell() {
           {panel === 'trade' && <TradePanel />}
           {panel === 'league' && <LeaguePanel />}
           {panel === 'sakoku' && <SakokuPanel />}
+          {panel === 'tribute' && <TributePanel />}
           {panel === 'log' && <LogPanel />}
           {panel === null && (
             <div className="panel objective-panel">
