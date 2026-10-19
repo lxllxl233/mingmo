@@ -1,4 +1,4 @@
-﻿import { evaluateTrigger } from '../../engine/rules/triggers';
+import { evaluateTrigger } from '../../engine/rules/triggers';
 import { useGameStore } from '../state/store';
 import { effectsSummary } from '../format';
 
@@ -22,7 +22,8 @@ export function DecisionPanel() {
         <span>可见决议 <b>{visibleDecisions.length}</b></span>
         <span>当前可用 <b>{readyCount}</b></span>
         <span>国库 <b>{Math.round(country.treasury).toLocaleString()}</b> 两</span>
-        <span>政治 <b>{Math.round(country.politicalPower)}</b></span>\n        <span>粮食 <b>{Math.round(country.food).toLocaleString()}</b> 石</span>
+        <span>政治 <b>{Math.round(country.politicalPower)}</b></span>
+        <span>粮食 <b>{Math.round(country.food).toLocaleString()}</b> 石</span>
       </div>
       {decisions.length === 0 && <p className="muted">暂无可用的决议。</p>}
       {decisions.map(decision => {

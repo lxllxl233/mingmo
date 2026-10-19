@@ -1,6 +1,17 @@
 import { formatDate } from '../../engine/core/clock';
 import { useGameStore } from '../state/store';
 
+const CATEGORY_NAMES: Record<string, string> = {
+  economy: '财政',
+  military: '军事',
+  diplomacy: '外交',
+  politics: '政治',
+  estate: '阶级',
+  disaster: '灾荒',
+  event: '事件',
+  system: '系统',
+};
+
 export function LogPanel() {
   const game = useGameStore(state => state.game);
   if (!game) return null;
@@ -12,7 +23,7 @@ export function LogPanel() {
       {entries.map((entry, index) => (
         <div className={`log-line ${entry.severity}`} key={`${entry.day}-${index}`}>
           <span className="day">{formatDate(entry.day)}</span>
-          <span className="muted">[{entry.category}] </span>
+          <span className="muted">[{CATEGORY_NAMES[entry.category] ?? entry.category}] </span>
           {entry.text}
         </div>
       ))}

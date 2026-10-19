@@ -4,6 +4,13 @@ import { canMarchThrough } from '../../engine/rules/access';
 import { useGameStore } from '../state/store';
 import { formatNumber } from '../format';
 
+const STANCE_NAMES: Record<string, string> = {
+  hold: '驻扎',
+  move: '行军',
+  siege: '围城',
+  battle: '交战',
+};
+
 function findPath(content: ContentIndex, state: GameState, from: string, to: string, tag: string): string[] | null {
   if (from === to) return [];
   const queue: Array<{ id: string; path: string[] }> = [{ id: from, path: [] }];
@@ -88,7 +95,7 @@ export function MilitaryPanel() {
             onClick={() => selectArmy(entry.id)}
             style={{ cursor: 'pointer' }}
           >
-            <div className="head"><span className="name">{entry.name}</span><span className="muted">{entry.stance}</span></div>
+            <div className="head"><span className="name">{entry.name}</span><span className="muted">{STANCE_NAMES[entry.stance] ?? entry.stance}</span></div>
             <div className="metrics">
               <span>{Math.round(strength).toLocaleString()} 人</span>
               <span>组织 {entry.organization.toFixed(0)}</span>
