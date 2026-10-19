@@ -15,7 +15,7 @@ region_owners:
   reg_shaanxi: MING
   reg_hexi: MING
   reg_xuanda: MING
-  reg_liaodong: MING
+  reg_liaodong: QING
   reg_nanzhili: MING
   reg_zhejiang: MING
   reg_jiangxi: MING
@@ -80,7 +80,11 @@ province_overrides:
   guangning: QING
   kaizhou: QING
   jinzhou: MING
+  jinzhou_a: MING
+  jinzhou_b: MING
   ningyuan: MING
+  ningyuan_a: MING
+  ningyuan_b: MING
   yanan: SHUN
   chengdu: XI
   quanzhou: ZHENG
@@ -144,6 +148,7 @@ initial_wars:
   - { attacker: SHUN, defender: MING, goal: 陕西民变 }
   - { attacker: XI, defender: MING, goal: 四川割据 }
 initial_events: []
+
 
 
 

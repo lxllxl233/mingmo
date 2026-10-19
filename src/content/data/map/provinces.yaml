@@ -81,7 +81,6 @@ provinces:
     neighbors:
       - anping_a
       - anping_b
-      - fuzhou
       - penghu
   - id: anping_a
     name: 安平东
@@ -1633,11 +1632,9 @@ provinces:
     dominant_estate: merchants
     supply_limit: 14021
     neighbors:
-      - anping
       - fuzhou_a
       - fuzhou_b
       - quanzhou_b
-      - tamsui
       - yanping_b
   - id: fuzhou_a
     name: 福州东
@@ -1658,7 +1655,6 @@ provinces:
       - fuzhou
       - quanzhou
       - quanzhou_b
-      - tamsui
   - id: fuzhou_b
     name: 福州西
     prefecture: pref_fuzhou
@@ -7842,8 +7838,6 @@ provinces:
     dominant_estate: merchants
     supply_limit: 4363
     neighbors:
-      - fuzhou
-      - fuzhou_a
       - keelung
       - keelung_a
       - keelung_b
