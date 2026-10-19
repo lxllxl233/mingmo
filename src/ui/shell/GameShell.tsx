@@ -23,6 +23,7 @@ import { DiplomacyPanel } from '../panels/DiplomacyPanel';
 import { DecisionPanel } from '../panels/DecisionPanel';
 import { CourtPanel } from '../panels/CourtPanel';
 import { BannerPanel } from '../panels/BannerPanel';
+import { ShunPanel } from '../panels/ShunPanel';
 import { LogPanel } from '../panels/LogPanel';
 import { EventModal } from '../overlays/EventModal';
 import { WarAlertModal } from '../overlays/WarAlertModal';
@@ -170,6 +171,7 @@ export function GameShell() {
     ...SIDEBAR,
     ...(game.playerTag === 'MING' ? [{ key: 'court' as PanelKey, label: '朝议' }] : []),
     ...(game.playerTag === 'QING' ? [{ key: 'banner' as PanelKey, label: '八旗' }] : []),
+    ...(game.playerTag === 'SHUN' ? [{ key: 'confiscation' as PanelKey, label: '追赃' }] : []),
   ];
 
   return (
@@ -218,6 +220,7 @@ export function GameShell() {
           {panel === 'decisions' && <DecisionPanel />}
           {panel === 'court' && <CourtPanel />}
           {panel === 'banner' && <BannerPanel />}
+          {panel === 'confiscation' && <ShunPanel />}
           {panel === 'log' && <LogPanel />}
           {panel === null && (
             <div className="panel objective-panel">

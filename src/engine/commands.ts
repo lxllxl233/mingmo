@@ -15,6 +15,7 @@ import { startCoreIntegration } from './systems/core';
 import { startBuilding } from './systems/buildings';
 import { favorCourtFaction, suppressCourtFaction, type CourtFaction } from './systems/court';
 import { expandBanners, raiseBanners, reformBanners } from './systems/banners';
+import { extortGentry, landReform, pacifyGentry } from './systems/confiscation';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -40,6 +41,9 @@ export type Command =
   | { type: 'banner.expand' }
   | { type: 'banner.raise' }
   | { type: 'banner.reform' }
+  | { type: 'confiscation.extort' }
+  | { type: 'confiscation.land' }
+  | { type: 'confiscation.relief' }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -276,6 +280,18 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     }
     case 'banner.reform': {
       if (!reformBanners(state, tag)) throw new CommandError('政治点不足，无法整饬旗务');
+      break;
+    }
+    case 'confiscation.extort': {
+      if (!extortGentry(state, content, tag)) throw new CommandError('追赃助饷尚在冷却或无法执行');
+      break;
+    }
+    case 'confiscation.land': {
+      if (!landReform(state, tag)) throw new CommandError('均田免赋需要 20 政治点且不在冷却');
+      break;
+    }
+    case 'confiscation.relief': {
+      if (!pacifyGentry(state, tag)) throw new CommandError('安民需要 5 万两且不在冷却');
       break;
     }
     case 'province.integrateCore': {

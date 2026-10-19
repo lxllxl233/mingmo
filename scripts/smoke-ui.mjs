@@ -66,6 +66,15 @@ if (await bannerButton.count() > 0) {
   await page.screenshot({ path: `ui-banner-${suffix}.png` });
   await bannerButton.click();
 }
+
+const shunButton = page.getByRole('button', { name: '追赃', exact: true });
+if (await shunButton.count() > 0) {
+  await shunButton.click();
+  await page.waitForTimeout(400);
+  console.log('shun:', (await page.locator('.shun-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
+  await page.screenshot({ path: `ui-shun-${suffix}.png` });
+  await shunButton.click();
+}
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
 console.log('after-tick:', (await page.locator('.bottombar').innerText()).replace(/\s+/g, ' ').slice(0, 240));

@@ -109,6 +109,16 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       nation.authority = clamp(nation.authority + 0.05, 0, 100);
     }
 
+    if (nation.tag === 'SHUN') {
+      const gentry = nation.estates['gentry']?.loyalty ?? 50;
+      const farmers = nation.estates['farmers']?.loyalty ?? 50;
+      if (gentry < 30) {
+        nation.stability = clamp(nation.stability - 0.05, 0, 100);
+        nation.corruption = clamp(nation.corruption + 0.02, 0, 100);
+      }
+      if (farmers > 70) nation.manpower += 300;
+    }
+
     let rebellions = 0;
     for (const entry of countryProvinceList(state, content, nation.tag)) {
       if (rebellions >= 1) break;

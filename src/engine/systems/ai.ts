@@ -8,6 +8,7 @@ import { startTaxReform } from './tax';
 import { enqueueTraining } from './training';
 import { startCoreIntegration } from './core';
 import { startBuilding } from './buildings';
+import { confiscationCooldown, extortGentry, pacifyGentry } from './confiscation';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
@@ -647,6 +648,10 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageArmy(state, content, nation.tag);
     manageInvestments(state, content, nation.tag);
     manageDiplomacy(state, content, nation.tag);
+    if (nation.tag === 'SHUN' && confiscationCooldown(state, nation.tag) === 0) {
+      if (nation.treasury < 80000) extortGentry(state, content, nation.tag);
+      else if (nation.stability < 35 && nation.treasury > 150000) pacifyGentry(state, nation.tag);
+    }
     manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);
     manageWar(state, content, nation.tag);

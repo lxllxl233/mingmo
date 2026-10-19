@@ -8,6 +8,7 @@ const GLYPHS: Record<string, string> = {
   diplomacy: 'M4 16V3M5 3h8l-2 3 2 3H5',
   court: 'M9 2l2 3h3l-1 4 3 2-3 2 1 4h-3l-2 3-2-3H4l1-4-3-2 3-2-1-4h3z',
   banner: 'M4 15V3h8l-2 3 2 3H4M4 15h7',
+  confiscation: 'M3 6h10v8H3zM5 6V4h6v2M6 9h4',
   decisions: 'M3 15h7M6 15V6l4-2 4 2v9M8 8h4M8 11h4',
   log: 'M4 2h9v14H4zM6 5h5M6 8h5M6 11h5',
 };
