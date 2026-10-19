@@ -828,6 +828,9 @@ button:active { transform: translateY(1px); }
 .court-actions { display: flex; gap: 5px; }
 .court-actions button { padding: 3px 7px; font-size: 11px; }
 .court-actions button:disabled { opacity: .45; }
+.banner-actions { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.banner-actions button { text-align: left; font-size: 12px; padding: 5px 8px; }
+.banner-actions button:disabled { opacity: .45; }
 
 .settings-card { width: min(560px, 94vw); }
 .setting-row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }

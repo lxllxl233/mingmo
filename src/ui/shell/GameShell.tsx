@@ -22,6 +22,7 @@ import { MilitaryPanel } from '../panels/MilitaryPanel';
 import { DiplomacyPanel } from '../panels/DiplomacyPanel';
 import { DecisionPanel } from '../panels/DecisionPanel';
 import { CourtPanel } from '../panels/CourtPanel';
+import { BannerPanel } from '../panels/BannerPanel';
 import { LogPanel } from '../panels/LogPanel';
 import { EventModal } from '../overlays/EventModal';
 import { WarAlertModal } from '../overlays/WarAlertModal';
@@ -165,9 +166,11 @@ export function GameShell() {
   const playerDef = content.countries.get(game.playerTag);
   const playerLeader = playerDef?.leadersByScenario?.[game.scenarioId] ?? playerDef?.leader;
   const pending = game.pendingEvents.filter(event => event.country === game.playerTag);
-  const sidebar = game.playerTag === 'MING'
-    ? [...SIDEBAR, { key: 'court' as PanelKey, label: '朝议' }]
-    : SIDEBAR;
+  const sidebar = [
+    ...SIDEBAR,
+    ...(game.playerTag === 'MING' ? [{ key: 'court' as PanelKey, label: '朝议' }] : []),
+    ...(game.playerTag === 'QING' ? [{ key: 'banner' as PanelKey, label: '八旗' }] : []),
+  ];
 
   return (
     <div
@@ -214,6 +217,7 @@ export function GameShell() {
           {panel === 'diplomacy' && <DiplomacyPanel />}
           {panel === 'decisions' && <DecisionPanel />}
           {panel === 'court' && <CourtPanel />}
+          {panel === 'banner' && <BannerPanel />}
           {panel === 'log' && <LogPanel />}
           {panel === null && (
             <div className="panel objective-panel">

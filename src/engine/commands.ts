@@ -14,6 +14,7 @@ import { enqueueTraining } from './systems/training';
 import { startCoreIntegration } from './systems/core';
 import { startBuilding } from './systems/buildings';
 import { favorCourtFaction, suppressCourtFaction, type CourtFaction } from './systems/court';
+import { expandBanners, raiseBanners, reformBanners } from './systems/banners';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -36,6 +37,9 @@ export type Command =
   | { type: 'province.build'; provinceId: string; buildingId: string }
   | { type: 'court.favor'; faction: string }
   | { type: 'court.suppress'; faction: string }
+  | { type: 'banner.expand' }
+  | { type: 'banner.raise' }
+  | { type: 'banner.reform' }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -260,6 +264,18 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
       if (!suppressCourtFaction(state, tag, command.faction as CourtFaction)) {
         throw new CommandError('无法打压该派系');
       }
+      break;
+    }
+    case 'banner.expand': {
+      if (!expandBanners(state, tag)) throw new CommandError('银两或兵源不足，无法扩编八旗');
+      break;
+    }
+    case 'banner.raise': {
+      if (!raiseBanners(state, tag)) throw new CommandError('政治点不足，无法抬旗');
+      break;
+    }
+    case 'banner.reform': {
+      if (!reformBanners(state, tag)) throw new CommandError('政治点不足，无法整饬旗务');
       break;
     }
     case 'province.integrateCore': {

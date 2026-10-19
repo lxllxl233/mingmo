@@ -21,6 +21,11 @@ await page.screenshot({ path: `ui-start-${suffix}.png` });
 
 await page.getByRole('button', { name: '进入势力选择' }).click();
 await page.waitForTimeout(300);
+const faction = process.env.UI_FACTION;
+if (faction) {
+  await page.locator('.faction-card').filter({ hasText: faction }).first().click();
+  await page.waitForTimeout(200);
+}
 await page.getByRole('button', { name: '开始游戏' }).click();
 await page.waitForTimeout(500);
 const skip = page.getByRole('button', { name: '跳过' });
@@ -44,12 +49,23 @@ console.log('focus-nodes:', await page.locator('.focus-tree-node').count());
 await page.screenshot({ path: `ui-focus-${suffix}.png` });
 await page.getByRole('button', { name: '关闭', exact: true }).first().click();
 
-await page.getByRole('button', { name: '朝议', exact: true }).click();
-await page.waitForTimeout(400);
-console.log('court:', (await page.locator('.court-panel').innerText()).replace(/\s+/g, ' ').slice(0, 200));
-await page.screenshot({ path: `ui-court-${suffix}.png` });
-await page.getByRole('button', { name: '朝议', exact: true }).click();
+const courtButton = page.getByRole('button', { name: '朝议', exact: true });
+if (await courtButton.count() > 0) {
+  await courtButton.click();
+  await page.waitForTimeout(400);
+  console.log('court:', (await page.locator('.court-panel').innerText()).replace(/\s+/g, ' ').slice(0, 200));
+  await page.screenshot({ path: `ui-court-${suffix}.png` });
+  await courtButton.click();
+}
 
+const bannerButton = page.getByRole('button', { name: '八旗', exact: true });
+if (await bannerButton.count() > 0) {
+  await bannerButton.click();
+  await page.waitForTimeout(400);
+  console.log('banner:', (await page.locator('.banner-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
+  await page.screenshot({ path: `ui-banner-${suffix}.png` });
+  await bannerButton.click();
+}
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
 console.log('after-tick:', (await page.locator('.bottombar').innerText()).replace(/\s+/g, ' ').slice(0, 240));

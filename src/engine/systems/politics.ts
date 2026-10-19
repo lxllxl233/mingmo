@@ -5,6 +5,7 @@ import { touchMap } from '../state/types';
 import { countryProvinceList } from './economy';
 import { aggregateCountryModifiers } from '../rules/modifiers';
 import { topCourtFaction } from './court';
+import { topBannerFaction } from './banners';
 
 export function monthlyPoliticalGain(authority: number, stability: number): number {
   return 1 + Math.max(0, Math.min(100, authority)) / 100 + Math.max(0, Math.min(100, stability)) / 200;
@@ -89,6 +90,23 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
     } else if (court === 'military') {
       nation.armyLoyalty = clamp(nation.armyLoyalty + 0.05, 0, 100);
       nation.stability = clamp(nation.stability - 0.01, 0, 100);
+    }
+
+    const banner = topBannerFaction(state, nation.tag);
+    if (banner === 'manchu') {
+      nation.armyLoyalty = clamp(nation.armyLoyalty + 0.03, 0, 100);
+      nation.stability = clamp(nation.stability + 0.01, 0, 100);
+    } else if (banner === 'han_official') {
+      nation.corruption = clamp(nation.corruption - 0.02, 0, 100);
+      nation.stability = clamp(nation.stability + 0.01, 0, 100);
+    } else if (banner === 'green_standard') {
+      nation.manpower += 500;
+      nation.stability = clamp(nation.stability - 0.01, 0, 100);
+    } else if (banner === 'banners') {
+      nation.armyLoyalty = clamp(nation.armyLoyalty + 0.05, 0, 100);
+      nation.corruption = clamp(nation.corruption + 0.01, 0, 100);
+    } else if (banner === 'imperial') {
+      nation.authority = clamp(nation.authority + 0.05, 0, 100);
     }
 
     let rebellions = 0;
