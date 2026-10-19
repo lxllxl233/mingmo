@@ -191,7 +191,7 @@ countries:
       treasury: 100000
       food: 700000
       manpower: 60000
-      political_power: 0
+      political_power: 10
       stability: 50
       mandate: 20
       corruption: 30

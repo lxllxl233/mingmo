@@ -30,6 +30,7 @@ export type PanelKey =
   | 'confiscation'
   | 'legitimacy'
   | 'trade'
+  | 'league'
   | 'log';
 
 let suppressArmySelectionUntil = 0;

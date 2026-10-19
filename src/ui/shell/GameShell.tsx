@@ -26,6 +26,7 @@ import { BannerPanel } from '../panels/BannerPanel';
 import { ShunPanel } from '../panels/ShunPanel';
 import { LegitimacyPanel } from '../panels/LegitimacyPanel';
 import { TradePanel } from '../panels/TradePanel';
+import { LeaguePanel } from '../panels/LeaguePanel';
 import { LogPanel } from '../panels/LogPanel';
 import { EventModal } from '../overlays/EventModal';
 import { WarAlertModal } from '../overlays/WarAlertModal';
@@ -176,6 +177,7 @@ export function GameShell() {
     ...(game.playerTag === 'SHUN' ? [{ key: 'confiscation' as PanelKey, label: '追赃' }] : []),
     ...(game.playerTag === 'SMING' ? [{ key: 'legitimacy' as PanelKey, label: '正统' }] : []),
     ...(game.playerTag === 'ZHENG' ? [{ key: 'trade' as PanelKey, label: '海贸' }] : []),
+    ...(game.playerTag === 'MONGOL' ? [{ key: 'league' as PanelKey, label: '盟旗' }] : []),
   ];
 
   return (
@@ -227,6 +229,7 @@ export function GameShell() {
           {panel === 'confiscation' && <ShunPanel />}
           {panel === 'legitimacy' && <LegitimacyPanel />}
           {panel === 'trade' && <TradePanel />}
+          {panel === 'league' && <LeaguePanel />}
           {panel === 'log' && <LogPanel />}
           {panel === null && (
             <div className="panel objective-panel">

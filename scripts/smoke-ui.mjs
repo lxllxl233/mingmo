@@ -98,6 +98,15 @@ if (await tradeButton.count() > 0) {
   await page.screenshot({ path: `ui-trade-${suffix}.png` });
   await tradeButton.click();
 }
+
+const leagueButton = page.getByRole('button', { name: '盟旗', exact: true });
+if (await leagueButton.count() > 0) {
+  await leagueButton.click();
+  await page.waitForTimeout(400);
+  console.log('league:', (await page.locator('.league-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
+  await page.screenshot({ path: `ui-league-${suffix}.png` });
+  await leagueButton.click();
+}
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
 console.log('after-tick:', (await page.locator('.bottombar').innerText()).replace(/\s+/g, ' ').slice(0, 240));

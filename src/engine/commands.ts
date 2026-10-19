@@ -18,6 +18,7 @@ import { expandBanners, raiseBanners, reformBanners } from './systems/banners';
 import { extortGentry, landReform, pacifyGentry } from './systems/confiscation';
 import { compromiseCourt, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './systems/legitimacy';
 import { openTradePost, recruitMerchants, takeDividend } from './systems/trade';
+import { holdKurultai, marriagePact, organizeBanners, raidBorder } from './systems/league';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -53,6 +54,10 @@ export type Command =
   | { type: 'trade.open'; portId: string }
   | { type: 'trade.dividend' }
   | { type: 'trade.recruit' }
+  | { type: 'league.kurultai' }
+  | { type: 'league.organize' }
+  | { type: 'league.raid' }
+  | { type: 'league.marriage' }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -331,6 +336,22 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     }
     case 'trade.recruit': {
       if (!recruitMerchants(state, tag)) throw new CommandError('招抚海商需要 2 万两且不在冷却');
+      break;
+    }
+    case 'league.kurultai': {
+      if (!holdKurultai(state, tag)) throw new CommandError('会盟需要 10 政治点且不在冷却');
+      break;
+    }
+    case 'league.organize': {
+      if (!organizeBanners(state, tag)) throw new CommandError('编旗需要 3 万两且不在冷却');
+      break;
+    }
+    case 'league.raid': {
+      if (!raidBorder(state, content, tag)) throw new CommandError('掠边尚在冷却');
+      break;
+    }
+    case 'league.marriage': {
+      if (!marriagePact(state, tag)) throw new CommandError('联姻需要 10 政治点、2 万两且不在冷却');
       break;
     }
     case 'province.integrateCore': {

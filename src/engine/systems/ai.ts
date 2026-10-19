@@ -11,6 +11,7 @@ import { startBuilding } from './buildings';
 import { confiscationCooldown, extortGentry, pacifyGentry } from './confiscation';
 import { compromiseCourt, legitimacyCooldown, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './legitimacy';
 import { dividendCooldown, openTradePost, recruitMerchants, takeDividend } from './trade';
+import { holdKurultai, leagueCooldown, marriagePact, organizeBanners, raidBorder } from './league';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
@@ -682,6 +683,12 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
           recruitMerchants(state, 'ZHENG');
         }
       }
+    }
+    if (nation.tag === 'MONGOL' && leagueCooldown(state, 'MONGOL') === 0) {
+      if (nation.politicalPower >= 10 && nation.mandate < 45) holdKurultai(state, 'MONGOL');
+      else if (nation.treasury >= 60000) organizeBanners(state, 'MONGOL');
+      else if (nation.treasury < 80000) raidBorder(state, content, 'MONGOL');
+      else if (nation.politicalPower >= 10 && nation.treasury >= 30000) marriagePact(state, 'MONGOL');
     }
     manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);
