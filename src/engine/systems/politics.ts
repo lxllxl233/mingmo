@@ -38,6 +38,8 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
     driftFactions(nation);
+    const politicalGain = 1 + nation.authority / 100 + nation.stability / 200;
+    nation.politicalPower = clamp(nation.politicalPower + politicalGain, 0, 200);
 
     for (const estate of Object.values(nation.estates)) {
       if (estate.loyalty < content.balance.politics.lowLoyaltyThreshold) {
@@ -111,3 +113,4 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
     }
   }
 }
+

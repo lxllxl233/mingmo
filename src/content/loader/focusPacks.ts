@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   Decision,
   Effect,
   Focus,
@@ -165,6 +165,37 @@ function effectsFor(
   }
 }
 
+const DECISION_COSTS: Record<FocusKind, { treasury: number; politicalPower: number; food?: number }> = {
+  court: { treasury: 20000, politicalPower: 10 },
+  economy: { treasury: 30000, politicalPower: 10, food: 10000 },
+  military: { treasury: 30000, politicalPower: 10, food: 20000 },
+  diplomacy: { treasury: 15000, politicalPower: 10 },
+  reform: { treasury: 25000, politicalPower: 10 },
+  navy: { treasury: 20000, politicalPower: 10 },
+  unique: { treasury: 25000, politicalPower: 10, food: 5000 },
+};
+
+function decisionEffects(kind: FocusKind, decisionId: string, modifier: Modifier | undefined): Effect[] {
+  const common: Effect[] = [{ setFlag: decisionId }];
+  switch (kind) {
+    case 'court':
+      return [...common, { addStability: 4 }, { addCorruption: -3 }, { addAuthority: 1 }, { addModifier: { corruption_drift: -0.015 } }];
+    case 'economy':
+      return [...common, { addModifier: { tax_efficiency_pct: 4, food_output_pct: 4 } }, { addEstateLoyalty: { estate: 'peasants', value: -2 } }];
+    case 'military':
+      return [...common, { addManpower: 5000 }, { addArmyLoyalty: 4 }, { addModifier: { army_attack_pct: 3, discipline_pct: 2, army_upkeep_pct: -2 } }];
+    case 'diplomacy':
+      return [...common, { addModifier: { trade_efficiency_pct: 5, stability_monthly: 0.02 } }, { addEstateLoyalty: { estate: 'merchants', value: 2 } }];
+    case 'reform':
+      return [...common, { addModifier: { tax_efficiency_pct: 5, corruption_drift: -0.02 } }, { addStability: -1 }, { addEstateLoyalty: { estate: 'gentry', value: -3 } }];
+    case 'navy':
+      return [...common, { addModifier: { naval_attack_pct: 4, trade_efficiency_pct: 3, food_output_pct: 2 } }];
+    case 'unique':
+      return [...common, { addModifier: modifier ?? { stability_monthly: 0.02 } }];
+    default:
+      return common;
+  }
+}
 export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): { focuses: Focus[]; decisions: Decision[] } {
   const focuses: Focus[] = [];
   const decisions: Decision[] = [];
@@ -233,14 +264,15 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
         id: decisionId,
         country: pack.country,
         name: `${branch.name}施策`,
-        desc: `${branch.desc}（${branch.name}路线已通，可付诸施行）`,
-        cost: { politicalPower: 50 },
+        desc: `${branch.desc} 一次性全国施策：消耗国库与粮食，换取持续的经济或军事收益。`,
+        cost: DECISION_COSTS[branch.kind],
         cooldownDays: 365,
-        effect: effectsFor(branch.kind, 3, `${decisionId}_flag`, decisionId, branch.modifier)
-          .filter(effect => !('unlockDecision' in effect)),
+        effect: decisionEffects(branch.kind, decisionId, branch.modifier),
       });
     });
   }
   return { focuses, decisions };
 }
+
+
 
