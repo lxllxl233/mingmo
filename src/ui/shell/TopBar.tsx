@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+﻿import { useState, type ReactNode } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { controlledProvinceCount } from '../../engine/rules/geography';
@@ -171,7 +171,7 @@ export function TopBar() {
             <span>基础 +1.00</span>
             <span>皇权 +{((country?.authority ?? 0) / 100).toFixed(2)}</span>
             <span>稳定 +{((country?.stability ?? 0) / 200).toFixed(2)}</span>
-            <small>决议消耗 10 政治点，税制改革消耗 50；政治点上限 200，按皇权与稳定逐月恢复。</small>
+            <small>国策、事件与改革可一次性获得政治点；决议消耗 10，税制改革消耗 50；上限 200。</small>
           </>
         }
       />
@@ -238,5 +238,6 @@ export function TopBar() {
     </header>
   );
 }
+
 
 

@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   Decision,
   Effect,
   Focus,
@@ -119,6 +119,7 @@ function effectsFor(
         { addStability: 2 * scale },
         { addCorruption: -scale },
         { addAuthority: scale },
+        { addPoliticalPower: 3 + scale * 2 },
         { addModifier: { corruption_drift: -0.01 * scale } },
         ...common,
       ];
@@ -138,6 +139,7 @@ function effectsFor(
     case 'diplomacy':
       return [
         { addAuthority: scale },
+        { addPoliticalPower: 1 + scale },
         { addModifier: { trade_efficiency_pct: 2 * scale, stability_monthly: 0.01 * scale } },
         { addEstateLoyalty: { estate: 'merchants', value: scale } },
         ...common,
@@ -145,6 +147,7 @@ function effectsFor(
     case 'reform':
       return [
         { addStability: -scale },
+        { addPoliticalPower: 2 + scale },
         { addModifier: { tax_efficiency_pct: 3 * scale, corruption_drift: -0.01 * scale } },
         { addEstateLoyalty: { estate: 'gentry', value: -2 * scale } },
         ...common,
@@ -158,6 +161,7 @@ function effectsFor(
       return [
         { addModifier: modifier ?? { stability_monthly: 0.02 * scale } },
         { addFactionInfluence: { imperial: scale } },
+        { addPoliticalPower: scale },
         ...common,
       ];
     default:

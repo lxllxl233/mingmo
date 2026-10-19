@@ -1,4 +1,4 @@
-import type { ContentIndex, Effect, EventId } from '../../content/types';
+﻿import type { ContentIndex, Effect, EventId } from '../../content/types';
 import { rngFor } from '../core/rng';
 import type { GameState } from '../state/types';
 import { relationKey } from '../state/types';
@@ -86,7 +86,7 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
   else if ('addMandate' in effect) nation.mandate = clamp(nation.mandate + effect.addMandate, 0, 100);
   else if ('addCorruption' in effect) nation.corruption = clamp(nation.corruption + effect.addCorruption, 0, 100);
   else if ('addAuthority' in effect) nation.authority = clamp(nation.authority + effect.addAuthority, 0, 100);
-  else if ('addPoliticalPower' in effect) nation.politicalPower = Math.max(0, nation.politicalPower + effect.addPoliticalPower);
+  else if ('addPoliticalPower' in effect) nation.politicalPower = clamp(nation.politicalPower + effect.addPoliticalPower, 0, 200);
   else if ('addTreasury' in effect) {
     nation.treasury += effect.addTreasury;
     if (nation.treasury < 0) {
@@ -231,3 +231,4 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
     }
   }
 }
+

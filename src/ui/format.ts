@@ -1,4 +1,4 @@
-import type { Effect } from '../content/types';
+﻿import type { Effect } from '../content/types';
 
 export function formatNumber(value: number, digits = 0): string {
   if (!Number.isFinite(value)) return '—';
@@ -93,3 +93,4 @@ export function effectSummary(effect: Effect): string {
 export function effectsSummary(effects: Effect[]): string {
   return effects.map(effectSummary).filter(Boolean).slice(0, 4).join('；');
 }
+
