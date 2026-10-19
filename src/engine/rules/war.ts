@@ -235,3 +235,29 @@ export function resolveFinishedWars(state: GameState, content: ContentIndex): vo
   }
 }
 
+export function cleanupDefeatedNations(state: GameState): void {
+  for (const nation of Object.values(state.countries)) {
+    if (!nation.alive) {
+      for (const [id, army] of Object.entries(state.armies)) {
+        if (army.tag === nation.tag) delete state.armies[id];
+      }
+      state.training = state.training.filter(item => item.tag !== nation.tag);
+      continue;
+    }
+    const controlled = Object.values(state.provinces).some(province => province.controller === nation.tag);
+    if (controlled) continue;
+    nation.alive = false;
+    for (const [id, army] of Object.entries(state.armies)) {
+      if (army.tag === nation.tag) delete state.armies[id];
+    }
+    state.training = state.training.filter(item => item.tag !== nation.tag);
+    state.log.push({
+      day: state.day,
+      category: 'politics',
+      country: nation.tag,
+      text: `${nation.tag} 已无实际控制区，残余军队解散`,
+      severity: 'danger',
+    });
+  }
+}
+
