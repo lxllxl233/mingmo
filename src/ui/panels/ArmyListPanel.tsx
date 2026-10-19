@@ -1,4 +1,4 @@
-﻿import { useGameStore } from '../state/store';
+import { useGameStore } from '../state/store';
 import { ArmyTypeIcon } from './ArmyTypeIcon';
 import { formatNumber } from '../format';
 
@@ -43,7 +43,7 @@ export function ArmyListPanel() {
                 <b>{army.name}</b>
                 <small>{sameProvince ? '' : `${province} · `}{general ?? '无将领'} · {formatNumber(strength)} 人 · 组织 {army.organization.toFixed(0)}</small>
               </span>
-              <span className="army-stack-stance">{army.stance === 'move' ? '行军' : army.stance === 'battle' ? '交战' : army.stance === 'siege' ? '围城' : '驻扎'}</span>
+              <span className="army-stack-stance">{army.encircled ? `被围 ${army.encircledDays}日` : army.stance === 'move' ? '行军' : army.stance === 'battle' ? '交战' : army.stance === 'siege' ? '围城' : '驻扎'}</span>
             </button>
           );
         })}

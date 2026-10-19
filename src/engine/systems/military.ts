@@ -1,4 +1,4 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import { aggregateModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
@@ -55,7 +55,8 @@ function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<s
   return base * quality * command
     * (1 + ((modifiers['army_attack_pct'] ?? 0) + traits.attackPct) / 100)
     * (1 + clamp(modifiers['discipline_pct'] ?? 0, -50, 100) / 100 * 0.6)
-    * (1 - clamp(corruption, 0, 100) / 100 * 0.15);
+    * (1 - clamp(corruption, 0, 100) / 100 * 0.15)
+    * (army.encircled ? 0.65 : 1);
 }
 
 function defenseValue(
@@ -79,6 +80,7 @@ function defenseValue(
     * (1 + ((modifiers['army_defense_pct'] ?? 0) + traits.defensePct) / 100)
     * (1 + clamp(modifiers['discipline_pct'] ?? 0, -50, 100) / 100 * 0.6)
     * (1 - clamp(corruption, 0, 100) / 100 * 0.15)
+    * (army.encircled ? 0.65 : 1)
     * (1 + Math.min(0.2, (army.entrenchment ?? 0) * 0.025));
 }
 
@@ -122,6 +124,22 @@ function friendlyRetreat(state: GameState, content: ContentIndex, army: ArmyStat
 }
 
 function retreatOrDestroy(state: GameState, content: ContentIndex, army: ArmyState, provinceName: string): void {
+  if (army.encircled) {
+    const destroyed = compositionTotal(army);
+    for (const war of state.wars) {
+      if (war.attacker === army.tag || war.defender === army.tag) {
+        war.casualties[army.tag] = (war.casualties[army.tag] ?? 0) + destroyed;
+      }
+    }
+    delete state.armies[army.id];
+    state.log.push({
+      day: state.day,
+      category: 'military',
+      text: `${content.countries.get(army.tag)?.name ?? army.tag} 在 ${provinceName} 被围歼`,
+      severity: 'danger',
+    });
+    return;
+  }
   const retreat = friendlyRetreat(state, content, army);
   if (retreat) {
     army.province = retreat;
@@ -208,13 +226,13 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
     for (const army of frontDefenders) {
       const share = compositionTotal(army) / Math.max(1, frontDefenders.reduce((sum, entry) => sum + compositionTotal(entry), 0));
       army.organization = clamp(army.organization - defenderHit * share, 0, 100);
-      loseStrength(army, attackPower * 0.0005 * share);
+      loseStrength(army, attackPower * 0.0005 * share * (army.encircled ? 1.6 : 1));
       army.stance = 'battle';
     }
     for (const army of frontAttackers) {
       const share = compositionTotal(army) / Math.max(1, frontAttackers.reduce((sum, entry) => sum + compositionTotal(entry), 0));
       army.organization = clamp(army.organization - attackerHit * share, 0, 100);
-      loseStrength(army, defensePower * 0.00028 * share);
+      loseStrength(army, defensePower * 0.00028 * share * (army.encircled ? 1.6 : 1));
       army.stance = 'battle';
     }
     for (const army of [...frontAttackers, ...frontDefenders]) {
@@ -319,11 +337,19 @@ function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): b
   const current = state.provinces[army.province];
   const def = content.provinces.get(army.province);
   if (!current || !def) return false;
-  if (def.isPort && (current.controller === army.tag || current.owner === army.tag)) return true;
-  if (current.controller !== army.tag && current.owner !== army.tag) return false;
+  const friendly = (id: string): boolean => {
+    const province = state.provinces[id];
+    return province !== undefined && (province.controller === army.tag || province.owner === army.tag);
+  };
+  if (!friendly(army.province)) return false;
+  if (def.isPort) return true;
   const capital = state.countries[army.tag]?.capital;
-  if (!capital) return false;
-  if (army.province === capital) return true;
+  const sources = new Set<string>();
+  if (capital && friendly(capital)) sources.add(capital);
+  for (const province of Object.values(state.provinces)) {
+    if (friendly(province.id) && province.cores.includes(army.tag)) sources.add(province.id);
+  }
+  if (sources.has(army.province)) return true;
   const queue = [army.province];
   const seen = new Set(queue);
   while (queue.length > 0) {
@@ -333,9 +359,8 @@ function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): b
     if (!provinceDef) continue;
     for (const neighbor of provinceDef.neighbors) {
       if (seen.has(neighbor)) continue;
-      const province = state.provinces[neighbor];
-      if (!province || (province.controller !== army.tag && province.owner !== army.tag)) continue;
-      if (neighbor === capital) return true;
+      if (!friendly(neighbor)) continue;
+      if (sources.has(neighbor)) return true;
       seen.add(neighbor);
       queue.push(neighbor);
     }
@@ -343,10 +368,66 @@ function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): b
   return false;
 }
 
+function updateEncirclement(state: GameState, content: ContentIndex, army: ArmyState): void {
+  if (army.embarked) {
+    army.encircled = false;
+    army.encircledDays = 0;
+    return;
+  }
+  const supplied = isSupplied(state, content, army);
+  if (supplied) {
+    if (army.encircled) {
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: army.tag,
+        text: `${army.name} 与本土恢复联系，解除包围`,
+        severity: 'info',
+      });
+    }
+    army.encircled = false;
+    army.encircledDays = 0;
+    return;
+  }
+  if (!army.encircled) {
+    army.encircled = true;
+    army.encircledDays = 0;
+    army.movePath = [];
+    if (army.stance === 'move') army.stance = 'hold';
+    state.log.push({
+      day: state.day,
+      category: 'military',
+      country: army.tag,
+      text: `${army.name} 与本土联系被切断，陷入包围`,
+      severity: 'danger',
+    });
+  }
+  army.encircledDays += 1;
+  army.movePath = [];
+  if (army.encircledDays > 7) {
+    const before = compositionTotal(army);
+    const rate = Math.min(0.035, 0.012 + (army.encircledDays - 7) * 0.0006);
+    loseStrength(army, Math.max(1, Math.round(before * rate)));
+    recordAttrition(state, army.tag, Math.max(0, before - compositionTotal(army)));
+    army.organization = clamp(army.organization - 2.2, 0, 100);
+    army.supply = clamp(army.supply - 3, 0, 100);
+    army.entrenchment = 0;
+    if (army.encircledDays === 8 || army.encircledDays === 30) {
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: army.tag,
+        text: `${army.name} 被围 ${army.encircledDays} 日，粮尽兵疲，开始减员`,
+        severity: 'danger',
+      });
+    }
+  }
+}
 export function advanceArmies(state: GameState, content: ContentIndex): void {
   resolveProvinceBattles(state, content);
   for (const army of Object.values(state.armies)) {
     if (!state.armies[army.id]) continue;
+    updateEncirclement(state, content, army);
     if (army.stance === 'battle') continue;
     const nation = state.countries[army.tag];
     if (!nation?.alive) continue;
@@ -574,6 +655,8 @@ export function recruitArmy(
     training: template.training,
     equipment: template.equipment,
     supply: 100,
+    encircled: false,
+    encircledDays: 0,
     sourceEstate: template.sourceEstate,
     general: pickGeneral(state, content, tag),
     entrenchment: 0,
@@ -596,7 +679,7 @@ export function replenishArmies(state: GameState, content: ContentIndex): void {
   for (const army of Object.values(state.armies)) {
     const nation = state.countries[army.tag];
     if (!nation?.alive || nation.manpower <= 0) continue;
-    if (army.stance === 'battle' || army.embarked || army.movePath.length > 0) continue;
+    if (army.stance === 'battle' || army.embarked || army.movePath.length > 0 || army.encircled) continue;
     if (army.supply < 20 || army.organization < 20) continue;
     const total = compositionTotal(army);
     const missing = Math.max(0, (army.maxStrength ?? total) - total);
@@ -648,6 +731,7 @@ export function setArmyPath(
   path: string[],
 ): boolean {  const army = state.armies[armyId];
   if (!army) return false;
+  if (army.encircled) return false;
   if (path.length === 0) {
     army.movePath = [];
     army.stance = 'hold';
@@ -673,6 +757,12 @@ export function setArmyPath(
   army.stance = 'move';
   return true;
 }
+
+
+
+
+
+
 
 
 

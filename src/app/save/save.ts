@@ -1,4 +1,4 @@
-import type { GameState } from '../../engine/state/types';
+﻿import type { GameState } from '../../engine/state/types';
 import { hashState } from '../../engine/state/hash';
 
 export interface SaveFile {
@@ -78,6 +78,8 @@ export function decodeSave(text: string): GameState {
     if (typeof army.templateId !== 'string') army.templateId = '';
     if (typeof army.entrenchment !== 'number') army.entrenchment = 0;
     if (typeof army.forcedMarch !== 'boolean') army.forcedMarch = false;
+    if (typeof army.encircled !== 'boolean') army.encircled = false;
+    if (typeof army.encircledDays !== 'number') army.encircledDays = 0;
     if (army.navalOrigin === undefined) army.navalOrigin = null;
     if (typeof army.maxStrength !== 'number') {
       army.maxStrength = army.composition.infantry + army.composition.firearm
@@ -129,4 +131,5 @@ export function hasLocal(slot: string): boolean {
   const store = storage();
   return store !== null && store.getItem(`${KEY_PREFIX}${slot}`) !== null;
 }
+
 

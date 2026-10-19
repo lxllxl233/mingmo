@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   ContentIndex,
   CountryStarting,
   EstateKey,
@@ -228,6 +228,8 @@ export function createInitialState(
       training: template.training,
       equipment: template.equipment,
       supply: 100,
+      encircled: false,
+      encircledDays: 0,
       sourceEstate: template.sourceEstate,
       general: general?.id ?? null,
       entrenchment: 0,

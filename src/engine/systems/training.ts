@@ -1,4 +1,4 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import type { ArmyState, GameState } from '../state/types';
 import { pickGeneral } from './military';
 import { FOREIGN_TRAINING_LIMIT, isForeignTemplate } from '../rules/armyTemplates';
@@ -53,6 +53,8 @@ function createArmy(
     training: template.training,
     equipment: template.equipment,
     supply: 100,
+    encircled: false,
+    encircledDays: 0,
     sourceEstate: template.sourceEstate,
     general: pickGeneral(state, content, tag),
     entrenchment: 0,
@@ -154,6 +156,8 @@ export function advanceTraining(state: GameState, content: ContentIndex): void {
     }
   }
 }
+
+
 
 
 

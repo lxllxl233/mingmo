@@ -1,4 +1,4 @@
-﻿import type { ContentIndex, Effect, EventId } from '../../content/types';
+import type { ContentIndex, Effect, EventId } from '../../content/types';
 import { rngFor } from '../core/rng';
 import type { GameState } from '../state/types';
 import { relationKey } from '../state/types';
@@ -57,6 +57,8 @@ function spawnArmy(
     training: template.training,
     equipment: template.equipment,
     supply: 100,
+    encircled: false,
+    encircledDays: 0,
     sourceEstate: template.sourceEstate,
     general: pickGeneral(state, content, tag),
     entrenchment: 0,
@@ -231,4 +233,6 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
     }
   }
 }
+
+
 

@@ -127,7 +127,14 @@ export function ArmyPanel() {
         <div className="country-stat"><span>战壕 / 训练</span><strong>{Math.round(army.entrenchment ?? 0)} / {army.training.toFixed(0)}</strong></div>
         <div className="country-stat"><span>训练 / 装备</span><strong>{army.training.toFixed(0)} / {army.equipment.toFixed(0)}</strong></div>
         <div className="country-stat"><span>行军目标</span><strong>{target ?? '驻扎'}</strong></div>
+        <div className="country-stat"><span>状态</span><strong className={army.encircled ? 'danger' : ''}>{army.encircled ? `被围 ${army.encircledDays} 日` : '正常'}</strong></div>
       </section>
+
+      {army.encircled && (
+        <p className="danger">
+          与本土联系被切断：无法移动；被围超过 7 日后每日损失兵力与组织度，被进攻时承受额外损失。
+        </p>
+      )}
 
       <section>
         <h3 className="section-title">兵种</h3>
@@ -196,6 +203,7 @@ export function ArmyPanel() {
         {!readOnly && (
           <button
             className={army.forcedMarch ? 'primary' : ''}
+            disabled={army.encircled}
             title="急行军：无视沿途敌对地区的占领，直接向终点推进；组织与补给持续下降"
             onClick={() => command({ type: 'army.forceMarch', armyId: army.id })}
           >

@@ -186,6 +186,8 @@ export interface ArmyState {
   training: number;
   equipment: number;
   supply: number;
+  encircled: boolean;
+  encircledDays: number;
   sourceEstate: string;
   general: string | null;
   entrenchment: number;
@@ -298,5 +300,6 @@ export function armyStrength(army: ArmyState): number {
   const c = army.composition;
   return c.infantry + c.firearm + c.cavalry + c.artillery + c.naval;
 }
+
 
 
