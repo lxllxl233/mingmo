@@ -116,7 +116,7 @@ function friendlyRetreat(state: GameState, content: ContentIndex, army: ArmyStat
     .filter((entry): entry is { id: string; province: NonNullable<typeof entry.province>; def: NonNullable<typeof entry.def> } =>
       entry.province !== undefined && entry.def !== undefined);
   const friendly = candidates
-    .filter(entry => entry.province.controller === army.tag || entry.province.owner === army.tag)
+    .filter(entry => entry.province.controller === army.tag)
     .sort((a, b) => (b.province.controller === army.tag ? 1 : 0) - (a.province.controller === army.tag ? 1 : 0));
   if (friendly[0]) return friendly[0].id;
   const safe = candidates.filter(entry => !areAtWar(state, army.tag, entry.province.controller));
@@ -339,7 +339,7 @@ function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): b
   if (!current || !def) return false;
   const friendly = (id: string): boolean => {
     const province = state.provinces[id];
-    return province !== undefined && (province.controller === army.tag || province.owner === army.tag);
+    return province !== undefined && province.controller === army.tag;
   };
   if (!friendly(army.province)) {
     if (!def.isCoastal) return false;
@@ -527,7 +527,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
     if (army.forcedMarch && army.movePath.length > 0) continue;
 
     const province = state.provinces[army.province];
-    if (!province || province.controller === army.tag || province.owner === army.tag) {
+    if (!province || province.controller === army.tag) {
       if (province) {
         delete province.siege;
         province.occupation = null;
@@ -766,6 +766,7 @@ export function setArmyPath(
   army.stance = 'move';
   return true;
 }
+
 
 
 

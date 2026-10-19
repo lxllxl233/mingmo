@@ -424,7 +424,7 @@ function frontTargets(
     const support = def.neighbors.filter(neighborId => {
       const neighbor = state.provinces[neighborId];
       return neighbor !== undefined
-        && (neighbor.controller === tag || neighbor.owner === tag);
+        && neighbor.controller === tag;
     }).length;
     if (support === 0) continue;
     const path = findPathToProvince(state, content, tag, army.province, province.id);
@@ -531,6 +531,7 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageMovement(state, content, nation.tag);
   }
 }
+
 
 
 
