@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { controlledProvinceCount } from '../../engine/rules/geography';
+import { monthlyPoliticalGain } from '../../engine/systems/politics';
 import { useGameStore } from '../state/store';
 import { MusicControl } from './MusicControl';
 
@@ -50,6 +51,7 @@ export function TopBar() {
   const country = game.countries[game.playerTag];
   const countryDef = content.countries.get(game.playerTag);
   const report = country?.lastReport;
+  const politicalGain = monthlyPoliticalGain(country?.authority ?? 0, country?.stability ?? 0);
   const arrearsMonths = country && report && report.expenseArmy > 0
     ? country.arrears / report.expenseArmy
     : 0;
@@ -155,6 +157,21 @@ export function TopBar() {
             <span>军团 {armies.length} 支 · 总兵力 {number(armyStrength)}</span>
             <span>军心 {Math.round(country?.armyLoyalty ?? 0)}</span>
             <small>兵源按人口与稳定恢复；欠饷会先打击募兵，再打击家丁。</small>
+          </>
+        }
+      />
+      <Stat
+        label="政治"
+        value={number(country?.politicalPower ?? 0, 0)}
+        tone={(country?.politicalPower ?? 0) < 10 ? 'warn' : ''}
+        tooltip={
+          <>
+            <b>政治点 {Math.round(country?.politicalPower ?? 0)} / 200</b>
+            <span>每月恢复 +{politicalGain.toFixed(2)}</span>
+            <span>基础 +1.00</span>
+            <span>皇权 +{((country?.authority ?? 0) / 100).toFixed(2)}</span>
+            <span>稳定 +{((country?.stability ?? 0) / 200).toFixed(2)}</span>
+            <small>决议消耗 10 政治点，税制改革消耗 50；政治点上限 200，按皇权与稳定逐月恢复。</small>
           </>
         }
       />

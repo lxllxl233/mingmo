@@ -1,7 +1,11 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import { isQuarterStart } from '../core/clock';
 import type { GameState } from '../state/types';
 import { countryProvinceList } from './economy';
+
+export function monthlyPoliticalGain(authority: number, stability: number): number {
+  return 1 + Math.max(0, Math.min(100, authority)) / 100 + Math.max(0, Math.min(100, stability)) / 200;
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -38,7 +42,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
     driftFactions(nation);
-    const politicalGain = 1 + nation.authority / 100 + nation.stability / 200;
+    const politicalGain = monthlyPoliticalGain(nation.authority, nation.stability);
     nation.politicalPower = clamp(nation.politicalPower + politicalGain, 0, 200);
 
     for (const estate of Object.values(nation.estates)) {
@@ -113,4 +117,5 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
     }
   }
 }
+
 
