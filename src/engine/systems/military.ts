@@ -119,7 +119,7 @@ function friendlyRetreat(state: GameState, content: ContentIndex, army: ArmyStat
     .filter(entry => entry.province.controller === army.tag)
     .sort((a, b) => (b.province.controller === army.tag ? 1 : 0) - (a.province.controller === army.tag ? 1 : 0));
   if (friendly[0]) return friendly[0].id;
-  const safe = candidates.filter(entry => !areAtWar(state, army.tag, entry.province.controller));
+  const safe = candidates.filter(entry => entry.province.controller === 'NEU');
   return safe[0]?.id ?? null;
 }
 
@@ -766,6 +766,7 @@ export function setArmyPath(
   army.stance = 'move';
   return true;
 }
+
 
 
 

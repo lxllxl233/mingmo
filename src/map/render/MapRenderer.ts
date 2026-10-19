@@ -1,4 +1,4 @@
-import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
+﻿import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
 import type { ContentIndex, MapGeo } from '../../content/types';
 import type { ArmyState, GameState } from '../../engine/state/types';
 import { relationKey } from '../../engine/state/types';
@@ -910,6 +910,9 @@ export class MapRenderer {
         return 0xa33a32;
       }
       if (armiesHere.some(army => army.tag === this.state?.playerTag)) return 0x3f6f9a;
+      const province = this.state.provinces[provinceId];
+      if (province?.controller === this.state.playerTag) return 0x4f7088;
+      if (province && areAtWar(this.state, this.state.playerTag, province.controller)) return 0x7a3a34;
       return 0x8a8578;
     }
     if (this.mapMode === 'core' && this.state) {
@@ -1919,6 +1922,7 @@ function drawFactionGlyph(graphics: Graphics, tag: string, color: number): void 
       .fill({ color, alpha: 0.9 });
   }
 }
+
 
 
 
