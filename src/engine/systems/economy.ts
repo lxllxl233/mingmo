@@ -105,13 +105,17 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     let base = 0;
     let weightedPopulation = 0;
+    const baseByRegion: Record<string, number> = {};
     for (const entry of provinces) {
       const warDamage = 1 - entry.state.devastation / 200;
       const coreFactor = coreResourceFactor(state, nation.tag, entry.id);
       weightedPopulation += entry.state.population * coreFactor;
-      base += (entry.def.landholding * content.balance.economy.landValuePerWan
+      const contribution = (entry.def.landholding * content.balance.economy.landValuePerWan
         + entry.state.population * content.balance.economy.populationValuePerPerson)
         * Math.max(0.2, warDamage) * coreFactor;
+      base += contribution;
+      const regionId = entry.def.regionId;
+      baseByRegion[regionId] = (baseByRegion[regionId] ?? 0) + contribution;
     }
 
     let silverIncome = 0;
@@ -155,6 +159,13 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     const armyPay = monthlyArmyPay(state, content, nation.tag);
     const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth;
+    const silverByRegion: Record<string, number> = {};
+    const foodByRegion: Record<string, number> = {};
+    for (const [regionId, regionBase] of Object.entries(baseByRegion)) {
+      if (base <= 0) continue;
+      silverByRegion[regionId] = silverIncome * (regionBase / base);
+      foodByRegion[regionId] = foodIncome * (regionBase / base);
+    }
     const officialsPay = provinces.length * content.balance.economy.officialSalaryPerProvinceMonth;
     const dynastyEstate = nation.estates['dynasty'];
     const dynasty = dynastyEstate ? (dynastyEstate.income / 12) * 0.22 : 0;
@@ -258,6 +269,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       net,
       silverByEstate,
       foodByEstate,
+      silverByRegion,
+      foodByRegion,
       expenseArmy: armyPay,
       expenseOfficials: officialsPay,
       expenseDynasty: dynasty,

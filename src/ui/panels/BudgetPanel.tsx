@@ -52,6 +52,21 @@ export function BudgetPanel() {
               ))}
             </tbody>
           </table>
+          <h3>按地区（按税基分摊）</h3>
+          <table className="table">
+            <thead><tr><th>地区</th><th>银</th><th>粮</th></tr></thead>
+            <tbody>
+              {Object.entries(report.silverByRegion ?? {})
+                .sort((a, b) => b[1] - a[1])
+                .map(([regionId, silver]) => (
+                  <tr key={regionId}>
+                    <td>{content.regions.get(regionId)?.name ?? regionId}</td>
+                    <td>{formatNumber(silver)}</td>
+                    <td>{formatNumber(report.foodByRegion?.[regionId] ?? 0)}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
           {country.monthlyHistory.length > 1 && (
             <>
               <h3>近月趋势</h3>

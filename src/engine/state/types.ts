@@ -100,6 +100,8 @@ export interface MonthlyReport {
   net: number;
   silverByEstate: Record<string, number>;
   foodByEstate: Record<string, number>;
+  silverByRegion?: Record<string, number>;
+  foodByRegion?: Record<string, number>;
   expenseArmy: number;
   expenseOfficials: number;
   expenseDynasty: number;

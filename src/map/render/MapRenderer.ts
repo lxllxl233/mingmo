@@ -1250,25 +1250,81 @@ export class MapRenderer {
         }
       }
       if (planned.length > 1) {
-        const routeColor = selected ? 0xffd27a : 0xa33a32;
-        this.strokeTrail(planned, (selected ? 0.09 : 0.11) * lf, 0x1f1c18, selected ? 0.5 : 0.35);
-        this.strokeTrail(planned, (selected ? 0.07 : 0.075) * lf, routeColor, selected ? 0.9 : 0.85);
-        if (selected) {
-          this.strokeTrail(planned, 0.42 * lf, 0x1f1c18, 0.55);
-          this.strokeTrail(planned, 0.22 * lf, 0xffd27a, 1);
-          this.strokeTrailArrows(planned, 0xffd27a, 0x1f1c18, lf);
-          for (const point of planned) {
-            this.trailLayer.circle(point.x, point.y, 0.09 * lf)
-              .fill({ color: 0xffd27a, alpha: 1 })
-              .stroke({ width: 0.04 * lf, color: 0x1f1c18, alpha: 0.9 });
-          }
-        } else {
-          this.strokeTrailArrows(planned, routeColor, 0x1f1c18, lf * 0.65);
-          this.trailLayer.circle(planned[0]!.x, planned[0]!.y, 0.055 * lf)
-            .fill({ color: routeColor, alpha: 0.85 });
-        }
+        this.drawTaperedArrow(planned, this.colorOf(army.tag), lf, selected);
       }
     }
+  }
+
+  private drawTaperedArrow(
+    points: Array<{ x: number; y: number }>,
+    factionColor: number,
+    factor: number,
+    selected: boolean,
+  ): void {
+    const lengths: number[] = [];
+    let totalLength = 0;
+    for (let i = 1; i < points.length; i += 1) {
+      const from = points[i - 1];
+      const to = points[i];
+      if (!from || !to) continue;
+      const length = Math.hypot(to.x - from.x, to.y - from.y);
+      lengths.push(length);
+      totalLength += length;
+    }
+    if (totalLength < 0.01) return;
+    const widthScale = (selected ? 1.22 : 1) * factor;
+    let travelled = 0;
+    for (let i = 1; i < points.length; i += 1) {
+      const from = points[i - 1];
+      const to = points[i];
+      const length = lengths[i - 1] ?? 0;
+      if (!from || !to || length < 0.001) continue;
+      const t0 = travelled / totalLength;
+      const t1 = (travelled + length) / totalLength;
+      const width0 = (0.24 - 0.16 * t0) * widthScale;
+      const width1 = (0.24 - 0.16 * t1) * widthScale;
+      const color0 = lerpColor(0xf7edd9, factionColor, 0.25 + t0 * 0.75);
+      const color1 = lerpColor(0xf7edd9, factionColor, 0.25 + t1 * 0.75);
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const nx = -dy / length;
+      const ny = dx / length;
+      this.trailLayer.poly([
+        from.x + nx * width0, from.y + ny * width0,
+        to.x + nx * width1, to.y + ny * width1,
+        to.x - nx * width1, to.y - ny * width1,
+        from.x - nx * width0, from.y - ny * width0,
+      ]).fill({ color: 0x1f1c18, alpha: selected ? 0.42 : 0.25 });
+      this.trailLayer.poly([
+        from.x + nx * width0 * 0.82, from.y + ny * width0 * 0.82,
+        to.x + nx * width1 * 0.82, to.y + ny * width1 * 0.82,
+        to.x - nx * width1 * 0.82, to.y - ny * width1 * 0.82,
+        from.x - nx * width0 * 0.82, from.y - ny * width0 * 0.82,
+      ]).fill({ color: color0, alpha: 0.9 });
+      if (i === 1) {
+        this.trailLayer.circle(from.x, from.y, 0.055 * widthScale)
+          .fill({ color: color1, alpha: 0.9 });
+      }
+      travelled += length;
+    }
+    const last = points[points.length - 1];
+    const previous = points[points.length - 2];
+    if (!last || !previous) return;
+    const angle = Math.atan2(last.y - previous.y, last.x - previous.x);
+    const length = Math.hypot(last.x - previous.x, last.y - previous.y);
+    if (length < 0.01) return;
+    const headLength = Math.min(0.72, length * 0.4) * factor;
+    const headWidth = 0.34 * widthScale;
+    const baseX = last.x - Math.cos(angle) * headLength;
+    const baseY = last.y - Math.sin(angle) * headLength;
+    const perpendicularX = -Math.sin(angle) * headWidth;
+    const perpendicularY = Math.cos(angle) * headWidth;
+    this.trailLayer.poly([
+      last.x, last.y,
+      baseX + perpendicularX, baseY + perpendicularY,
+      baseX - perpendicularX, baseY - perpendicularY,
+    ]).fill({ color: factionColor, alpha: 1 })
+      .stroke({ width: (selected ? 0.06 : 0.045) * factor, color: selected ? 0xffd27a : 0x1f1c18, alpha: 0.9 });
   }
 
   private positions(ids: string[]): Array<{ x: number; y: number }> {
@@ -1294,39 +1350,11 @@ export class MapRenderer {
     this.trailLayer.stroke({ width, color, alpha });
   }
 
-  private strokeTrailArrows(points: Array<{ x: number; y: number }>, color: number, outline: number, factor: number): void {
-    for (let i = 1; i < points.length; i += 1) {
-      const from = points[i - 1];
-      const to = points[i];
-      if (!from || !to) continue;
-      const dx = to.x - from.x;
-      const dy = to.y - from.y;
-      const length = Math.hypot(dx, dy);
-      if (length < 0.2 * factor) continue;
-      const angle = Math.atan2(dy, dx);
-      const left = angle + Math.PI * 0.78;
-      const right = angle - Math.PI * 0.78;
-      const outlineSize = 0.38 * factor;
-      const size = 0.27 * factor;
-      this.trailLayer.poly([
-        to.x, to.y,
-        to.x + Math.cos(left) * outlineSize, to.y + Math.sin(left) * outlineSize,
-        to.x + Math.cos(right) * outlineSize, to.y + Math.sin(right) * outlineSize,
-      ]).fill({ color: outline, alpha: 0.9 });
-      this.trailLayer.poly([
-        to.x, to.y,
-        to.x + Math.cos(left) * size, to.y + Math.sin(left) * size,
-        to.x + Math.cos(right) * size, to.y + Math.sin(right) * size,
-      ]).fill({ color, alpha: 1 });
-    }
-  }
-
   private ensureArmyMarker(key: string, tag: string, army: ArmyState): ArmyMarker {
     const existing = this.armyMarkers.get(key);
     if (existing) return existing;
     const color = this.colorOf(tag);
     const light = colorLuma(color) > 0.55;
-    const iconColor = light ? INK : PAPER;
     const container = new Container();
     const shadow = new Graphics();
     shadow.roundRect(-1.35, -0.95, 2.7, 1.85, 0.24).fill({ color: 0x000000, alpha: 0.22 });
@@ -1337,11 +1365,22 @@ export class MapRenderer {
       .fill({ color, alpha: 0.98 })
       .stroke({ width: 0.08, color: INK, alpha: 1 });
     body.rect(-1.2, -0.78, 0.18, 1.2).fill({ color: INK, alpha: 0.9 });
-    body.poly([-1.0, -0.78, -0.5, -0.78, -0.75, -1.15]).fill({ color: iconColor, alpha: 0.95 });
-    drawUnitIcon(body, army.composition, iconColor);
+
+    const plate = new Graphics();
+    plate.roundRect(-1.02, -0.66, 1.55, 1.0, 0.13)
+      .fill({ color: 0xf7edd9, alpha: 0.96 })
+      .stroke({ width: 0.045, color: INK, alpha: 0.75 });
+    drawUnitIcon(plate, army.composition, INK, tag);
+
+    const badge = new Graphics();
+    badge.circle(0.84, -0.42, 0.31)
+      .fill({ color: 0xf7edd9, alpha: 0.98 })
+      .stroke({ width: 0.07, color: INK, alpha: 0.95 });
+    badge.circle(0.84, -0.42, 0.24)
+      .fill({ color, alpha: 0.95 });
 
     const selection = new Graphics();
-    selection.roundRect(-1.35, -0.98, 2.7, 2.05, 0.28)
+    selection.roundRect(-1.35, -1.48, 2.7, 2.55, 0.28)
       .stroke({ width: 0.1, color: 0xffd27a, alpha: 1 });
     selection.visible = false;
 
@@ -1374,7 +1413,7 @@ export class MapRenderer {
     faction.scale.set(0.7 / 28);
     faction.position.set(0.72, -0.48);
 
-    container.addChild(shadow, body, bars, selection, label, faction);
+    container.addChild(shadow, body, plate, badge, bars, selection, label, faction);
     container.eventMode = 'static';
     container.cursor = 'pointer';
     container.on('pointertap', (event) => {
@@ -1600,9 +1639,10 @@ function strengthText(strength: number): string {
   return String(Math.max(0, Math.round(strength)));
 }
 
-function drawUnitIcon(graphics: Graphics, composition: ArmyState['composition'], iconColor: number): void {
+function drawUnitIcon(graphics: Graphics, composition: ArmyState['composition'], iconColor: number, tag: string): void {
   const total = composition.infantry + composition.firearm + composition.cavalry
     + composition.artillery + composition.naval || 1;
+  drawFactionGlyph(graphics, tag, iconColor);
   if (composition.naval / total > 0.35) {
     graphics.poly([-0.72, 0.12, 0.62, 0.12, 0.42, 0.42, -0.52, 0.42]).fill({ color: iconColor, alpha: 1 });
     graphics.rect(-0.06, -0.58, 0.1, 0.7).fill({ color: iconColor, alpha: 1 });
@@ -1629,4 +1669,50 @@ function drawUnitIcon(graphics: Graphics, composition: ArmyState['composition'],
   graphics.moveTo(-0.8, 0.0).lineTo(0.48, 0.26).stroke({ width: 0.07, color: iconColor, alpha: 1 });
   graphics.moveTo(-0.55, -0.38).lineTo(-0.66, -0.04).stroke({ width: 0.07, color: iconColor, alpha: 1 });
   graphics.moveTo(-0.37, -0.38).lineTo(-0.26, -0.04).stroke({ width: 0.07, color: iconColor, alpha: 1 });
+}
+
+function drawFactionGlyph(graphics: Graphics, tag: string, color: number): void {
+  if (tag === 'MING' || tag === 'SMING') {
+    graphics.circle(0.52, -0.28, 0.14).stroke({ width: 0.05, color, alpha: 0.9 });
+    graphics.circle(0.52, -0.28, 0.045).fill({ color, alpha: 0.95 });
+    return;
+  }
+  if (tag === 'QING') {
+    graphics.rect(0.42, -0.42, 0.18, 0.36).stroke({ width: 0.05, color, alpha: 0.9 });
+    graphics.poly([0.42, -0.42, 0.72, -0.34, 0.42, -0.22]).fill({ color, alpha: 0.9 });
+    return;
+  }
+  if (tag === 'JAPAN') {
+    graphics.circle(0.52, -0.28, 0.15).fill({ color, alpha: 0.85 });
+    graphics.circle(0.52, -0.28, 0.06).fill({ color: 0xf7edd9, alpha: 0.95 });
+    return;
+  }
+  if (tag === 'JOSEON') {
+    for (const offset of [-0.38, -0.28, -0.18]) {
+      graphics.moveTo(0.38, offset).lineTo(0.7, offset).stroke({ width: 0.045, color, alpha: 0.9 });
+    }
+    return;
+  }
+  if (tag === 'MONGOL') {
+    graphics.poly([0.36, -0.4, 0.72, -0.2, 0.36, 0.0]).fill({ color, alpha: 0.9 });
+    return;
+  }
+  if (tag === 'VOC') {
+    graphics.rect(0.42, -0.44, 0.05, 0.4).fill({ color, alpha: 0.9 });
+    graphics.poly([0.47, -0.44, 0.72, -0.32, 0.47, -0.2]).fill({ color, alpha: 0.9 });
+    return;
+  }
+  if (tag === 'RUSSIA') {
+    graphics.moveTo(0.54, -0.46).lineTo(0.54, 0.0).stroke({ width: 0.055, color, alpha: 0.9 });
+    graphics.moveTo(0.4, -0.28).lineTo(0.68, -0.28).stroke({ width: 0.055, color, alpha: 0.9 });
+    return;
+  }
+  if (tag === 'TIBET') {
+    graphics.poly([0.54, -0.44, 0.72, -0.26, 0.54, -0.08, 0.36, -0.26]).fill({ color, alpha: 0.86 });
+    return;
+  }
+  if (tag === 'SHUN' || tag === 'XI') {
+    graphics.poly([0.5, -0.46, 0.7, -0.18, 0.58, -0.18, 0.68, 0.02, 0.42, -0.24, 0.54, -0.24])
+      .fill({ color, alpha: 0.9 });
+  }
 }

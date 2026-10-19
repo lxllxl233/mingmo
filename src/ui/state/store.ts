@@ -263,6 +263,21 @@ export const useGameStore = create<UiStore>((set, get) => ({
     });
   },
   openArmyStack: armyIds => {
+    const { game } = get();
+    const armies = armyIds
+      .map(id => game?.armies[id])
+      .filter((army): army is NonNullable<typeof army> => army !== undefined);
+    const leader = armies[0];
+    if (leader) {
+      const composition = armies.reduce((sum, army) => ({
+        infantry: sum.infantry + army.composition.infantry,
+        firearm: sum.firearm + army.composition.firearm,
+        cavalry: sum.cavalry + army.composition.cavalry,
+        artillery: sum.artillery + army.composition.artillery,
+        naval: sum.naval + army.composition.naval,
+      }), { infantry: 0, firearm: 0, cavalry: 0, artillery: 0, naval: 0 });
+      sound.playArmySelect(leader.tag, composition);
+    }
     set({ armyStack: [...armyIds], selectedArmy: null, panel: 'armyList' });
   },
   closeArmyStack: () => set({ armyStack: null, panel: null }),
