@@ -103,70 +103,116 @@ export function parseFocusPacks(raw: unknown[], countryTags: Set<string>): Focus
   });
 }
 
+type EffectBuilder = (scale: number) => Effect;
+
+/** 每个势力的国策风味：一条专属派系影响 + 一项国家资源。 */
+const COUNTRY_FLAVOR: Record<string, { faction: string; effect: EffectBuilder }> = {
+  MING: { faction: 'donglin', effect: scale => ({ addPoliticalPower: scale }) },
+  QING: { faction: 'banners', effect: scale => ({ addManpower: 500 * scale }) },
+  SHUN: { faction: 'farmers', effect: scale => ({ addFood: 5000 * scale }) },
+  SMING: { faction: 'royal_clan', effect: scale => ({ addMandate: Math.max(1, Math.round(scale / 2)) }) },
+  ZHENG: { faction: 'merchants', effect: scale => ({ addTreasury: 4000 * scale }) },
+  MONGOL: { faction: 'nobles', effect: scale => ({ addManpower: 400 * scale }) },
+  JAPAN: { faction: 'merchants', effect: scale => ({ addTreasury: 3000 * scale }) },
+  JOSEON: { faction: 'officials', effect: scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }) },
+  XI: { faction: 'military', effect: scale => ({ addManpower: 400 * scale }) },
+  TIBET: { faction: 'clergy', effect: scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }) },
+  VOC: { faction: 'merchants', effect: scale => ({ addTreasury: 3000 * scale }) },
+  RUSSIA: { faction: 'military', effect: scale => ({ addManpower: 400 * scale }) },
+};
+
+/** 六条分支各有一项额外倾向，避免同势力内各分支只按 kind 复制。 */
+const BRANCH_ACCENTS: EffectBuilder[] = [
+  scale => ({ addAuthority: Math.max(1, Math.round(scale / 2)) }),
+  scale => ({ addManpower: 300 * scale }),
+  scale => ({ addTreasury: 3000 * scale }),
+  scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }),
+  scale => ({ addCorruption: -Math.max(1, Math.round(scale / 2)) }),
+  scale => ({ addMandate: Math.max(1, Math.round(scale / 2)) }),
+];
+
+function countryFlavorEffects(country: string, tier: number, branchIndex: number): Effect[] {
+  const scale = tier + 1;
+  const flavor = COUNTRY_FLAVOR[country];
+  const accents: Effect[] = [];
+  if (flavor) {
+    accents.push({ addFactionInfluence: { [flavor.faction]: Math.max(1, Math.round(scale / 2)) } });
+    accents.push(flavor.effect(scale));
+  }
+  const accent = BRANCH_ACCENTS[branchIndex];
+  if (accent) accents.push(accent(scale));
+  return accents;
+}
+
 function effectsFor(
   kind: FocusKind,
   tier: number,
   focusId: string,
   decisionId: string,
   modifier: Modifier | undefined,
+  country: string,
+  branchIndex: number,
 ): Effect[] {
   const scale = tier + 1;
   const common: Effect[] = [{ setFlag: focusId }];
   if (tier >= 6) common.push({ unlockDecision: decisionId });
+  let base: Effect[];
   switch (kind) {
     case 'court':
-      return [
+      base = [
         { addStability: 2 * scale },
         { addCorruption: -scale },
         { addAuthority: scale },
         { addPoliticalPower: 3 + scale * 2 },
         { addModifier: { corruption_monthly: -0.01 * scale } },
-        ...common,
       ];
+      break;
     case 'economy':
-      return [
+      base = [
         { addModifier: { tax_efficiency_pct: 2 * scale, food_output_pct: 1.5 * scale } },
         { addEstateLoyalty: { estate: 'peasants', value: -scale } },
-        ...common,
       ];
+      break;
     case 'military':
-      return [
+      base = [
         { addManpower: 2000 * scale },
         { addModifier: { army_attack_pct: 2 * scale, discipline_pct: scale, army_upkeep_pct: -scale } },
         { addArmyLoyalty: 2 * scale },
-        ...common,
       ];
+      break;
     case 'diplomacy':
-      return [
+      base = [
         { addAuthority: scale },
         { addPoliticalPower: 1 + scale },
         { addModifier: { trade_efficiency_pct: 2 * scale, stability_monthly: 0.01 * scale } },
         { addEstateLoyalty: { estate: 'merchants', value: scale } },
-        ...common,
       ];
+      break;
     case 'reform':
-      return [
+      base = [
         { addStability: -scale },
         { addPoliticalPower: 2 + scale },
         { addModifier: { tax_efficiency_pct: 3 * scale, corruption_monthly: -0.01 * scale } },
         { addEstateLoyalty: { estate: 'gentry', value: -2 * scale } },
-        ...common,
       ];
+      break;
     case 'navy':
-      return [
+      base = [
         { addModifier: { naval_attack_pct: 3 * scale, trade_efficiency_pct: 2 * scale, food_output_pct: scale } },
-        ...common,
       ];
+      break;
     case 'unique':
-      return [
+      base = [
         { addModifier: modifier ?? { stability_monthly: 0.02 * scale } },
         { addFactionInfluence: { imperial: scale } },
         { addPoliticalPower: scale },
-        ...common,
       ];
+      break;
     default:
-      return common;
+      base = [];
+      break;
   }
+  return [...base, ...countryFlavorEffects(country, tier, branchIndex), ...common];
 }
 
 const DECISION_COSTS: Record<FocusKind, { treasury: number; politicalPower: number; food?: number }> = {
@@ -225,7 +271,7 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
           prerequisitesAny: [],
           mutuallyExclusive: [],
           completionEffect: [
-            ...effectsFor(branch.kind, tier, entry.id, decisionId, branch.modifier),
+            ...effectsFor(branch.kind, tier, entry.id, decisionId, branch.modifier, pack.country, branchIndex),
             ...(entry.grants ?? []).flatMap(province => [
               { addCore: province },
               { addClaim: province },

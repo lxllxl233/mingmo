@@ -47,4 +47,15 @@ describe('content pipeline', () => {
     ];
     for (const id of ids) expect(content.events.has(id), id).toBe(true);
   });
+
+  it('gives each focus branch distinct rewards', () => {
+    const court = content.focuses.get('ming_court_1');
+    const fiscal = content.focuses.get('ming_fiscal_1');
+    const qing = content.focuses.get('qing_banner_1');
+    expect(court).toBeDefined();
+    expect(fiscal).toBeDefined();
+    expect(qing).toBeDefined();
+    expect(court?.completionEffect).not.toEqual(fiscal?.completionEffect);
+    expect(court?.completionEffect).not.toEqual(qing?.completionEffect);
+  });
 });
