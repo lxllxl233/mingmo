@@ -20,7 +20,7 @@ export function ArmyListPanel() {
       <header className="panel-head">
         <div>
           <h2>{sameProvince ? firstProvince?.name ?? '此处' : '框选军团'}</h2>
-          <p className="muted">{armies.length} 支军团 · 点击选择单支；在地图上右键可统一指定进攻方向</p>
+          <p className="muted">{armies.length} 支军团 · 点击选择单支；右键统一行军，Ctrl+右键追加路线</p>
         </div>
         <button onClick={close}>关闭</button>
       </header>

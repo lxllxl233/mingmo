@@ -166,6 +166,8 @@ export class MapRenderer {
   private armyLayer = new Container();
   private battleLayer = new Container();
   private battleMarkers = new Map<string, Container>();
+  private occupationLayer = new Container();
+  private occupationMarkers = new Map<string, Container>();
   private projected = new Map<string, number[]>();
   private centroids = new Map<string, { x: number; y: number }>();
   private edges: EdgeRecord[] = [];
@@ -249,6 +251,7 @@ export class MapRenderer {
       this.portLabelLayer,
       this.trailLayer,
       this.armyLayer,
+      this.occupationLayer,
       this.battleLayer,
     );
     app.stage.addChild(this.world);
@@ -677,11 +680,14 @@ export class MapRenderer {
 
   private updateZoomScales(): void {
     const scale = this.world.scale.x;
-    const markerScale = Math.max(0.02, 14 / scale);
+    const markerScale = Math.max(0.02, 18 / scale);
     for (const marker of this.armyMarkers.values()) {
       marker.container.scale.set(markerScale * marker.stackScale);
     }
     for (const marker of this.battleMarkers.values()) {
+      marker.scale.set(1 / Math.max(0.001, scale));
+    }
+    for (const marker of this.occupationMarkers.values()) {
       marker.scale.set(1 / Math.max(0.001, scale));
     }
     const labelScale = Math.min(1, 18 / scale);
@@ -945,6 +951,7 @@ export class MapRenderer {
       this.updateArmies();
       this.drawArmyTrails();
       this.updateBattles();
+      this.updateOccupationBubbles();
       this.updateZoomScales();
     }
   }
@@ -976,6 +983,7 @@ export class MapRenderer {
     this.updateArmies();
     this.drawArmyTrails();
     this.updateBattles();
+    this.updateOccupationBubbles();
     this.updateZoomScales();
   }
 
@@ -1272,7 +1280,7 @@ export class MapRenderer {
       totalLength += length;
     }
     if (totalLength < 0.01) return;
-    const widthScale = (selected ? 1.22 : 1) * factor;
+    const widthScale = (selected ? 1.35 : 1.15) * Math.max(0.16, factor);
     let travelled = 0;
     for (let i = 1; i < points.length; i += 1) {
       const from = points[i - 1];
@@ -1289,6 +1297,12 @@ export class MapRenderer {
       const dy = to.y - from.y;
       const nx = -dy / length;
       const ny = dx / length;
+      this.trailLayer.poly([
+        from.x + nx * width0 * 1.9, from.y + ny * width0 * 1.9,
+        to.x + nx * width1 * 1.9, to.y + ny * width1 * 1.9,
+        to.x - nx * width1 * 1.9, to.y - ny * width1 * 1.9,
+        from.x - nx * width0 * 1.9, from.y - ny * width0 * 1.9,
+      ]).fill({ color: factionColor, alpha: 0.07 });
       this.trailLayer.poly([
         from.x + nx * width0, from.y + ny * width0,
         to.x + nx * width1, to.y + ny * width1,
@@ -1307,6 +1321,13 @@ export class MapRenderer {
       }
       travelled += length;
     }
+    for (let i = 0; i < points.length - 1; i += 1) {
+      const point = points[i];
+      if (!point) continue;
+      this.trailLayer.circle(point.x, point.y, 0.052 * widthScale)
+        .fill({ color: 0xf7edd9, alpha: 0.95 })
+        .stroke({ width: 0.035 * widthScale, color: factionColor, alpha: 0.95 });
+    }
     const last = points[points.length - 1];
     const previous = points[points.length - 2];
     if (!last || !previous) return;
@@ -1321,10 +1342,15 @@ export class MapRenderer {
     const perpendicularY = Math.cos(angle) * headWidth;
     this.trailLayer.poly([
       last.x, last.y,
+      baseX + perpendicularX * 1.35, baseY + perpendicularY * 1.35,
+      baseX - perpendicularX * 1.35, baseY - perpendicularY * 1.35,
+    ]).fill({ color: factionColor, alpha: 0.12 });
+    this.trailLayer.poly([
+      last.x, last.y,
       baseX + perpendicularX, baseY + perpendicularY,
       baseX - perpendicularX, baseY - perpendicularY,
     ]).fill({ color: factionColor, alpha: 1 })
-      .stroke({ width: (selected ? 0.06 : 0.045) * factor, color: selected ? 0xffd27a : 0x1f1c18, alpha: 0.9 });
+      .stroke({ width: (selected ? 0.07 : 0.05) * factor, color: selected ? 0xffd27a : 0x1f1c18, alpha: 0.95 });
   }
 
   private positions(ids: string[]): Array<{ x: number; y: number }> {
@@ -1373,15 +1399,15 @@ export class MapRenderer {
     drawUnitIcon(plate, army.composition, INK, tag);
 
     const badge = new Graphics();
-    badge.circle(0.84, -0.42, 0.31)
+    badge.circle(0.82, -0.42, 0.38)
       .fill({ color: 0xf7edd9, alpha: 0.98 })
       .stroke({ width: 0.07, color: INK, alpha: 0.95 });
-    badge.circle(0.84, -0.42, 0.24)
+    badge.circle(0.82, -0.42, 0.29)
       .fill({ color, alpha: 0.95 });
 
     const selection = new Graphics();
-    selection.roundRect(-1.35, -1.48, 2.7, 2.55, 0.28)
-      .stroke({ width: 0.1, color: 0xffd27a, alpha: 1 });
+    selection.roundRect(-1.9, -0.98, 3.3, 2.1, 0.3)
+      .stroke({ width: 0.11, color: 0xffd27a, alpha: 1 });
     selection.visible = false;
 
     const bars = new Graphics();
@@ -1391,13 +1417,20 @@ export class MapRenderer {
       style: new TextStyle({
         fontFamily: 'serif',
         fontSize: 48,
-        fill: light ? INK : PAPER,
-        stroke: { color: light ? PAPER : INK, width: 2.2 },
+        fontWeight: '700',
+        fill: INK,
+        stroke: { color: PAPER, width: 3.2 },
       }),
     });
     label.anchor.set(0.5);
-    label.scale.set(0.92 / 48);
-    label.position.set(0, 0.78);
+    label.scale.set(1.1 / 48);
+    label.position.set(0, 0.8);
+    label.resolution = 3;
+
+    const labelBg = new Graphics();
+    labelBg.roundRect(-1.28, 0.58, 2.56, 0.44, 0.12)
+      .fill({ color: 0xf7edd9, alpha: 0.94 })
+      .stroke({ width: 0.04, color, alpha: 0.9 });
 
     const faction = new Text({
       text: FACTION_MARKS[tag] ?? tag.slice(0, 1),
@@ -1410,10 +1443,11 @@ export class MapRenderer {
       }),
     });
     faction.anchor.set(0.5);
-    faction.scale.set(0.7 / 28);
-    faction.position.set(0.72, -0.48);
+    faction.scale.set(0.78 / 28);
+    faction.position.set(0.82, -0.42);
+    faction.resolution = 3;
 
-    container.addChild(shadow, body, plate, badge, bars, selection, label, faction);
+    container.addChild(shadow, body, plate, badge, bars, selection, labelBg, label, faction);
     container.eventMode = 'static';
     container.cursor = 'pointer';
     container.on('pointertap', (event) => {
@@ -1443,14 +1477,16 @@ export class MapRenderer {
     const clampedOrg = Math.max(0, Math.min(1, organization));
     const clampedStrength = Math.max(0, Math.min(1, strength));
     marker.bars.clear();
-    marker.bars.roundRect(-1.1, -1.38, 2.2, 0.16, 0.06)
-      .fill({ color: 0x1f1c18, alpha: 0.9 });
-    marker.bars.roundRect(-1.1, -1.38, 2.2 * clampedOrg, 0.16, 0.06)
+    marker.bars.roundRect(-1.77, -0.74, 0.42, 1.22, 0.1)
+      .fill({ color: 0x1f1c18, alpha: 0.9 })
+      .stroke({ width: 0.035, color: 0xf7edd9, alpha: 0.55 });
+    const orgHeight = (1.12 * clampedOrg);
+    const strengthHeight = (1.12 * clampedStrength);
+    marker.bars.roundRect(-1.7, 0.38 - orgHeight, 0.12, orgHeight, 0.04)
       .fill({ color: 0xe8bc42, alpha: 1 });
-    marker.bars.roundRect(-1.1, -1.19, 2.2, 0.16, 0.06)
-      .fill({ color: 0x1f1c18, alpha: 0.9 });
-    marker.bars.roundRect(-1.1, -1.19, 2.2 * clampedStrength, 0.16, 0.06)
+    marker.bars.roundRect(-1.53, 0.38 - strengthHeight, 0.12, strengthHeight, 0.04)
       .fill({ color: 0x62a85c, alpha: 1 });
+    marker.bars.rect(-1.76, -0.72, 0.4, 1.18).stroke({ width: 0.025, color: 0x1f1c18, alpha: 0.6 });
   }
 
   private updateArmies(): void {
@@ -1513,6 +1549,61 @@ export class MapRenderer {
         marker.container.destroy({ children: true });
         this.armyMarkers.delete(key);
       }
+    }
+  }
+
+  private updateOccupationBubbles(): void {
+    if (!this.state) return;
+    const alive = new Set<string>();
+    for (const province of Object.values(this.state.provinces)) {
+      const occupation = province.occupation;
+      if (!occupation) continue;
+      if (!this.state.spectator && occupation.country !== this.state.playerTag) continue;
+      const centroid = this.centroids.get(province.id);
+      if (!centroid) continue;
+      alive.add(province.id);
+      let marker = this.occupationMarkers.get(province.id);
+      if (!marker) {
+        marker = new Container();
+        marker.position.set(centroid.x, centroid.y);
+        const bg = new Graphics();
+        bg.roundRect(-57, -36, 114, 31, 12)
+          .fill({ color: 0xf7edd9, alpha: 0.97 })
+          .stroke({ width: 1.1, color: 0xa33a32, alpha: 0.9 });
+        const label = new Text({
+          text: '',
+          style: {
+            fontFamily: 'Noto Serif SC, SimSun, serif',
+            fontSize: 11,
+            fontWeight: '600',
+            fill: 0x8f2b25,
+          },
+        });
+        label.anchor.set(0.5);
+        label.position.set(0, -25);
+        label.resolution = 3;
+        const bar = new Graphics();
+        marker.addChild(bg, label, bar);
+        this.occupationLayer.addChild(marker);
+        this.occupationMarkers.set(province.id, marker);
+      }
+      const label = marker.children[1];
+      if (label instanceof Text) {
+        label.text = `${this.content.provinces.get(province.id)?.name ?? province.id} 占领中 ${Math.round(occupation.progress)}%`;
+      }
+      const bar = marker.children[2];
+      if (bar instanceof Graphics) {
+        bar.clear();
+        bar.roundRect(-48, -12, 96, 4, 2).fill({ color: 0x1f1c18, alpha: 0.18 });
+        bar.roundRect(-48, -12, 96 * Math.max(0, Math.min(1, occupation.progress / 100)), 4, 2)
+          .fill({ color: this.colorOf(occupation.country), alpha: 1 });
+      }
+      marker.position.set(centroid.x, centroid.y);
+    }
+    for (const [id, marker] of this.occupationMarkers) {
+      if (alive.has(id)) continue;
+      marker.destroy({ children: true });
+      this.occupationMarkers.delete(id);
     }
   }
 

@@ -83,6 +83,7 @@ interface UiStore {
   openCountry: (tag: string) => void;
   moveArmyTo: (provinceId: string) => boolean;
   moveArmyGroupTo: (provinceId: string) => boolean;
+  appendArmyGroupWaypoint: (provinceId: string) => boolean;
   appendArmyWaypoint: (provinceId: string) => boolean;
   openTrainingPicker: (kind: 'land' | 'navy') => void;
   chooseTrainingTemplate: (templateId: string) => void;
@@ -344,6 +345,28 @@ export const useGameStore = create<UiStore>((set, get) => ({
       return false;
     }
     set({ message: `${moved} 支军团已统一向目标行军` });
+    return true;
+  },
+  appendArmyGroupWaypoint: provinceId => {
+    const { game, armyStack, content } = get();
+    if (!game || game.spectator || !armyStack || armyStack.length === 0) return false;
+    let moved = 0;
+    for (const armyId of armyStack) {
+      const army = game.armies[armyId];
+      if (!army || army.tag !== game.playerTag) continue;
+      const from = army.movePath[army.movePath.length - 1] ?? army.province;
+      if (from === provinceId) continue;
+      const suffix = findPath(content, game, from, provinceId, army.tag);
+      if (!suffix || suffix.length === 0) continue;
+      const path = [...army.movePath, ...suffix];
+      if (get().command({ type: 'army.move', armyId, path })) moved += 1;
+    }
+    if (moved === 0) {
+      sound.play('error');
+      set({ message: '选中的军团无法追加这段统一路线' });
+      return false;
+    }
+    set({ message: `已为 ${moved} 支军团追加统一路线（Ctrl+右键继续追加）` });
     return true;
   },
   appendArmyWaypoint: provinceId => {

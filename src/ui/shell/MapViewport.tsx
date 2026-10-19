@@ -73,7 +73,8 @@ export function MapViewport() {
       return;
     }
     if (state.armyStack && state.armyStack.length > 1) {
-      state.moveArmyGroupTo(provinceId);
+      if (ctrlKey) state.appendArmyGroupWaypoint(provinceId);
+      else state.moveArmyGroupTo(provinceId);
       return;
     }
     if (state.selectedArmy && game.armies[state.selectedArmy]) {
