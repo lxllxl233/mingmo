@@ -1,5 +1,6 @@
 import type { ContentIndex, Effect, Modifier } from '../../content/types';
-import type { CountryState } from '../state/types';
+import type { CountryState, GameState } from '../state/types';
+import { buildingModifiers } from '../systems/buildings';
 
 export function addModifierInto(target: Modifier, source: Modifier): void {
   for (const [key, value] of Object.entries(source)) {
@@ -32,6 +33,15 @@ export function aggregateModifiers(country: CountryState, content: ContentIndex)
 
 export function modifierValue(modifiers: Modifier, key: string): number {
   return modifiers[key] ?? 0;
+}
+
+/** 国家修正 + 已建成建筑修正。所有经济/军事/科研结算都应使用这个入口。 */
+export function aggregateCountryModifiers(state: GameState, content: ContentIndex, tag: string): Modifier {
+  const nation = state.countries[tag];
+  if (!nation) return {};
+  const total = aggregateModifiers(nation, content);
+  addModifierInto(total, buildingModifiers(state, content, tag));
+  return total;
 }
 
 export function grantModifier(country: CountryState, modifier: Modifier): void {

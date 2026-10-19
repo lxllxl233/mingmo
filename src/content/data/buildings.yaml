@@ -1,0 +1,59 @@
+buildings:
+  - id: bld_granary
+    name: 仓场
+    desc: 修仓积谷，丰年收籴、荒年平粜。提高粮食产出与抗灾能力。
+    cost_silver: 25000
+    cost_food: 3000
+    days: 90
+    modifiers: { food_output_pct: 4, famine_resistance: 0.02 }
+    ai_weight: 55
+  - id: bld_waterworks
+    name: 水利
+    desc: 修渠筑堰，旱涝稍缓。水田与河谷收益更高。
+    cost_silver: 35000
+    cost_food: 2000
+    days: 120
+    modifiers: { food_output_pct: 6, pop_growth_pct: 2 }
+    terrain: [plains, hills, wetland, jungle]
+    ai_weight: 50
+  - id: bld_academy
+    name: 书院
+    desc: 讲学课士，培养吏才。提高研究与行政效率。
+    cost_silver: 40000
+    cost_food: 1000
+    days: 120
+    modifiers: { research_speed_pct: 4, tax_efficiency_pct: 2 }
+    ai_weight: 55
+  - id: bld_market
+    name: 商馆
+    desc: 设牙行、通商路。提高贸易效率，沿海与城市收益更高。
+    cost_silver: 30000
+    cost_food: 1000
+    days: 90
+    modifiers: { trade_efficiency_pct: 6 }
+    terrain: [plains, urban, wetland]
+    ai_weight: 60
+  - id: bld_barracks
+    name: 兵营
+    desc: 屯兵练武，补充兵源与补给。
+    cost_silver: 28000
+    cost_food: 5000
+    days: 90
+    modifiers: { manpower_monthly: 100, supply_limit_add: 1 }
+    ai_weight: 50
+  - id: bld_fort
+    name: 炮台
+    desc: 加固城防，增设炮位。守城时提高防御。
+    cost_silver: 45000
+    cost_food: 2000
+    days: 150
+    modifiers: { fort_defense_pct: 8 }
+    ai_weight: 45
+  - id: bld_temple
+    name: 祠庙
+    desc: 修祠祭祀，安定人心。降低民怨、缓慢提高稳定。
+    cost_silver: 20000
+    cost_food: 2000
+    days: 90
+    modifiers: { stability_monthly: 0.02, unrest_monthly: -0.1 }
+    ai_weight: 40

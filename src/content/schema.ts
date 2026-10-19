@@ -57,6 +57,18 @@ export const provinceSchema = z.object({
   }
 });
 
+export const buildingSchema = z.object({
+  id: z.string().regex(/^[a-z][a-z0-9_]*$/),
+  name: z.string().min(1).max(20),
+  desc: z.string().min(1).max(400),
+  costSilver: z.number().int().min(0).max(1000000),
+  costFood: z.number().int().min(0).max(1000000),
+  days: z.number().int().min(30).max(365),
+  modifiers: z.record(z.string(), z.number()),
+  aiWeight: z.number().min(0).max(100),
+  terrain: z.array(z.enum(['plains', 'hills', 'mountains', 'wetland', 'desert', 'steppe', 'jungle', 'urban'])).default([]),
+}).strict();
+
 export const countryStartingSchema = z.object({
   treasury: z.number(),
   food: z.number(),

@@ -89,6 +89,8 @@ export function decodeSave(text: string): GameState {
   }
   for (const province of Object.values(parsed.state.provinces)) {
     if (province.occupation === undefined) province.occupation = null;
+    if (!Array.isArray(province.buildings)) province.buildings = [];
+    if (province.building === undefined) province.building = null;
   }
   for (const war of parsed.state.wars) {
     if (!war.casualties) war.casualties = { [war.attacker]: 0, [war.defender]: 0 };

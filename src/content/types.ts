@@ -137,6 +137,18 @@ export interface ProvinceDef {
   neighbors: ProvinceId[];
 }
 
+export interface BuildingDef {
+  id: string;
+  name: string;
+  desc: string;
+  costSilver: number;
+  costFood: number;
+  days: number;
+  modifiers: Modifier;
+  aiWeight: number;
+  terrain: Terrain[];
+}
+
 export interface CountryStarting {
   treasury: number;
   food: number;
@@ -469,6 +481,7 @@ export interface ContentIndex {
   prefectures: ReadonlyMap<PrefectureId, PrefectureDef>;
   provinces: ReadonlyMap<ProvinceId, ProvinceDef>;
   countries: ReadonlyMap<CountryTag, CountryDef>;
+  buildings: ReadonlyMap<string, BuildingDef>;
   estateDefs: ReadonlyMap<EstateKey, EstateDef>;
   countryEstates: ReadonlyMap<CountryTag, CountryEstateConfig[]>;
   taxLaws: ReadonlyMap<TaxLawId, TaxLaw>;

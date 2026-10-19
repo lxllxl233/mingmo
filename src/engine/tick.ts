@@ -5,6 +5,7 @@ import { advanceCoreIntegration } from './systems/core';
 import { advanceCrisis } from './systems/crisis';
 import { maybeFoundSouthernMing } from './systems/southernMing';
 import { advanceTraining } from './systems/training';
+import { advanceBuildings } from './systems/buildings';
 import { advanceFocus } from './systems/focus';
 import { advanceResearch } from './systems/research';
 import { advanceTaxReforms } from './systems/tax';
@@ -81,6 +82,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   cleanupEmptyArmies(state);
   replenishArmies(state, content);
   advanceCoreIntegration(state, content);
+  advanceBuildings(state, content);
   advanceCrisis(state, content);
   advanceTraining(state, content);
   processEvents(state, content);

@@ -80,6 +80,46 @@ export function ProvincePanel() {
       <div className="row"><span>要塞</span><b>{def.isFort ? `是（${def.fortLevel}）` : '无'}</b></div>
       <div className="row"><span>沿海 / 河流</span><b>{def.isCoastal ? '是' : '否'} / {def.isRiver ? '是' : '否'}</b></div>
       <div className="row"><span>港口</span><b>{def.isPort ? '是' : '否'}</b></div>
+      <section className="building-section">
+        <h3>营造</h3>
+        {province.buildings.length > 0 && (
+          <div className="building-tags">
+            {province.buildings.map(id => <span key={id}>{content.buildings.get(id)?.name ?? id}</span>)}
+          </div>
+        )}
+        {province.building ? (
+          <div className="building-progress">
+            <b>{content.buildings.get(province.building.id)?.name ?? province.building.id}</b>
+            <span>剩余 {province.building.daysLeft} / {province.building.totalDays} 日</span>
+            <div className="bar"><i style={{ width: `${Math.max(2, 100 - (province.building.daysLeft / Math.max(1, province.building.totalDays)) * 100)}%` }} /></div>
+          </div>
+        ) : province.controller === game.playerTag ? (
+          <div className="building-list">
+            {[...content.buildings.values()]
+              .filter(building => !province.buildings.includes(building.id)
+                && (building.terrain.length === 0 || building.terrain.includes(def.terrain)))
+              .map(building => {
+                const country = game.countries[game.playerTag];
+                const affordable = (country?.treasury ?? 0) >= building.costSilver
+                  && (country?.food ?? 0) >= building.costFood;
+                return (
+                  <button
+                    key={building.id}
+                    className="building-option"
+                    disabled={!affordable}
+                    title={building.desc}
+                    onClick={() => command({ type: 'province.build', provinceId: selected, buildingId: building.id })}
+                  >
+                    <b>{building.name}</b>
+                    <span>银 {building.costSilver.toLocaleString()} · 粮 {building.costFood.toLocaleString()} · {building.days} 日</span>
+                  </button>
+                );
+              })}
+          </div>
+        ) : (
+          <p className="muted">只有控制该地区才能营造。</p>
+        )}
+      </section>
       {def.isPort && (
         <section className="port-section">
           <h3>港口</h3>

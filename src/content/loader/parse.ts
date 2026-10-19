@@ -3,6 +3,7 @@ import type { ZodTypeAny } from 'zod';
 import {
   armyTemplateSchema,
   balanceSchema,
+  buildingSchema,
   countryEstatesSchema,
   countrySchema,
   decisionSchema,
@@ -25,6 +26,7 @@ import {
 import type {
   ArmyTemplate,
   Balance,
+  BuildingDef,
   ContentIndex,
   CountryDef,
   CountryEstateConfig,
@@ -68,6 +70,7 @@ interface Collections {
   prefectures: Collected[];
   provinces: Collected[];
   countries: Collected[];
+  buildings: Collected[];
   estateDefs: Collected[];
   countryEstates: Collected[];
   taxLaws: Collected[];
@@ -91,6 +94,7 @@ const EMPTY_COLLECTIONS: Collections = {
   prefectures: [],
   provinces: [],
   countries: [],
+  buildings: [],
   estateDefs: [],
   countryEstates: [],
   taxLaws: [],
@@ -156,7 +160,7 @@ function byTag(items: CountryDef[]): Map<string, CountryDef> {
 export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex {
   const collected: Collections = {
     ...EMPTY_COLLECTIONS,
-    regions: [], prefectures: [], provinces: [], countries: [], estateDefs: [],
+    regions: [], prefectures: [], provinces: [], countries: [], buildings: [], estateDefs: [],
     countryEstates: [], taxLaws: [], privileges: [], focuses: [], focusPacks: [], events: [],
     eventChains: [], techs: [], decisions: [], armyTemplates: [], generals: [],
     leaders: [], leaderProfiles: [], namedModifiers: [], scenarios: [],
@@ -192,6 +196,9 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
           break;
         case 'countries':
           pushItems(collected.countries, normalizeValue(value), file.path, 'countries');
+          break;
+        case 'buildings':
+          pushItems(collected.buildings, normalizeValue(value), file.path, 'buildings');
           break;
         case 'estate_defs':
           pushItems(collected.estateDefs, normalizeValue(value), file.path, 'estate_defs');
@@ -264,6 +271,7 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
     }
   }
   const countries: CountryDef[] = parseAll<CountryDef>(collected.countries, countrySchema);
+  const buildings: BuildingDef[] = parseAll<BuildingDef>(collected.buildings, buildingSchema);
   for (const country of countries) {
     const entries = leaderEntries.filter(entry => entry.tag === country.tag);
     const base = entries.find(entry => entry.scenario === 'default') ?? entries[0];
@@ -358,6 +366,10 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
     const file = collected.namedModifiers.find(item => (item.value as NamedModifier).id === modifier.id)?.file ?? 'named_modifiers';
     validateModifier(modifier.modifiers, file, `${modifier.id}.modifiers`);
   }
+  for (const building of buildings) {
+    const file = collected.buildings.find(item => (item.value as BuildingDef).id === building.id)?.file ?? 'buildings';
+    validateModifier(building.modifiers, file, `${building.id}.modifiers`);
+  }
 
   if (balance === null) throw new ContentError('balance.yaml', '$', 'missing balance');
   const parsedBalance = balanceSchema.safeParse(balance.value);
@@ -372,6 +384,7 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
     prefectures: byId(prefectures, 'prefectures'),
     provinces: byId(provinces, 'provinces'),
     countries: byTag(countries),
+    buildings: byId(buildings, 'buildings'),
     estateDefs: byKey(estateDefs, 'estate_defs'),
     countryEstates: countryEstatesByTag,
     taxLaws: byId(taxLaws, 'tax_laws'),

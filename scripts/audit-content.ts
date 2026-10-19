@@ -156,6 +156,9 @@ function auditContent(content: ContentIndex): AuditResult {
   for (const named of content.namedModifiers.values()) {
     for (const key of Object.keys(named.modifiers)) bump(result.modifierUses, key);
   }
+  for (const building of content.buildings.values()) {
+    for (const key of Object.keys(building.modifiers)) bump(result.modifierUses, key);
+  }
 
   for (const tech of content.techs.values()) {
     collectEffects(tech.effects, `tech:${tech.id}`);

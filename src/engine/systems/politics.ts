@@ -3,7 +3,7 @@ import { isQuarterStart } from '../core/clock';
 import type { GameState } from '../state/types';
 import { touchMap } from '../state/types';
 import { countryProvinceList } from './economy';
-import { aggregateModifiers } from '../rules/modifiers';
+import { aggregateCountryModifiers } from '../rules/modifiers';
 
 export function monthlyPoliticalGain(authority: number, stability: number): number {
   return 1 + Math.max(0, Math.min(100, authority)) / 100 + Math.max(0, Math.min(100, stability)) / 200;
@@ -43,7 +43,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
 
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
-    const modifiers = aggregateModifiers(nation, content);
+    const modifiers = aggregateCountryModifiers(state, content, nation.tag);
     driftFactions(nation);
     const politicalGain = monthlyPoliticalGain(nation.authority, nation.stability)
       + (modifiers['political_power_monthly'] ?? 0);

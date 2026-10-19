@@ -1,5 +1,5 @@
-﻿import type { ContentIndex, Tech } from '../../content/types';
-import { aggregateModifiers } from '../rules/modifiers';
+import type { ContentIndex, Tech } from '../../content/types';
+import { aggregateCountryModifiers } from '../rules/modifiers';
 import { applyEffects } from '../rules/effects';
 import { evaluateTrigger } from '../rules/triggers';
 import { fireEvent } from './events';
@@ -60,7 +60,7 @@ export function cancelResearch(state: GameState, tag: string, techId: string): b
 export function advanceResearch(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
-    const modifiers = aggregateModifiers(nation, content);
+    const modifiers = aggregateCountryModifiers(state, content, nation.tag);
     const fundingNeed = nation.research.length * RESEARCH_FUNDING_PER_SLOT_DAY;
     const fundingPaid = nation.treasury > 20000 ? Math.min(fundingNeed, nation.treasury - 20000) : 0;
     nation.treasury -= fundingPaid;

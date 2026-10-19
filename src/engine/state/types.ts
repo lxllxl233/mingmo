@@ -28,6 +28,13 @@ export interface ProvinceState {
   unrest: number;
   devastation: number;
   modifiers: TimedModifier[];
+  buildings: string[];
+  building: {
+    id: string;
+    by: string;
+    daysLeft: number;
+    totalDays: number;
+  } | null;
   siege?: {
     attacker: string;
     progress: number;

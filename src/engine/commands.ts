@@ -11,6 +11,7 @@ import { chooseEventOption } from './systems/events';
 import { setArmyPath } from './systems/military';
 import { enqueueTraining } from './systems/training';
 import { startCoreIntegration } from './systems/core';
+import { startBuilding } from './systems/buildings';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -29,6 +30,7 @@ export type Command =
   | { type: 'army.disband'; armyId: string }
   | { type: 'army.forceMarch'; armyId: string }
   | { type: 'province.integrateCore'; provinceId: string }
+  | { type: 'province.build'; provinceId: string; buildingId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.demandTribute'; vassal: string }
@@ -223,6 +225,12 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     case 'province.integrateCore': {
       if (!startCoreIntegration(state, tag, command.provinceId)) {
         throw new CommandError('无法收买该地区人心');
+      }
+      break;
+    }
+    case 'province.build': {
+      if (!startBuilding(state, content, tag, command.provinceId, command.buildingId)) {
+        throw new CommandError('无法在该地区修建');
       }
       break;
     }

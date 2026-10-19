@@ -796,6 +796,18 @@ button:active { transform: translateY(1px); }
 .save-slot button { padding: 3px 6px; font-size: 12px; }
 .save-slot button:disabled { opacity: .4; }
 
+/* ── 营造 ───────────────────────────────────────────── */
+.building-section { border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 6px; }
+.building-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.building-tags span { padding: 2px 6px; border: 1px solid var(--line); background: rgba(63,111,90,.1); color: #3f6b3a; font-size: 11px; }
+.building-progress { display: flex; flex-direction: column; gap: 3px; padding: 6px 8px; background: rgba(184,137,46,.1); border: 1px dashed #b89a6a; font-size: 12px; }
+.building-progress span { color: var(--ink-soft); font-size: 11px; }
+.building-list { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.building-option { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 5px 7px; text-align: left; }
+.building-option b { font-size: 12px; }
+.building-option span { color: var(--ink-soft); font-size: 10px; line-height: 1.4; }
+.building-option:disabled { opacity: .45; }
+
 .settings-card { width: min(560px, 94vw); }
 .setting-row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
 .setting-row input[type="range"] { width: 100%; accent-color: var(--red); }

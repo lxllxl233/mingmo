@@ -1,6 +1,6 @@
 import type { ContentIndex, TaxLaw } from '../../content/types';
 import type { CountryState, GameState, MonthlyReport } from '../state/types';
-import { aggregateModifiers } from '../rules/modifiers';
+import { aggregateCountryModifiers } from '../rules/modifiers';
 import { rngFor } from '../core/rng';
 
 function clamp(value: number, min: number, max: number): number {
@@ -80,7 +80,7 @@ export function armyStrengthOf(state: GameState, tag: string): number {
 export function monthlyArmyPay(state: GameState, content: ContentIndex, tag: string): number {
   const nation = state.countries[tag];
   if (!nation) return 0;
-  const modifiers = aggregateModifiers(nation, content);
+  const modifiers = aggregateCountryModifiers(state, content, tag);
   const government = content.countries.get(tag)?.government;
   const rebelDiscount = government === 'rebel' ? 0.55 : 1;
   const multiplier = 1 + (modifiers['army_upkeep_pct'] ?? 0) / 100;
@@ -154,7 +154,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
     const provinces = countryProvinceList(state, content, nation.tag);
-    const modifiers = aggregateModifiers(nation, content);
+    const modifiers = aggregateCountryModifiers(state, content, nation.tag);
     const government = governmentProfile(content.countries.get(nation.tag)?.government ?? 'monarchy');
     const momentum = 1 + clamp(nation.economicMomentum, -1, 1) * 0.3;
     const taxEfficiency = (1 + (modifiers['tax_efficiency_pct'] ?? 0) / 100) * government.tax * momentum;

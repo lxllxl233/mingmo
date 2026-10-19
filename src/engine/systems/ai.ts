@@ -7,6 +7,7 @@ import { availableTechs, startResearch } from './research';
 import { startTaxReform } from './tax';
 import { enqueueTraining } from './training';
 import { startCoreIntegration } from './core';
+import { startBuilding } from './buildings';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { canMarchThrough } from '../rules/access';
@@ -546,6 +547,24 @@ function manageInvestments(state: GameState, content: ContentIndex, tag: string)
     nation.treasury -= cost;
     army.training = Math.min(100, army.training + 3);
     army.equipment = Math.min(100, army.equipment + 3);
+  }
+
+  if (nation.treasury > reserve + 60000) {
+    const provinceCandidates = Object.values(state.provinces)
+      .filter(province => province.controller === tag && !province.building)
+      .sort((a, b) => (content.provinces.get(b.id)?.development ?? 0) - (content.provinces.get(a.id)?.development ?? 0));
+    for (const province of provinceCandidates.slice(0, 3)) {
+      const provinceDef = content.provinces.get(province.id);
+      if (!provinceDef) continue;
+      const options = [...content.buildings.values()]
+        .filter(def => !province.buildings.includes(def.id)
+          && (def.terrain.length === 0 || def.terrain.includes(provinceDef.terrain))
+          && def.costSilver <= nation.treasury - reserve
+          && def.costFood <= nation.food)
+        .sort((a, b) => b.aiWeight - a.aiWeight);
+      const choice = options[0];
+      if (choice && startBuilding(state, content, tag, province.id, choice.id)) break;
+    }
   }
 
   const unrest = Object.values(state.provinces)

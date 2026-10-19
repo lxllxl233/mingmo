@@ -1,5 +1,5 @@
 import type { ContentIndex } from '../../content/types';
-import { aggregateModifiers } from '../rules/modifiers';
+import { aggregateCountryModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
@@ -96,6 +96,7 @@ function defenseValue(
 }
 
 function movementFactor(
+  state: GameState,
   army: ArmyState,
   nation: GameState['countries'][string],
   content: ContentIndex,
@@ -105,7 +106,7 @@ function movementFactor(
   const cavalryShare = army.composition.cavalry / total;
   const artilleryShare = army.composition.artillery / total;
   let factor = 1 + Math.min(0.15, nation.completedTechs.length * 0.004);
-  const modifiers = aggregateModifiers(nation, content);
+  const modifiers = aggregateCountryModifiers(state, content, nation.tag);
   factor *= 1 + (modifiers['movement_speed_pct'] ?? 0) / 100;
   const template = content.armyTemplates.get(army.templateId);
   factor *= 1 + ((template?.movement ?? 3) - 3) * 0.03;
@@ -219,7 +220,7 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
     }
     const modsFor = (tag: string): Record<string, number> => {
       const nation = state.countries[tag];
-      const mods = nation ? aggregateModifiers(nation, content) : {};
+      const mods = nation ? aggregateCountryModifiers(state, content, tag) : {};
       if (nation) {
         mods['army_attack_pct'] = (mods['army_attack_pct'] ?? 0) + crisisCombatPenalty(nation)
           + (nation.armyLoyalty - 50) / 10;
@@ -456,7 +457,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
     if (army.stance === 'battle') continue;
     const nation = state.countries[army.tag];
     if (!nation?.alive) continue;
-    const armyModifiers = aggregateModifiers(nation, content);
+    const armyModifiers = aggregateCountryModifiers(state, content, army.tag);
     const currentDef = content.provinces.get(army.province);
     if (!currentDef) continue;
     const armyGeneral = army.general ? content.generals.get(army.general) : undefined;
@@ -540,7 +541,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       const traits = generalTraitBonus(general?.traits ?? []);
       const cost = (content.balance.military.movementCost[nextDef?.terrain ?? 'plains'] ?? 1)
         * Math.max(0.55, 1 - traits.movePct / 100);
-      const terrainFactor = movementFactor(army, nation, content, nextDef?.terrain ?? 'plains');
+      const terrainFactor = movementFactor(state, army, nation, content, nextDef?.terrain ?? 'plains');
       army.stance = 'move';
       army.entrenchment = 0;
       army.moveProgress += (terrainFactor / (4 * cost)) * (army.forcedMarch ? 1.35 : 1);

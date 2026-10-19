@@ -82,6 +82,8 @@ export function createInitialState(
       unrest: 5 + (hashSeed(province.id, seed, 'unrest') % 16),
       devastation: 0,
       modifiers: [],
+      buildings: [],
+      building: null,
     };
   }
   for (const [tag, regionIds] of Object.entries(scenario.coreRegions ?? {})) {

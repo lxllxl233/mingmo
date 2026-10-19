@@ -1,7 +1,7 @@
 import type { ContentIndex, Focus } from '../../content/types';
 import { evaluateTrigger } from '../rules/triggers';
 import { applyEffects } from '../rules/effects';
-import { aggregateModifiers } from '../rules/modifiers';
+import { aggregateCountryModifiers } from '../rules/modifiers';
 import { fireEvent } from './events';
 import type { GameState } from '../state/types';
 
@@ -63,7 +63,7 @@ export function advanceFocus(state: GameState, content: ContentIndex): void {
       nation.focus = null;
       continue;
     }
-    const modifiers = aggregateModifiers(nation, content);
+    const modifiers = aggregateCountryModifiers(state, content, nation.tag);
     const speed = 1 + (modifiers['focus_speed_pct'] ?? 0) / 100;
     nation.focus.progress += Math.max(0.1, speed);
     if (nation.focus.progress < focus.costDays) continue;
