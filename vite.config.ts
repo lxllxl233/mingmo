@@ -11,6 +11,19 @@ process.env.TEMP = esbuildTmp;
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('/src/content/')) return 'content';
+          if (id.includes('node_modules/pixi.js')) return 'pixi';
+          if (id.includes('node_modules/react')) return 'react';
+          if (id.includes('node_modules/zustand')) return 'zustand';
+          return undefined;
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     strictPort: true,

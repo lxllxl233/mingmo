@@ -308,6 +308,31 @@ export function cleanupDefeatedNations(state: GameState, content: ContentIndex):
       severity: 'danger',
     });
   }
+
+  // 兜底：任何省份的 owner/controller 已死亡时，转给存活占领者/邻国/NEU。
+  let repaired = false;
+  for (const province of Object.values(state.provinces)) {
+    const ownerAlive = Boolean(state.countries[province.owner]?.alive);
+    const controllerAlive = Boolean(state.countries[province.controller]?.alive);
+    if (ownerAlive && controllerAlive) continue;
+    let target = controllerAlive ? province.controller : ownerAlive ? province.owner : null;
+    if (!target) {
+      const def = content.provinces.get(province.id);
+      for (const neighborId of def?.neighbors ?? []) {
+        const controller = state.provinces[neighborId]?.controller;
+        if (controller && controller !== 'NEU' && state.countries[controller]?.alive) {
+          target = controller;
+          break;
+        }
+      }
+    }
+    province.owner = target ?? 'NEU';
+    province.controller = province.owner;
+    province.occupation = null;
+    delete province.siege;
+    repaired = true;
+  }
+  if (repaired) touchMap(state);
 }
 
 
