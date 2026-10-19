@@ -28,7 +28,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     watch: {
-      ignored: ['**/*.tmpdir/**', '**/.*.tmpdir/**', '**/.esbuild-tmp/**', '**/dist/**'],
+      ignored: ['**/*.tmpdir/**', '**/.*.tmpdir/**', '**/.esbuild-tmp/**', '**/dist/**', '**/*.v8.log', '**/isolate-*.log'],
     },
   },
   test: {

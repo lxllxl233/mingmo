@@ -12,3 +12,6 @@ map-preview.*
 .DS_Store
 prof/
 .dev-build/
+
+isolate-*.log
+*.v8.log
