@@ -85,6 +85,7 @@ function Hat({ leader }: { leader: LeaderDef }) {
 
 export function LeaderPortrait({ leader, size = 120 }: { leader: LeaderDef; size?: number }) {
   const seed = seedOf(leader.name);
+  const hatchId = `hatch-${seed}`;
   const faceWidth = 25 + (seed % 5);
   const eyeY = 74 + (seed % 3);
   const beard = seed % 4;
@@ -97,9 +98,16 @@ export function LeaderPortrait({ leader, size = 120 }: { leader: LeaderDef; size
       aria-label={`${leader.title} ${leader.name} 的画像`}
       style={{ display: 'block', borderRadius: 4, border: '1px solid rgba(31,28,24,.25)' }}
     >
+      <defs>
+        <pattern id={hatchId} width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(28)">
+          <path d="M0 5 L5 0" stroke="#241c18" strokeWidth="0.7" opacity="0.24" />
+        </pattern>
+      </defs>
       <rect width="120" height="140" fill="#efe4cc" />
+      <rect width="120" height="140" fill={`url(#${hatchId})`} opacity="0.5" />
       <circle cx="60" cy="68" r="48" fill={leader.accent} opacity="0.14" />
       <path d="M14 140 Q18 112 42 102 L60 116 L78 102 Q102 112 106 140 Z" fill={leader.robe} stroke="#241c18" strokeWidth="1.6" />
+      <path d="M14 140 Q18 112 42 102 L60 116 L78 102 Q102 112 106 140 Z" fill={`url(#${hatchId})`} opacity="0.6" />
       <path d="M44 104 L60 116 L76 104 L80 112 L60 126 L40 112 Z" fill={leader.accent} opacity="0.85" />
       <rect x="51" y="94" width="18" height="20" rx="6" fill={leader.skin} />
       <ellipse cx="60" cy="78" rx={faceWidth} ry="32" fill={leader.skin} stroke="#241c18" strokeWidth="1.5" />
@@ -122,6 +130,9 @@ export function LeaderPortrait({ leader, size = 120 }: { leader: LeaderDef; size
       <circle cx="33" cy="92" r="2.5" fill={leader.accent} />
       <circle cx="87" cy="92" r="2.5" fill={leader.accent} />
       <rect x="1" y="1" width="118" height="138" fill="none" stroke="#241c18" strokeWidth="2" />
+      <rect x="5" y="5" width="110" height="130" fill="none" stroke="#8b6a3f" strokeWidth="0.7" opacity="0.8" />
+      <rect x="92" y="112" width="18" height="14" fill="#9e2b25" opacity="0.9" />
+      <text x="101" y="122" textAnchor="middle" fontSize="9" fill="#f2ead8" fontFamily="serif">印</text>
     </svg>
   );
 }

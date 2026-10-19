@@ -107,6 +107,14 @@ input, select {
 .faction-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
 .start-actions { display: flex; gap: 12px; align-items: center; justify-content: flex-end; padding-top: 18px; }
 .start-actions .hint { color: var(--ink-soft); font-size: 12px; margin-right: auto; }
+.next-button { position: sticky; bottom: 0; z-index: 3; box-shadow: 0 -10px 18px rgba(242, 234, 216, 0.96); }
+@media (max-height: 850px) {
+  .start { padding-top: 24px; padding-bottom: 20px; }
+  .start h1 { font-size: clamp(34px, 4.6vw, 58px); }
+  .start .subtitle { margin-bottom: 14px; }
+  .scenario-card, .faction-card { padding: 8px 10px; margin-bottom: 6px; }
+  .start-column { padding-bottom: 8px; }
+}
 
 .game { height: 100%; display: grid; grid-template-rows: 46px 1fr 40px; background: var(--paper); }
 .topbar {

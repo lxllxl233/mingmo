@@ -15,3 +15,10 @@ Creative Commons Attribution 3.0 (CC BY 3.0).
 
 Attribution is displayed in the in-game music panel and repeated in the
 project documentation.
+
+## Original tracks
+
+`public/audio/music/original/start_original.wav` and `war_original.wav` are
+procedurally generated for this project (pentatonic plucks, drone, frame drum;
+no sampled or third-party audio). They are released with the project under
+CC0 1.0 and can be replaced by a commissioned recording in a later art pass.
