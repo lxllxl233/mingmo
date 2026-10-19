@@ -4,6 +4,7 @@ import type { GameState } from '../state/types';
 import { touchMap } from '../state/types';
 import { countryProvinceList } from './economy';
 import { aggregateCountryModifiers } from '../rules/modifiers';
+import { topCourtFaction } from './court';
 
 export function monthlyPoliticalGain(authority: number, stability: number): number {
   return 1 + Math.max(0, Math.min(100, authority)) / 100 + Math.max(0, Math.min(100, stability)) / 200;
@@ -73,6 +74,22 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
     nation.authority = clamp(nation.authority + (modifiers['authority_monthly'] ?? 0), 0, 100);
     nation.corruption = clamp(nation.corruption + (pressure?.corruptionMonthly ?? 0), 0, content.balance.politics.maxCorruption);
     nation.stability = clamp(nation.stability + (pressure?.stabilityMonthly ?? 0), 0, 100);
+
+    const court = topCourtFaction(state, nation.tag);
+    if (court === 'donglin') {
+      nation.stability = clamp(nation.stability + 0.02, 0, 100);
+      nation.corruption = clamp(nation.corruption - 0.02, 0, 100);
+      nation.armyLoyalty = clamp(nation.armyLoyalty - 0.02, 0, 100);
+    } else if (court === 'eunuch') {
+      nation.corruption = clamp(nation.corruption + 0.05, 0, 100);
+      nation.stability = clamp(nation.stability - 0.02, 0, 100);
+    } else if (court === 'imperial') {
+      nation.authority = clamp(nation.authority + 0.05, 0, 100);
+      nation.stability = clamp(nation.stability + 0.01, 0, 100);
+    } else if (court === 'military') {
+      nation.armyLoyalty = clamp(nation.armyLoyalty + 0.05, 0, 100);
+      nation.stability = clamp(nation.stability - 0.01, 0, 100);
+    }
 
     let rebellions = 0;
     for (const entry of countryProvinceList(state, content, nation.tag)) {

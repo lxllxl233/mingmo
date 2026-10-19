@@ -13,6 +13,7 @@ import { setArmyPath } from './systems/military';
 import { enqueueTraining } from './systems/training';
 import { startCoreIntegration } from './systems/core';
 import { startBuilding } from './systems/buildings';
+import { favorCourtFaction, suppressCourtFaction, type CourtFaction } from './systems/court';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -33,6 +34,8 @@ export type Command =
   | { type: 'army.setSiegeMode'; armyId: string; mode: 'siege' | 'assault' | 'bombard' | 'negotiate' }
   | { type: 'province.integrateCore'; provinceId: string }
   | { type: 'province.build'; provinceId: string; buildingId: string }
+  | { type: 'court.favor'; faction: string }
+  | { type: 'court.suppress'; faction: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -245,6 +248,18 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
         text: `${army.name} 围城方式改为${labels[command.mode]}`,
         severity: 'info',
       });
+      break;
+    }
+    case 'court.favor': {
+      if (!favorCourtFaction(state, tag, command.faction as CourtFaction)) {
+        throw new CommandError('无法扶植该派系');
+      }
+      break;
+    }
+    case 'court.suppress': {
+      if (!suppressCourtFaction(state, tag, command.faction as CourtFaction)) {
+        throw new CommandError('无法打压该派系');
+      }
       break;
     }
     case 'province.integrateCore': {

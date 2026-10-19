@@ -21,6 +21,7 @@ import { ResearchPanel } from '../panels/ResearchPanel';
 import { MilitaryPanel } from '../panels/MilitaryPanel';
 import { DiplomacyPanel } from '../panels/DiplomacyPanel';
 import { DecisionPanel } from '../panels/DecisionPanel';
+import { CourtPanel } from '../panels/CourtPanel';
 import { LogPanel } from '../panels/LogPanel';
 import { EventModal } from '../overlays/EventModal';
 import { WarAlertModal } from '../overlays/WarAlertModal';
@@ -164,6 +165,9 @@ export function GameShell() {
   const playerDef = content.countries.get(game.playerTag);
   const playerLeader = playerDef?.leadersByScenario?.[game.scenarioId] ?? playerDef?.leader;
   const pending = game.pendingEvents.filter(event => event.country === game.playerTag);
+  const sidebar = game.playerTag === 'MING'
+    ? [...SIDEBAR, { key: 'court' as PanelKey, label: '朝议' }]
+    : SIDEBAR;
 
   return (
     <div
@@ -186,7 +190,7 @@ export function GameShell() {
               {playerLeader && <span className="sidebar-leader"><LeaderPortrait leader={playerLeader} size={34} /></span>}
             </button>
           )}
-          {SIDEBAR.map(entry => (
+          {sidebar.map(entry => (
             <button
               key={entry.key}
               className={panel === entry.key ? 'active' : ''}
@@ -209,6 +213,7 @@ export function GameShell() {
           {panel === 'military' && <MilitaryPanel />}
           {panel === 'diplomacy' && <DiplomacyPanel />}
           {panel === 'decisions' && <DecisionPanel />}
+          {panel === 'court' && <CourtPanel />}
           {panel === 'log' && <LogPanel />}
           {panel === null && (
             <div className="panel objective-panel">

@@ -815,6 +815,20 @@ button:active { transform: translateY(1px); }
 .siege-modes button { padding: 4px 8px; font-size: 12px; }
 .siege-modes button.active { background: var(--red); color: var(--paper); border-color: var(--red); }
 
+/* ── 朝议 ───────────────────────────────────────────── */
+.court-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin: 8px 0 10px; font-size: 12px; color: var(--ink-soft); }
+.court-summary b { color: var(--ink); }
+.court-card { border: 1px solid var(--line); background: rgba(255,255,255,.35); padding: 7px 9px; margin-bottom: 7px; }
+.court-card.leading { border-color: var(--gold); box-shadow: inset 3px 0 0 var(--gold); }
+.court-card-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; }
+.court-card-head span { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.court-card .bar { height: 5px; margin: 4px 0 5px; background: rgba(0,0,0,.08); }
+.court-card .bar i { display: block; height: 100%; background: var(--gold); }
+.court-card p { margin: 3px 0 6px; font-size: 11px; line-height: 1.5; }
+.court-actions { display: flex; gap: 5px; }
+.court-actions button { padding: 3px 7px; font-size: 11px; }
+.court-actions button:disabled { opacity: .45; }
+
 .settings-card { width: min(560px, 94vw); }
 .setting-row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
 .setting-row input[type="range"] { width: 100%; accent-color: var(--red); }

@@ -25,6 +25,7 @@ export type PanelKey =
   | 'military'
   | 'diplomacy'
   | 'decisions'
+  | 'court'
   | 'log';
 
 let suppressArmySelectionUntil = 0;
