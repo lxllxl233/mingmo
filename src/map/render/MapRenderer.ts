@@ -1130,7 +1130,14 @@ export class MapRenderer {
           fontSize: baseSize,
           fontWeight: '600',
           fill: lightText ? PAPER : INK,
-          letterSpacing: 4,
+          letterSpacing: 3,
+          dropShadow: {
+            color: 0x1f1c18,
+            alpha: lightText ? 0.38 : 0.2,
+            blur: 2.5,
+            distance: 1.2,
+            angle: Math.PI / 2,
+          },
         }),
       });
       text.anchor.set(0.5);
@@ -1157,15 +1164,16 @@ export class MapRenderer {
     this.localLabelLayer.removeChildren();
     this.localLabelsDrawn = false;
     if (!this.state) return;
-    const groups = new Map<string, { x: number; y: number; area: number; count: number }>();
+    const groups = new Map<string, { x: number; y: number; area: number; count: number; controller: string }>();
     for (const def of this.content.provinces.values()) {
       const centroid = this.centroids.get(def.id);
       if (!centroid) continue;
-      const group = groups.get(def.prefectureId) ?? { x: 0, y: 0, area: 0, count: 0 };
+      const group = groups.get(def.prefectureId) ?? { x: 0, y: 0, area: 0, count: 0, controller: 'NEU' };
       group.x += centroid.x;
       group.y += centroid.y;
       group.area += labelArea(this.projected.get(def.id));
       group.count += 1;
+      if (group.count === 1) group.controller = this.state.provinces[def.id]?.controller ?? 'NEU';
       groups.set(def.prefectureId, group);
     }
     for (const [id, group] of groups) {
@@ -1177,8 +1185,15 @@ export class MapRenderer {
           fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
           fontSize: 38,
           fontWeight: '600',
-          fill: 0x332a20,
-          letterSpacing: 1,
+          fill: colorLuma(this.colorOf(group.controller)) > 0.55 ? INK : PAPER,
+          letterSpacing: 1.2,
+          dropShadow: {
+            color: 0x1f1c18,
+            alpha: 0.36,
+            blur: 2,
+            distance: 1,
+            angle: Math.PI / 2,
+          },
         }),
       });
       text.anchor.set(0.5);
@@ -1204,8 +1219,15 @@ export class MapRenderer {
           fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
           fontSize: 32,
           fontWeight: '600',
-          fill: 0x3a3026,
-          letterSpacing: 0.5,
+          fill: colorLuma(this.colorOf(this.state.provinces[def.id]?.controller ?? 'NEU')) > 0.55 ? INK : PAPER,
+          letterSpacing: 0.8,
+          dropShadow: {
+            color: 0x1f1c18,
+            alpha: 0.34,
+            blur: 1.8,
+            distance: 0.8,
+            angle: Math.PI / 2,
+          },
         }),
       });
       text.anchor.set(0.5);
