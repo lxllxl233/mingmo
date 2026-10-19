@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { musicForFaction } from '../../app/audio/music';
@@ -112,6 +112,9 @@ export function GameShell() {
       onPointerDown={event => {
         const target = event.target as HTMLElement | null;
         if (target?.closest('button')) sound.play('click');
+        if (event.button === 0 && !target?.closest('.right-panel')) {
+          useGameStore.getState().clearArmySelection();
+        }
       }}
     >
       <TopBar />
@@ -211,6 +214,7 @@ export function GameShell() {
     </div>
   );
 }
+
 
 
 

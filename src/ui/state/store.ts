@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import type { ContentIndex } from '../../content/types';
 import { content } from '../../content/browser';
 import { createInitialState } from '../../engine/state/initial';
@@ -74,6 +74,7 @@ interface UiStore {
   setSpeed: (speed: 0 | 1 | 2 | 4 | 8 | 16 | 32) => void;
   selectProvince: (provinceId: string | null) => void;
   selectArmy: (armyId: string | null) => void;
+  clearArmySelection: () => void;
   openArmyStack: (armyIds: string[]) => void;
   closeArmyStack: () => void;
   openBattle: (battleId: string) => void;
@@ -230,6 +231,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     if (state.selectedArmy) {
       set({
         selectedArmy: null,
+        armyStack: null,
         selectedProvince: provinceId,
         countryFocus: null,
         diplomaticMode: false,
@@ -239,10 +241,10 @@ export const useGameStore = create<UiStore>((set, get) => ({
       return;
     }
     if (state.panel === 'military') {
-      set({ selectedProvince: provinceId });
+      set({ selectedProvince: provinceId, armyStack: null });
       return;
     }
-    set({ selectedProvince: provinceId, selectedArmy: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, panel: provinceId ? 'province' : null });
+    set({ selectedProvince: provinceId, selectedArmy: null, armyStack: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, panel: provinceId ? 'province' : null });
   },
   selectArmy: armyId => {
     if (armyId && Date.now() < suppressArmySelectionUntil) return;
@@ -262,6 +264,14 @@ export const useGameStore = create<UiStore>((set, get) => ({
       countryFocus: null,
       diplomaticMode: false,
       diplomaticAnchor: null,
+    });
+  },
+  clearArmySelection: () => {
+    const panel = get().panel;
+    set({
+      selectedArmy: null,
+      armyStack: null,
+      panel: panel === 'army' || panel === 'armyList' ? null : panel,
     });
   },
   openArmyStack: armyIds => {
@@ -499,6 +509,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
   },
   reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, peaceWarId: null, message: null }),
 }));
+
 
 
 
