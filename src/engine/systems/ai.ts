@@ -1,5 +1,5 @@
-import type { ContentIndex, CountryDef, Tech } from '../../content/types';
-import type { GameState } from '../state/types';
+﻿import type { ContentIndex, CountryDef, Tech } from '../../content/types';
+import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { armyStrengthOf } from './economy';
 import { availableFocuses, startFocus } from './focus';
@@ -403,6 +403,42 @@ function manageCore(state: GameState, content: ContentIndex, tag: string): void 
   if (best) startCoreIntegration(state, tag, best.province.id);
 }
 
+interface FrontTarget {
+  id: string;
+  path: string[];
+  score: number;
+}
+
+function frontTargets(
+  state: GameState,
+  content: ContentIndex,
+  tag: string,
+  army: ArmyState,
+): FrontTarget[] {
+  const targets: FrontTarget[] = [];
+  for (const province of Object.values(state.provinces)) {
+    if (province.controller === tag) continue;
+    if (!areAtWar(state, tag, province.controller)) continue;
+    const def = content.provinces.get(province.id);
+    if (!def) continue;
+    const support = def.neighbors.filter(neighborId => {
+      const neighbor = state.provinces[neighborId];
+      return neighbor !== undefined
+        && (neighbor.controller === tag || neighbor.owner === tag);
+    }).length;
+    if (support === 0) continue;
+    const path = findPathToProvince(state, content, tag, army.province, province.id);
+    if (!path || path.length === 0) continue;
+    const development = content.provinces.get(province.id)?.development ?? 0;
+    targets.push({
+      id: province.id,
+      path,
+      score: support * 10 - path.length * 1.5 + development * 0.08,
+    });
+  }
+  targets.sort((a, b) => b.score - a.score);
+  return targets;
+}
 function manageMovement(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation) return;
@@ -430,8 +466,19 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
       if (path) setArmyPath(state, content, strongest.id, path);
     }
   }
-  for (const army of attackers.slice(0, aiProfile(state).attackers)) {
-    if (army.movePath.length > 0) continue;
+  const assigned = new Set<string>();
+  const frontArmies = attackers
+    .filter(army => army.movePath.length === 0)
+    .sort((a, b) => armyStrength(b) - armyStrength(a))
+    .slice(0, Math.max(2, aiProfile(state).attackers));
+  for (const army of frontArmies) {
+    const targets = frontTargets(state, content, tag, army);
+    const target = targets.find(entry => !assigned.has(entry.id)) ?? targets[0];
+    if (target) {
+      assigned.add(target.id);
+      setArmyPath(state, content, army.id, target.path);
+      continue;
+    }
     const path = findPathToEnemy(state, content, tag, army.province);
     if (path) setArmyPath(state, content, army.id, path);
   }
@@ -484,6 +531,8 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageMovement(state, content, nation.tag);
   }
 }
+
+
 
 
 
