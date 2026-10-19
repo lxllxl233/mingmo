@@ -1,4 +1,4 @@
-﻿import type { Modifier } from '../../content/types';
+import type { Modifier } from '../../content/types';
 
 export interface TimedModifier {
   id: string;
@@ -267,6 +267,8 @@ export interface GameState {
   playerTag: string;
   scenarioId: string;
   spectator: boolean;
+  /** 地图脏标记：owner/controller 变化时自增；渲染层据此决定是否重绘。 */
+  mapRevision: number;
   countries: Record<string, CountryState>;
   provinces: Record<string, ProvinceState>;
   armies: Record<string, ArmyState>;
@@ -294,6 +296,10 @@ export interface GameState {
 
 export function relationKey(a: string, b: string): string {
   return a < b ? `${a}|${b}` : `${b}|${a}`;
+}
+
+export function touchMap(state: GameState): void {
+  state.mapRevision = (state.mapRevision ?? 0) + 1;
 }
 
 export function armyStrength(army: ArmyState): number {

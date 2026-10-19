@@ -3,6 +3,7 @@ import { aggregateModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
+import { touchMap } from '../state/types';
 import { generalTraitBonus } from '../rules/generalTraits';
 import { canMarchThrough } from '../rules/access';
 import { crisisCombatPenalty } from './crisis';
@@ -320,6 +321,7 @@ function captureProvince(state: GameState, content: ContentIndex, army: ArmyStat
   if (!province || !def) return;
   const oldOwner = province.owner;
   province.controller = army.tag;
+  touchMap(state);
   province.coreWork = null;
   province.occupation = null;
   delete province.siege;

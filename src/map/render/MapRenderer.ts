@@ -1,4 +1,4 @@
-﻿import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
+import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
 import type { ContentIndex, MapGeo } from '../../content/types';
 import type { ArmyState, GameState } from '../../engine/state/types';
 import { relationKey } from '../../engine/state/types';
@@ -186,7 +186,7 @@ export class MapRenderer {
   private diplomaticAnchor: string | null = null;
   private mapMode: MapMode = 'normal';
   private fitScale = 1;
-  private ownerSignature = '';
+  private ownerRevision = -1;
   private hasDrawn = false;
   private dragging = false;
   private rightSelectStart: { x: number; y: number } | null = null;
@@ -934,8 +934,11 @@ export class MapRenderer {
     if (this.mapMode === mode && this.diplomaticAnchor === nextAnchor) return;
     this.mapMode = mode;
     this.diplomaticAnchor = nextAnchor;
-    this.ownerSignature = '';
-    if (this.state) this.redrawMap();
+    this.ownerRevision = -1;
+    if (this.state) {
+      this.ownerRevision = this.state.mapRevision;
+      this.redrawMap();
+    }
   }
 
   setDeploymentTargets(kind: 'land' | 'navy' | null, tag: string | null): void {
@@ -964,11 +967,8 @@ export class MapRenderer {
     this.state = state;
     this.selectedProvince = selectedProvince;
     this.selectedArmy = selectedArmy;
-    const signature = Object.values(state.provinces)
-      .map(province => `${province.id}:${province.controller}:${province.owner}`)
-      .join('|');
-    if (signature !== this.ownerSignature || !this.hasDrawn) {
-      this.ownerSignature = signature;
+    if (state.mapRevision !== this.ownerRevision || !this.hasDrawn) {
+      this.ownerRevision = state.mapRevision;
       this.redrawMap();
     } else {
       this.drawSelection();

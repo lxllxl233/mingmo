@@ -1,4 +1,4 @@
-﻿import type { GameState } from '../../engine/state/types';
+import type { GameState } from '../../engine/state/types';
 import { hashState } from '../../engine/state/hash';
 
 export interface SaveFile {
@@ -54,6 +54,7 @@ export function decodeSave(text: string): GameState {
     parsed.state.difficulty = 'normal';
   }
   if (typeof parsed.state.spectator !== 'boolean') parsed.state.spectator = false;
+  if (typeof parsed.state.mapRevision !== 'number') parsed.state.mapRevision = 0;
   for (const nation of Object.values(parsed.state.countries)) {
     if (typeof nation.fiscalCrisisDays !== 'number') nation.fiscalCrisisDays = 0;
     if (typeof nation.foodCrisisDays !== 'number') nation.foodCrisisDays = 0;

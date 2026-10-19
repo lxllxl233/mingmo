@@ -1,6 +1,7 @@
 import type { ContentIndex } from '../../content/types';
 import { isQuarterStart } from '../core/clock';
 import type { GameState } from '../state/types';
+import { touchMap } from '../state/types';
 import { countryProvinceList } from './economy';
 import { aggregateModifiers } from '../rules/modifiers';
 
@@ -115,6 +116,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
         if (rebel) {
           entry.state.owner = rebel;
           entry.state.controller = rebel;
+          touchMap(state);
           if (!entry.state.cores.includes(rebel)) entry.state.cores.push(rebel);
           entry.state.unrest = Math.max(20, entry.state.unrest - 30);
           rebellions += 1;

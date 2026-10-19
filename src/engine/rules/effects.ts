@@ -1,6 +1,7 @@
 import type { ContentIndex, Effect, EventId } from '../../content/types';
 import { rngFor } from '../core/rng';
 import type { GameState } from '../state/types';
+import { touchMap } from '../state/types';
 import { relationKey } from '../state/types';
 import { addModifierInto } from './modifiers';
 import { evaluateTrigger } from './triggers';
@@ -180,6 +181,7 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
     if (province) {
       province.owner = effect.changeOwner.to;
       province.controller = effect.changeOwner.to;
+      touchMap(state);
       if (!province.cores.includes(effect.changeOwner.to)) province.cores.push(effect.changeOwner.to);
     }
   } else if ('annexProvince' in effect) {
@@ -208,6 +210,7 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
       if (!province.cores.includes(country)) province.cores.push(country);
       annexed += 1;
     }
+    if (annexed > 0) touchMap(state);
     state.log.push({
       day: state.day,
       category: 'politics',

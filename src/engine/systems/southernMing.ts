@@ -1,6 +1,7 @@
 import type { ContentIndex } from '../../content/types';
 import { fromDayIndex } from '../core/clock';
 import type { GameState } from '../state/types';
+import { touchMap } from '../state/types';
 
 /**
  * 南明建立：1644 年北京失守后，若玩家不是大明，AI 大明在南方的领土由南明继承。
@@ -46,6 +47,7 @@ export function maybeFoundSouthernMing(state: GameState, content: ContentIndex):
   }
   sming.alive = true;
   sming.capital = 'nanjing';
+  touchMap(state);
   sming.treasury = Math.max(sming.treasury, 150000);
   sming.food = Math.max(sming.food, 200000);
   sming.manpower = Math.max(sming.manpower, 40000);

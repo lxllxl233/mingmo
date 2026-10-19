@@ -1,7 +1,8 @@
-﻿import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
 import { parseDay } from '../src/engine/core/clock';
+import { touchMap } from '../src/engine/state/types';
 
 describe('initial state', () => {
   const content = loadContentFromDirectory();
@@ -40,6 +41,12 @@ describe('initial state', () => {
     expect(ming?.estates['peasants']?.loyalty).toBe(30);
     const owned = Object.values(state.provinces).filter(province => province.owner === 'MING');
     expect(owned.length).toBeGreaterThan(200);
+  });
+
+  it('bumps the map revision when ownership changes', () => {
+    const before = state.mapRevision;
+    touchMap(state);
+    expect(state.mapRevision).toBe(before + 1);
   });
 
   it('can start every playable faction in every scenario', () => {

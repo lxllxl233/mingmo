@@ -275,6 +275,7 @@ export function createInitialState(
     playerTag,
     scenarioId,
     spectator,
+    mapRevision: 0,
     countries,
     provinces,
     armies,

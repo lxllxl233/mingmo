@@ -1,6 +1,6 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
-import { relationKey } from '../state/types';
+import { relationKey, touchMap } from '../state/types';
 
 export type PeaceTerms = 'white' | 'status' | 'demand';
 
@@ -111,11 +111,13 @@ export function makePeace(
 
   let transferred = 0;
   let restored = 0;
+  let mapChanged = false;
   for (const province of Object.values(state.provinces)) {
     const atWarOccupation =
       (province.owner === war.attacker && province.controller === war.defender)
       || (province.owner === war.defender && province.controller === war.attacker);
     if (!atWarOccupation) continue;
+    mapChanged = true;
     if (terms === 'white') {
       province.controller = province.owner;
       delete province.siege;
@@ -138,6 +140,7 @@ export function makePeace(
       transferred += 1;
     }
   }
+  if (mapChanged) touchMap(state);
 
   let reparations = 0;
   if (terms === 'demand' && score.attacker !== score.defender) {
@@ -280,6 +283,7 @@ export function resolveCapitalCapitulation(state: GameState, content: ContentInd
       province.occupation = null;
       delete province.siege;
     }
+    if (owned.length > 0) touchMap(state);
     nation.alive = false;
     for (const [id, army] of Object.entries(state.armies)) {
       if (army.tag === nation.tag) delete state.armies[id];

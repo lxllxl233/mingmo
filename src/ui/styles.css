@@ -790,6 +790,11 @@ button:active { transform: translateY(1px); }
 .menu-actions button.primary { text-align: center; }
 .menu-actions button.danger { color: var(--danger); border-color: rgba(161,43,34,.45); }
 .menu-foot { margin: 12px 0 0; font-size: 11px; }
+.save-slots-title { margin: 16px 0 6px; color: var(--ink-soft); font-size: 12px; letter-spacing: .08em; }
+.save-slots { display: flex; flex-direction: column; gap: 4px; }
+.save-slot { display: grid; grid-template-columns: 1fr 44px 44px; gap: 6px; align-items: center; padding: 4px 0; border-bottom: 1px dashed var(--line); font-size: 12px; }
+.save-slot button { padding: 3px 6px; font-size: 12px; }
+.save-slot button:disabled { opacity: .4; }
 
 .settings-card { width: min(560px, 94vw); }
 .setting-row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
