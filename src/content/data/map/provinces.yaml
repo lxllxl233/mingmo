@@ -19,7 +19,7 @@ provinces:
       - albazin_b
       - heilongjiang_b
   - id: albazin_a
-    name: 雅克萨东
+    name: 呼玛
     prefecture: pref_albazin
     region: reg_russia_far
     terrain: wetland
@@ -42,7 +42,7 @@ provinces:
       - okhotsk_a
       - okhotsk_b
   - id: albazin_b
-    name: 雅克萨西
+    name: 瑷珲
     prefecture: pref_albazin
     region: reg_russia_far
     terrain: wetland
@@ -83,7 +83,7 @@ provinces:
       - anping_b
       - penghu
   - id: anping_a
-    name: 安平东
+    name: 赤嵌
     prefecture: pref_anping
     region: reg_taiwan
     terrain: hills
@@ -105,7 +105,7 @@ provinces:
       - penghu_a
       - penghu_b
   - id: anping_b
-    name: 安平西
+    name: 鹿耳门
     prefecture: pref_anping
     region: reg_taiwan
     terrain: hills
@@ -149,7 +149,7 @@ provinces:
       - nanjing_a
       - nanjing_b
   - id: anqing_a
-    name: 安庆东
+    name: 桐城
     prefecture: pref_anqing
     region: reg_nanzhili
     terrain: wetland
@@ -172,7 +172,7 @@ provinces:
       - raozhou
       - raozhou_a
   - id: anqing_b
-    name: 安庆西
+    name: 潜山
     prefecture: pref_anqing
     region: reg_nanzhili
     terrain: plains
@@ -216,7 +216,7 @@ provinces:
       - ava_b
       - toungoo_b
   - id: ava_a
-    name: 阿瓦东
+    name: 实皆
     prefecture: pref_ava
     region: reg_burma
     terrain: jungle
@@ -236,7 +236,7 @@ provinces:
       - toungoo_a
       - toungoo_b
   - id: ava_b
-    name: 阿瓦西
+    name: 敏建
     prefecture: pref_ava
     region: reg_burma
     terrain: hills
@@ -281,7 +281,7 @@ provinces:
       - hejian_a
       - zhending_a
   - id: baoding_a
-    name: 保定东
+    name: 涿州
     prefecture: pref_baoding
     region: reg_beizhili
     terrain: urban
@@ -303,7 +303,7 @@ provinces:
       - zhending_a
       - zhending_b
   - id: baoding_b
-    name: 保定西
+    name: 定兴
     prefecture: pref_baoding
     region: reg_beizhili
     terrain: urban
@@ -349,7 +349,7 @@ provinces:
       - shunqing
       - shunqing_a
   - id: baoning_a
-    name: 保宁东
+    name: 阆中
     prefecture: pref_baoning
     region: reg_sichuan
     terrain: plains
@@ -372,7 +372,7 @@ provinces:
       - shunqing
       - shunqing_b
   - id: baoning_b
-    name: 保宁西
+    name: 苍溪
     prefecture: pref_baoning
     region: reg_sichuan
     terrain: plains
@@ -416,7 +416,7 @@ provinces:
       - dushikou_a
       - tianjin_a
   - id: beijing_a
-    name: 北京东
+    name: 通州
     prefecture: pref_beijing
     region: reg_beizhili
     terrain: hills
@@ -439,7 +439,7 @@ provinces:
       - tianjin
       - tianjin_a
   - id: beijing_b
-    name: 北京西
+    name: 良乡
     prefecture: pref_beijing
     region: reg_beizhili
     terrain: urban
@@ -481,7 +481,7 @@ provinces:
       - tengyue
       - tengyue_b
   - id: bhamo_a
-    name: 八莫东
+    name: 杰沙
     prefecture: pref_bhamo
     region: reg_burma
     terrain: hills
@@ -500,7 +500,7 @@ provinces:
       - bhamo
       - tengyue_b
   - id: bhamo_b
-    name: 八莫西
+    name: 瑞丽
     prefecture: pref_bhamo
     region: reg_burma
     terrain: hills
@@ -541,7 +541,7 @@ provinces:
       - taiping_a
       - taiping_b
   - id: caobang_a
-    name: 高平东
+    name: 谅山
     prefecture: pref_caobang
     region: reg_annam
     terrain: plains
@@ -564,7 +564,7 @@ provinces:
       - qujing_a
       - taiping_a
   - id: caobang_b
-    name: 高平西
+    name: 那岑
     prefecture: pref_caobang
     region: reg_annam
     terrain: hills
@@ -607,7 +607,7 @@ provinces:
       - guihua_a
       - guihua_b
   - id: chahar_a
-    name: 察哈尔东
+    name: 多伦诺尔
     prefecture: pref_chahar
     region: reg_mengnan
     terrain: hills
@@ -628,7 +628,7 @@ provinces:
       - zhangjiakou
       - zhangjiakou_b
   - id: chahar_b
-    name: 察哈尔西
+    name: 正蓝旗
     prefecture: pref_chahar
     region: reg_mengnan
     terrain: steppe
@@ -672,7 +672,7 @@ provinces:
       - dali_b
       - tengyue_a
   - id: chamdo_a
-    name: 昌都东
+    name: 察雅
     prefecture: pref_chamdo
     region: reg_xizang
     terrain: mountains
@@ -695,7 +695,7 @@ provinces:
       - hesute_a
       - hesute_b
   - id: chamdo_b
-    name: 昌都西
+    name: 类乌齐
     prefecture: pref_chamdo
     region: reg_xizang
     terrain: steppe
@@ -738,7 +738,7 @@ provinces:
       - jian_a
       - yuezhou_b
   - id: changsha_a
-    name: 长沙东
+    name: 湘潭
     prefecture: pref_changsha
     region: reg_huguang
     terrain: wetland
@@ -761,7 +761,7 @@ provinces:
       - yuezhou_a
       - yuezhou_b
   - id: changsha_b
-    name: 长沙西
+    name: 宁乡
     prefecture: pref_changsha
     region: reg_huguang
     terrain: wetland
@@ -806,7 +806,7 @@ provinces:
       - yangzhou_b
       - zhenjiang_b
   - id: changzhou_a
-    name: 常州东
+    name: 无锡
     prefecture: pref_changzhou
     region: reg_nanzhili
     terrain: plains
@@ -828,7 +828,7 @@ provinces:
       - zhenjiang
       - zhenjiang_b
   - id: changzhou_b
-    name: 常州西
+    name: 江阴
     prefecture: pref_changzhou
     region: reg_nanzhili
     terrain: plains
@@ -866,7 +866,7 @@ provinces:
       - chaozhou_b
       - zhangzhou_b
   - id: chaozhou_a
-    name: 潮州东
+    name: 揭阳
     prefecture: pref_chaozhou
     region: reg_guangdong
     terrain: plains
@@ -889,7 +889,7 @@ provinces:
       - tingzhou_a
       - zhangzhou_b
   - id: chaozhou_b
-    name: 潮州西
+    name: 饶平
     prefecture: pref_chaozhou
     region: reg_guangdong
     terrain: jungle
@@ -927,7 +927,7 @@ provinces:
       - chechen_b
       - kulun_a
   - id: chechen_a
-    name: 车臣东
+    name: 捷列克
     prefecture: pref_chechen
     region: reg_mobei
     terrain: desert
@@ -953,7 +953,7 @@ provinces:
       - tusheet_a
       - tusheet_b
   - id: chechen_b
-    name: 车臣西
+    name: 孙扎
     prefecture: pref_chechen
     region: reg_mobei
     terrain: steppe
@@ -998,7 +998,7 @@ provinces:
       - xuzhou_sichuan_a
       - xuzhou_sichuan_b
   - id: chengdu_a
-    name: 成都东
+    name: 新都
     prefecture: pref_chengdu
     region: reg_sichuan
     terrain: hills
@@ -1021,7 +1021,7 @@ provinces:
       - qinghai_a
       - xuzhou_sichuan_b
   - id: chengdu_b
-    name: 成都西
+    name: 郫县
     prefecture: pref_chengdu
     region: reg_sichuan
     terrain: mountains
@@ -1064,7 +1064,7 @@ provinces:
       - jingzhou_a
       - xiangyang_b
   - id: chengtian_a
-    name: 承天东
+    name: 广治
     prefecture: pref_chengtian
     region: reg_huguang
     terrain: hills
@@ -1088,7 +1088,7 @@ provinces:
       - xiangyang_a
       - xiangyang_b
   - id: chengtian_b
-    name: 承天西
+    name: 肇丰
     prefecture: pref_chengtian
     region: reg_huguang
     terrain: hills
@@ -1129,7 +1129,7 @@ provinces:
       - chongqing_b
       - sinan_a
   - id: chongqing_a
-    name: 重庆东
+    name: 合川
     prefecture: pref_chongqing
     region: reg_sichuan
     terrain: jungle
@@ -1152,7 +1152,7 @@ provinces:
       - shunqing_b
       - sinan_a
   - id: chongqing_b
-    name: 重庆西
+    name: 江津
     prefecture: pref_chongqing
     region: reg_sichuan
     terrain: hills
@@ -1195,7 +1195,7 @@ provinces:
       - tengyue_a
       - tengyue_b
   - id: dali_a
-    name: 大理东
+    name: 洱源
     prefecture: pref_dali
     region: reg_yunnan
     terrain: jungle
@@ -1218,7 +1218,7 @@ provinces:
       - tengyue_b
       - xuzhou_sichuan_b
   - id: dali_b
-    name: 大理西
+    name: 祥云
     prefecture: pref_dali
     region: reg_yunnan
     terrain: hills
@@ -1265,7 +1265,7 @@ provinces:
       - yanmen_b
       - zhangjiakou_b
   - id: datong_a
-    name: 大同东
+    name: 左云
     prefecture: pref_datong
     region: reg_shanxi
     terrain: hills
@@ -1287,7 +1287,7 @@ provinces:
       - shahukou_b
       - zhangjiakou_b
   - id: datong_b
-    name: 大同西
+    name: 阳高
     prefecture: pref_datong
     region: reg_shanxi
     terrain: hills
@@ -1326,7 +1326,7 @@ provinces:
       - guangning_b
       - ningyuan
   - id: dengzhou_a
-    name: 登州东
+    name: 蓬莱
     prefecture: pref_dengzhou
     region: reg_shandong
     terrain: plains
@@ -1343,7 +1343,7 @@ provinces:
     neighbors:
       - dengzhou_b
   - id: dengzhou_b
-    name: 登州西
+    name: 黄县
     prefecture: pref_dengzhou
     region: reg_shandong
     terrain: hills
@@ -1382,7 +1382,7 @@ provinces:
       - thanhhoa
       - thanhhoa_b
   - id: dongkinh_a
-    name: 升龙东
+    name: 河东
     prefecture: pref_dongkinh
     region: reg_annam
     terrain: jungle
@@ -1403,7 +1403,7 @@ provinces:
       - thanhhoa
       - thanhhoa_a
   - id: dongkinh_b
-    name: 升龙西
+    name: 慈廉
     prefecture: pref_dongkinh
     region: reg_annam
     terrain: jungle
@@ -1445,7 +1445,7 @@ provinces:
       - dushikou_b
       - zhangjiakou_a
   - id: dushikou_a
-    name: 独石口东
+    name: 沽源
     prefecture: pref_dushikou
     region: reg_xuanda
     terrain: hills
@@ -1469,7 +1469,7 @@ provinces:
       - tianjin_a
       - yongping_a
   - id: dushikou_b
-    name: 独石口西
+    name: 赤城
     prefecture: pref_dushikou
     region: reg_xuanda
     terrain: mountains
@@ -1509,7 +1509,7 @@ provinces:
       - edo_a
       - edo_b
   - id: edo_a
-    name: 江户东
+    name: 武藏
     prefecture: pref_edo
     region: reg_japan_east
     terrain: mountains
@@ -1528,7 +1528,7 @@ provinces:
       - edo_b
       - sendai_b
   - id: edo_b
-    name: 江户西
+    name: 下总
     prefecture: pref_edo
     region: reg_japan_east
     terrain: mountains
@@ -1573,7 +1573,7 @@ provinces:
       - yulin
       - yulin_a
   - id: fenzhou_a
-    name: 汾州东
+    name: 孝义
     prefecture: pref_fenzhou
     region: reg_shanxi
     terrain: plains
@@ -1596,7 +1596,7 @@ provinces:
       - yulin
       - yulin_b
   - id: fenzhou_b
-    name: 汾州西
+    name: 介休
     prefecture: pref_fenzhou
     region: reg_shanxi
     terrain: hills
@@ -1637,7 +1637,7 @@ provinces:
       - quanzhou_b
       - yanping_b
   - id: fuzhou_a
-    name: 福州东
+    name: 长乐
     prefecture: pref_fuzhou
     region: reg_fujian
     terrain: mountains
@@ -1656,7 +1656,7 @@ provinces:
       - quanzhou
       - quanzhou_b
   - id: fuzhou_b
-    name: 福州西
+    name: 连江
     prefecture: pref_fuzhou
     region: reg_fujian
     terrain: mountains
@@ -1697,7 +1697,7 @@ provinces:
       - fuzhou_jiangxi_b
       - nanchang_a
   - id: fuzhou_jiangxi_a
-    name: 抚州东
+    name: 临川
     prefecture: pref_fuzhou_jiangxi
     region: reg_jiangxi
     terrain: plains
@@ -1719,7 +1719,7 @@ provinces:
       - nanchang_a
       - nanchang_b
   - id: fuzhou_jiangxi_b
-    name: 抚州西
+    name: 崇仁
     prefecture: pref_fuzhou_jiangxi
     region: reg_jiangxi
     terrain: plains
@@ -1763,7 +1763,7 @@ provinces:
       - jian_a
       - shaozhou_a
   - id: ganzhou_a
-    name: 赣州东
+    name: 南康
     prefecture: pref_ganzhou
     region: reg_jiangxi
     terrain: mountains
@@ -1786,7 +1786,7 @@ provinces:
       - tingzhou_a
       - tingzhou_b
   - id: ganzhou_b
-    name: 赣州西
+    name: 于都
     prefecture: pref_ganzhou
     region: reg_jiangxi
     terrain: hills
@@ -1829,7 +1829,7 @@ provinces:
       - suzhou_hexi
       - suzhou_hexi_b
   - id: ganzhou_hexi_a
-    name: 甘州东
+    name: 山丹
     prefecture: pref_ganzhou_hexi
     region: reg_hexi
     terrain: desert
@@ -1849,7 +1849,7 @@ provinces:
       - suzhou_hexi
       - suzhou_hexi_a
   - id: ganzhou_hexi_b
-    name: 甘州西
+    name: 临泽
     prefecture: pref_ganzhou_hexi
     region: reg_hexi
     terrain: desert
@@ -1892,7 +1892,7 @@ provinces:
       - guangning_b
       - jinzhou_a
   - id: guangning_a
-    name: 广宁东
+    name: 北镇
     prefecture: pref_guangning
     region: reg_liaodong
     terrain: plains
@@ -1914,7 +1914,7 @@ provinces:
       - liaoyang_a
       - shenyang_a
   - id: guangning_b
-    name: 广宁西
+    name: 义县
     prefecture: pref_guangning
     region: reg_liaodong
     terrain: mountains
@@ -1959,7 +1959,7 @@ provinces:
       - jianning_b
       - raozhou_b
   - id: guangxin_a
-    name: 广信东
+    name: 上饶
     prefecture: pref_guangxin
     region: reg_jiangxi
     terrain: mountains
@@ -1982,7 +1982,7 @@ provinces:
       - raozhou_b
       - yanping_a
   - id: guangxin_b
-    name: 广信西
+    name: 玉山
     prefecture: pref_guangxin
     region: reg_jiangxi
     terrain: mountains
@@ -2025,7 +2025,7 @@ provinces:
       - shaozhou_b
       - zhaoqing_a
   - id: guangzhou_a
-    name: 广州东
+    name: 佛山
     prefecture: pref_guangzhou
     region: reg_guangdong
     terrain: hills
@@ -2045,7 +2045,7 @@ provinces:
       - zhaoqing_a
       - zhaoqing_b
   - id: guangzhou_b
-    name: 广州西
+    name: 番禺
     prefecture: pref_guangzhou
     region: reg_guangdong
     terrain: plains
@@ -2088,7 +2088,7 @@ provinces:
       - jining_b
       - yanzhou_b
   - id: guide_a
-    name: 归德东
+    name: 商丘
     prefecture: pref_guide
     region: reg_henan
     terrain: hills
@@ -2111,7 +2111,7 @@ provinces:
       - yanzhou_b
       - zhangde_a
   - id: guide_b
-    name: 归德西
+    name: 睢州
     prefecture: pref_guide
     region: reg_henan
     terrain: plains
@@ -2156,7 +2156,7 @@ provinces:
       - tumote
       - tumote_b
   - id: guihua_a
-    name: 归化东
+    name: 绥远
     prefecture: pref_guihua
     region: reg_mengnan
     terrain: hills
@@ -2180,7 +2180,7 @@ provinces:
       - tumote
       - tumote_a
   - id: guihua_b
-    name: 归化西
+    name: 和林格尔
     prefecture: pref_guihua
     region: reg_mengnan
     terrain: steppe
@@ -2222,7 +2222,7 @@ provinces:
       - guilin_b
       - liuzhou_b
   - id: guilin_a
-    name: 桂林东
+    name: 灵川
     prefecture: pref_guilin
     region: reg_guangxi
     terrain: mountains
@@ -2244,7 +2244,7 @@ provinces:
       - shaozhou_b
       - wuzhou_a
   - id: guilin_b
-    name: 桂林西
+    name: 阳朔
     prefecture: pref_guilin
     region: reg_guangxi
     terrain: jungle
@@ -2290,7 +2290,7 @@ provinces:
       - zhenyuan
       - zhenyuan_a
   - id: guiyang_a
-    name: 贵阳东
+    name: 修文
     prefecture: pref_guiyang
     region: reg_guizhou
     terrain: mountains
@@ -2312,7 +2312,7 @@ provinces:
       - qujing_a
       - zhenyuan_a
   - id: guiyang_b
-    name: 贵阳西
+    name: 清镇
     prefecture: pref_guiyang
     region: reg_guizhou
     terrain: mountains
@@ -2355,7 +2355,7 @@ provinces:
       - heilongjiang_b
       - jianzhou_a
   - id: haixi_a
-    name: 海西东
+    name: 都兰
     prefecture: pref_haixi
     region: reg_nvzhen
     terrain: mountains
@@ -2378,7 +2378,7 @@ provinces:
       - jianzhou_a
       - ningguta_a
   - id: haixi_b
-    name: 海西西
+    name: 乌兰
     prefecture: pref_haixi
     region: reg_nvzhen
     terrain: wetland
@@ -2418,7 +2418,7 @@ provinces:
       - nagasaki
       - osaka
   - id: hakata_a
-    name: 博多东
+    name: 太宰府
     prefecture: pref_hakata
     region: reg_japan_west
     terrain: hills
@@ -2436,7 +2436,7 @@ provinces:
       - hanseong_b
       - nagasaki_a
   - id: hakata_b
-    name: 博多西
+    name: 宗像
     prefecture: pref_hakata
     region: reg_japan_west
     terrain: hills
@@ -2474,7 +2474,7 @@ provinces:
       - jianzhou_a
       - uiju_a
   - id: hamhung_a
-    name: 咸兴东
+    name: 永兴
     prefecture: pref_hamhung
     region: reg_joseon
     terrain: hills
@@ -2494,7 +2494,7 @@ provinces:
       - jianzhou_a
       - ningguta_a
   - id: hamhung_b
-    name: 咸兴西
+    name: 端川
     prefecture: pref_hamhung
     region: reg_joseon
     terrain: hills
@@ -2536,7 +2536,7 @@ provinces:
       - shaoxing
       - shaoxing_a
   - id: hangzhou_a
-    name: 杭州东
+    name: 余杭
     prefecture: pref_hangzhou
     region: reg_zhejiang
     terrain: hills
@@ -2557,7 +2557,7 @@ provinces:
       - shaoxing_a
       - suzhou_a
   - id: hangzhou_b
-    name: 杭州西
+    name: 富阳
     prefecture: pref_hangzhou
     region: reg_zhejiang
     terrain: plains
@@ -2597,7 +2597,7 @@ provinces:
       - hanseong_b
       - kaesong_b
   - id: hanseong_a
-    name: 汉城东
+    name: 水原
     prefecture: pref_hanseong
     region: reg_joseon
     terrain: hills
@@ -2616,7 +2616,7 @@ provinces:
       - kaesong
       - kaesong_b
   - id: hanseong_b
-    name: 汉城西
+    name: 杨州
     prefecture: pref_hanseong
     region: reg_joseon
     terrain: plains
@@ -2655,7 +2655,7 @@ provinces:
       - wuchang_a
       - wuchang_b
   - id: hanyang_a
-    name: 汉阳东
+    name: 汉口
     prefecture: pref_hanyang
     region: reg_huguang
     terrain: hills
@@ -2676,7 +2676,7 @@ provinces:
       - wuchang_a
       - yuezhou_a
   - id: hanyang_b
-    name: 汉阳西
+    name: 沔阳
     prefecture: pref_hanyang
     region: reg_huguang
     terrain: wetland
@@ -2717,7 +2717,7 @@ provinces:
       - hanzhong_b
       - kuizhou_b
   - id: hanzhong_a
-    name: 汉中东
+    name: 城固
     prefecture: pref_hanzhong
     region: reg_shaanxi
     terrain: mountains
@@ -2739,7 +2739,7 @@ provinces:
       - hanzhong_b
       - pingliang_a
   - id: hanzhong_b
-    name: 汉中西
+    name: 勉县
     prefecture: pref_hanzhong
     region: reg_shaanxi
     terrain: plains
@@ -2784,7 +2784,7 @@ provinces:
       - heilongjiang_a
       - heilongjiang_b
   - id: heilongjiang_a
-    name: 黑龙江东
+    name: 墨尔根
     prefecture: pref_heilongjiang
     region: reg_nvzhen
     terrain: hills
@@ -2808,7 +2808,7 @@ provinces:
       - okhotsk_a
       - okhotsk_b
   - id: heilongjiang_b
-    name: 黑龙江西
+    name: 黑龙江城
     prefecture: pref_heilongjiang
     region: reg_nvzhen
     terrain: wetland
@@ -2852,7 +2852,7 @@ provinces:
       - hesute_b
       - qinghai_b
   - id: hesute_a
-    name: 和硕特东
+    name: 玉树
     prefecture: pref_hesute
     region: reg_weilate
     terrain: desert
@@ -2875,7 +2875,7 @@ provinces:
       - qinghai_b
       - suzhou_hexi_a
   - id: hesute_b
-    name: 和硕特西
+    name: 囊谦
     prefecture: pref_hesute
     region: reg_weilate
     terrain: steppe
@@ -2916,7 +2916,7 @@ provinces:
       - hetuala_b
       - jianzhou_b
   - id: hetuala_a
-    name: 赫图阿拉东
+    name: 萨尔浒
     prefecture: pref_hetu_ala
     region: reg_nvzhen
     terrain: hills
@@ -2941,7 +2941,7 @@ provinces:
       - uiju_a
       - uiju_b
   - id: hetuala_b
-    name: 赫图阿拉西
+    name: 佟佳江
     prefecture: pref_hetu_ala
     region: reg_nvzhen
     terrain: wetland
@@ -2985,7 +2985,7 @@ provinces:
       - horqin_b
       - kaizhou_b
   - id: horqin_a
-    name: 科尔沁东
+    name: 郭尔罗斯
     prefecture: pref_horqin
     region: reg_mengnan
     terrain: desert
@@ -3009,7 +3009,7 @@ provinces:
       - horqin_b
       - nerchinsk_a
   - id: horqin_b
-    name: 科尔沁西
+    name: 扎鲁特
     prefecture: pref_horqin
     region: reg_mengnan
     terrain: hills
@@ -3054,7 +3054,7 @@ provinces:
       - qingzhou_b
       - zhenjiang_a
   - id: huaian_a
-    name: 淮安东
+    name: 清江浦
     prefecture: pref_huaian
     region: reg_nanzhili
     terrain: urban
@@ -3076,7 +3076,7 @@ provinces:
       - xuzhou_b
       - zhenjiang_a
   - id: huaian_b
-    name: 淮安西
+    name: 宝应
     prefecture: pref_huaian
     region: reg_nanzhili
     terrain: plains
@@ -3118,7 +3118,7 @@ provinces:
       - jiujiang_a
       - jiujiang_b
   - id: huangzhou_a
-    name: 黄州东
+    name: 麻城
     prefecture: pref_huangzhou
     region: reg_huguang
     terrain: mountains
@@ -3140,7 +3140,7 @@ provinces:
       - nanyang_b
       - wuchang_b
   - id: huangzhou_b
-    name: 黄州西
+    name: 蕲州
     prefecture: pref_huangzhou
     region: reg_huguang
     terrain: plains
@@ -3181,7 +3181,7 @@ provinces:
       - hue_a
       - hue_b
   - id: hue_a
-    name: 顺化东
+    name: 富春
     prefecture: pref_hue
     region: reg_annam
     terrain: hills
@@ -3201,7 +3201,7 @@ provinces:
       - pegu_a
       - thanhhoa_b
   - id: hue_b
-    name: 顺化西
+    name: 广义
     prefecture: pref_hue
     region: reg_annam
     terrain: hills
@@ -3241,7 +3241,7 @@ provinces:
       - huizhou_b
       - shaoxing_a
   - id: huizhou_a
-    name: 徽州东
+    name: 歙县
     prefecture: pref_huizhou
     region: reg_nanzhili
     terrain: hills
@@ -3263,7 +3263,7 @@ provinces:
       - raozhou
       - raozhou_b
   - id: huizhou_b
-    name: 徽州西
+    name: 休宁
     prefecture: pref_huizhou
     region: reg_nanzhili
     terrain: wetland
@@ -3306,7 +3306,7 @@ provinces:
       - huizhou_gd_a
       - huizhou_gd_b
   - id: huizhou_gd_a
-    name: 惠州东
+    name: 博罗
     prefecture: pref_huizhou_gd
     region: reg_guangdong
     terrain: jungle
@@ -3327,7 +3327,7 @@ provinces:
       - huizhou_gd
       - shaozhou_a
   - id: huizhou_gd_b
-    name: 惠州西
+    name: 海丰
     prefecture: pref_huizhou_gd
     region: reg_guangdong
     terrain: hills
@@ -3367,7 +3367,7 @@ provinces:
       - suzhou
       - suzhou_a
   - id: huzhou_a
-    name: 湖州东
+    name: 长兴
     prefecture: pref_huzhou
     region: reg_zhejiang
     terrain: wetland
@@ -3388,7 +3388,7 @@ provinces:
       - suzhou_a
       - zhenjiang_b
   - id: huzhou_b
-    name: 湖州西
+    name: 德清
     prefecture: pref_huzhou
     region: reg_zhejiang
     terrain: plains
@@ -3427,7 +3427,7 @@ provinces:
       - ili_b
       - urumqi_a
   - id: ili_a
-    name: 伊犁东
+    name: 惠远
     prefecture: pref_ili
     region: reg_weilate
     terrain: mountains
@@ -3447,7 +3447,7 @@ provinces:
       - urumqi
       - urumqi_a
   - id: ili_b
-    name: 伊犁西
+    name: 固勒扎
     prefecture: pref_ili
     region: reg_weilate
     terrain: steppe
@@ -3485,7 +3485,7 @@ provinces:
       - jian_b
       - tingzhou_b
   - id: jian_a
-    name: 吉安东
+    name: 庐陵
     prefecture: pref_jian
     region: reg_jiangxi
     terrain: plains
@@ -3508,7 +3508,7 @@ provinces:
       - jian
       - jian_b
   - id: jian_b
-    name: 吉安西
+    name: 泰和
     prefecture: pref_jian
     region: reg_jiangxi
     terrain: plains
@@ -3552,7 +3552,7 @@ provinces:
       - jianning_b
       - yanping_a
   - id: jianning_a
-    name: 建宁东
+    name: 建安
     prefecture: pref_jianning
     region: reg_fujian
     terrain: hills
@@ -3573,7 +3573,7 @@ provinces:
       - yanping_a
       - yanping_b
   - id: jianning_b
-    name: 建宁西
+    name: 瓯宁
     prefecture: pref_jianning
     region: reg_fujian
     terrain: hills
@@ -3616,7 +3616,7 @@ provinces:
       - jianzhou_b
       - uiju_a
   - id: jianzhou_a
-    name: 建州东
+    name: 苏子河
     prefecture: pref_jianzhou
     region: reg_nvzhen
     terrain: hills
@@ -3640,7 +3640,7 @@ provinces:
       - jianzhou
       - kaizhou_b
   - id: jianzhou_b
-    name: 建州西
+    name: 浑河
     prefecture: pref_jianzhou
     region: reg_nvzhen
     terrain: hills
@@ -3680,7 +3680,7 @@ provinces:
       - jiaxing_b
       - songjiang
   - id: jiaxing_a
-    name: 嘉兴东
+    name: 嘉善
     prefecture: pref_jiaxing
     region: reg_zhejiang
     terrain: hills
@@ -3700,7 +3700,7 @@ provinces:
       - shaoxing
       - shaoxing_b
   - id: jiaxing_b
-    name: 嘉兴西
+    name: 海盐
     prefecture: pref_jiaxing
     region: reg_zhejiang
     terrain: plains
@@ -3743,7 +3743,7 @@ provinces:
       - linqing_b
       - qingzhou_b
   - id: jinan_a
-    name: 济南东
+    name: 历城
     prefecture: pref_jinan
     region: reg_shandong
     terrain: plains
@@ -3766,7 +3766,7 @@ provinces:
       - yanzhou_a
       - yanzhou_b
   - id: jinan_b
-    name: 济南西
+    name: 章丘
     prefecture: pref_jinan
     region: reg_shandong
     terrain: plains
@@ -3811,7 +3811,7 @@ provinces:
       - kuizhou_a
       - tongren_a
   - id: jingzhou_a
-    name: 荆州东
+    name: 江陵
     prefecture: pref_jingzhou
     region: reg_huguang
     terrain: plains
@@ -3833,7 +3833,7 @@ provinces:
       - tongren_a
       - xiangyang_b
   - id: jingzhou_b
-    name: 荆州西
+    name: 公安
     prefecture: pref_jingzhou
     region: reg_huguang
     terrain: hills
@@ -3877,7 +3877,7 @@ provinces:
       - yanzhou
       - yanzhou_b
   - id: jining_a
-    name: 济宁东
+    name: 任城
     prefecture: pref_jining
     region: reg_shandong
     terrain: plains
@@ -3899,7 +3899,7 @@ provinces:
       - yanzhou_a
       - yanzhou_b
   - id: jining_b
-    name: 济宁西
+    name: 汶上
     prefecture: pref_jining
     region: reg_shandong
     terrain: hills
@@ -3943,7 +3943,7 @@ provinces:
       - jinzhou_b
       - ningyuan_b
   - id: jinzhou_a
-    name: 锦州东
+    name: 大凌河
     prefecture: pref_jinzhou
     region: reg_liaodong
     terrain: wetland
@@ -3965,7 +3965,7 @@ provinces:
       - jinzhou
       - ningyuan_b
   - id: jinzhou_b
-    name: 锦州西
+    name: 松山
     prefecture: pref_jinzhou
     region: reg_liaodong
     terrain: wetland
@@ -4004,7 +4004,7 @@ provinces:
       - nanchang
       - raozhou_a
   - id: jiujiang_a
-    name: 九江东
+    name: 德化
     prefecture: pref_jiujiang
     region: reg_jiangxi
     terrain: plains
@@ -4026,7 +4026,7 @@ provinces:
       - nanchang_b
       - yuezhou_a
   - id: jiujiang_b
-    name: 九江西
+    name: 湖口
     prefecture: pref_jiujiang
     region: reg_jiangxi
     terrain: hills
@@ -4066,7 +4066,7 @@ provinces:
       - kaesong_a
       - kaesong_b
   - id: kaesong_a
-    name: 开城东
+    name: 板门
     prefecture: pref_kaesong
     region: reg_joseon
     terrain: plains
@@ -4086,7 +4086,7 @@ provinces:
       - pyongyang
       - pyongyang_a
   - id: kaesong_b
-    name: 开城西
+    name: 长湍
     prefecture: pref_kaesong
     region: reg_joseon
     terrain: plains
@@ -4130,7 +4130,7 @@ provinces:
       - weihui
       - weihui_b
   - id: kaifeng_a
-    name: 开封东
+    name: 祥符
     prefecture: pref_kaifeng
     region: reg_henan
     terrain: plains
@@ -4151,7 +4151,7 @@ provinces:
       - weihui_a
       - zhangde_a
   - id: kaifeng_b
-    name: 开封西
+    name: 陈留
     prefecture: pref_kaifeng
     region: reg_henan
     terrain: plains
@@ -4192,7 +4192,7 @@ provinces:
       - kaizhou_b
       - shenyang_a
   - id: kaizhou_a
-    name: 开原东
+    name: 铁岭
     prefecture: pref_kaizhou
     region: reg_liaodong
     terrain: mountains
@@ -4213,7 +4213,7 @@ provinces:
       - shenyang
       - shenyang_a
   - id: kaizhou_b
-    name: 开原西
+    name: 清河
     prefecture: pref_kaizhou
     region: reg_liaodong
     terrain: plains
@@ -4253,7 +4253,7 @@ provinces:
     neighbors:
       - tamsui
   - id: keelung_a
-    name: 鸡笼东
+    name: 基隆
     prefecture: pref_keelung
     region: reg_taiwan
     terrain: hills
@@ -4277,7 +4277,7 @@ provinces:
       - tamsui_a
       - tamsui_b
   - id: keelung_b
-    name: 鸡笼西
+    name: 宜兰
     prefecture: pref_keelung
     region: reg_taiwan
     terrain: hills
@@ -4321,7 +4321,7 @@ provinces:
       - sinan_a
       - tongren_a
   - id: kuizhou_a
-    name: 夔州东
+    name: 奉节
     prefecture: pref_kuizhou
     region: reg_sichuan
     terrain: jungle
@@ -4344,7 +4344,7 @@ provinces:
       - xian_b
       - xiangyang_b
   - id: kuizhou_b
-    name: 夔州西
+    name: 巫山
     prefecture: pref_kuizhou
     region: reg_sichuan
     terrain: plains
@@ -4390,7 +4390,7 @@ provinces:
       - kulun_b
       - tusheet_a
   - id: kulun_a
-    name: 库伦东
+    name: 恰克图
     prefecture: pref_kulun
     region: reg_mobei
     terrain: steppe
@@ -4411,7 +4411,7 @@ provinces:
       - kulun
       - kulun_b
   - id: kulun_b
-    name: 库伦西
+    name: 买卖城
     prefecture: pref_kulun
     region: reg_mobei
     terrain: desert
@@ -4455,7 +4455,7 @@ provinces:
       - osaka
       - osaka_b
   - id: kyoto_a
-    name: 京都东
+    name: 伏见
     prefecture: pref_kyoto
     region: reg_japan_west
     terrain: hills
@@ -4478,7 +4478,7 @@ provinces:
       - osaka
       - osaka_a
   - id: kyoto_b
-    name: 京都西
+    name: 宇治
     prefecture: pref_kyoto
     region: reg_japan_west
     terrain: hills
@@ -4519,7 +4519,7 @@ provinces:
       - leizhou_b
       - leizhou_a
   - id: leizhou_a
-    name: 琼州
+    name: 徐闻
     prefecture: pref_leizhou
     region: reg_guangdong
     terrain: jungle
@@ -4537,7 +4537,7 @@ provinces:
       - leizhou
       - leizhou_b
   - id: leizhou_b
-    name: 雷州西
+    name: 遂溪
     prefecture: pref_leizhou
     region: reg_guangdong
     terrain: hills
@@ -4581,7 +4581,7 @@ provinces:
       - shannan_a
       - shigatse_b
   - id: lhasa_a
-    name: 拉萨东
+    name: 堆龙
     prefecture: pref_lhasa
     region: reg_xizang
     terrain: mountains
@@ -4600,7 +4600,7 @@ provinces:
       - shannan_a
       - shigatse_b
   - id: lhasa_b
-    name: 拉萨西
+    name: 曲水
     prefecture: pref_lhasa
     region: reg_xizang
     terrain: mountains
@@ -4642,7 +4642,7 @@ provinces:
       - liangzhou_b
       - xining_b
   - id: liangzhou_a
-    name: 凉州东
+    name: 武威
     prefecture: pref_liangzhou
     region: reg_hexi
     terrain: desert
@@ -4663,7 +4663,7 @@ provinces:
       - xining_a
       - xining_b
   - id: liangzhou_b
-    name: 凉州西
+    name: 永昌
     prefecture: pref_liangzhou
     region: reg_hexi
     terrain: mountains
@@ -4707,7 +4707,7 @@ provinces:
       - liaoyang_b
       - shenyang_b
   - id: liaoyang_a
-    name: 辽阳东
+    name: 海州
     prefecture: pref_liaoyang
     region: reg_liaodong
     terrain: wetland
@@ -4729,7 +4729,7 @@ provinces:
       - shenyang_a
       - shenyang_b
   - id: liaoyang_b
-    name: 辽阳西
+    name: 首山
     prefecture: pref_liaoyang
     region: reg_liaodong
     terrain: mountains
@@ -4772,7 +4772,7 @@ provinces:
       - linan_b
       - qujing
   - id: linan_a
-    name: 临安东
+    name: 昌化
     prefecture: pref_linan
     region: reg_yunnan
     terrain: jungle
@@ -4798,7 +4798,7 @@ provinces:
       - thanhhoa_b
       - toungoo_b
   - id: linan_b
-    name: 临安西
+    name: 於潜
     prefecture: pref_linan
     region: reg_yunnan
     terrain: hills
@@ -4841,7 +4841,7 @@ provinces:
       - zhangde_b
       - zhending_b
   - id: linqing_a
-    name: 临清东
+    name: 夏津
     prefecture: pref_linqing
     region: reg_shandong
     terrain: plains
@@ -4864,7 +4864,7 @@ provinces:
       - linqing_b
       - zhending_b
   - id: linqing_b
-    name: 临清西
+    name: 馆陶
     prefecture: pref_linqing
     region: reg_shandong
     terrain: plains
@@ -4908,7 +4908,7 @@ provinces:
       - liuzhou_b
       - wuzhou_a
   - id: liuzhou_a
-    name: 柳州东
+    name: 柳城
     prefecture: pref_liuzhou
     region: reg_guangxi
     terrain: hills
@@ -4931,7 +4931,7 @@ provinces:
       - wuzhou_a
       - zhenyuan_a
   - id: liuzhou_b
-    name: 柳州西
+    name: 象州
     prefecture: pref_liuzhou
     region: reg_guangxi
     terrain: jungle
@@ -4976,7 +4976,7 @@ provinces:
       - zhangde_b
       - zhending_b
   - id: luan_a
-    name: 潞安东
+    name: 壶关
     prefecture: pref_luan
     region: reg_shanxi
     terrain: plains
@@ -4998,7 +4998,7 @@ provinces:
       - taiyuan_b
       - zhending_b
   - id: luan_b
-    name: 潞安西
+    name: 长子
     prefecture: pref_luan
     region: reg_shanxi
     terrain: hills
@@ -5041,7 +5041,7 @@ provinces:
       - nagasaki_a
       - ningbo
   - id: nagasaki_a
-    name: 长崎东
+    name: 岛原
     prefecture: pref_nagasaki
     region: reg_japan_west
     terrain: mountains
@@ -5060,7 +5060,7 @@ provinces:
       - nagasaki
       - nagasaki_b
   - id: nagasaki_b
-    name: 长崎西
+    name: 平户
     prefecture: pref_nagasaki
     region: reg_japan_west
     terrain: hills
@@ -5100,7 +5100,7 @@ provinces:
       - sunpu_a
       - sunpu_b
   - id: nagoya_a
-    name: 名古屋东
+    name: 冈崎
     prefecture: pref_nagoya
     region: reg_japan_east
     terrain: mountains
@@ -5123,7 +5123,7 @@ provinces:
       - sunpu_a
       - sunpu_b
   - id: nagoya_b
-    name: 名古屋西
+    name: 热田
     prefecture: pref_nagoya
     region: reg_japan_east
     terrain: hills
@@ -5168,7 +5168,7 @@ provinces:
       - nanchang_b
       - raozhou_a
   - id: nanchang_a
-    name: 南昌东
+    name: 新建
     prefecture: pref_nanchang
     region: reg_jiangxi
     terrain: hills
@@ -5192,7 +5192,7 @@ provinces:
       - raozhou_a
       - raozhou_b
   - id: nanchang_b
-    name: 南昌西
+    name: 丰城
     prefecture: pref_nanchang
     region: reg_jiangxi
     terrain: hills
@@ -5237,7 +5237,7 @@ provinces:
       - yangzhou_a
       - zhenjiang_a
   - id: nanjing_a
-    name: 南京东
+    name: 江宁
     prefecture: pref_nanjing
     region: reg_nanzhili
     terrain: wetland
@@ -5259,7 +5259,7 @@ provinces:
       - yangzhou_a
       - zhenjiang_b
   - id: nanjing_b
-    name: 南京西
+    name: 句容
     prefecture: pref_nanjing
     region: reg_nanzhili
     terrain: urban
@@ -5302,7 +5302,7 @@ provinces:
       - taiping
       - taiping_a
   - id: nanning_a
-    name: 南宁东
+    name: 邕宁
     prefecture: pref_nanning
     region: reg_guangxi
     terrain: hills
@@ -5323,7 +5323,7 @@ provinces:
       - nanning_b
       - wuzhou_a
   - id: nanning_b
-    name: 南宁西
+    name: 武鸣
     prefecture: pref_nanning
     region: reg_guangxi
     terrain: mountains
@@ -5366,7 +5366,7 @@ provinces:
       - xiangyang
       - xiangyang_a
   - id: nanyang_a
-    name: 南阳东
+    name: 宛城
     prefecture: pref_nanyang
     region: reg_henan
     terrain: hills
@@ -5389,7 +5389,7 @@ provinces:
       - xiangyang
       - xiangyang_b
   - id: nanyang_b
-    name: 南阳西
+    name: 邓州
     prefecture: pref_nanyang
     region: reg_henan
     terrain: plains
@@ -5432,7 +5432,7 @@ provinces:
       - nerchinsk_a
       - nerchinsk_b
   - id: nerchinsk_a
-    name: 尼布楚东
+    name: 石勒喀
     prefecture: pref_nerchinsk
     region: reg_russia_far
     terrain: steppe
@@ -5455,7 +5455,7 @@ provinces:
       - nerchinsk
       - nerchinsk_b
   - id: nerchinsk_b
-    name: 尼布楚西
+    name: 额尔古纳
     prefecture: pref_nerchinsk
     region: reg_russia_far
     terrain: mountains
@@ -5496,7 +5496,7 @@ provinces:
       - ningbo_b
       - taizhou_b
   - id: ningbo_a
-    name: 宁波东
+    name: 鄞县
     prefecture: pref_ningbo
     region: reg_zhejiang
     terrain: hills
@@ -5516,7 +5516,7 @@ provinces:
       - shaoxing_b
       - taizhou_b
   - id: ningbo_b
-    name: 宁波西
+    name: 镇海
     prefecture: pref_ningbo
     region: reg_zhejiang
     terrain: plains
@@ -5553,7 +5553,7 @@ provinces:
       - ningguta_a
       - ningguta_b
   - id: ningguta_a
-    name: 宁古塔东
+    name: 依兰
     prefecture: pref_ningguta
     region: reg_nvzhen
     terrain: wetland
@@ -5573,7 +5573,7 @@ provinces:
       - heilongjiang_a
       - ningguta
   - id: ningguta_b
-    name: 宁古塔西
+    name: 三姓
     prefecture: pref_ningguta
     region: reg_nvzhen
     terrain: mountains
@@ -5613,7 +5613,7 @@ provinces:
       - pingliang
       - qingyang_b
   - id: ningxia_a
-    name: 宁夏东
+    name: 灵州
     prefecture: pref_ningxia
     region: reg_hexi
     terrain: steppe
@@ -5637,7 +5637,7 @@ provinces:
       - tusheet_b
       - yulin_a
   - id: ningxia_b
-    name: 宁夏西
+    name: 中卫
     prefecture: pref_ningxia
     region: reg_hexi
     terrain: desert
@@ -5678,7 +5678,7 @@ provinces:
       - dengzhou
       - guangning_b
   - id: ningyuan_a
-    name: 宁远东
+    name: 兴城
     prefecture: pref_ningyuan
     region: reg_liaodong
     terrain: mountains
@@ -5697,7 +5697,7 @@ provinces:
       - shanhaiguan
       - shanhaiguan_a
   - id: ningyuan_b
-    name: 宁远西
+    name: 绥中
     prefecture: pref_ningyuan
     region: reg_liaodong
     terrain: mountains
@@ -5738,7 +5738,7 @@ provinces:
     neighbors:
       - okhotsk_a
   - id: okhotsk_a
-    name: 鄂霍次克东
+    name: 乌第
     prefecture: pref_okhotsk
     region: reg_russia_far
     terrain: wetland
@@ -5759,7 +5759,7 @@ provinces:
       - okhotsk
       - okhotsk_b
   - id: okhotsk_b
-    name: 鄂霍次克西
+    name: 阿扬
     prefecture: pref_okhotsk
     region: reg_russia_far
     terrain: steppe
@@ -5798,7 +5798,7 @@ provinces:
       - ordos_b
       - tumote_a
   - id: ordos_a
-    name: 鄂尔多斯东
+    name: 乌审
     prefecture: pref_ordos
     region: reg_mengnan
     terrain: hills
@@ -5821,7 +5821,7 @@ provinces:
       - tumote_a
       - yulin_b
   - id: ordos_b
-    name: 鄂尔多斯西
+    name: 伊克昭
     prefecture: pref_ordos
     region: reg_mengnan
     terrain: steppe
@@ -5869,7 +5869,7 @@ provinces:
       - osaka_a
       - osaka_b
   - id: osaka_a
-    name: 大阪东
+    name: 堺
     prefecture: pref_osaka
     region: reg_japan_west
     terrain: mountains
@@ -5888,7 +5888,7 @@ provinces:
       - kyoto_b
       - osaka
   - id: osaka_b
-    name: 大阪西
+    name: 岸和田
     prefecture: pref_osaka
     region: reg_japan_west
     terrain: hills
@@ -5926,7 +5926,7 @@ provinces:
       - pegu_b
       - toungoo_a
   - id: pegu_a
-    name: 勃固东
+    name: 沙廉
     prefecture: pref_pegu
     region: reg_burma
     terrain: mountains
@@ -5947,7 +5947,7 @@ provinces:
       - pegu_b
       - thanhhoa_b
   - id: pegu_b
-    name: 勃固西
+    name: 勃生
     prefecture: pref_pegu
     region: reg_burma
     terrain: jungle
@@ -5987,7 +5987,7 @@ provinces:
       - anping
       - quanzhou
   - id: penghu_a
-    name: 澎湖东
+    name: 白沙
     prefecture: pref_penghu
     region: reg_taiwan
     terrain: hills
@@ -6010,7 +6010,7 @@ provinces:
       - tamsui_a
       - tamsui_b
   - id: penghu_b
-    name: 澎湖西
+    name: 西屿
     prefecture: pref_penghu
     region: reg_taiwan
     terrain: hills
@@ -6054,7 +6054,7 @@ provinces:
       - shahukou_a
       - yanmen_a
   - id: pianguan_a
-    name: 偏关东
+    name: 河曲
     prefecture: pref_pianguan
     region: reg_xuanda
     terrain: steppe
@@ -6077,7 +6077,7 @@ provinces:
       - yanmen_a
       - yulin_b
   - id: pianguan_b
-    name: 偏关西
+    name: 保德
     prefecture: pref_pianguan
     region: reg_xuanda
     terrain: mountains
@@ -6122,7 +6122,7 @@ provinces:
       - pingliang_b
       - qingyang_b
   - id: pingliang_a
-    name: 平凉东
+    name: 固原
     prefecture: pref_pingliang
     region: reg_shaanxi
     terrain: desert
@@ -6145,7 +6145,7 @@ provinces:
       - pingliang
       - xining_b
   - id: pingliang_b
-    name: 平凉西
+    name: 静宁
     prefecture: pref_pingliang
     region: reg_shaanxi
     terrain: desert
@@ -6186,7 +6186,7 @@ provinces:
       - pingyang_a
       - pingyang_b
   - id: pingyang_a
-    name: 平阳东
+    name: 临汾
     prefecture: pref_pingyang
     region: reg_shanxi
     terrain: plains
@@ -6208,7 +6208,7 @@ provinces:
       - yanan
       - yanan_b
   - id: pingyang_b
-    name: 平阳西
+    name: 襄陵
     prefecture: pref_pingyang
     region: reg_shanxi
     terrain: hills
@@ -6252,7 +6252,7 @@ provinces:
       - pyongyang_a
       - pyongyang_b
   - id: pyongyang_a
-    name: 平壤东
+    name: 中和
     prefecture: pref_pyongyang
     region: reg_joseon
     terrain: mountains
@@ -6273,7 +6273,7 @@ provinces:
       - pyongyang
       - pyongyang_b
   - id: pyongyang_b
-    name: 平壤西
+    name: 江东
     prefecture: pref_pyongyang
     region: reg_joseon
     terrain: plains
@@ -6312,7 +6312,7 @@ provinces:
       - qaidam_b
       - urumqi_b
   - id: qaidam_a
-    name: 柴达木东
+    name: 格尔木
     prefecture: pref_qaidam
     region: reg_weilate
     terrain: desert
@@ -6335,7 +6335,7 @@ provinces:
       - shigatse_b
       - urumqi_b
   - id: qaidam_b
-    name: 柴达木西
+    name: 德令哈
     prefecture: pref_qaidam
     region: reg_weilate
     terrain: steppe
@@ -6377,7 +6377,7 @@ provinces:
       - qinghai_b
       - xining_a
   - id: qinghai_a
-    name: 青海东
+    name: 海晏
     prefecture: pref_qinghai
     region: reg_weilate
     terrain: steppe
@@ -6399,7 +6399,7 @@ provinces:
       - xining
       - xining_a
   - id: qinghai_b
-    name: 青海西
+    name: 湟源
     prefecture: pref_qinghai
     region: reg_weilate
     terrain: desert
@@ -6445,7 +6445,7 @@ provinces:
       - qingyang_b
       - xian_a
   - id: qingyang_a
-    name: 庆阳东
+    name: 合水
     prefecture: pref_qingyang
     region: reg_shaanxi
     terrain: mountains
@@ -6466,7 +6466,7 @@ provinces:
       - yanan_a
       - yulin_a
   - id: qingyang_b
-    name: 庆阳西
+    name: 宁州
     prefecture: pref_qingyang
     region: reg_shaanxi
     terrain: plains
@@ -6507,7 +6507,7 @@ provinces:
       - qingzhou_b
       - tianjin_b
   - id: qingzhou_a
-    name: 青州东
+    name: 寿光
     prefecture: pref_qingzhou
     region: reg_shandong
     terrain: plains
@@ -6526,7 +6526,7 @@ provinces:
       - qingzhou
       - qingzhou_b
   - id: qingzhou_b
-    name: 青州西
+    name: 临朐
     prefecture: pref_qingzhou
     region: reg_shandong
     terrain: hills
@@ -6571,7 +6571,7 @@ provinces:
       - quanzhou_a
       - quanzhou_b
   - id: quanzhou_a
-    name: 泉州东
+    name: 晋江
     prefecture: pref_quanzhou
     region: reg_fujian
     terrain: hills
@@ -6590,7 +6590,7 @@ provinces:
       - quanzhou_b
       - zhangzhou_a
   - id: quanzhou_b
-    name: 泉州西
+    name: 惠安
     prefecture: pref_quanzhou
     region: reg_fujian
     terrain: hills
@@ -6637,7 +6637,7 @@ provinces:
       - qujing_b
       - xuzhou_sichuan_b
   - id: qujing_a
-    name: 曲靖东
+    name: 沾益
     prefecture: pref_qujing
     region: reg_yunnan
     terrain: jungle
@@ -6662,7 +6662,7 @@ provinces:
       - xuzhou_sichuan_a
       - xuzhou_sichuan_b
   - id: qujing_b
-    name: 曲靖西
+    name: 陆良
     prefecture: pref_qujing
     region: reg_yunnan
     terrain: mountains
@@ -6703,7 +6703,7 @@ provinces:
       - raozhou_a
       - raozhou_b
   - id: raozhou_a
-    name: 饶州东
+    name: 鄱阳
     prefecture: pref_raozhou
     region: reg_jiangxi
     terrain: plains
@@ -6726,7 +6726,7 @@ provinces:
       - nanchang_a
       - raozhou
   - id: raozhou_b
-    name: 饶州西
+    name: 乐平
     prefecture: pref_raozhou
     region: reg_jiangxi
     terrain: hills
@@ -6766,7 +6766,7 @@ provinces:
       - sendai_b
       - sendai_a
   - id: sendai_a
-    name: 仙台东
+    name: 石卷
     prefecture: pref_sendai
     region: reg_japan_east
     terrain: mountains
@@ -6783,7 +6783,7 @@ provinces:
     neighbors:
       - sendai
   - id: sendai_b
-    name: 仙台西
+    name: 气仙沼
     prefecture: pref_sendai
     region: reg_japan_east
     terrain: hills
@@ -6824,7 +6824,7 @@ provinces:
       - tumote_b
       - yanmen_a
   - id: shahukou_a
-    name: 杀虎口东
+    name: 右玉
     prefecture: pref_shahukou
     region: reg_xuanda
     terrain: hills
@@ -6845,7 +6845,7 @@ provinces:
       - tumote_b
       - yanmen_a
   - id: shahukou_b
-    name: 杀虎口西
+    name: 平鲁
     prefecture: pref_shahukou
     region: reg_xuanda
     terrain: mountains
@@ -6887,7 +6887,7 @@ provinces:
       - yongping
       - yongping_b
   - id: shanhaiguan_a
-    name: 山海关东
+    name: 抚宁
     prefecture: pref_shanhaiguan
     region: reg_liaodong
     terrain: hills
@@ -6907,7 +6907,7 @@ provinces:
       - shanhaiguan
       - shanhaiguan_b
   - id: shanhaiguan_b
-    name: 山海关西
+    name: 昌黎
     prefecture: pref_shanhaiguan
     region: reg_liaodong
     terrain: hills
@@ -6947,7 +6947,7 @@ provinces:
       - shannan_a
       - shannan_b
   - id: shannan_a
-    name: 山南东
+    name: 乃东
     prefecture: pref_shannan
     region: reg_xizang
     terrain: mountains
@@ -6968,7 +6968,7 @@ provinces:
       - shannan
       - shannan_b
   - id: shannan_b
-    name: 山南西
+    name: 泽当
     prefecture: pref_shannan
     region: reg_xizang
     terrain: mountains
@@ -7008,7 +7008,7 @@ provinces:
       - shaoxing_a
       - shaoxing_b
   - id: shaoxing_a
-    name: 绍兴东
+    name: 余姚
     prefecture: pref_shaoxing
     region: reg_zhejiang
     terrain: wetland
@@ -7035,7 +7035,7 @@ provinces:
       - wenzhou_a
       - wenzhou_b
   - id: shaoxing_b
-    name: 绍兴西
+    name: 诸暨
     prefecture: pref_shaoxing
     region: reg_zhejiang
     terrain: hills
@@ -7077,7 +7077,7 @@ provinces:
       - shaozhou_a
       - shaozhou_b
   - id: shaozhou_a
-    name: 韶州东
+    name: 曲江
     prefecture: pref_shaozhou
     region: reg_guangdong
     terrain: hills
@@ -7100,7 +7100,7 @@ provinces:
       - huizhou_gd_a
       - shaozhou
   - id: shaozhou_b
-    name: 韶州西
+    name: 乐昌
     prefecture: pref_shaozhou
     region: reg_guangdong
     terrain: jungle
@@ -7148,7 +7148,7 @@ provinces:
       - shenyang_a
       - shenyang_b
   - id: shenyang_a
-    name: 沈阳东
+    name: 辽中
     prefecture: pref_shenyang
     region: reg_liaodong
     terrain: plains
@@ -7171,7 +7171,7 @@ provinces:
       - liaoyang_a
       - shenyang
   - id: shenyang_b
-    name: 沈阳西
+    name: 新民
     prefecture: pref_shenyang
     region: reg_liaodong
     terrain: plains
@@ -7210,7 +7210,7 @@ provinces:
       - shigatse_a
       - shigatse_b
   - id: shigatse_a
-    name: 日喀则东
+    name: 江孜
     prefecture: pref_shigatse
     region: reg_xizang
     terrain: mountains
@@ -7229,7 +7229,7 @@ provinces:
       - shigatse
       - shigatse_b
   - id: shigatse_b
-    name: 日喀则西
+    name: 白朗
     prefecture: pref_shigatse
     region: reg_xizang
     terrain: mountains
@@ -7276,7 +7276,7 @@ provinces:
       - shunqing_a
       - shunqing_b
   - id: shunqing_a
-    name: 顺庆东
+    name: 南充
     prefecture: pref_shunqing
     region: reg_sichuan
     terrain: jungle
@@ -7300,7 +7300,7 @@ provinces:
       - shunqing
       - xuzhou_sichuan_a
   - id: shunqing_b
-    name: 顺庆西
+    name: 蓬州
     prefecture: pref_shunqing
     region: reg_sichuan
     terrain: mountains
@@ -7342,7 +7342,7 @@ provinces:
       - zhenyuan
       - zhenyuan_b
   - id: sinan_a
-    name: 思南东
+    name: 石阡
     prefecture: pref_sinan
     region: reg_guizhou
     terrain: jungle
@@ -7366,7 +7366,7 @@ provinces:
       - sinan
       - tongren_a
   - id: sinan_b
-    name: 思南西
+    name: 印江
     prefecture: pref_sinan
     region: reg_guizhou
     terrain: hills
@@ -7407,7 +7407,7 @@ provinces:
       - songjiang_b
       - suzhou_b
   - id: songjiang_a
-    name: 松江东
+    name: 华亭
     prefecture: pref_songjiang
     region: reg_nanzhili
     terrain: hills
@@ -7424,7 +7424,7 @@ provinces:
     neighbors:
       - changzhou_b
   - id: songjiang_b
-    name: 松江西
+    name: 上海
     prefecture: pref_songjiang
     region: reg_nanzhili
     terrain: plains
@@ -7461,7 +7461,7 @@ provinces:
       - sunpu_a
       - sunpu_b
   - id: sunpu_a
-    name: 骏府东
+    name: 清水
     prefecture: pref_sunpu
     region: reg_japan_east
     terrain: plains
@@ -7483,7 +7483,7 @@ provinces:
       - sunpu
       - sunpu_b
   - id: sunpu_b
-    name: 骏府西
+    name: 沼津
     prefecture: pref_sunpu
     region: reg_japan_east
     terrain: plains
@@ -7525,7 +7525,7 @@ provinces:
       - jiaxing_b
       - suzhou_b
   - id: suzhou_a
-    name: 苏州东
+    name: 昆山
     prefecture: pref_suzhou
     region: reg_nanzhili
     terrain: plains
@@ -7548,7 +7548,7 @@ provinces:
       - nanjing_a
       - zhenjiang_b
   - id: suzhou_b
-    name: 苏州西
+    name: 吴江
     prefecture: pref_suzhou
     region: reg_nanzhili
     terrain: urban
@@ -7588,7 +7588,7 @@ provinces:
       - suzhou_hexi_a
       - suzhou_hexi_b
   - id: suzhou_hexi_a
-    name: 肃州东
+    name: 高台
     prefecture: pref_suzhou_hexi
     region: reg_hexi
     terrain: desert
@@ -7610,7 +7610,7 @@ provinces:
       - suzhou_hexi
       - suzhou_hexi_b
   - id: suzhou_hexi_b
-    name: 肃州西
+    name: 金塔
     prefecture: pref_suzhou_hexi
     region: reg_hexi
     terrain: desert
@@ -7653,7 +7653,7 @@ provinces:
       - taiping_a
       - taiping_b
   - id: taiping_a
-    name: 太平东
+    name: 当涂
     prefecture: pref_taiping
     region: reg_guangxi
     terrain: jungle
@@ -7674,7 +7674,7 @@ provinces:
       - nanning_b
       - taiping
   - id: taiping_b
-    name: 太平西
+    name: 芜湖
     prefecture: pref_taiping
     region: reg_guangxi
     terrain: jungle
@@ -7718,7 +7718,7 @@ provinces:
       - zhending
       - zhending_b
   - id: taiyuan_a
-    name: 太原东
+    name: 阳曲
     prefecture: pref_taiyuan
     region: reg_shanxi
     terrain: plains
@@ -7739,7 +7739,7 @@ provinces:
       - yanmen
       - yanmen_a
   - id: taiyuan_b
-    name: 太原西
+    name: 榆次
     prefecture: pref_taiyuan
     region: reg_shanxi
     terrain: mountains
@@ -7784,7 +7784,7 @@ provinces:
       - taizhou_b
       - wenzhou_b
   - id: taizhou_a
-    name: 台州东
+    name: 临海
     prefecture: pref_taizhou
     region: reg_zhejiang
     terrain: hills
@@ -7802,7 +7802,7 @@ provinces:
       - taizhou
       - wenzhou_b
   - id: taizhou_b
-    name: 台州西
+    name: 黄岩
     prefecture: pref_taizhou
     region: reg_zhejiang
     terrain: hills
@@ -7846,7 +7846,7 @@ provinces:
       - tamsui_a
       - tamsui_b
   - id: tamsui_a
-    name: 淡水东
+    name: 台北
     prefecture: pref_tamsui
     region: reg_taiwan
     terrain: jungle
@@ -7868,7 +7868,7 @@ provinces:
       - tamsui
       - tamsui_b
   - id: tamsui_b
-    name: 淡水西
+    name: 新竹
     prefecture: pref_tamsui
     region: reg_taiwan
     terrain: hills
@@ -7910,7 +7910,7 @@ provinces:
       - tengyue_a
       - tengyue_b
   - id: tengyue_a
-    name: 腾越东
+    name: 龙陵
     prefecture: pref_tengyue
     region: reg_yunnan
     terrain: jungle
@@ -7933,7 +7933,7 @@ provinces:
       - tengyue
       - tengyue_b
   - id: tengyue_b
-    name: 腾越西
+    name: 梁河
     prefecture: pref_tengyue
     region: reg_yunnan
     terrain: hills
@@ -7977,7 +7977,7 @@ provinces:
       - thanhhoa_a
       - thanhhoa_b
   - id: thanhhoa_a
-    name: 清化东
+    name: 演州
     prefecture: pref_thanhhoa
     region: reg_annam
     terrain: jungle
@@ -7995,7 +7995,7 @@ provinces:
       - dongkinh_a
       - thanhhoa
   - id: thanhhoa_b
-    name: 清化西
+    name: 义安
     prefecture: pref_thanhhoa
     region: reg_annam
     terrain: plains
@@ -8039,7 +8039,7 @@ provinces:
       - tianjin_a
       - tianjin_b
   - id: tianjin_a
-    name: 天津东
+    name: 静海
     prefecture: pref_tianjin
     region: reg_beizhili
     terrain: hills
@@ -8063,7 +8063,7 @@ provinces:
       - yongping_a
       - yongping_b
   - id: tianjin_b
-    name: 天津西
+    name: 武清
     prefecture: pref_tianjin
     region: reg_beizhili
     terrain: plains
@@ -8106,7 +8106,7 @@ provinces:
       - tingzhou_b
       - yanping_a
   - id: tingzhou_a
-    name: 汀州东
+    name: 长汀
     prefecture: pref_tingzhou
     region: reg_fujian
     terrain: mountains
@@ -8130,7 +8130,7 @@ provinces:
       - zhangzhou_a
       - zhangzhou_b
   - id: tingzhou_b
-    name: 汀州西
+    name: 上杭
     prefecture: pref_tingzhou
     region: reg_fujian
     terrain: hills
@@ -8172,7 +8172,7 @@ provinces:
       - tongren_a
       - tongren_b
   - id: tongren_a
-    name: 铜仁东
+    name: 思州
     prefecture: pref_tongren
     region: reg_guizhou
     terrain: mountains
@@ -8199,7 +8199,7 @@ provinces:
       - sinan_b
       - tongren
   - id: tongren_b
-    name: 铜仁西
+    name: 松桃
     prefecture: pref_tongren
     region: reg_guizhou
     terrain: hills
@@ -8241,7 +8241,7 @@ provinces:
       - toungoo_a
       - toungoo_b
   - id: toungoo_a
-    name: 东吁东
+    name: 卑谬
     prefecture: pref_toungoo
     region: reg_burma
     terrain: hills
@@ -8261,7 +8261,7 @@ provinces:
       - pegu_b
       - toungoo
   - id: toungoo_b
-    name: 东吁西
+    name: 央米丁
     prefecture: pref_toungoo
     region: reg_burma
     terrain: jungle
@@ -8306,7 +8306,7 @@ provinces:
       - tumote_a
       - tumote_b
   - id: tumote_a
-    name: 土默特东
+    name: 萨拉齐
     prefecture: pref_tumote
     region: reg_mengnan
     terrain: desert
@@ -8328,7 +8328,7 @@ provinces:
       - pianguan_b
       - tumote
   - id: tumote_b
-    name: 土默特西
+    name: 托克托
     prefecture: pref_tumote
     region: reg_mengnan
     terrain: desert
@@ -8370,7 +8370,7 @@ provinces:
       - tusheet_b
       - zhasaketu_a
   - id: tusheet_a
-    name: 土谢图东
+    name: 乌里雅苏台
     prefecture: pref_tusheet
     region: reg_mobei
     terrain: desert
@@ -8391,7 +8391,7 @@ provinces:
       - tusheet
       - tusheet_b
   - id: tusheet_b
-    name: 土谢图西
+    name: 科布多
     prefecture: pref_tusheet
     region: reg_mobei
     terrain: steppe
@@ -8434,7 +8434,7 @@ provinces:
       - uiju_a
       - uiju_b
   - id: uiju_a
-    name: 义州东
+    name: 龙川
     prefecture: pref_uiju
     region: reg_joseon
     terrain: mountains
@@ -8458,7 +8458,7 @@ provinces:
       - uiju
       - uiju_b
   - id: uiju_b
-    name: 义州西
+    name: 铁山
     prefecture: pref_uiju
     region: reg_joseon
     terrain: mountains
@@ -8498,7 +8498,7 @@ provinces:
       - urumqi_a
       - urumqi_b
   - id: urumqi_a
-    name: 乌鲁木齐东
+    name: 昌吉
     prefecture: pref_urumqi
     region: reg_weilate
     terrain: steppe
@@ -8519,7 +8519,7 @@ provinces:
       - urumqi_b
       - zhasaketu_b
   - id: urumqi_b
-    name: 乌鲁木齐西
+    name: 阜康
     prefecture: pref_urumqi
     region: reg_weilate
     terrain: steppe
@@ -8564,7 +8564,7 @@ provinces:
       - weihui_a
       - weihui_b
   - id: weihui_a
-    name: 卫辉东
+    name: 汲县
     prefecture: pref_weihui
     region: reg_henan
     terrain: hills
@@ -8585,7 +8585,7 @@ provinces:
       - zhangde
       - zhangde_a
   - id: weihui_b
-    name: 卫辉西
+    name: 淇县
     prefecture: pref_weihui
     region: reg_henan
     terrain: hills
@@ -8629,7 +8629,7 @@ provinces:
       - wenzhou_a
       - wenzhou_b
   - id: wenzhou_a
-    name: 温州东
+    name: 永嘉
     prefecture: pref_wenzhou
     region: reg_zhejiang
     terrain: plains
@@ -8650,7 +8650,7 @@ provinces:
       - shaoxing_a
       - wenzhou
   - id: wenzhou_b
-    name: 温州西
+    name: 瑞安
     prefecture: pref_wenzhou
     region: reg_zhejiang
     terrain: plains
@@ -8693,7 +8693,7 @@ provinces:
       - huangzhou_b
       - wuchang_b
   - id: wuchang_a
-    name: 武昌东
+    name: 江夏
     prefecture: pref_wuchang
     region: reg_huguang
     terrain: mountains
@@ -8716,7 +8716,7 @@ provinces:
       - wuchang_b
       - yuezhou_a
   - id: wuchang_b
-    name: 武昌西
+    name: 鄂州
     prefecture: pref_wuchang
     region: reg_huguang
     terrain: plains
@@ -8759,7 +8759,7 @@ provinces:
       - wuzhou_a
       - wuzhou_b
   - id: wuzhou_a
-    name: 梧州东
+    name: 苍梧
     prefecture: pref_wuzhou
     region: reg_guangxi
     terrain: hills
@@ -8782,7 +8782,7 @@ provinces:
       - shaozhou_b
       - wuzhou
   - id: wuzhou_b
-    name: 梧州西
+    name: 藤县
     prefecture: pref_wuzhou
     region: reg_guangxi
     terrain: jungle
@@ -8825,7 +8825,7 @@ provinces:
       - xian_a
       - xian_b
   - id: xian_a
-    name: 西安东
+    name: 长安
     prefecture: pref_xian
     region: reg_shaanxi
     terrain: mountains
@@ -8849,7 +8849,7 @@ provinces:
       - yanan
       - yanan_a
   - id: xian_b
-    name: 西安西
+    name: 咸阳
     prefecture: pref_xian
     region: reg_shaanxi
     terrain: mountains
@@ -8892,7 +8892,7 @@ provinces:
       - xiangyang_a
       - xiangyang_b
   - id: xiangyang_a
-    name: 襄阳东
+    name: 樊城
     prefecture: pref_xiangyang
     region: reg_huguang
     terrain: hills
@@ -8912,7 +8912,7 @@ provinces:
       - nanyang_b
       - xiangyang
   - id: xiangyang_b
-    name: 襄阳西
+    name: 枣阳
     prefecture: pref_xiangyang
     region: reg_huguang
     terrain: plains
@@ -8956,7 +8956,7 @@ provinces:
       - xining_a
       - xining_b
   - id: xining_a
-    name: 西宁东
+    name: 湟中
     prefecture: pref_xining
     region: reg_hexi
     terrain: steppe
@@ -8979,7 +8979,7 @@ provinces:
       - xining
       - xining_b
   - id: xining_b
-    name: 西宁西
+    name: 平安
     prefecture: pref_xining
     region: reg_hexi
     terrain: desert
@@ -9023,7 +9023,7 @@ provinces:
       - xuzhou_a
       - xuzhou_b
   - id: xuzhou_a
-    name: 徐州东
+    name: 彭城
     prefecture: pref_xuzhou
     region: reg_nanzhili
     terrain: hills
@@ -9045,7 +9045,7 @@ provinces:
       - xuzhou
       - xuzhou_b
   - id: xuzhou_b
-    name: 徐州西
+    name: 沛县
     prefecture: pref_xuzhou
     region: reg_nanzhili
     terrain: urban
@@ -9087,7 +9087,7 @@ provinces:
       - xuzhou_sichuan_a
       - xuzhou_sichuan_b
   - id: xuzhou_sichuan_a
-    name: 叙州东
+    name: 南溪
     prefecture: pref_xuzhou_sichuan
     region: reg_sichuan
     terrain: jungle
@@ -9109,7 +9109,7 @@ provinces:
       - shunqing_a
       - xuzhou_sichuan
   - id: xuzhou_sichuan_b
-    name: 叙州西
+    name: 高县
     prefecture: pref_xuzhou_sichuan
     region: reg_sichuan
     terrain: hills
@@ -9156,7 +9156,7 @@ provinces:
       - yanan_b
       - yulin_a
   - id: yanan_a
-    name: 延安东
+    name: 肤施
     prefecture: pref_yanan
     region: reg_shaanxi
     terrain: desert
@@ -9176,7 +9176,7 @@ provinces:
       - yanan
       - yulin_a
   - id: yanan_b
-    name: 延安西
+    name: 甘泉
     prefecture: pref_yanan
     region: reg_shaanxi
     terrain: desert
@@ -9218,7 +9218,7 @@ provinces:
       - zhenjiang
       - zhenjiang_a
   - id: yangzhou_a
-    name: 扬州东
+    name: 江都
     prefecture: pref_yangzhou
     region: reg_nanzhili
     terrain: plains
@@ -9241,7 +9241,7 @@ provinces:
       - zhenjiang_a
       - zhenjiang_b
   - id: yangzhou_b
-    name: 扬州西
+    name: 仪征
     prefecture: pref_yangzhou
     region: reg_nanzhili
     terrain: hills
@@ -9284,7 +9284,7 @@ provinces:
       - yanmen_a
       - yanmen_b
   - id: yanmen_a
-    name: 雁门东
+    name: 代县
     prefecture: pref_yanmen
     region: reg_xuanda
     terrain: mountains
@@ -9308,7 +9308,7 @@ provinces:
       - taiyuan_a
       - yanmen
   - id: yanmen_b
-    name: 雁门西
+    name: 崞县
     prefecture: pref_yanmen
     region: reg_xuanda
     terrain: mountains
@@ -9350,7 +9350,7 @@ provinces:
       - yanping_a
       - yanping_b
   - id: yanping_a
-    name: 延平东
+    name: 南平
     prefecture: pref_yanping
     region: reg_fujian
     terrain: mountains
@@ -9375,7 +9375,7 @@ provinces:
       - tingzhou_b
       - yanping
   - id: yanping_b
-    name: 延平西
+    name: 沙县
     prefecture: pref_yanping
     region: reg_fujian
     terrain: hills
@@ -9416,7 +9416,7 @@ provinces:
       - jining_b
       - yanzhou_a
   - id: yanzhou_a
-    name: 兖州东
+    name: 滋阳
     prefecture: pref_yanzhou
     region: reg_shandong
     terrain: plains
@@ -9438,7 +9438,7 @@ provinces:
       - xuzhou_b
       - yanzhou
   - id: yanzhou_b
-    name: 兖州西
+    name: 曲阜
     prefecture: pref_yanzhou
     region: reg_shandong
     terrain: hills
@@ -9483,7 +9483,7 @@ provinces:
       - yongping_a
       - yongping_b
   - id: yongping_a
-    name: 永平东
+    name: 卢龙
     prefecture: pref_yongping
     region: reg_beizhili
     terrain: hills
@@ -9505,7 +9505,7 @@ provinces:
       - tianjin_a
       - yongping
   - id: yongping_b
-    name: 永平西
+    name: 迁安
     prefecture: pref_yongping
     region: reg_beizhili
     terrain: plains
@@ -9545,7 +9545,7 @@ provinces:
       - yuezhou_a
       - yuezhou_b
   - id: yuezhou_a
-    name: 岳州东
+    name: 巴陵
     prefecture: pref_yuezhou
     region: reg_huguang
     terrain: wetland
@@ -9569,7 +9569,7 @@ provinces:
       - wuchang_a
       - yuezhou
   - id: yuezhou_b
-    name: 岳州西
+    name: 临湘
     prefecture: pref_yuezhou
     region: reg_huguang
     terrain: mountains
@@ -9611,7 +9611,7 @@ provinces:
       - yulin_a
       - yulin_b
   - id: yulin_a
-    name: 榆林东
+    name: 神木
     prefecture: pref_yulin
     region: reg_shaanxi
     terrain: hills
@@ -9635,7 +9635,7 @@ provinces:
       - yanan_b
       - yulin
   - id: yulin_b
-    name: 榆林西
+    name: 府谷
     prefecture: pref_yulin
     region: reg_shaanxi
     terrain: hills
@@ -9677,7 +9677,7 @@ provinces:
       - qujing
       - qujing_b
   - id: kunming_a
-    name: 云南府东
+    name: 富民
     prefecture: pref_yunnanfu
     region: reg_yunnan
     terrain: mountains
@@ -9698,7 +9698,7 @@ provinces:
       - linan
       - linan_b
   - id: kunming_b
-    name: 云南府西
+    name: 宜良
     prefecture: pref_yunnanfu
     region: reg_yunnan
     terrain: mountains
@@ -9739,7 +9739,7 @@ provinces:
       - zhangde_a
       - zhangde_b
   - id: zhangde_a
-    name: 彰德东
+    name: 安阳
     prefecture: pref_zhangde
     region: reg_henan
     terrain: plains
@@ -9762,7 +9762,7 @@ provinces:
       - zhangde
       - zhangde_b
   - id: zhangde_b
-    name: 彰德西
+    name: 汤阴
     prefecture: pref_zhangde
     region: reg_henan
     terrain: plains
@@ -9807,7 +9807,7 @@ provinces:
       - zhangjiakou_a
       - zhangjiakou_b
   - id: zhangjiakou_a
-    name: 张家口东
+    name: 宣化
     prefecture: pref_zhangjiakou
     region: reg_xuanda
     terrain: hills
@@ -9828,7 +9828,7 @@ provinces:
       - dushikou_b
       - zhangjiakou
   - id: zhangjiakou_b
-    name: 张家口西
+    name: 万全
     prefecture: pref_zhangjiakou
     region: reg_xuanda
     terrain: steppe
@@ -9869,7 +9869,7 @@ provinces:
       - zhangzhou_a
       - zhangzhou_b
   - id: zhangzhou_a
-    name: 漳州东
+    name: 龙溪
     prefecture: pref_zhangzhou
     region: reg_fujian
     terrain: mountains
@@ -9889,7 +9889,7 @@ provinces:
       - tingzhou_a
       - zhangzhou
   - id: zhangzhou_b
-    name: 漳州西
+    name: 海澄
     prefecture: pref_zhangzhou
     region: reg_fujian
     terrain: mountains
@@ -9929,7 +9929,7 @@ provinces:
       - zhaoqing_a
       - zhaoqing_b
   - id: zhaoqing_a
-    name: 肇庆东
+    name: 高要
     prefecture: pref_zhaoqing
     region: reg_guangdong
     terrain: hills
@@ -9950,7 +9950,7 @@ provinces:
       - wuzhou_b
       - zhaoqing
   - id: zhaoqing_b
-    name: 肇庆西
+    name: 四会
     prefecture: pref_zhaoqing
     region: reg_guangdong
     terrain: jungle
@@ -9991,7 +9991,7 @@ provinces:
       - zhasaketu_a
       - zhasaketu_b
   - id: zhasaketu_a
-    name: 札萨克图东
+    name: 唐努
     prefecture: pref_zhasaketu
     region: reg_mobei
     terrain: desert
@@ -10012,7 +10012,7 @@ provinces:
       - zhasaketu
       - zhasaketu_b
   - id: zhasaketu_b
-    name: 札萨克图西
+    name: 乌梁海
     prefecture: pref_zhasaketu
     region: reg_mobei
     terrain: steppe
@@ -10057,7 +10057,7 @@ provinces:
       - zhending_a
       - zhending_b
   - id: zhending_a
-    name: 真定东
+    name: 正定
     prefecture: pref_zhending
     region: reg_beizhili
     terrain: hills
@@ -10079,7 +10079,7 @@ provinces:
       - yanmen_b
       - zhending
   - id: zhending_b
-    name: 真定西
+    name: 获鹿
     prefecture: pref_zhending
     region: reg_beizhili
     terrain: plains
@@ -10124,7 +10124,7 @@ provinces:
       - yangzhou
       - yangzhou_a
   - id: zhenjiang_a
-    name: 镇江东
+    name: 丹徒
     prefecture: pref_zhenjiang
     region: reg_nanzhili
     terrain: hills
@@ -10148,7 +10148,7 @@ provinces:
       - yangzhou_a
       - yangzhou_b
   - id: zhenjiang_b
-    name: 镇江西
+    name: 扬中
     prefecture: pref_zhenjiang
     region: reg_nanzhili
     terrain: urban
@@ -10192,7 +10192,7 @@ provinces:
       - zhenyuan_a
       - zhenyuan_b
   - id: zhenyuan_a
-    name: 镇远东
+    name: 施秉
     prefecture: pref_zhenyuan
     region: reg_guizhou
     terrain: hills
@@ -10215,7 +10215,7 @@ provinces:
       - tongren_b
       - zhenyuan
   - id: zhenyuan_b
-    name: 镇远西
+    name: 黄平
     prefecture: pref_zhenyuan
     region: reg_guizhou
     terrain: jungle
@@ -10257,7 +10257,7 @@ provinces:
       - jinan_b
       - tianjin_b
   - id: hejian_a
-    name: 河间东
+    name: 献县
     prefecture: pref_hejian
     region: reg_beizhili
     terrain: urban
@@ -10278,7 +10278,7 @@ provinces:
       - jinan_b
       - linqing_a
   - id: hejian_b
-    name: 河间西
+    name: 肃宁
     prefecture: pref_hejian
     region: reg_beizhili
     terrain: urban
