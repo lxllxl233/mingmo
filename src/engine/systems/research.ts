@@ -5,7 +5,7 @@ import { evaluateTrigger } from '../rules/triggers';
 import { fireEvent } from './events';
 import type { GameState } from '../state/types';
 
-export const RESEARCH_FUNDING_PER_SLOT_DAY = 120;
+export const RESEARCH_FUNDING_PER_SLOT_DAY = 60;
 
 export function isTechAvailable(state: GameState, content: ContentIndex, tag: string, tech: Tech): boolean {
   const nation = state.countries[tag];
@@ -62,7 +62,7 @@ export function advanceResearch(state: GameState, content: ContentIndex): void {
     if (!nation.alive) continue;
     const modifiers = aggregateModifiers(nation, content);
     const fundingNeed = nation.research.length * RESEARCH_FUNDING_PER_SLOT_DAY;
-    const fundingPaid = Math.min(fundingNeed, nation.treasury);
+    const fundingPaid = nation.treasury > 20000 ? Math.min(fundingNeed, nation.treasury - 20000) : 0;
     nation.treasury -= fundingPaid;
     const fundingFactor = fundingNeed > 0 ? 0.3 + 0.7 * (fundingPaid / fundingNeed) : 1;
     const corruptionFactor = 1 - Math.max(0, Math.min(100, nation.corruption)) / 100 * 0.1;
@@ -100,4 +100,6 @@ export function advanceResearch(state: GameState, content: ContentIndex): void {
     }
   }
 }
+
+
 

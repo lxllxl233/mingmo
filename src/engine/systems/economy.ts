@@ -1,4 +1,4 @@
-import type { ContentIndex, TaxLaw } from '../../content/types';
+﻿import type { ContentIndex, TaxLaw } from '../../content/types';
 import type { CountryState, GameState, MonthlyReport } from '../state/types';
 import { aggregateModifiers } from '../rules/modifiers';
 
@@ -6,10 +6,11 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-export function coreResourceFactor(state: GameState, tag: string, provinceId: string): number {
+export function coreResourceFactor(state: GameState, content: ContentIndex, tag: string, provinceId: string): number {
   const province = state.provinces[provinceId];
   if (!province || province.controller !== tag) return 0;
   if (province.cores.includes(tag)) return 1;
+  if (content.countries.get(tag)?.government === 'rebel') return 0.45;
   const mandate = state.countries[tag]?.mandate ?? 50;
   return 0.05 + Math.max(0, Math.min(100, mandate)) / 100 * 0.25;
 }
@@ -80,8 +81,10 @@ export function monthlyArmyPay(state: GameState, content: ContentIndex, tag: str
   const nation = state.countries[tag];
   if (!nation) return 0;
   const modifiers = aggregateModifiers(nation, content);
+  const government = content.countries.get(tag)?.government;
+  const rebelDiscount = government === 'rebel' ? 0.55 : 1;
   const multiplier = 1 + (modifiers['army_upkeep_pct'] ?? 0) / 100;
-  return strength * content.balance.economy.armyUpkeepPerManMonth * Math.max(0.2, multiplier);
+  return strength * content.balance.economy.armyUpkeepPerManMonth * Math.max(0.2, multiplier) * rebelDiscount;
 }
 
 function lawOf(content: ContentIndex, nation: CountryState, estateKey: string): TaxLaw | undefined {
@@ -154,7 +157,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const baseByRegion: Record<string, number> = {};
     for (const entry of provinces) {
       const warDamage = 1 - entry.state.devastation / 200;
-      const coreFactor = coreResourceFactor(state, nation.tag, entry.id);
+      const coreFactor = coreResourceFactor(state, content, nation.tag, entry.id);
       weightedPopulation += entry.state.population * coreFactor;
       const contribution = (entry.def.landholding * content.balance.economy.landValuePerWan
         + entry.state.population * content.balance.economy.populationValuePerPerson)
@@ -206,15 +209,16 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const corruptionLoss = totalTax * clamp(nation.corruption / 135, 0, 0.85);
     const loyaltyCost = totalTax * (1 - averageLoyalty / 100) * 0.42;
     const armyPay = monthlyArmyPay(state, content, nation.tag);
-    const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth;
-    const availableAfterFixed = Math.max(0, totalTax - corruptionLoss - loyaltyCost - armyPay);
-    const foodPurchaseSilver = availableAfterFixed * clamp(nation.foodPurchasePct, 0, 100) / 100;
+    const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth
+      * (content.countries.get(nation.tag)?.government === 'rebel' ? 0.7 : 1);
+    const availableBeforeFood = Math.max(0, totalTax - corruptionLoss - loyaltyCost);
+    const foodPurchaseSilver = availableBeforeFood * clamp(nation.foodPurchasePct, 0, 100) / 100;
     const foodOutput = government.food * (1 + clamp(modifiers['food_output_pct'] ?? 0, -80, 100) / 100);
     const foodPurchased = foodPurchaseSilver / Math.max(0.1, content.balance.economy.grainPrice) * Math.max(0.2, foodOutput);
     const famineResistance = clamp(modifiers['famine_resistance'] ?? 0, 0, 0.8);
     const hoardCap = 500000 + provinces.length * 4000;
     const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.08 : 0;
-    const net = availableAfterFixed - foodPurchaseSilver - hoardLoss;
+    const net = availableBeforeFood - foodPurchaseSilver - armyPay - hoardLoss;
     const expense = corruptionLoss + loyaltyCost + armyPay + foodPurchaseSilver + hoardLoss;
     nation.food += foodPurchased;
     nation.treasury += net;
@@ -372,6 +376,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
   }
 }
+
+
 
 
 

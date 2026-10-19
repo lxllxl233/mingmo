@@ -105,7 +105,7 @@ function manageFocus(state: GameState, content: ContentIndex, tag: string): void
 
 function manageResearch(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
-  if (!nation) return;
+  if (!nation || nation.treasury < 30000) return;
   while (nation.research.length < nation.researchSlots) {
     const techs = availableTechs(state, content, tag)
       .sort((a: Tech, b: Tech) => b.aiWeight - a.aiWeight);
@@ -140,18 +140,37 @@ function manageTax(state: GameState, content: ContentIndex, tag: string): void {
   }
 }
 
+function manageEconomy(state: GameState, content: ContentIndex, tag: string): void {
+  const nation = state.countries[tag];
+  if (!nation) return;
+  const army = armyStrengthOf(state, tag);
+  const monthlyFood = army * content.balance.economy.armyFoodPerManMonth;
+  if (monthlyFood <= 0) {
+    nation.foodPurchasePct = 10;
+    return;
+  }
+  if (nation.food < monthlyFood * 3 && nation.foodPurchasePct < 80) {
+    nation.foodPurchasePct = Math.min(100, nation.foodPurchasePct + 15);
+  } else if (nation.food > monthlyFood * 12 && nation.foodPurchasePct > 10) {
+    nation.foodPurchasePct = Math.max(10, nation.foodPurchasePct - 5);
+  }
+}
 function manageArmy(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation) return;
   const profile = aiProfile(state);
   const provinces = Object.values(state.provinces).filter(province => province.controller === tag).length;
   const atWar = warsOf(state, tag).length > 0;
-  const target = provinces * (atWar ? 500 : 250) * profile.armyTarget;
+  const target = provinces * (atWar ? 350 : 180) * profile.armyTarget;
   if (armyStrengthOf(state, tag) >= target) return;
   if ((nation.lastReport?.net ?? 0) < 0 && nation.treasury < 180000) return;
-  if (nation.treasury < profile.minTreasury * 0.8 || nation.manpower < 2000) return;
+  if (nation.treasury < Math.min(10000, profile.minTreasury * 0.8) || nation.manpower < 2000) return;
   const template = AI_TEMPLATES[tag] ?? 'ming_guard';
-  enqueueTraining(state, content, tag, nation.capital, template, 2);
+  const capital = state.provinces[nation.capital]?.controller === tag
+    ? nation.capital
+    : Object.values(state.provinces).find(province => province.controller === tag)?.id;
+  if (!capital) return;
+  enqueueTraining(state, content, tag, capital, template, 2);
 }
 
 function neighborsOf(state: GameState, content: ContentIndex, tag: string): string[] {
@@ -452,6 +471,7 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageFocus(state, content, nation.tag);
     manageResearch(state, content, nation.tag);
     manageTax(state, content, nation.tag);
+    manageEconomy(state, content, nation.tag);
     manageArmy(state, content, nation.tag);
     manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);
@@ -459,6 +479,11 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageMovement(state, content, nation.tag);
   }
 }
+
+
+
+
+
 
 
 

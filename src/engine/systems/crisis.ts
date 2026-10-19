@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import type { ArmyState, CountryState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 
@@ -45,7 +45,6 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
       if (nation.fiscalCrisisDays >= 30) {
         nation.stability = Math.max(0, nation.stability - 0.08);
         nation.armyLoyalty = Math.max(0, nation.armyLoyalty - 0.06);
-        nation.corruption = Math.min(100, nation.corruption + 0.03);
         for (const army of armies) crisisArmyLoss(state, army, 0.0008);
       }
     }
@@ -103,3 +102,4 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
     }
   }
 }
+
