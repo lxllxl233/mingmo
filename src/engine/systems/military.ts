@@ -1,4 +1,4 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import { aggregateModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
 import type { ArmyState, GameState } from '../state/types';
@@ -44,10 +44,14 @@ function recordAttrition(state: GameState, tag: string, losses: number): void {
 
 function attackValue(army: ArmyState, content: ContentIndex, modifiers: Record<string, number>, corruption: number): number {
   const c = army.composition;
+  const cavalryMultiplier = 1 + (modifiers['cavalry_attack_pct'] ?? 0) / 100;
+  const artilleryMultiplier = 1 + (modifiers['artillery_attack_pct'] ?? 0) / 100;
+  const navalMultiplier = 1 + (modifiers['naval_attack_pct'] ?? 0) / 100;
   const base = c.infantry * content.balance.military.baseAttack
     + c.firearm * content.balance.military.firearmAttack
-    + c.cavalry * content.balance.military.cavalryAttack
-    + c.artillery * content.balance.military.artillerySiege;
+    + c.cavalry * content.balance.military.cavalryAttack * cavalryMultiplier
+    + c.artillery * content.balance.military.artillerySiege * artilleryMultiplier
+    + c.naval * content.balance.military.baseAttack * 0.5 * navalMultiplier;
   const quality = (army.training / 100) * (army.equipment / 100);
   const general = army.general ? content.generals.get(army.general) : undefined;
   const command = 1 + (general?.attack ?? 0) * 0.015;
@@ -65,18 +69,24 @@ function defenseValue(
   modifiers: Record<string, number>,
   terrain: keyof typeof content.balance.military.terrainDefense,
   corruption: number,
+  isFort: boolean,
 ): number {
   const c = army.composition;
+  const cavalryMultiplier = 1 + (modifiers['cavalry_attack_pct'] ?? 0) / 200;
+  const artilleryMultiplier = 1 + (modifiers['artillery_attack_pct'] ?? 0) / 200;
+  const navalMultiplier = 1 + (modifiers['naval_attack_pct'] ?? 0) / 100;
   const base = c.infantry * content.balance.military.baseDefense
     + c.firearm * content.balance.military.baseDefense * 1.2
-    + c.cavalry * content.balance.military.baseDefense * 0.8
-    + c.artillery * content.balance.military.baseDefense * 0.6;
+    + c.cavalry * content.balance.military.baseDefense * 0.8 * cavalryMultiplier
+    + c.artillery * content.balance.military.baseDefense * 0.6 * artilleryMultiplier
+    + c.naval * content.balance.military.baseDefense * 0.5 * navalMultiplier;
   const quality = (army.training / 100) * (army.equipment / 100);
   const terrainBonus = 1 + (content.balance.military.terrainDefense[terrain] ?? 0);
+  const fortBonus = isFort ? 1 + (modifiers['fort_defense_pct'] ?? 0) / 100 : 1;
   const general = army.general ? content.generals.get(army.general) : undefined;
   const command = 1 + (general?.defense ?? 0) * 0.015;
   const traits = generalTraitBonus(general?.traits ?? []);
-  return base * quality * terrainBonus * command
+  return base * quality * terrainBonus * fortBonus * command
     * (1 + ((modifiers['army_defense_pct'] ?? 0) + traits.defensePct) / 100)
     * (1 + clamp(modifiers['discipline_pct'] ?? 0, -50, 100) / 100 * 0.6)
     * (1 - clamp(corruption, 0, 100) / 100 * 0.15)
@@ -96,6 +106,8 @@ function movementFactor(
   let factor = 1 + Math.min(0.15, nation.completedTechs.length * 0.004);
   const modifiers = aggregateModifiers(nation, content);
   factor *= 1 + (modifiers['movement_speed_pct'] ?? 0) / 100;
+  const template = content.armyTemplates.get(army.templateId);
+  factor *= 1 + ((template?.movement ?? 3) - 3) * 0.03;
   if ((terrain === 'steppe' || terrain === 'plains' || terrain === 'desert') && cavalryShare > 0.3) {
     factor *= 1.16;
   }
@@ -208,15 +220,17 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
       const nation = state.countries[tag];
       const mods = nation ? aggregateModifiers(nation, content) : {};
       if (nation) {
-        mods['army_attack_pct'] = (mods['army_attack_pct'] ?? 0) + crisisCombatPenalty(nation);
-        mods['army_defense_pct'] = (mods['army_defense_pct'] ?? 0) + crisisCombatPenalty(nation);
+        mods['army_attack_pct'] = (mods['army_attack_pct'] ?? 0) + crisisCombatPenalty(nation)
+          + (nation.armyLoyalty - 50) / 10;
+        mods['army_defense_pct'] = (mods['army_defense_pct'] ?? 0) + crisisCombatPenalty(nation)
+          + (nation.armyLoyalty - 50) / 10;
       }
       return mods;
     };
     const attackPower = frontAttackers.reduce((sum, army) =>
       sum + attackValue(army, content, modsFor(army.tag), state.countries[army.tag]?.corruption ?? 0), 0);
     const defensePower = frontDefenders.reduce((sum, army) =>
-      sum + defenseValue(army, content, modsFor(army.tag), def.terrain, state.countries[army.tag]?.corruption ?? 0), 0);
+      sum + defenseValue(army, content, modsFor(army.tag), def.terrain, state.countries[army.tag]?.corruption ?? 0, def.isFort), 0);
     const defenderHit = (attackPower / (defensePower + 100)) * 7 * Math.max(0.6, frontAttackers.length / Math.max(1, frontDefenders.length));
     const attackerHit = (defensePower / (attackPower + 100)) * 4.2 * Math.max(0.6, frontDefenders.length / Math.max(1, frontAttackers.length));
     const beforeStrength = new Map<string, number>();
@@ -440,6 +454,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
     if (army.stance === 'battle') continue;
     const nation = state.countries[army.tag];
     if (!nation?.alive) continue;
+    const armyModifiers = aggregateModifiers(nation, content);
     const currentDef = content.provinces.get(army.province);
     if (!currentDef) continue;
     const armyGeneral = army.general ? content.generals.get(army.general) : undefined;
@@ -475,7 +490,7 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
 
     const supplied = isSupplied(state, content, army);
     if (supplied) {
-      army.supply = clamp(army.supply + content.balance.military.supplyRecovery, 0, 100);
+      army.supply = clamp(army.supply + content.balance.military.supplyRecovery + (armyModifiers['supply_limit_add'] ?? 0) * 0.5, 0, 100);
     } else {
       army.supply = clamp(army.supply - content.balance.military.supplyDecay, 0, 100);
       const before = compositionTotal(army);
@@ -484,8 +499,18 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       recordAttrition(state, army.tag, Math.max(0, before - compositionTotal(army)));
     }
     if (army.supply < 20) army.organization = clamp(army.organization - 0.5, 0, 100);
+    const supplyCapacity = content.provinces.get(army.province)?.supplyLimit ?? 0;
+    if (supplyCapacity > 0 && compositionTotal(army) > supplyCapacity * 2) {
+      army.supply = clamp(army.supply - content.balance.military.supplyDecay * 0.5, 0, 100);
+    }
     if (army.supply > 40) {
-      army.organization = clamp(army.organization + 0.25 * (1 + armyTraits.organizationPct / 100), 0, 100);
+      army.organization = clamp(
+        army.organization
+        + 0.25 * (1 + armyTraits.organizationPct / 100)
+        + (armyModifiers['morale_add'] ?? 0) * 0.02,
+        0,
+        100,
+      );
       if (army.movePath.length === 0 && army.stance === 'hold') {
         army.entrenchment = Math.min(5, (army.entrenchment ?? 0) + 0.2);
       }
@@ -550,7 +575,9 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
       const artillery = army.composition.artillery;
       const general = army.general ? content.generals.get(army.general) : undefined;
       const traits = generalTraitBonus(general?.traits ?? []);
-      const siegeSpeed = (8 + artillery / 120) * (1 + traits.siegePct / 100);
+      const siegeSpeed = (8 + artillery / 120)
+        * (1 + traits.siegePct / 100)
+        * (1 + (armyModifiers['siege_speed_pct'] ?? 0) / 100);
       siege.progress += siegeSpeed;
       siege.days += 1;
       if (siege.progress >= currentDef.fortLevel * 100) {

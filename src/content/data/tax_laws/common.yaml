@@ -24,7 +24,7 @@ tax_laws:
     loyalty_drift: -0.5
     influence_shift: 0
     effects:
-      - add_modifier: { manpower_add: 3000 }
+      - add_modifier: { manpower_monthly: 300 }
     ai_weight: 30
   - id: tax_peasants_light
     estate: peasants
@@ -50,7 +50,7 @@ tax_laws:
     loyalty_drift: -2.5
     influence_shift: -5
     effects:
-      - add_modifier: { inflation_add: 8 }
+      - add_modifier: { inflation_monthly: 0.8 }
       - add_modifier: { unrest_monthly: 1.0 }
     ai_weight: 45
   - id: tax_peasants_military_colony
@@ -64,7 +64,7 @@ tax_laws:
     loyalty_drift: -0.3
     influence_shift: 0
     effects:
-      - add_modifier: { manpower_add: 8000, food_output_pct: 5 }
+      - add_modifier: { manpower_monthly: 800, food_output_pct: 5 }
     ai_weight: 35
 
   # ── 士绅 ──────────────────────────────────────────────
@@ -306,7 +306,7 @@ tax_laws:
     loyalty_drift: -0.8
     influence_shift: 0
     effects:
-      - add_modifier: { corruption_add: 0.3 }
+      - add_modifier: { corruption_monthly: 0.3 }
     ai_weight: 30
   - id: tax_officials_honesty_silver
     estate: officials
@@ -319,7 +319,7 @@ tax_laws:
     loyalty_drift: 1.0
     influence_shift: 5
     effects:
-      - add_modifier: { corruption_add: -0.25, tax_efficiency_pct: 6 }
+      - add_modifier: { corruption_monthly: -0.25, tax_efficiency_pct: 6 }
     ai_weight: 45
   - id: tax_officials_meltage
     estate: officials
@@ -395,7 +395,7 @@ tax_laws:
     loyalty_drift: -2.0
     influence_shift: -5
     effects:
-      - add_modifier: { manpower_add: 2000 }
+      - add_modifier: { manpower_monthly: 200 }
     ai_weight: 20
   - id: tax_natives_trade
     estate: custom:natives

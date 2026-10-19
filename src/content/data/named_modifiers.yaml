@@ -4,10 +4,10 @@ named_modifiers:
     modifiers: { trade_efficiency_pct: -8, unrest_monthly: 0.3 }
   - id: war_exhaustion
     name: 战争疲惫
-    modifiers: { stability_monthly: -0.08, manpower_add: -2000 }
+    modifiers: { stability_monthly: -0.08, manpower_monthly: -200 }
   - id: war_damage
     name: 战火
-    modifiers: { devastation_add: 1, unrest_add: 1 }
+    modifiers: { devastation_monthly: 1, unrest_monthly: 1 }
   - id: famine
     name: 饥荒
     modifiers: { food_output_pct: -30, stability_monthly: -0.2 }

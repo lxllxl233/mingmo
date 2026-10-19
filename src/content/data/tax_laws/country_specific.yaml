@@ -39,7 +39,7 @@ tax_laws:
     influence_shift: -15
     incidence: { estate: peasants, factor: 0.3 }
     effects:
-      - add_modifier: { corruption_add: 0.2 }
+      - add_modifier: { corruption_monthly: 0.2 }
     ai_weight: 70
   - id: tax_xi_terror
     country: XI
@@ -95,7 +95,7 @@ tax_laws:
     loyalty_drift: -1.0
     influence_shift: -4
     effects:
-      - add_modifier: { manpower_add: 3000 }
+      - add_modifier: { manpower_monthly: 300 }
     ai_weight: 35
   - id: tax_joseon_tribute
     country: JOSEON

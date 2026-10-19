@@ -1,7 +1,8 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import { isQuarterStart } from '../core/clock';
 import type { GameState } from '../state/types';
 import { countryProvinceList } from './economy';
+import { aggregateModifiers } from '../rules/modifiers';
 
 export function monthlyPoliticalGain(authority: number, stability: number): number {
   return 1 + Math.max(0, Math.min(100, authority)) / 100 + Math.max(0, Math.min(100, stability)) / 200;
@@ -41,8 +42,10 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
 
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
+    const modifiers = aggregateModifiers(nation, content);
     driftFactions(nation);
-    const politicalGain = monthlyPoliticalGain(nation.authority, nation.stability);
+    const politicalGain = monthlyPoliticalGain(nation.authority, nation.stability)
+      + (modifiers['political_power_monthly'] ?? 0);
     nation.politicalPower = clamp(nation.politicalPower + politicalGain, 0, 200);
 
     for (const estate of Object.values(nation.estates)) {
@@ -65,6 +68,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
     if (nation.stability < content.balance.politics.lowStabilityThreshold) {
       nation.authority = clamp(nation.authority - 0.1, 0, 100);
     }
+    nation.authority = clamp(nation.authority + (modifiers['authority_monthly'] ?? 0), 0, 100);
     nation.corruption = clamp(nation.corruption, 0, content.balance.politics.maxCorruption);
 
     let rebellions = 0;
@@ -77,9 +81,17 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
         : 0;
       const stabilityPressure = (100 - nation.stability) * 0.02;
       const devastationPressure = entry.state.devastation * 0.12;
-      const delta = taxPressure + stabilityPressure + devastationPressure - content.balance.economy.unrestDecay;
+      const provinceModifier = entry.state.modifiers.reduce(
+        (sum, modifier) => sum + (modifier.modifiers['unrest_monthly'] ?? 0),
+        0,
+      );
+      const delta = taxPressure + stabilityPressure + devastationPressure - content.balance.economy.unrestDecay
+        + (modifiers['unrest_monthly'] ?? 0)
+        + provinceModifier;
       entry.state.unrest = clamp(entry.state.unrest + delta, 0, 100);
-      const growth = nation.flags['food_shortage'] ? -0.004 : 0.0006;
+      entry.state.devastation = clamp(entry.state.devastation + (modifiers['devastation_monthly'] ?? 0), 0, 100);
+      const growth = (nation.flags['food_shortage'] ? -0.004 : 0.0006)
+        * (1 + (modifiers['pop_growth_pct'] ?? 0) / 100);
       entry.state.population = Math.max(100, Math.round(entry.state.population * (1 + growth)));
       if (entry.state.unrest > content.balance.economy.rebelUnrestThreshold) {
         if (state.day % 90 === 0) {
@@ -93,10 +105,11 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
         }
       }
       const canCollapse = nation.tag === 'MING'
-        ? nation.stability < 45 || nation.arrears > 1_000_000
+        ? nation.stability < 60 || nation.arrears > 500000
         : nation.stability < 25;
+      const rebellionThreshold = nation.tag === 'MING' ? 60 : 75;
       if (entry.state.owner === nation.tag
-        && entry.state.unrest > 75
+        && entry.state.unrest > rebellionThreshold
         && canCollapse) {
         const rebel = rebelTag(state, nation.tag);
         if (rebel) {

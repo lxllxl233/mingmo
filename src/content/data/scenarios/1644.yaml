@@ -1,4 +1,4 @@
-﻿id: "1644"
+id: "1644"
 name: 甲申
 start_date: 1644-01-01
 description: 大顺据关中、大明据北方残局、清在关外、南明未立。三周之内决定天下。
@@ -8,13 +8,13 @@ player_hints:
   - 清入关不是必然，但关外的八旗不会等你。
 playable_tags: [MING, QING, SHUN, XI, ZHENG, MONGOL, JOSEON, JAPAN, TIBET, VOC, RUSSIA]
 region_owners:
-  reg_beizhili: SHUN
+  reg_beizhili: MING
   reg_shandong: MING
   reg_shanxi: SHUN
   reg_henan: SHUN
   reg_shaanxi: SHUN
   reg_hexi: SHUN
-  reg_xuanda: SHUN
+  reg_xuanda: MING
   reg_liaodong: QING
   reg_nanzhili: MING
   reg_zhejiang: MING
@@ -81,7 +81,7 @@ province_overrides:
   chongqing: XI
 country_overrides:
   MING: { stability: 20, treasury: 200000, food: 300000, manpower: 80000, mandate: 35, corruption: 85, authority: 30, army_loyalty: 30 }
-  QING: { stability: 65, treasury: 450000, food: 400000, manpower: 150000, mandate: 50, corruption: 35, authority: 75, army_loyalty: 80 }
+  QING: { stability: 65, treasury: 900000, food: 600000, manpower: 200000, mandate: 50, corruption: 30, authority: 75, army_loyalty: 85 }
   SHUN: { stability: 60, treasury: 350000, food: 300000, manpower: 120000, mandate: 45, corruption: 55, authority: 60, army_loyalty: 55 }
   XI: { stability: 40, treasury: 120000, food: 150000, manpower: 50000, mandate: 25, corruption: 55, authority: 50, army_loyalty: 50 }
   SMING: { stability: 40, treasury: 150000, food: 200000, manpower: 40000, mandate: 60, corruption: 60, authority: 40, army_loyalty: 45 }
@@ -93,13 +93,15 @@ country_overrides:
   VOC: { stability: 65, treasury: 120000, food: 100000, manpower: 10000, mandate: 0, corruption: 20, authority: 70, army_loyalty: 75 }
   RUSSIA: { stability: 60, treasury: 80000, food: 100000, manpower: 30000, mandate: 10, corruption: 30, authority: 60, army_loyalty: 65 }
 armies:
-  - { tag: QING, template: qing_banner, province: shenyang, size: 5 }
-  - { tag: QING, template: qing_banner, province: liaoyang, size: 2 }
-  - { tag: QING, template: qing_banner, province: jinzhou, size: 2 }
-  - { tag: QING, template: qing_banner, province: guangning, size: 2 }
-  - { tag: SHUN, template: shun_rebel, province: beijing, size: 4 }
+  - { tag: QING, template: qing_banner, province: shenyang, size: 6 }
+  - { tag: QING, template: qing_banner, province: liaoyang, size: 3 }
+  - { tag: QING, template: qing_banner, province: jinzhou, size: 3 }
+  - { tag: QING, template: qing_banner, province: guangning, size: 3 }
+  - { tag: QING, template: qing_green, province: shenyang, size: 2 }
+  - { tag: SHUN, template: shun_rebel, province: taiyuan, size: 4 }
   - { tag: SHUN, template: shun_cavalry, province: xian, size: 3 }
   - { tag: SHUN, template: shun_rebel, province: kaifeng, size: 2 }
+  - { tag: MING, template: ming_guard, province: beijing, size: 3 }
   - { tag: MING, template: ming_guard, province: hangzhou, size: 2 }
   - { tag: MING, template: ming_guard, province: wuchang, size: 2 }
   - { tag: MING, template: ming_guard, province: guangzhou, size: 1 }

@@ -1,16 +1,5 @@
 import { ContentError, asArray, asRecord } from './errors';
-
-export const MODIFIER_KEYS = new Set([
-  'stability_add', 'stability_monthly', 'mandate_add', 'corruption_add',
-  'corruption_drift', 'unrest_monthly', 'famine_resistance', 'authority_add',
-  'political_power_monthly', 'tax_efficiency_pct', 'trade_efficiency_pct',
-  'food_output_pct', 'pop_growth_pct', 'manpower_add', 'army_attack_pct',
-  'army_defense_pct', 'cavalry_attack_pct', 'artillery_attack_pct',
-  'siege_speed_pct', 'fort_defense_pct', 'morale_add', 'discipline_pct',
-  'research_speed_pct', 'focus_speed_pct', 'unrest_add', 'devastation_add',
-  'supply_limit_add', 'naval_attack_pct', 'army_upkeep_pct', 'inflation_add',
-  'movement_speed_pct',
-]);
+import { MODIFIER_KEYS } from '../modifierRegistry';
 
 const TRIGGER_KEYS = new Set([
   'all', 'any', 'not', 'date', 'owns', 'controls', 'atWarWith', 'hasFlag',

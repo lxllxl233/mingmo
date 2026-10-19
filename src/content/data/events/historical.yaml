@@ -18,6 +18,7 @@ events:
           - add_treasury: -80000
           - add_stability: 5
           - add_army_loyalty: 5
+          - set_flag: ningyuan_victory
       - id: negotiate
         name: 遣使议和
         tooltip: 暂缓兵戈，但被士林视为示弱。
@@ -76,6 +77,7 @@ events:
           - add_treasury: -100000
           - add_army_loyalty: 8
           - add_stability: -2
+          - set_flag: captured_portuguese_guns
       - id: suppress
         name: 发兵进剿
         tooltip: 耗兵源，稳定受损，但震慑诸军。

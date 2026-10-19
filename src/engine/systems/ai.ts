@@ -1,4 +1,4 @@
-﻿import type { ContentIndex, CountryDef, Tech } from '../../content/types';
+import type { ContentIndex, CountryDef, Tech } from '../../content/types';
 import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { armyStrengthOf } from './economy';
@@ -161,8 +161,17 @@ function manageArmy(state: GameState, content: ContentIndex, tag: string): void 
   const profile = aiProfile(state);
   const provinces = Object.values(state.provinces).filter(province => province.controller === tag).length;
   const atWar = warsOf(state, tag).length > 0;
-  const target = provinces * (atWar ? 350 : 180) * profile.armyTarget;
-  if (armyStrengthOf(state, tag) >= target) return;
+  const target = Math.min(provinces, 120) * (atWar ? 250 : 140) * profile.armyTarget;
+  const current = armyStrengthOf(state, tag);
+  if (current >= target) {
+    if (current > target * 1.5 && nation.treasury < 120000) {
+      const weakest = Object.values(state.armies)
+        .filter(army => army.tag === tag)
+        .sort((a, b) => armyStrength(a) - armyStrength(b))[0];
+      if (weakest) delete state.armies[weakest.id];
+    }
+    return;
+  }
   if ((nation.lastReport?.net ?? 0) < 0 && nation.treasury < 180000) return;
   if (nation.treasury < Math.min(10000, profile.minTreasury * 0.8) || nation.manpower < 2000) return;
   const template = AI_TEMPLATES[tag] ?? 'ming_guard';
@@ -223,8 +232,8 @@ function historicalWarTarget(state: GameState, tag: string): string | null {
   }
   if (state.scenarioId === '1644') {
     if (tag === 'QING') {
-      if (alive('SHUN')) return 'SHUN';
       if (alive('MING')) return 'MING';
+      if (alive('SHUN')) return 'SHUN';
       if (alive('XI')) return 'XI';
       if (alive('SMING')) return 'SMING';
       if (alive('ZHENG')) return 'ZHENG';
@@ -251,16 +260,19 @@ function historicalWarTarget(state: GameState, tag: string): string | null {
 }
 const HISTORICAL_TARGETS: Record<string, Record<string, string[]>> = {
   '1627': {
-    MING: ['QING', 'SHUN', 'XI'], QING: ['MING'], SHUN: ['MING'], XI: ['MING'],
-    MONGOL: ['MING'], TIBET: ['MONGOL'], ZHENG: ['VOC'], VOC: ['ZHENG'],
+    MING: ['QING', 'SHUN', 'XI'], QING: ['MING', 'SHUN', 'MONGOL'], SHUN: ['MING', 'QING'], XI: ['MING', 'SHUN'],
+    MONGOL: ['MING', 'QING'], TIBET: ['MONGOL'], ZHENG: ['VOC', 'QING'], VOC: ['ZHENG'],
+    JAPAN: [], JOSEON: [], RUSSIA: ['MONGOL'],
   },
   '1644': {
-    MING: ['QING', 'SHUN', 'XI'], QING: ['SHUN', 'MING', 'XI'], SHUN: ['MING', 'QING'],
-    XI: ['MING'], MONGOL: ['QING'], ZHENG: ['VOC', 'QING'], VOC: ['ZHENG'],
+    MING: ['QING', 'SHUN', 'XI'], QING: ['MING', 'SHUN', 'XI', 'SMING', 'ZHENG', 'MONGOL'], SHUN: ['MING', 'QING', 'SMING'],
+    XI: ['MING', 'SHUN', 'QING'], MONGOL: ['QING', 'MING'], ZHENG: ['VOC', 'QING', 'SMING'], VOC: ['ZHENG'],
+    SMING: ['QING', 'SHUN', 'XI'], JAPAN: [], JOSEON: [], TIBET: ['MONGOL'], RUSSIA: ['MONGOL'],
   },
   '1650': {
-    QING: ['SMING', 'ZHENG'], SMING: ['QING'], ZHENG: ['QING', 'VOC'],
-    MONGOL: ['QING'], TIBET: ['QING'], VOC: ['ZHENG'],
+    QING: ['SMING', 'ZHENG', 'XI'], SMING: ['QING', 'XI'], ZHENG: ['QING', 'VOC'],
+    MONGOL: ['QING'], TIBET: ['QING', 'MONGOL'], VOC: ['ZHENG'], RUSSIA: ['MONGOL'],
+    JAPAN: [], JOSEON: [],
   },
 };
 
@@ -275,11 +287,10 @@ function historicalTargets(state: GameState, tag: string): string[] | null {
 
 function canUseHistoricalTarget(state: GameState, tag: string, target: string): boolean {
   const allowed = historicalTargets(state, tag);
-  if (!allowed) return false;
-  if (!allowed.includes(target)) return false;
+  if (allowed && !allowed.includes(target)) return false;
   const overlord = state.vassals[target];
   if (overlord && overlord !== tag) return false;
-  const cap = HISTORICAL_EXPANSION_CAP[tag] ?? 12;
+  const cap = HISTORICAL_EXPANSION_CAP[tag] ?? 480;
   const owned = Object.values(state.provinces).filter(province => province.owner === tag).length;
   return owned < cap;
 }
@@ -517,6 +528,58 @@ function manageRebelGrowth(state: GameState, content: ContentIndex, tag: string)
   }
 }
 
+function manageInvestments(state: GameState, content: ContentIndex, tag: string): void {
+  const nation = state.countries[tag];
+  if (!nation?.alive) return;
+  const report = nation.lastReport;
+  const monthlyExpense = report?.expense ?? 0;
+  const atWar = warsOf(state, tag).length > 0;
+  const reserve = Math.max(200000, monthlyExpense * (atWar ? 12 : 8));
+  if (nation.treasury <= reserve) return;
+
+  const armies = Object.values(state.armies)
+    .filter(army => army.tag === tag && (army.training < 80 || army.equipment < 80))
+    .sort((a, b) => armyStrength(b) - armyStrength(a));
+  for (const army of armies.slice(0, 2)) {
+    const cost = Math.min(20000, Math.max(5000, (nation.treasury - reserve) * 0.2));
+    if (nation.treasury - cost < reserve) break;
+    nation.treasury -= cost;
+    army.training = Math.min(100, army.training + 3);
+    army.equipment = Math.min(100, army.equipment + 3);
+  }
+
+  const unrest = Object.values(state.provinces)
+    .filter(province => province.controller === tag && province.unrest > 35)
+    .sort((a, b) => b.unrest - a.unrest)[0];
+  if (unrest && nation.treasury - reserve > 15000) {
+    nation.treasury -= 15000;
+    unrest.unrest = Math.max(0, unrest.unrest - 8);
+  }
+
+  if (nation.corruption > 45 && nation.treasury - reserve > 25000) {
+    nation.treasury -= 25000;
+    nation.corruption = Math.max(0, nation.corruption - 1.5);
+  }
+
+  const excess = nation.treasury - reserve;
+  if (excess > 100000) {
+    const spend = excess * 0.2;
+    nation.treasury -= spend;
+    nation.stability = Math.min(100, nation.stability + 0.15);
+    nation.corruption = Math.max(0, nation.corruption - 0.15);
+  }
+
+  if (state.day % 365 === 0 && nation.treasury > reserve * 3) {
+    state.log.push({
+      day: state.day,
+      category: 'economy',
+      country: tag,
+      text: `${content.countries.get(tag)?.name ?? tag} 将库银投入军备、赈济与吏治`,
+      severity: 'info',
+    });
+  }
+}
+
 export function runMonthlyAi(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive || (!state.spectator && nation.tag === state.playerTag)) continue;
@@ -525,6 +588,7 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageTax(state, content, nation.tag);
     manageEconomy(state, content, nation.tag);
     manageArmy(state, content, nation.tag);
+    manageInvestments(state, content, nation.tag);
     manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);
     manageWar(state, content, nation.tag);

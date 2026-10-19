@@ -1,15 +1,15 @@
-﻿import type { ContentIndex } from '../content/types';
+import type { ContentIndex } from '../content/types';
 import { LAST_DAY_INDEX, isMonthStart, isQuarterStart, isYearStart } from './core/clock';
 import { advanceArmies, cleanupEmptyArmies, replenishArmies } from './systems/military';
 import { advanceCoreIntegration } from './systems/core';
 import { advanceCrisis } from './systems/crisis';
+import { maybeFoundSouthernMing } from './systems/southernMing';
 import { advanceTraining } from './systems/training';
 import { advanceFocus } from './systems/focus';
 import { advanceResearch } from './systems/research';
 import { advanceTaxReforms } from './systems/tax';
 import { processEvents } from './systems/events';
 import { runMonthlyEconomy } from './systems/economy';
-import { applyHistoricalTimeline } from './systems/history';
 import { runMonthlyPolitics } from './systems/politics';
 import { runMonthlyAi } from './systems/ai';
 import { evaluateVictory } from './victory';
@@ -33,12 +33,18 @@ function updateTimedModifiers(state: GameState): void {
 
 function updateWarExhaustion(state: GameState): void {
   for (const war of state.wars) {
-    war.exhaustion[war.attacker] = Math.min(100, (war.exhaustion[war.attacker] ?? 0) + 1.2);
-    war.exhaustion[war.defender] = Math.min(100, (war.exhaustion[war.defender] ?? 0) + 1.2);
-    const attacker = state.countries[war.attacker];
-    const defender = state.countries[war.defender];
-    if (attacker) attacker.warExhaustion = Math.min(100, attacker.warExhaustion + 1.2);
-    if (defender) defender.warExhaustion = Math.min(100, defender.warExhaustion + 1.2);
+    for (const tag of [war.attacker, war.defender]) {
+      const casualtyPressure = Math.min(1.5, (war.casualties[tag] ?? 0) / 20000);
+      war.exhaustion[tag] = Math.min(100, (war.exhaustion[tag] ?? 0) + 1.5 + casualtyPressure);
+    }
+  }
+  for (const nation of Object.values(state.countries)) {
+    if (!nation.alive) continue;
+    const atWar = state.wars.filter(war => war.attacker === nation.tag || war.defender === nation.tag);
+    const target = atWar.length === 0
+      ? Math.max(0, nation.warExhaustion - 2)
+      : Math.max(...atWar.map(war => war.exhaustion[nation.tag] ?? 0));
+    nation.warExhaustion = Math.min(100, target);
   }
 }
 
@@ -80,7 +86,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   processEvents(state, content);
 
   if (isMonthStart(state.day)) {
-    applyHistoricalTimeline(state, content);
+    maybeFoundSouthernMing(state, content);
     runMonthlyEconomy(state, content);
     runMonthlyPolitics(state, content);
     updateWarExhaustion(state);

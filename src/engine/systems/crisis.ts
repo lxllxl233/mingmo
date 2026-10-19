@@ -1,4 +1,4 @@
-﻿import type { ContentIndex } from '../../content/types';
+import type { ContentIndex } from '../../content/types';
 import type { ArmyState, CountryState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 
@@ -29,15 +29,18 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
     const report = nation.lastReport;
-    const fiscal = nation.treasury <= 0
-      && (nation.arrears > 0 || (report?.net ?? 0) < 0);
-    const food = nation.food <= 0;
-    nation.fiscalCrisisDays = fiscal ? Math.min(300, nation.fiscalCrisisDays + 1) : Math.max(0, nation.fiscalCrisisDays - 2);
-    nation.foodCrisisDays = food ? Math.min(300, nation.foodCrisisDays + 1) : Math.max(0, nation.foodCrisisDays - 2);
+    const armyPay = report?.expenseArmy ?? 0;
+    const arrearsMonths = armyPay > 0 ? nation.arrears / armyPay : 0;
+    const insolvent = nation.treasury <= 0 && (nation.arrears > 0 || (report?.net ?? 0) < 0);
+    const chronicDebt = nation.arrears > 0 && arrearsMonths > 6;
+    const fiscal = insolvent || chronicDebt;
+    const food = nation.flags['food_shortage'] === true;
+    nation.fiscalCrisisDays = fiscal ? Math.min(730, nation.fiscalCrisisDays + 1) : Math.max(0, nation.fiscalCrisisDays - 2);
+    nation.foodCrisisDays = food ? Math.min(365, nation.foodCrisisDays + 1) : Math.max(0, nation.foodCrisisDays - 2);
 
     const armies = Object.values(state.armies).filter(army => army.tag === nation.tag);
     if (nation.fiscalCrisisDays > 0) {
-      const pressure = Math.min(1.5, 0.15 + nation.fiscalCrisisDays * 0.012);
+      const pressure = Math.min(2.5, 0.15 + nation.fiscalCrisisDays * 0.012 + arrearsMonths * 0.05);
       for (const army of armies) {
         army.organization = Math.max(0, army.organization - pressure);
         army.supply = Math.max(0, army.supply - pressure * 0.6);
@@ -46,6 +49,14 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
         nation.stability = Math.max(0, nation.stability - 0.08);
         nation.armyLoyalty = Math.max(0, nation.armyLoyalty - 0.06);
         for (const army of armies) crisisArmyLoss(state, army, 0.0008);
+      }
+      if (arrearsMonths > 6) {
+        nation.stability = Math.max(0, nation.stability - 0.05);
+        nation.armyLoyalty = Math.max(0, nation.armyLoyalty - 0.05);
+      }
+      if (arrearsMonths > 12) {
+        nation.stability = Math.max(0, nation.stability - 0.1);
+        nation.armyLoyalty = Math.max(0, nation.armyLoyalty - 0.1);
       }
     }
     if (nation.foodCrisisDays > 0) {
@@ -61,7 +72,7 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
       }
     }
 
-    if (nation.fiscalCrisisDays === 8 || nation.fiscalCrisisDays === 30 || nation.fiscalCrisisDays === 90) {
+    if (nation.fiscalCrisisDays === 8 || nation.fiscalCrisisDays === 30 || nation.fiscalCrisisDays === 90 || nation.fiscalCrisisDays === 180) {
       state.log.push({
         day: state.day,
         category: 'politics',
@@ -70,7 +81,7 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
         severity: 'danger',
       });
     }
-    if (nation.foodCrisisDays === 8 || nation.foodCrisisDays === 30 || nation.foodCrisisDays === 90) {
+    if (nation.foodCrisisDays === 8 || nation.foodCrisisDays === 30 || nation.foodCrisisDays === 90 || nation.foodCrisisDays === 180) {
       state.log.push({
         day: state.day,
         category: 'politics',
@@ -79,7 +90,7 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
         severity: 'danger',
       });
     }
-    if (nation.fiscalCrisisDays >= 365 || nation.foodCrisisDays >= 365) {
+    if (nation.fiscalCrisisDays >= 730 || nation.foodCrisisDays >= 365) {
       nation.alive = false;
       nation.stability = 0;
       nation.armyLoyalty = 0;
@@ -90,11 +101,11 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
         text: `${content.countries.get(nation.tag)?.name ?? nation.tag} 因长期财政/粮食崩溃而瓦解`,
         severity: 'danger',
       });
-      if (nation.tag === state.playerTag) {
+      if (!state.spectator && nation.tag === state.playerTag) {
         state.ended = true;
         state.victory = {
           winner: null,
-          reason: nation.fiscalCrisisDays >= 365 ? '国库崩溃' : '粮荒崩溃',
+          reason: nation.fiscalCrisisDays >= 730 ? '国库崩溃' : '粮荒崩溃',
           score: 0,
           breakdown: {},
         };

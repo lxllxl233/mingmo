@@ -46,7 +46,7 @@ privileges:
       cost: { political_power: 60 }
       effects:
         - add_estate_loyalty: { estate: officials, value: -15 }
-        - add_modifier: { corruption_add: -0.02 }
+        - add_modifier: { corruption_monthly: -0.02 }
     ai_keep: 55
   - id: priv_gentry_corvee_exempt
     estate: gentry

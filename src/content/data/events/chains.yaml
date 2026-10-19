@@ -119,7 +119,7 @@ events:
     chain: QING_chain_entry
     trigger:
       all:
-        - date: { after: 1643-08-01, before: 1643-12-31 }
+        - date: { after: 1643-08-01, before: 1644-02-28 }
         - not_has_flag: qing_succession
     fire_once: true
     options:
@@ -795,7 +795,7 @@ events:
         effect:
           - set_flag: japan_closed
           - add_stability: 8
-          - add_modifier: { trade_efficiency_pct: -8, corruption_drift: -0.02 }
+          - add_modifier: { trade_efficiency_pct: -8, corruption_monthly: -0.02 }
           - trigger_event: { id: JAPAN_e_sakoku_3, delay_days: 60 }
       - id: limited
         name: 有限通商

@@ -17,7 +17,6 @@ import type {
 } from './types';
 import { relationKey } from './types';
 import { applyEffects } from '../rules/effects';
-import { applyHistoricalTimeline } from '../systems/history';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -338,7 +337,6 @@ export function createInitialState(
       if (focus) applyEffects(focus.completionEffect, { state, content, country: nation.tag });
     }
   }
-  applyHistoricalTimeline(state, content);
   return state;
 }
 

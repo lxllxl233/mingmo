@@ -120,7 +120,7 @@ function effectsFor(
         { addCorruption: -scale },
         { addAuthority: scale },
         { addPoliticalPower: 3 + scale * 2 },
-        { addModifier: { corruption_drift: -0.01 * scale } },
+        { addModifier: { corruption_monthly: -0.01 * scale } },
         ...common,
       ];
     case 'economy':
@@ -148,7 +148,7 @@ function effectsFor(
       return [
         { addStability: -scale },
         { addPoliticalPower: 2 + scale },
-        { addModifier: { tax_efficiency_pct: 3 * scale, corruption_drift: -0.01 * scale } },
+        { addModifier: { tax_efficiency_pct: 3 * scale, corruption_monthly: -0.01 * scale } },
         { addEstateLoyalty: { estate: 'gentry', value: -2 * scale } },
         ...common,
       ];
@@ -183,7 +183,7 @@ function decisionEffects(kind: FocusKind, decisionId: string, modifier: Modifier
   const common: Effect[] = [{ setFlag: decisionId }];
   switch (kind) {
     case 'court':
-      return [...common, { addStability: 4 }, { addCorruption: -3 }, { addAuthority: 1 }, { addModifier: { corruption_drift: -0.015 } }];
+      return [...common, { addStability: 4 }, { addCorruption: -3 }, { addAuthority: 1 }, { addModifier: { corruption_monthly: -0.015 } }];
     case 'economy':
       return [...common, { addModifier: { tax_efficiency_pct: 4, food_output_pct: 4 } }, { addEstateLoyalty: { estate: 'peasants', value: -2 } }];
     case 'military':
@@ -191,7 +191,7 @@ function decisionEffects(kind: FocusKind, decisionId: string, modifier: Modifier
     case 'diplomacy':
       return [...common, { addModifier: { trade_efficiency_pct: 5, stability_monthly: 0.02 } }, { addEstateLoyalty: { estate: 'merchants', value: 2 } }];
     case 'reform':
-      return [...common, { addModifier: { tax_efficiency_pct: 5, corruption_drift: -0.02 } }, { addStability: -1 }, { addEstateLoyalty: { estate: 'gentry', value: -3 } }];
+      return [...common, { addModifier: { tax_efficiency_pct: 5, corruption_monthly: -0.02 } }, { addStability: -1 }, { addEstateLoyalty: { estate: 'gentry', value: -3 } }];
     case 'navy':
       return [...common, { addModifier: { naval_attack_pct: 4, trade_efficiency_pct: 3, food_output_pct: 2 } }];
     case 'unique':

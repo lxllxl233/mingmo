@@ -35,9 +35,9 @@ army_templates:
     name: 八旗
     composition: { infantry: 400, firearm: 200, cavalry: 400, artillery: 0, naval: 0 }
     source_estate: nobles
-    upkeep: 1.2
-    training: 80
-    equipment: 70
+    upkeep: 0.9
+    training: 88
+    equipment: 78
     movement: 4
   - id: qing_green
     name: 绿营

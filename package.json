@@ -14,6 +14,11 @@
     "gen:map": "tsx scripts/gen-map.ts",
     "sim": "tsx scripts/sim.ts",
     "validate": "tsx scripts/validate.ts",
+    "audit:content": "tsx scripts/audit-content.ts",
+    "dev:matrix": "tsx scripts/dev/scenario-matrix.ts",
+    "dev:balance": "tsx scripts/dev/balance-report.ts",
+    "dev:country": "tsx scripts/dev/probe-country.ts",
+    "dev:perf": "tsx scripts/dev/perf.ts",
     "smoke:ui": "node scripts/smoke-ui.mjs"
   },
   "dependencies": {

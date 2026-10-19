@@ -1,6 +1,7 @@
-﻿import type { ContentIndex, TaxLaw } from '../../content/types';
+import type { ContentIndex, TaxLaw } from '../../content/types';
 import type { CountryState, GameState, MonthlyReport } from '../state/types';
 import { aggregateModifiers } from '../rules/modifiers';
+import { rngFor } from '../core/rng';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -77,14 +78,23 @@ export function armyStrengthOf(state: GameState, tag: string): number {
 }
 
 export function monthlyArmyPay(state: GameState, content: ContentIndex, tag: string): number {
-  const strength = armyStrengthOf(state, tag);
   const nation = state.countries[tag];
   if (!nation) return 0;
   const modifiers = aggregateModifiers(nation, content);
   const government = content.countries.get(tag)?.government;
   const rebelDiscount = government === 'rebel' ? 0.55 : 1;
   const multiplier = 1 + (modifiers['army_upkeep_pct'] ?? 0) / 100;
-  return strength * content.balance.economy.armyUpkeepPerManMonth * Math.max(0.2, multiplier) * rebelDiscount;
+  let weightedStrength = 0;
+  for (const army of Object.values(state.armies)) {
+    if (army.tag !== tag) continue;
+    const c = army.composition;
+    const strength = c.infantry + c.firearm + c.cavalry + c.artillery + c.naval;
+    const template = content.armyTemplates.get(army.templateId);
+    weightedStrength += strength * (template?.upkeep ?? 1);
+  }
+  const inflationFactor = 1 + nation.inflation / 300;
+  return weightedStrength * content.balance.economy.armyUpkeepPerManMonth
+    * Math.max(0.2, multiplier) * rebelDiscount * inflationFactor;
 }
 
 function lawOf(content: ContentIndex, nation: CountryState, estateKey: string): TaxLaw | undefined {
@@ -214,10 +224,11 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const availableBeforeFood = Math.max(0, totalTax - corruptionLoss - loyaltyCost);
     const foodPurchaseSilver = availableBeforeFood * clamp(nation.foodPurchasePct, 0, 100) / 100;
     const foodOutput = government.food * (1 + clamp(modifiers['food_output_pct'] ?? 0, -80, 100) / 100);
-    const foodPurchased = foodPurchaseSilver / Math.max(0.1, content.balance.economy.grainPrice) * Math.max(0.2, foodOutput);
+    const grainPrice = Math.max(0.1, content.balance.economy.grainPrice * (1 + nation.inflation / 200));
+    const foodPurchased = foodPurchaseSilver / grainPrice * Math.max(0.2, foodOutput);
     const famineResistance = clamp(modifiers['famine_resistance'] ?? 0, 0, 0.8);
     const hoardCap = 500000 + provinces.length * 4000;
-    const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.08 : 0;
+    const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.25 : 0;
     const net = availableBeforeFood - foodPurchaseSilver - armyPay - hoardLoss;
     const expense = corruptionLoss + loyaltyCost + armyPay + foodPurchaseSilver + hoardLoss;
     nation.food += foodPurchased;
@@ -261,7 +272,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       foodByRegion[regionId] = foodPurchased * (regionBase / base);
     }
 
-    nation.manpower += weightedPopulation * content.balance.economy.manpowerRegenRate * government.manpower;
+    nation.manpower = Math.max(0, nation.manpower
+      + weightedPopulation * content.balance.economy.manpowerRegenRate * government.manpower
+      + (modifiers['manpower_monthly'] ?? 0));
     const momentumTrend = (nation.stability - 50) / 240
       + (averageLoyalty - 50) / 420
       - nation.warExhaustion / 260
@@ -283,6 +296,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     nation.corruption = clamp(
       nation.corruption + content.balance.economy.corruptionDrift
       + (modifiers['corruption_monthly'] ?? 0)
+      + (nation.treasury > hoardCap ? 0.05 : 0)
       + ((officials?.loyalty ?? 50) < 30 ? 0.12 : 0)
       - nation.authority / 1000,
       0,
@@ -314,7 +328,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       0,
       100,
     );
-    nation.inflation = clamp(nation.inflation - 0.04, 0, 100);
+    nation.inflation = clamp(nation.inflation - 0.04 + (modifiers['inflation_monthly'] ?? 0), 0, 100);
 
     const arrearsMonths = armyPay > 0 ? nation.arrears / armyPay : 0;
     if (arrearsMonths > 3) {
@@ -330,6 +344,24 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       }
     } else {
       nation.armyLoyalty = clamp(nation.armyLoyalty + 0.1, 0, 100);
+    }
+
+    if (arrearsMonths > 6 && nation.armyLoyalty < 30) {
+      const mutinyRng = rngFor(state.seed, state.day, `mutiny:${nation.tag}`);
+      if (mutinyRng.next() < 0.18) {
+        const mutinous = Object.values(state.armies).find(army => army.tag === nation.tag);
+        if (mutinous) {
+          delete state.armies[mutinous.id];
+          nation.armyLoyalty = clamp(nation.armyLoyalty + 8, 0, 100);
+          state.log.push({
+            day: state.day,
+            category: 'military',
+            country: nation.tag,
+            text: `${content.countries.get(nation.tag)?.name ?? nation.tag} 欠饷 ${arrearsMonths.toFixed(1)} 个月，${mutinous.name} 哗变解散`,
+            severity: 'danger',
+          });
+        }
+      }
     }
 
     const report: MonthlyReport = {
