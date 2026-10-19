@@ -689,7 +689,7 @@ export class MapRenderer {
     const markerScale = markerPixels / Math.max(0.001, scale);
     for (const marker of this.armyMarkers.values()) {
       marker.container.scale.set(markerScale * marker.stackScale);
-      const showLabel = zoomT > 0.24 || marker.container.zIndex >= 10;
+      const showLabel = zoomT > 0.08 || marker.container.zIndex >= 10;
       marker.label.visible = showLabel;
       marker.labelBg.visible = showLabel;
     }
@@ -1167,11 +1167,12 @@ export class MapRenderer {
       const text = new Text({
         text: name,
         style: new TextStyle({
-          fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
+          fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
           fontSize: 38,
-          fontWeight: '700',
-          fill: 0x2e261c,
-          stroke: { color: 0xf7efdf, width: 3.2 },
+          fontWeight: '600',
+          fill: 0x332a20,
+          stroke: { color: 0xf7efdf, width: 1.8 },
+          letterSpacing: 1,
         }),
       });
       text.anchor.set(0.5);
@@ -1194,11 +1195,12 @@ export class MapRenderer {
       const text = new Text({
         text: def.name,
         style: new TextStyle({
-          fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
+          fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
           fontSize: 32,
-          fontWeight: '700',
-          fill: 0x2e261c,
-          stroke: { color: 0xf7efdf, width: 3 },
+          fontWeight: '600',
+          fill: 0x3a3026,
+          stroke: { color: 0xf7efdf, width: 1.5 },
+          letterSpacing: 0.5,
         }),
       });
       text.anchor.set(0.5);
@@ -1280,11 +1282,12 @@ export class MapRenderer {
     factor: number,
     selected: boolean,
   ): void {
+    const curve = this.smoothRoute(points);
     const lengths: number[] = [];
     let totalLength = 0;
-    for (let i = 1; i < points.length; i += 1) {
-      const from = points[i - 1];
-      const to = points[i];
+    for (let i = 1; i < curve.length; i += 1) {
+      const from = curve[i - 1];
+      const to = curve[i];
       if (!from || !to) continue;
       const length = Math.hypot(to.x - from.x, to.y - from.y);
       lengths.push(length);
@@ -1293,9 +1296,9 @@ export class MapRenderer {
     if (totalLength < 0.01) return;
     const widthScale = (selected ? 1.35 : 1.15) * Math.max(0.16, factor);
     let travelled = 0;
-    for (let i = 1; i < points.length; i += 1) {
-      const from = points[i - 1];
-      const to = points[i];
+    for (let i = 1; i < curve.length; i += 1) {
+      const from = curve[i - 1];
+      const to = curve[i];
       const length = lengths[i - 1] ?? 0;
       if (!from || !to || length < 0.001) continue;
       const t0 = travelled / totalLength;
@@ -1339,8 +1342,8 @@ export class MapRenderer {
         .fill({ color: 0xf7edd9, alpha: 0.95 })
         .stroke({ width: 0.035 * widthScale, color: factionColor, alpha: 0.95 });
     }
-    const last = points[points.length - 1];
-    const previous = points[points.length - 2];
+    const last = curve[curve.length - 1];
+    const previous = curve[curve.length - 2];
     if (!last || !previous) return;
     const angle = Math.atan2(last.y - previous.y, last.x - previous.x);
     const length = Math.hypot(last.x - previous.x, last.y - previous.y);
@@ -1362,6 +1365,32 @@ export class MapRenderer {
       baseX - perpendicularX, baseY - perpendicularY,
     ]).fill({ color: factionColor, alpha: 1 })
       .stroke({ width: (selected ? 0.07 : 0.05) * factor, color: selected ? 0xffd27a : 0x1f1c18, alpha: 0.95 });
+  }
+
+  private smoothRoute(points: Array<{ x: number; y: number }>): Array<{ x: number; y: number }> {
+    if (points.length < 3) return points;
+    const result: Array<{ x: number; y: number }> = [];
+    const samples = 8;
+    for (let i = 0; i < points.length - 1; i += 1) {
+      const p0 = points[i - 1] ?? points[i]!;
+      const p1 = points[i]!;
+      const p2 = points[i + 1]!;
+      const p3 = points[i + 2] ?? p2;
+      for (let step = 0; step < samples; step += 1) {
+        const t = step / samples;
+        const t2 = t * t;
+        const t3 = t2 * t;
+        const x = 0.5 * ((2 * p1.x) + (-p0.x + p2.x) * t
+          + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2
+          + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3);
+        const y = 0.5 * ((2 * p1.y) + (-p0.y + p2.y) * t
+          + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2
+          + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3);
+        result.push({ x, y });
+      }
+    }
+    result.push(points[points.length - 1]!);
+    return result;
   }
 
   private positions(ids: string[]): Array<{ x: number; y: number }> {
@@ -1417,8 +1446,8 @@ export class MapRenderer {
       .fill({ color, alpha: 0.95 });
 
     const selection = new Graphics();
-    selection.roundRect(-1.9, -0.98, 3.3, 2.1, 0.3)
-      .stroke({ width: 0.11, color: 0xffd27a, alpha: 1 });
+    selection.roundRect(-1.56, -0.9, 2.98, 1.98, 0.28)
+      .stroke({ width: 0.1, color: 0xffd27a, alpha: 1 });
     selection.visible = false;
 
     const bars = new Graphics();
@@ -1426,22 +1455,22 @@ export class MapRenderer {
     const label = new Text({
       text: '',
       style: new TextStyle({
-        fontFamily: 'serif',
-        fontSize: 48,
+        fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
+        fontSize: 40,
         fontWeight: '700',
-        fill: INK,
-        stroke: { color: PAPER, width: 3.2 },
+        fill: 0x2b2118,
+        stroke: { color: 0xf7edd9, width: 2.2 },
       }),
     });
     label.anchor.set(0.5);
-    label.scale.set(1.1 / 48);
-    label.position.set(0, 0.8);
+    label.scale.set(0.72 / 40);
+    label.position.set(0, 0.72);
     label.resolution = 3;
 
     const labelBg = new Graphics();
-    labelBg.roundRect(-1.28, 0.58, 2.56, 0.44, 0.12)
-      .fill({ color: 0xf7edd9, alpha: 0.94 })
-      .stroke({ width: 0.04, color, alpha: 0.9 });
+    labelBg.roundRect(-1.27, 0.42, 2.54, 0.62, 0.12)
+      .fill({ color: 0xf7edd9, alpha: 0.96 })
+      .stroke({ width: 0.035, color, alpha: 0.9 });
 
     const faction = new Text({
       text: FACTION_MARKS[tag] ?? tag.slice(0, 1),
@@ -1488,16 +1517,15 @@ export class MapRenderer {
     const clampedOrg = Math.max(0, Math.min(1, organization));
     const clampedStrength = Math.max(0, Math.min(1, strength));
     marker.bars.clear();
-    marker.bars.roundRect(-1.77, -0.74, 0.42, 1.22, 0.1)
-      .fill({ color: 0x1f1c18, alpha: 0.9 })
-      .stroke({ width: 0.035, color: 0xf7edd9, alpha: 0.55 });
+    marker.bars.roundRect(-1.43, -0.72, 0.3, 1.2, 0.08)
+      .fill({ color: 0x1f1c18, alpha: 0.92 })
+      .stroke({ width: 0.03, color: 0xf7edd9, alpha: 0.65 });
     const orgHeight = (1.12 * clampedOrg);
     const strengthHeight = (1.12 * clampedStrength);
-    marker.bars.roundRect(-1.7, 0.38 - orgHeight, 0.12, orgHeight, 0.04)
+    marker.bars.roundRect(-1.38, 0.4 - orgHeight, 0.1, orgHeight, 0.03)
       .fill({ color: 0xe8bc42, alpha: 1 });
-    marker.bars.roundRect(-1.53, 0.38 - strengthHeight, 0.12, strengthHeight, 0.04)
+    marker.bars.roundRect(-1.26, 0.4 - strengthHeight, 0.1, strengthHeight, 0.03)
       .fill({ color: 0x62a85c, alpha: 1 });
-    marker.bars.rect(-1.76, -0.72, 0.4, 1.18).stroke({ width: 0.025, color: 0x1f1c18, alpha: 0.6 });
   }
 
   private updateArmies(): void {
@@ -1818,4 +1846,6 @@ function drawFactionGlyph(graphics: Graphics, tag: string, color: number): void 
       .fill({ color, alpha: 0.9 });
   }
 }
+
+
 
