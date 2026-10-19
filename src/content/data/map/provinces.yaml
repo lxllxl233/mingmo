@@ -4519,13 +4519,13 @@ provinces:
       - leizhou_b
       - leizhou_a
   - id: leizhou_a
-    name: 雷州东
+    name: 琼州
     prefecture: pref_leizhou
     region: reg_guangdong
     terrain: jungle
     coastal: true
     river: false
-    is_port: false
+    is_port: true
     fort: false
     fort_level: 0
     population: 201534
@@ -4535,6 +4535,7 @@ provinces:
     supply_limit: 15816
     neighbors:
       - leizhou
+      - leizhou_b
   - id: leizhou_b
     name: 雷州西
     prefecture: pref_leizhou
@@ -4552,6 +4553,7 @@ provinces:
     supply_limit: 17381
     neighbors:
       - leizhou
+      - leizhou_a
       - nanning
       - nanning_a
       - wuzhou
@@ -10295,4 +10297,5 @@ provinces:
       - hejian
       - tianjin
       - tianjin_b
+
 
