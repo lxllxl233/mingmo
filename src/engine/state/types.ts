@@ -287,6 +287,8 @@ export interface GameState {
   vassals: Record<string, string>;
   lastTribute: Record<string, number>;
   relations: Record<string, number>;
+  alliances: Record<string, string[]>;
+  militaryAccess: Record<string, string[]>;
   eventQueue: QueuedEvent[];
   pendingEvents: PendingEvent[];
   firedEvents: Record<string, number>;

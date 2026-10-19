@@ -808,6 +808,9 @@ button:active { transform: translateY(1px); }
 .building-option span { color: var(--ink-soft); font-size: 10px; line-height: 1.4; }
 .building-option:disabled { opacity: .45; }
 
+.diplomacy-actions { display: flex; flex-wrap: wrap; gap: 3px; }
+.diplomacy-actions button { padding: 2px 5px; font-size: 11px; }
+
 .settings-card { width: min(560px, 94vw); }
 .setting-row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
 .setting-row input[type="range"] { width: 100%; accent-color: var(--red); }

@@ -291,6 +291,8 @@ export function createInitialState(
       : { JOSEON: 'QING', NEU: 'QING' },
     lastTribute: {},
     relations,
+    alliances: {},
+    militaryAccess: {},
     eventQueue: scenario.initialEvents.map(eventId => {
       const event = content.events.get(eventId);
       const country = event?.country && event.country !== 'any' ? event.country : playerTag;

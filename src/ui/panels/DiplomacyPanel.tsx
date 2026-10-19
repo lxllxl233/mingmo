@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { relationKey } from '../../engine/state/types';
+import { areAllied, hasMilitaryAccess } from '../../engine/rules/diplomacy';
 import { surrenderTendency, truceDays, warScore } from '../../engine/rules/war';
 import { overlordOf, tributeAmount, vassalsOf } from '../../engine/rules/vassals';
 import { useGameStore } from '../state/store';
@@ -16,11 +17,15 @@ export function DiplomacyPanel() {
   const wars = game.wars.filter(war => war.attacker === player || war.defender === player);
   const vassals = vassalsOf(game, player);
   const overlord = overlordOf(game, player);
-  const others = [...content.countries.values()].filter(country => country.tag !== player);
+  const others = [...content.countries.values()]
+    .filter(country => country.tag !== player && game.countries[country.tag]?.alive);
+  const effectiveTarget = others.some(country => country.tag === target)
+    ? target
+    : (others[0]?.tag ?? target);
   const targetWar = wars.find(war =>
-    (war.attacker === player && war.defender === target)
-    || (war.defender === player && war.attacker === target));
-  const targetTruce = truceDays(game, player, target);
+    (war.attacker === player && war.defender === effectiveTarget)
+    || (war.defender === player && war.attacker === effectiveTarget));
+  const targetTruce = truceDays(game, player, effectiveTarget);
 
   return (
     <div className="panel">
@@ -110,13 +115,17 @@ export function DiplomacyPanel() {
             const truce = truceDays(game, player, country.tag);
             const isVassal = game.vassals[country.tag] === player;
             const isOverlord = game.vassals[player] === country.tag;
-            const status = isVassal ? '藩属' : isOverlord ? '宗主' : atWar ? '交战' : truce > 0 ? `停战 ${truce} 日` : relation < -20 ? '敌意' : relation > 30 ? '友好' : '中立';
+            const allied = areAllied(game, player, country.tag);
+            const access = hasMilitaryAccess(game, player, country.tag);
+            const status = isVassal ? '藩属' : isOverlord ? '宗主' : atWar ? '交战'
+              : allied ? '同盟' : access ? '军通' : truce > 0 ? `停战 ${truce} 日`
+                : relation < -20 ? '敌意' : relation > 30 ? '友好' : '中立';
             return (
               <tr key={country.tag}>
                 <td><span className="faction-dot" style={{ background: country.color }} />{country.name}</td>
                 <td className={relation < -50 ? 'danger' : ''}>{relation}</td>
                 <td>{status}</td>
-                <td>
+                <td className="diplomacy-actions">
                   {atWar ? (
                     <button onClick={() => {
                       const war = wars.find(entry =>
@@ -125,12 +134,25 @@ export function DiplomacyPanel() {
                       if (war) openPeace(war.id);
                     }}>议和</button>
                   ) : (
-                    <button
-                      disabled={truce > 0 || isVassal || isOverlord}
-                      onClick={() => command({ type: 'diplomacy.declareWar', target: country.tag, cb: warGoal })}
-                    >
-                      {isVassal ? '藩属' : isOverlord ? '宗主' : '宣战'}
-                    </button>
+                    <>
+                      <button disabled={relation >= 100} onClick={() => command({ type: 'diplomacy.gift', target: country.tag, amount: 10000 })}>赠礼</button>
+                      {allied ? (
+                        <button onClick={() => command({ type: 'diplomacy.breakAlliance', target: country.tag })}>断盟</button>
+                      ) : (
+                        <button disabled={relation < 50 || truce > 0} onClick={() => command({ type: 'diplomacy.alliance', target: country.tag })}>结盟</button>
+                      )}
+                      {access ? (
+                        <button onClick={() => command({ type: 'diplomacy.revokeAccess', target: country.tag })}>撤通</button>
+                      ) : (
+                        <button disabled={relation < 20} onClick={() => command({ type: 'diplomacy.grantAccess', target: country.tag })}>军通</button>
+                      )}
+                      <button
+                        disabled={truce > 0 || isVassal || isOverlord || allied}
+                        onClick={() => command({ type: 'diplomacy.declareWar', target: country.tag, cb: warGoal })}
+                      >
+                        {isVassal ? '藩属' : isOverlord ? '宗主' : '宣战'}
+                      </button>
+                    </>
                   )}
                 </td>
               </tr>
@@ -140,7 +162,7 @@ export function DiplomacyPanel() {
       </table>
       <h3>宣战目标</h3>
       <div className="panel-actions">
-        <select value={target} onChange={event => setTarget(event.target.value)}>
+        <select value={effectiveTarget} onChange={event => setTarget(event.target.value)}>
           {others.map(country => <option key={country.tag} value={country.tag}>{country.name}</option>)}
         </select>
         <select value={warGoal} onChange={event => setWarGoal(event.target.value)}>
@@ -151,7 +173,7 @@ export function DiplomacyPanel() {
         </select>
         <button
           disabled={Boolean(targetWar) || targetTruce > 0}
-          onClick={() => command({ type: 'diplomacy.declareWar', target, cb: warGoal })}
+          onClick={() => command({ type: 'diplomacy.declareWar', target: effectiveTarget, cb: warGoal })}
         >
           {targetWar ? '正在交战' : targetTruce > 0 ? `停战 ${targetTruce} 日` : '宣战'}
         </button>

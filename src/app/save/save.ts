@@ -75,6 +75,8 @@ export function decodeSave(text: string): GameState {
     if (!parsed.state.vassals) parsed.state.vassals = {};
     if (!parsed.state.lastTribute) parsed.state.lastTribute = {};
   }
+  if (!parsed.state.alliances) parsed.state.alliances = {};
+  if (!parsed.state.militaryAccess) parsed.state.militaryAccess = {};
   for (const army of Object.values(parsed.state.armies)) {
     if (typeof army.templateId !== 'string') army.templateId = '';
     if (typeof army.entrenchment !== 'number') army.entrenchment = 0;

@@ -1,6 +1,7 @@
 import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
 import { relationKey, touchMap } from '../state/types';
+import { alliesOf, areAllied } from './diplomacy';
 
 export type PeaceTerms = 'white' | 'status' | 'demand';
 
@@ -38,7 +39,7 @@ export function truceDays(state: GameState, a: string, b: string): number {
   return Math.max(0, (state.truces[relationKey(a, b)] ?? 0) - state.day);
 }
 
-export function declareWar(
+function createWar(
   state: GameState,
   attacker: string,
   defender: string,
@@ -47,6 +48,7 @@ export function declareWar(
 ): WarState | null {
   if (!content.countries.has(attacker) || !content.countries.has(defender)) return null;
   if (attacker === defender || areAtWar(state, attacker, defender)) return null;
+  if (areAllied(state, attacker, defender)) return null;
   if (state.vassals[defender] === attacker || state.vassals[attacker] === defender) return null;
   if (truceDays(state, attacker, defender) > 0) return null;
   const war: WarState = {
@@ -79,6 +81,23 @@ export function declareWar(
     text: `${attackerName} 对 ${defenderName} 宣战（${goal || '无明确目标'}）`,
     severity: 'warning',
   });
+  return war;
+}
+
+export function declareWar(
+  state: GameState,
+  attacker: string,
+  defender: string,
+  goal: string,
+  content: ContentIndex,
+): WarState | null {
+  const war = createWar(state, attacker, defender, goal, content);
+  if (!war) return null;
+  for (const ally of alliesOf(state, defender)) {
+    if (ally === attacker || areAllied(state, ally, attacker)) continue;
+    if (areAtWar(state, attacker, ally)) continue;
+    createWar(state, attacker, ally, '同盟义务', content);
+  }
   return war;
 }
 

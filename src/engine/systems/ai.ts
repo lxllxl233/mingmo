@@ -10,6 +10,8 @@ import { startCoreIntegration } from './core';
 import { startBuilding } from './buildings';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
+import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
+import { relationKey } from '../state/types';
 import { canMarchThrough } from '../rules/access';
 import { evaluateTrigger } from '../rules/triggers';
 import { isHistoricalFocus } from '../../content/historical';
@@ -156,6 +158,41 @@ function manageEconomy(state: GameState, content: ContentIndex, tag: string): vo
     nation.foodPurchasePct = Math.max(10, nation.foodPurchasePct - 5);
   }
 }
+function manageDiplomacy(state: GameState, content: ContentIndex, tag: string): void {
+  const nation = state.countries[tag];
+  if (!nation?.alive) return;
+  const neighbors = neighborsOf(state, content, tag)
+    .filter(target => target !== tag && state.countries[target]?.alive);
+  if (neighbors.length === 0) return;
+
+  if (alliesOf(state, tag).length < 2) {
+    const friend = neighbors
+      .map(target => ({ target, relation: state.relations[relationKey(tag, target)] ?? 0 }))
+      .filter(entry => entry.relation >= 50 && !areAtWar(state, tag, entry.target) && !areAllied(state, tag, entry.target))
+      .sort((a, b) => b.relation - a.relation)[0];
+    if (friend && addAlliance(state, tag, friend.target)) {
+      state.log.push({
+        day: state.day,
+        category: 'diplomacy',
+        country: tag,
+        text: `与 ${content.countries.get(friend.target)?.name ?? friend.target} 缔结同盟`,
+        severity: 'info',
+      });
+    }
+  }
+
+  if (nation.treasury > 300000) {
+    const target = neighbors
+      .map(id => ({ id, relation: state.relations[relationKey(tag, id)] ?? 0 }))
+      .filter(entry => entry.relation < 20 && !areAtWar(state, tag, entry.id))
+      .sort((a, b) => a.relation - b.relation)[0];
+    if (target) {
+      nation.treasury -= 10000;
+      improveRelation(state, tag, target.id, 10);
+    }
+  }
+}
+
 function manageArmy(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation) return;
@@ -287,6 +324,7 @@ function historicalTargets(state: GameState, tag: string): string[] | null {
 }
 
 function canUseHistoricalTarget(state: GameState, tag: string, target: string): boolean {
+  if (areAllied(state, tag, target)) return false;
   const allowed = historicalTargets(state, tag);
   if (allowed && !allowed.includes(target)) return false;
   const overlord = state.vassals[target];
@@ -608,6 +646,7 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageEconomy(state, content, nation.tag);
     manageArmy(state, content, nation.tag);
     manageInvestments(state, content, nation.tag);
+    manageDiplomacy(state, content, nation.tag);
     manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);
     manageWar(state, content, nation.tag);

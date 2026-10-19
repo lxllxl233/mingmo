@@ -1,8 +1,9 @@
 import type { ContentIndex } from '../content/types';
 import { evaluateTrigger } from './rules/triggers';
 import { applyEffects } from './rules/effects';
-import { declareWar, makePeace } from './rules/war';
+import { areAtWar, declareWar, makePeace } from './rules/war';
 import { demandTribute } from './rules/vassals';
+import { addAlliance, grantMilitaryAccess, improveRelation, removeAlliance, revokeMilitaryAccess } from './rules/diplomacy';
 import type { GameState } from './state/types';
 import { cancelFocus, startFocus } from './systems/focus';
 import { cancelResearch, startResearch } from './systems/research';
@@ -33,6 +34,11 @@ export type Command =
   | { type: 'province.build'; provinceId: string; buildingId: string }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
+  | { type: 'diplomacy.gift'; target: string; amount?: number }
+  | { type: 'diplomacy.alliance'; target: string }
+  | { type: 'diplomacy.breakAlliance'; target: string }
+  | { type: 'diplomacy.grantAccess'; target: string }
+  | { type: 'diplomacy.revokeAccess'; target: string }
   | { type: 'diplomacy.demandTribute'; vassal: string }
   | { type: 'diplomacy.makePeace'; warId: string; terms?: 'white' | 'status' | 'demand'; provinceIds?: string[] }
   | { type: 'diplomacy.rejectPeaceOffer'; offerId: string };
@@ -256,6 +262,78 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     case 'diplomacy.demandTribute': {
       const result = demandTribute(state, content, tag, command.vassal);
       if (!result.ok) throw new CommandError(result.reason);
+      break;
+    }
+    case 'diplomacy.gift': {
+      const nation = state.countries[tag];
+      const target = state.countries[command.target];
+      if (!nation || !target?.alive || command.target === tag) throw new CommandError('无效的赠礼对象');
+      const amount = Math.max(1000, Math.min(100000, Math.round(command.amount ?? 10000)));
+      if (nation.treasury < amount) throw new CommandError('国库不足以赠礼');
+      nation.treasury -= amount;
+      improveRelation(state, tag, command.target, Math.max(3, Math.round(amount / 800)));
+      state.log.push({
+        day: state.day,
+        category: 'diplomacy',
+        country: tag,
+        text: `向 ${content.countries.get(command.target)?.name ?? command.target} 赠礼 ${amount} 两`,
+        severity: 'info',
+      });
+      break;
+    }
+    case 'diplomacy.alliance': {
+      const target = state.countries[command.target];
+      if (!target?.alive || command.target === tag) throw new CommandError('无效的结盟对象');
+      if (areAtWar(state, tag, command.target)) throw new CommandError('交战中无法结盟');
+      if (state.vassals[command.target] === tag || state.vassals[tag] === command.target) {
+        throw new CommandError('宗主与藩属不能结盟');
+      }
+      const relation = state.relations[[tag, command.target].sort().join('|')] ?? 0;
+      if (relation < 50) throw new CommandError('关系不足 50，无法结盟');
+      if (!addAlliance(state, tag, command.target)) throw new CommandError('已经结盟');
+      state.log.push({
+        day: state.day,
+        category: 'diplomacy',
+        country: tag,
+        text: `与 ${content.countries.get(command.target)?.name ?? command.target} 缔结同盟`,
+        severity: 'info',
+      });
+      break;
+    }
+    case 'diplomacy.breakAlliance': {
+      if (!removeAlliance(state, tag, command.target)) throw new CommandError('没有同盟关系');
+      improveRelation(state, tag, command.target, -10);
+      state.log.push({
+        day: state.day,
+        category: 'diplomacy',
+        country: tag,
+        text: `与 ${content.countries.get(command.target)?.name ?? command.target} 解除同盟`,
+        severity: 'warning',
+      });
+      break;
+    }
+    case 'diplomacy.grantAccess': {
+      if (command.target === tag) throw new CommandError('无效的军通对象');
+      if (!grantMilitaryAccess(state, tag, command.target)) throw new CommandError('无法授予军通');
+      improveRelation(state, tag, command.target, 4);
+      state.log.push({
+        day: state.day,
+        category: 'diplomacy',
+        country: tag,
+        text: `允许 ${content.countries.get(command.target)?.name ?? command.target} 军队过境`,
+        severity: 'info',
+      });
+      break;
+    }
+    case 'diplomacy.revokeAccess': {
+      if (!revokeMilitaryAccess(state, tag, command.target)) throw new CommandError('没有军通关系');
+      state.log.push({
+        day: state.day,
+        category: 'diplomacy',
+        country: tag,
+        text: `撤销 ${content.countries.get(command.target)?.name ?? command.target} 的军通`,
+        severity: 'warning',
+      });
       break;
     }
     default: {
