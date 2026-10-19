@@ -14,9 +14,19 @@ export function alliesOf(state: GameState, tag: string): string[] {
   return [...(state.alliances[tag] ?? [])].filter(ally => state.countries[ally]?.alive);
 }
 
+function atWar(state: GameState, a: string, b: string): boolean {
+  return state.wars.some(war =>
+    (war.attacker === a && war.defender === b)
+    || (war.attacker === b && war.defender === a));
+}
+
 export function addAlliance(state: GameState, a: string, b: string): boolean {
   if (a === b || !state.countries[a]?.alive || !state.countries[b]?.alive) return false;
   if (areAllied(state, a, b)) return false;
+  // 交战中或附庸关系未解除时不能独立结盟。
+  if (atWar(state, a, b)) return false;
+  if (state.vassals[a] !== undefined && state.vassals[a] !== b) return false;
+  if (state.vassals[b] !== undefined && state.vassals[b] !== a) return false;
   state.alliances[a] = state.alliances[a] ?? [];
   state.alliances[b] = state.alliances[b] ?? [];
   addUnique(state.alliances[a], b);

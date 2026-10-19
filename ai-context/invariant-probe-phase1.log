@@ -1,0 +1,17 @@
+$ tsx scripts/dev/invariant-probe.ts
+1627/seed42: days=1825 alive=7 armies=39 wars=2 ended=false
+1627/seed7: days=1825 alive=8 armies=35 wars=4 ended=false
+1627/seed99: days=1825 alive=7 armies=33 wars=3 ended=false
+1627/seed123: days=1825 alive=8 armies=38 wars=4 ended=false
+1627/seed2024: days=1825 alive=8 armies=31 wars=1 ended=false
+1644/seed42: days=1825 alive=9 armies=55 wars=3 ended=false
+1644/seed7: days=1825 alive=8 armies=50 wars=2 ended=false
+1644/seed99: days=1825 alive=8 armies=63 wars=4 ended=false
+1644/seed123: days=1825 alive=10 armies=46 wars=3 ended=false
+1644/seed2024: days=1825 alive=9 armies=55 wars=3 ended=false
+1650/seed42: days=1825 alive=6 armies=38 wars=2 ended=false
+1650/seed7: days=1825 alive=7 armies=51 wars=2 ended=false
+1650/seed99: days=1825 alive=8 armies=45 wars=6 ended=false
+1650/seed123: days=1825 alive=8 armies=50 wars=7 ended=false
+1650/seed2024: days=1825 alive=6 armies=41 wars=2 ended=false
+invariant probe: ok (89650088 checks, 703.9s)

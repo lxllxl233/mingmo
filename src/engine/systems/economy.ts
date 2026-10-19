@@ -183,7 +183,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const stabilityMultiplier = stabilityFactor(nation.stability);
     const pie = base * stabilityMultiplier;
     const { shares, unallocated } = normalizedAllocation(content, nation);
+    const grainPrice = Math.max(0.1, content.balance.economy.grainPrice * (1 + nation.inflation / 200));
     let totalTax = 0;
+    let foodIncome = 0;
     const silverByEstate: Record<string, number> = {};
     const foodByEstate: Record<string, number> = {};
     const taxByEstate: Record<string, number> = {};
@@ -212,8 +214,14 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       if (estate.reform) tax *= 0.8;
       tax = Math.max(0, tax);
       estate.collected = tax;
-      totalTax += tax;
-      silverByEstate[estate.key] = tax;
+      // 税制决定征收形态：银 share 计入国库，其余按粮价折算为粮食。
+      const silverShare = clamp(law.silverShare, 0, 1);
+      const silverTax = tax * silverShare;
+      const foodTax = (tax - silverTax) / grainPrice;
+      totalTax += silverTax;
+      foodIncome += foodTax;
+      silverByEstate[estate.key] = silverTax;
+      foodByEstate[estate.key] = foodTax;
       taxByEstate[estate.key] = tax;
     }
 
@@ -237,29 +245,31 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const availableBeforeFood = Math.max(0, totalTax - corruptionLoss - loyaltyCost - pressureCost);
     const foodPurchaseSilver = availableBeforeFood * clamp(nation.foodPurchasePct, 0, 100) / 100;
     const foodOutput = government.food * (1 + clamp(modifiers['food_output_pct'] ?? 0, -80, 100) / 100);
-    const grainPrice = Math.max(0.1, content.balance.economy.grainPrice * (1 + nation.inflation / 200));
     const foodPurchased = foodPurchaseSilver / grainPrice * Math.max(0.2, foodOutput);
     const famineResistance = clamp(modifiers['famine_resistance'] ?? 0, 0, 0.8);
     const hoardCap = 500000 + provinces.length * 4000;
     const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.25 : 0;
     const net = availableBeforeFood - foodPurchaseSilver - armyPay - hoardLoss;
     const expense = corruptionLoss + loyaltyCost + pressureCost + armyPay + foodPurchaseSilver + hoardLoss;
-    nation.food += foodPurchased;
+    nation.food += foodPurchased + foodIncome;
     nation.treasury += net;
 
     for (const estate of Object.values(nation.estates)) {
       const share = shares[estate.key] ?? 0;
-      foodByEstate[estate.key] = foodPurchased * share;
+      foodByEstate[estate.key] = (foodByEstate[estate.key] ?? 0) + foodPurchased * share;
     }
 
+    let repayment = 0;
     if (nation.treasury < 0) {
       const shortfall = -nation.treasury;
       nation.treasury = 0;
       nation.arrears += shortfall;
       nation.inflation = clamp(nation.inflation + Math.min(2, shortfall / 150000), 0, 100);
     } else {
-      const repayment = Math.min(nation.arrears, Math.max(0, net) * 0.15);
+      // 偿债是真实现金流出：减少欠款的同时必须扣减国库。
+      repayment = Math.min(nation.arrears, Math.max(0, net) * 0.15);
       nation.arrears = Math.max(0, nation.arrears - repayment);
+      nation.treasury = Math.max(0, nation.treasury - repayment);
     }
 
     let foodShortage = false;
@@ -380,8 +390,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const report: MonthlyReport = {
       day: state.day,
       income: totalTax,
-      expense,
-      net,
+      expense: expense + repayment,
+      net: net - repayment,
       silverByEstate,
       foodByEstate,
       silverByRegion,
@@ -400,7 +410,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       expenseRelief: 0,
       expenseHoard: hoardLoss,
       expenseCourt: pressureCost,
-      foodIncome: foodPurchased,
+      foodIncome: foodPurchased + foodIncome,
       foodArmy: armyFood,
       foodCivilian: 0,
       arrears: nation.arrears,

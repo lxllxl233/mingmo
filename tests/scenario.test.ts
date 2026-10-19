@@ -45,4 +45,13 @@ describe('scenario consistency', () => {
     expect(zhengProvinces.length).toBeGreaterThan(0);
     expect(state.wars.some(war => war.attacker === 'QING' && war.defender === 'ZHENG')).toBe(true);
   });
+
+  it('places every starting army inside its own controlled territory', () => {
+    for (const scenario of content.scenarios.values()) {
+      const state = createInitialState(content, scenario.id, 42, scenario.playableTags[0] ?? 'MING');
+      for (const army of Object.values(state.armies)) {
+        expect(state.provinces[army.province]?.controller, `${scenario.id} ${army.id}`).toBe(army.tag);
+      }
+    }
+  });
 });

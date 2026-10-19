@@ -3,18 +3,22 @@ import type { GameState } from '../state/types';
 
 let cachedState: GameState | null = null;
 let cachedDay = -1;
+let cachedRevision = -1;
 const cachedModifiers = new Map<string, Modifier>();
 
 export function invalidateBuildingCache(): void {
   cachedState = null;
   cachedDay = -1;
+  cachedRevision = -1;
   cachedModifiers.clear();
 }
 
 export function buildingModifiers(state: GameState, content: ContentIndex, tag: string): Modifier {
-  if (cachedState !== state || cachedDay !== state.day) {
+  // 同日易手（mapRevision 变化）也会影响建筑归属，必须让缓存失效。
+  if (cachedState !== state || cachedDay !== state.day || cachedRevision !== state.mapRevision) {
     cachedState = state;
     cachedDay = state.day;
+    cachedRevision = state.mapRevision;
     cachedModifiers.clear();
   }
   const cached = cachedModifiers.get(tag);

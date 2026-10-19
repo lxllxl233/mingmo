@@ -89,6 +89,7 @@ export function chooseEventOption(
   const event = content.events.get(eventId);
   const option = event?.options.find(entry => entry.id === optionId);
   if (!event || !option) return false;
+  if (!optionAvailable(state, content, pending.country, option)) return false;
   const context = { state, content, country: pending.country, ...(pending.province === undefined ? {} : { province: pending.province }) };
   applyEffects(option.effect, context);
   state.pendingEvents.splice(pendingIndex, 1);
@@ -117,6 +118,9 @@ export function processEvents(state: GameState, content: ContentIndex): void {
   for (const entry of due) {
     const event = content.events.get(entry.eventId);
     if (!event) continue;
+    // 每日扫描可能已经触发过同一事件（fireOnce / 冷却）；队列不得绕过。
+    if (!canFire(state, event, entry.country)) continue;
+    if (!state.countries[entry.country]?.alive) continue;
     if (event.trigger && !evaluateTrigger(event.trigger, { state, content, country: entry.country })) {
       const attempts = (entry.attempts ?? 0) + 1;
       if (attempts < 16) {

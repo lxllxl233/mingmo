@@ -21,6 +21,15 @@ describe('diplomacy', () => {
     expect(declareWar(state, 'MING', 'MONGOL', 'test', content)).not.toBeNull();
   });
 
+  it('rejects alliances with a country it is at war with or bound to as a vassal', () => {
+    const state = createInitialState(content, '1627', 42, 'MING');
+    expect(areAtWar(state, 'MING', 'QING')).toBe(true);
+    expect(addAlliance(state, 'MING', 'QING')).toBe(false);
+    expect(addAlliance(state, 'JOSEON', 'QING')).toBe(false);
+    expect(areAllied(state, 'JOSEON', 'QING')).toBe(false);
+    expect(state.militaryAccess['QING'] ?? []).not.toContain('JOSEON');
+  });
+
   it('calls allies into a defensive war', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
     state.truces = {};

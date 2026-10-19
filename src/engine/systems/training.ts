@@ -126,6 +126,18 @@ export function advanceTraining(state: GameState, content: ContentIndex): void {
       state.training = state.training.filter(entry => entry.id !== item.id);
       continue;
     }
+    // 兵营所在的省份失守后立即取消训练，避免继续为空耗钱粮。
+    if (state.provinces[item.province]?.controller !== item.tag) {
+      state.training = state.training.filter(entry => entry.id !== item.id);
+      state.log.push({
+        day: state.day,
+        category: 'military',
+        country: item.tag,
+        text: `训练营地失守，${content.armyTemplates.get(item.templateId)?.name ?? item.templateId} 训练取消`,
+        severity: 'warning',
+      });
+      continue;
+    }
     const silverDue = item.costSilver / item.totalDays;
     const foodDue = item.costFood / item.totalDays;
     if (nation.treasury < silverDue || nation.food < foodDue) continue;

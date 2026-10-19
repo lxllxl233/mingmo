@@ -19,6 +19,7 @@
     "dev:balance": "tsx scripts/dev/balance-report.ts",
     "dev:country": "tsx scripts/dev/probe-country.ts",
     "dev:perf": "tsx scripts/dev/perf.ts",
+    "dev:invariant": "tsx scripts/dev/invariant-probe.ts",
     "smoke:ui": "node scripts/smoke-ui.mjs"
   },
   "dependencies": {

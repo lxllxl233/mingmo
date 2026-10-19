@@ -15,6 +15,8 @@ export function blockadedPorts(state: GameState, content: ContentIndex, tag: str
     if (!def?.isPort) continue;
     const hostileFleet = Object.values(state.armies).some(army =>
       army.province === province.id
+      // 航渡中的舰队不能封锁出发港。
+      && !army.embarked
       && isFleet(army)
       && army.tag !== tag
       && areAtWar(state, army.tag, tag));

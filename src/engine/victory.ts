@@ -14,8 +14,9 @@ function controlledProvinces(state: GameState, tag: string): string[] {
 export function scoreCountry(state: GameState, content: ContentIndex, tag: string): { total: number; breakdown: Record<string, number> } {
   const country = state.countries[tag];
   if (!country) return { total: 0, breakdown: {} };
+  void content;
   const provinces = controlledProvinces(state, tag);
-  const population = provinces.reduce((sum, id) => sum + (content.provinces.get(id)?.population ?? 0), 0);
+  const population = provinces.reduce((sum, id) => sum + (state.provinces[id]?.population ?? 0), 0);
   const breakdown = {
     疆域: provinces.length * 10,
     人口: Math.round(population / 1_000_000),
@@ -61,7 +62,8 @@ export function evaluateVictory(state: GameState, content: ContentIndex): Victor
             : '存续';
   return {
     winner: best?.tag ?? null,
-    reason: playerReason,
+    // 观战模式没有“玩家结局”，以领先势力的成就作为终局说明。
+    reason: state.spectator ? (best?.reason || '推演结束') : playerReason,
     score: playerScore.total,
     breakdown: playerScore.breakdown,
   };

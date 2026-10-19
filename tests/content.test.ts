@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
+import { normalizeValue } from '../src/content/loader/normalize';
 
 describe('content pipeline', () => {
   const content = loadContentFromDirectory();
@@ -18,6 +19,13 @@ describe('content pipeline', () => {
       expect(estates?.length, country.tag).toBeGreaterThanOrEqual(4);
       expect(content.provinces.has(country.capital), country.tag).toBe(true);
     }
+  });
+
+  it('keeps faction and estate ids opaque while camelizing the field name', () => {
+    expect(normalizeValue({ add_faction_influence: { scholar_gentry: 4 } }))
+      .toEqual({ addFactionInfluence: { scholar_gentry: 4 } });
+    expect(normalizeValue({ estate_loyalty: { eunuch_faction: { gte: 50 } } }))
+      .toEqual({ estateLoyalty: { eunuch_faction: { gte: 50 } } });
   });
 
   it('loads tax laws and privileges', () => {

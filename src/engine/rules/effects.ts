@@ -138,6 +138,7 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
         modifiers: { ...modifier.modifiers },
         daysLeft: effect.addCountryModifier.days,
         source: country,
+        addedDay: state.day,
       });
     }
   } else if ('addProvinceModifier' in effect) {
@@ -150,6 +151,7 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
         modifiers: { ...modifier.modifiers },
         daysLeft: effect.addProvinceModifier.days,
         source: country,
+        addedDay: state.day,
       });
     }
   } else if ('changeCapital' in effect) {

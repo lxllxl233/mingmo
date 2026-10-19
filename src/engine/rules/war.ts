@@ -1,7 +1,7 @@
 import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
 import { relationKey, touchMap } from '../state/types';
-import { alliesOf, areAllied } from './diplomacy';
+import { alliesOf, areAllied, hasMilitaryAccess } from './diplomacy';
 
 export type PeaceTerms = 'white' | 'status' | 'demand';
 
@@ -47,6 +47,7 @@ function createWar(
   content: ContentIndex,
 ): WarState | null {
   if (!content.countries.has(attacker) || !content.countries.has(defender)) return null;
+  if (!state.countries[attacker]?.alive || !state.countries[defender]?.alive) return null;
   if (attacker === defender || areAtWar(state, attacker, defender)) return null;
   if (areAllied(state, attacker, defender)) return null;
   if (state.vassals[defender] === attacker || state.vassals[attacker] === defender) return null;
@@ -101,6 +102,16 @@ export function declareWar(
   return war;
 }
 
+function relocateCapital(state: GameState, tag: string): void {
+  const nation = state.countries[tag];
+  if (!nation || !nation.alive) return;
+  const capital = state.provinces[nation.capital];
+  if (capital && capital.owner === tag && capital.controller === tag) return;
+  const candidate = Object.values(state.provinces).find(province =>
+    province.owner === tag && province.controller === tag);
+  if (candidate) nation.capital = candidate.id;
+}
+
 export function makePeace(
   state: GameState,
   warId: string,
@@ -117,6 +128,7 @@ export function makePeace(
   state.relations[relationKey(war.attacker, war.defender)] = -25;
   state.truces[relationKey(war.attacker, war.defender)] = state.day + 365;
   state.warAlerts = state.warAlerts.filter(alert => alert.warId !== warId);
+  state.peaceOffers = state.peaceOffers.filter(offer => offer.warId !== warId);
   const attackerState = state.countries[war.attacker];
   const defenderState = state.countries[war.defender];
   if (attackerState) {
@@ -131,35 +143,46 @@ export function makePeace(
   let transferred = 0;
   let restored = 0;
   let mapChanged = false;
+  const attackerAlive = state.countries[war.attacker]?.alive ?? false;
+  const defenderAlive = state.countries[war.defender]?.alive ?? false;
   for (const province of Object.values(state.provinces)) {
-    const atWarOccupation =
-      (province.owner === war.attacker && province.controller === war.defender)
-      || (province.owner === war.defender && province.controller === war.attacker);
-    if (!atWarOccupation) continue;
+    const attackerOccupies = province.owner === war.defender && province.controller === war.attacker;
+    const defenderOccupies = province.owner === war.attacker && province.controller === war.defender;
+    if (!attackerOccupies && !defenderOccupies) continue;
     mapChanged = true;
-    if (terms === 'white') {
+    const recipient = attackerOccupies ? war.attacker : war.defender;
+    const recipientAlive = attackerOccupies ? attackerAlive : defenderAlive;
+    const keep = terms !== 'white'
+      && (selectedProvinces === undefined || selectedProvinces.includes(province.id));
+    if (!keep || !recipientAlive) {
       province.controller = province.owner;
+      province.occupation = null;
       delete province.siege;
       restored += 1;
       continue;
     }
-    if (selectedProvinces && !selectedProvinces.includes(province.id)) {
-      province.controller = province.owner;
-      delete province.siege;
-      restored += 1;
-      continue;
-    }
-    if (province.owner === war.attacker && province.controller === war.defender) {
-      province.owner = war.defender;
-      province.controller = war.defender;
-      transferred += 1;
-    } else if (province.owner === war.defender && province.controller === war.attacker) {
-      province.owner = war.attacker;
-      province.controller = war.attacker;
-      transferred += 1;
-    }
+    province.owner = recipient;
+    province.controller = recipient;
+    province.occupation = null;
+    delete province.siege;
+    transferred += 1;
   }
   if (mapChanged) touchMap(state);
+  relocateCapital(state, war.attacker);
+  relocateCapital(state, war.defender);
+  // 清除本场双方在第三方省份留下的围城/占领进度（未攻下的要塞不再残留）。
+  for (const province of Object.values(state.provinces)) {
+    if (province.siege
+      && (province.siege.attacker === war.attacker || province.siege.attacker === war.defender)
+      && !areAtWar(state, province.siege.attacker, province.controller)) {
+      delete province.siege;
+    }
+    if (province.occupation
+      && (province.occupation.country === war.attacker || province.occupation.country === war.defender)
+      && !areAtWar(state, province.occupation.country, province.controller)) {
+      province.occupation = null;
+    }
+  }
 
   let reparations = 0;
   if (terms === 'demand' && score.attacker !== score.defender) {
@@ -197,7 +220,12 @@ export function makePeace(
     for (const army of Object.values(state.armies)) {
       if (army.tag !== tag) continue;
       const province = state.provinces[army.province];
-      if (province && province.controller === tag) continue;
+      if (!province) continue;
+      // 仍可合法驻扎（本国、交战方或已获军通）的军队保持原位；
+      // 和谈后失去通行权的军队撤回，避免被困在敌境。
+      if (province.controller === tag
+        || areAtWar(state, tag, province.controller)
+        || hasMilitaryAccess(state, province.controller, tag)) continue;
       army.province = home;
       army.movePath = [];
       army.moveProgress = 0;
@@ -261,10 +289,7 @@ export function resolveFinishedWars(state: GameState, content: ContentIndex): vo
 
 export function cleanupDefeatedNations(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
-    if (nation.tag === 'NEU') {
-      nation.alive = true;
-      continue;
-    }
+    if (nation.tag === 'NEU') continue;
     if (!nation.alive) {
       for (const [id, army] of Object.entries(state.armies)) {
         if (army.tag === nation.tag) delete state.armies[id];
@@ -309,6 +334,13 @@ export function cleanupDefeatedNations(state: GameState, content: ContentIndex):
     });
   }
 
+  // NEU 是地理兜底势力：只有实际持有省份时才存活，避免死国仍被计为存活。
+  const neu = state.countries.NEU;
+  if (neu) {
+    neu.alive = Object.values(state.provinces).some(province =>
+      province.owner === 'NEU' || province.controller === 'NEU');
+  }
+
   // 兜底：任何省份的 owner/controller 已死亡时，转给存活占领者/邻国/NEU。
   let repaired = false;
   for (const province of Object.values(state.provinces)) {
@@ -333,6 +365,8 @@ export function cleanupDefeatedNations(state: GameState, content: ContentIndex):
     repaired = true;
   }
   if (repaired) touchMap(state);
+  // 清理死国后，本 tick 内仍可能残留“死国参战”的战争；立即结算，保证日末状态一致。
+  resolveFinishedWars(state, content);
 }
 
 
@@ -342,9 +376,12 @@ export function resolveCapitalCapitulation(state: GameState, content: ContentInd
     if (!nation.alive) continue;
     const capital = state.provinces[nation.capital];
     if (!capital || capital.controller === nation.tag) continue;
+    // 只有首都仍属本国、且占领者确为交战国时才算投降，避免第三方或友军驻扎触发灭国。
+    if (capital.owner !== nation.tag) continue;
     if (Object.values(state.armies).some(army => army.tag === nation.tag)) continue;
     const occupier = capital.controller;
     if (!occupier || occupier === 'NEU' || occupier === nation.tag) continue;
+    if (!state.countries[occupier]?.alive || !areAtWar(state, nation.tag, occupier)) continue;
     const owned = Object.values(state.provinces).filter(province => province.owner === nation.tag);
     if (owned.length === 0) continue;
     for (const province of owned) {

@@ -20,12 +20,14 @@ import type { GameState } from './state/types';
 function updateTimedModifiers(state: GameState): void {
   for (const nation of Object.values(state.countries)) {
     nation.timedModifiers = nation.timedModifiers.filter(modifier => {
+      if (modifier.addedDay === state.day) return true;
       modifier.daysLeft -= 1;
       return modifier.daysLeft > 0;
     });
   }
   for (const province of Object.values(state.provinces)) {
     province.modifiers = province.modifiers.filter(modifier => {
+      if (modifier.addedDay === state.day) return true;
       modifier.daysLeft -= 1;
       return modifier.daysLeft > 0;
     });
@@ -70,6 +72,7 @@ function updateAlive(state: GameState, content: ContentIndex): void {
 export function advanceDay(state: GameState, content: ContentIndex): GameState {
   if (state.ended) return state;
   if (state.day >= LAST_DAY_INDEX) {
+    state.victory ??= evaluateVictory(state, content);
     state.ended = true;
     return state;
   }
@@ -107,20 +110,19 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   resolveFinishedWars(state, content);
   cleanupDefeatedNations(state, content);
   const player = state.countries[state.playerTag];
-  if (isYearStart(state.day) || state.day >= LAST_DAY_INDEX || !player?.alive) {
+  if (!state.spectator) {
+    // 胜利条件可能由任意一天的战斗/事件达成，必须每日判定；观战局只跑终局日。
     const result = evaluateVictory(state, content);
-    if (state.spectator) {
-      if (state.day >= LAST_DAY_INDEX) {
-        state.victory = result;
-        state.ended = true;
-      }
-    } else if (state.day >= LAST_DAY_INDEX
+    if (!state.ended && (state.day >= LAST_DAY_INDEX
       || !player?.alive
       || result.reason === '一统天下'
-      || result.reason === '承天受命') {
+      || result.reason === '承天受命')) {
       state.victory = result;
       state.ended = true;
     }
+  } else if (state.day >= LAST_DAY_INDEX) {
+    state.victory = evaluateVictory(state, content);
+    state.ended = true;
   }
   if (state.log.length > 800) state.log.splice(0, state.log.length - 800);
   if (state.day >= LAST_DAY_INDEX && !state.victory) {

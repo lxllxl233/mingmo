@@ -79,6 +79,7 @@ province_overrides:
   quanzhou: ZHENG
   chengdu: XI
   chongqing: XI
+  shanhaiguan: MING
 country_overrides:
   MING: { stability: 20, treasury: 200000, food: 300000, manpower: 80000, mandate: 35, corruption: 85, authority: 30, army_loyalty: 30 }
   QING: { stability: 65, treasury: 900000, food: 600000, manpower: 200000, mandate: 50, corruption: 30, authority: 75, army_loyalty: 85 }
@@ -113,7 +114,7 @@ armies:
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 1 }
   - { tag: ZHENG, template: zheng_navy, province: penghu, size: 1 }
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 2 }
-  - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 1 }
+  - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 1 }
   - { tag: JOSEON, template: joseon_army, province: hanseong, size: 3 }
   - { tag: JOSEON, template: joseon_army, province: pyongyang, size: 1 }
   - { tag: JOSEON, template: joseon_army, province: uiju, size: 1 }

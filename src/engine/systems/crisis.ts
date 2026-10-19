@@ -1,4 +1,5 @@
 import type { ContentIndex } from '../../content/types';
+import { fromDayIndex } from '../core/clock';
 import type { ArmyState, CountryState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { touchMap } from '../state/types';
@@ -37,13 +38,25 @@ function collapseProvinces(state: GameState, content: ContentIndex, nation: Coun
     .filter(province => province.owner === nation.tag || province.controller === nation.tag);
   if (owned.length === 0) return;
   const sming = state.countries['SMING'];
-  if (nation.tag === 'MING' && sming && !sming.alive) {
+  const canFoundSming = nation.tag === 'MING'
+    && sming !== undefined
+    && !sming.alive
+    && state.scenarioId !== '1650'
+    && fromDayIndex(state.day).year >= 1644
+    && (state.spectator || state.playerTag !== 'MING');
+  const southern = canFoundSming
+    ? owned.filter(province => MING_SOUTH.has(content.provinces.get(province.id)?.regionId ?? ''))
+    : [];
+  if (sming && southern.length > 0) {
     sming.alive = true;
-    sming.capital = 'nanjing';
     sming.treasury = Math.max(sming.treasury, 150000);
     sming.food = Math.max(sming.food, 200000);
     sming.manpower = Math.max(sming.manpower, 40000);
     sming.stability = Math.max(sming.stability, 35);
+    const nanjing = state.provinces['nanjing'];
+    sming.capital = nanjing && nanjing.owner === 'MING'
+      ? 'nanjing'
+      : southern[0]!.id;
   }
   for (const province of owned) {
     const def = content.provinces.get(province.id);

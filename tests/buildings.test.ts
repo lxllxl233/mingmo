@@ -3,6 +3,7 @@ import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
 import { advanceDay } from '../src/engine/tick';
 import { buildingModifiers, startBuilding } from '../src/engine/systems/buildings';
+import { touchMap } from '../src/engine/state/types';
 
 const content = loadContentFromDirectory();
 
@@ -24,6 +25,19 @@ describe('province buildings', () => {
     expect(state.provinces[provinceId]?.building).toBeNull();
     const modifiers = buildingModifiers(state, content, 'MING');
     expect(modifiers['food_output_pct'] ?? 0).toBeGreaterThan(0);
+  });
+
+  it('invalidates the cached modifier when a province changes hands the same day', () => {
+    const state = createInitialState(content, '1627', 42, 'MING');
+    const provinceId = state.countries['MING']?.capital ?? 'beijing';
+    const province = state.provinces[provinceId];
+    expect(province).toBeDefined();
+    if (!province) return;
+    province.buildings.push('bld_granary');
+    expect(buildingModifiers(state, content, 'MING')['food_output_pct'] ?? 0).toBeGreaterThan(0);
+    province.controller = 'QING';
+    touchMap(state);
+    expect(buildingModifiers(state, content, 'MING')['food_output_pct'] ?? 0).toBe(0);
   });
 
   it('refuses to build in a province controlled by another country', () => {

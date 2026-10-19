@@ -31,8 +31,9 @@ export function maybeFoundSouthernMing(state: GameState, content: ContentIndex):
   const beijing = state.provinces['beijing'];
   if (beijing && beijing.controller === 'MING') return;
 
+  // 只继承大明自有的南方省份；占领中的第三方领地不随南明建立而转移。
   const southern = Object.values(state.provinces).filter(province => {
-    if (province.controller !== 'MING') return false;
+    if (province.owner !== 'MING' || province.controller !== 'MING') return false;
     const def = content.provinces.get(province.id);
     return def !== undefined && SOUTHERN_REGIONS.has(def.regionId);
   });
@@ -46,7 +47,10 @@ export function maybeFoundSouthernMing(state: GameState, content: ContentIndex):
     if (!province.cores.includes('SMING')) province.cores.push('SMING');
   }
   sming.alive = true;
-  sming.capital = 'nanjing';
+  const nanjing = state.provinces['nanjing'];
+  sming.capital = nanjing && nanjing.owner === 'SMING' && nanjing.controller === 'SMING'
+    ? 'nanjing'
+    : southern[0]!.id;
   touchMap(state);
   sming.treasury = Math.max(sming.treasury, 150000);
   sming.food = Math.max(sming.food, 200000);

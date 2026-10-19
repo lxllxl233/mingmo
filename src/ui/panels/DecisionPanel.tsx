@@ -13,7 +13,7 @@ export function DecisionPanel() {
   const visibleDecisions = decisions.filter(decision =>
     !decision.visible || evaluateTrigger(decision.visible, { state: game, content, country: country.tag }));
   const readyCount = visibleDecisions.filter(decision =>
-    (country.cooldowns[decision.id] ?? 0) <= 0).length;
+    (country.cooldowns[decision.id] ?? 0) <= game.day).length;
   return (
     <div className="panel">
       <h2>决议</h2>
@@ -27,7 +27,7 @@ export function DecisionPanel() {
       </div>
       {decisions.length === 0 && <p className="muted">暂无可用的决议。</p>}
       {decisions.map(decision => {
-        const cooldown = country.cooldowns[decision.id] ?? 0;
+        const cooldown = Math.max(0, (country.cooldowns[decision.id] ?? 0) - game.day);
         const visible = !decision.visible || evaluateTrigger(decision.visible, { state: game, content, country: country.tag });
         const available = !decision.available || evaluateTrigger(decision.available, { state: game, content, country: country.tag });
         const affordable = (decision.cost.treasury ?? 0) <= country.treasury

@@ -30,6 +30,21 @@ describe('save format', () => {
     expect(() => decodeSave(JSON.stringify(parsed))).toThrow(/不兼容/);
   });
 
+  it('repairs non-finite army composition from old saves', () => {
+    const state = createInitialState(content, '1627', 42, 'MING');
+    const army = Object.values(state.armies)[0];
+    if (!army) throw new Error('missing army');
+    (army.composition as { infantry: number }).infantry = Number.NaN;
+    army.maxStrength = Number.NaN;
+    const parsed = JSON.parse(encodeSave(state)) as { version: number; state: typeof state; checksum: string };
+    parsed.version = 1;
+    parsed.checksum = hashState(parsed.state);
+    const loaded = decodeSave(JSON.stringify(parsed));
+    const repaired = Object.values(loaded.armies).find(entry => entry.id === army.id);
+    expect(repaired?.composition.infantry).toBe(0);
+    expect(Number.isFinite(repaired?.maxStrength)).toBe(true);
+  });
+
   it('migrates version 1 saves without army history', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
     for (const army of Object.values(state.armies)) {

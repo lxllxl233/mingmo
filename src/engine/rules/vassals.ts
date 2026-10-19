@@ -56,15 +56,16 @@ export function demandTribute(
     && (relation < -5 || refusalRoll < 22);
   if (refuses) {
     delete state.vassals[vassal];
-    declareWar(state, suzerain, vassal, '拒贡', content);
+    // 停战期或同盟状态可能导致宣战失败，此时不能谎报战争爆发。
+    const war = declareWar(state, suzerain, vassal, '拒贡', content);
     state.log.push({
       day: state.day,
       category: 'diplomacy',
       country: vassal,
-      text: `${content.countries.get(vassal)?.name ?? vassal} 拒绝向 ${content.countries.get(suzerain)?.name ?? suzerain} 上供，战争爆发`,
-      severity: 'warning',
+      text: `${content.countries.get(vassal)?.name ?? vassal} 拒绝向 ${content.countries.get(suzerain)?.name ?? suzerain} 上供${war ? '，战争爆发' : '，藩属关系断绝'}`,
+      severity: war ? 'warning' : 'info',
     });
-    return { ok: true, amount: 0, refused: true, reason: 'refused' };
+    return { ok: true, amount: 0, refused: true, reason: war ? 'refused' : 'independence' };
   }
   if (vassalState.treasury < amount) {
     return { ok: false, amount: 0, refused: false, reason: 'insufficient treasury' };

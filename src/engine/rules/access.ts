@@ -7,7 +7,8 @@ export function canMarchThrough(state: GameState, tag: string, provinceId: strin
   const province = state.provinces[provinceId];
   if (!province) return false;
   if (province.controller === tag) return true;
-  if (areAtWar(state, tag, province.controller) || areAtWar(state, tag, province.owner)) return true;
+  // 通行权取决于实际控制者；仅与 owner 交战不能穿越第三方占领区。
+  if (areAtWar(state, tag, province.controller)) return true;
   return hasMilitaryAccess(state, province.controller, tag);
 }
 

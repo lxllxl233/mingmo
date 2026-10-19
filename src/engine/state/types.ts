@@ -6,6 +6,8 @@ export interface TimedModifier {
   modifiers: Modifier;
   daysLeft: number;
   source: string;
+  /** 添加当天不递减，保证计时修正覆盖完整的 daysLeft 天。旧存档缺省。 */
+  addedDay?: number;
 }
 
 export interface ProvinceState {

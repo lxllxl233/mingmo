@@ -89,20 +89,22 @@ export function uniteLoyalists(state: GameState, tag: string): boolean {
   if (nation.politicalPower < 20 || nation.treasury < 50000) return false;
   const partners = ['ZHENG', 'XI'].filter(partner =>
     state.countries[partner]?.alive && !areAllied(state, tag, partner));
-  if (partners.length === 0) return false;
+  const allied: string[] = [];
+  for (const partner of partners) {
+    // addAlliance 会拒绝交战或附庸对象，只有真正结盟的伙伴才计入。
+    if (addAlliance(state, tag, partner)) allied.push(partner);
+  }
+  if (allied.length === 0) return false;
   nation.politicalPower -= 20;
   nation.treasury -= 50000;
   nation.mandate = clamp(nation.mandate + 3, 0, 100);
   nation.cooldowns[COOLDOWN_KEY] = state.day + 365;
-  for (const partner of partners) {
-    addAlliance(state, tag, partner);
-    improveRelation(state, tag, partner, 25);
-  }
+  for (const partner of allied) improveRelation(state, tag, partner, 25);
   state.log.push({
     day: state.day,
     category: 'diplomacy',
     country: tag,
-    text: `联合抗清：与 ${partners.join('、')} 结盟，正统 +3`,
+    text: `联合抗清：与 ${allied.join('、')} 结盟，正统 +3`,
     severity: 'info',
   });
   return true;

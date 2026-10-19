@@ -89,7 +89,7 @@ function takeDecision(state: GameState, content: ContentIndex, decisionId: strin
   const decision = content.decisions.get(decisionId);
   if (!nation || !decision) throw new CommandError('unknown decision');
   if (decision.country !== nation.tag) throw new CommandError('decision belongs to another country');
-  if ((nation.cooldowns[decision.id] ?? 0) > 0) throw new CommandError('decision on cooldown');
+  if ((nation.cooldowns[decision.id] ?? 0) > state.day) throw new CommandError('decision on cooldown');
   if (decision.visible && !evaluateTrigger(decision.visible, { state, content, country: nation.tag })) {
     throw new CommandError('decision not visible');
   }
@@ -103,7 +103,7 @@ function takeDecision(state: GameState, content: ContentIndex, decisionId: strin
   nation.treasury -= cost.treasury ?? 0;
   nation.politicalPower -= cost.politicalPower ?? 0;
   nation.food -= cost.food ?? 0;
-  nation.cooldowns[decision.id] = decision.cooldownDays;
+  nation.cooldowns[decision.id] = state.day + decision.cooldownDays;
   applyEffects(decision.effect, { state, content, country: nation.tag });
   state.log.push({
     day: state.day,
@@ -403,12 +403,17 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
         throw new CommandError('cannot declare war');
       }
       break;
-    case 'diplomacy.makePeace':
+    case 'diplomacy.makePeace': {
+      const war = state.wars.find(entry => entry.id === command.warId);
+      if (!war || (war.attacker !== tag && war.defender !== tag)) {
+        throw new CommandError('not a belligerent');
+      }
       if (!makePeace(state, command.warId, content, command.terms ?? 'status', command.provinceIds)) {
         throw new CommandError('cannot make peace');
       }
       state.peaceOffers = state.peaceOffers.filter(offer => offer.warId !== command.warId);
       break;
+    }
     case 'diplomacy.rejectPeaceOffer': {
       const offer = state.peaceOffers.find(entry => entry.id === command.offerId);
       if (!offer) throw new CommandError('peace offer not found');

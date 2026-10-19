@@ -107,7 +107,7 @@ armies:
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 2 }
 
   - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 2 }
-  - { tag: MONGOL, template: mongol_cavalry, province: chahar, size: 1 }
+  - { tag: MONGOL, template: mongol_cavalry, province: kulun, size: 1 }
   - { tag: JOSEON, template: joseon_army, province: hanseong, size: 3 }
   - { tag: JOSEON, template: joseon_army, province: pyongyang, size: 1 }
   - { tag: JOSEON, template: joseon_army, province: uiju, size: 1 }

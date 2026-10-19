@@ -15,7 +15,7 @@ import { holdKurultai, leagueCooldown, marriagePact, organizeBanners, raidBorder
 import { isJapanOpen, nagasakiTrade, persecuteChristians, sakokuCooldown, toggleSakoku } from './sakoku';
 import { isJoseonNorth, northernExpedition, sendTribute, submitToQing, tributeCooldown } from './tribute';
 import { setArmyPath, splitArmy } from './military';
-import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
+import { areAtWar, declareWar, makePeace, truceDays, warsOf } from '../rules/war';
 import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
 import { relationKey } from '../state/types';
 import { canMarchThrough } from '../rules/access';
@@ -127,7 +127,7 @@ function manageResearch(state: GameState, content: ContentIndex, tag: string): v
 function manageTax(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation) return;
-  if ((nation.cooldowns['ai-tax'] ?? 0) > 0) return;
+  if ((nation.cooldowns['ai-tax'] ?? 0) > state.day) return;
   const report = nation.lastReport;
   if (report && report.net >= 0 && nation.treasury > 100000) return;
   const candidates: Array<{ estate: string; law: string; score: number }> = [];
@@ -145,7 +145,7 @@ function manageTax(state: GameState, content: ContentIndex, tag: string): void {
   candidates.sort((a, b) => b.score - a.score);
   const best = candidates[0];
   if (best && startTaxReform(state, content, tag, best.estate, best.law, 50)) {
-    nation.cooldowns['ai-tax'] = 180;
+    nation.cooldowns['ai-tax'] = state.day + 180;
   }
 }
 
@@ -422,13 +422,14 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
       strength: Math.max(1, armyStrengthOf(state, target)),
       atWar: areAtWar(state, tag, target),
     }))
-    .filter(entry => entry.relation <= relationLimit && !entry.atWar)
+    .filter(entry => entry.relation <= relationLimit && !entry.atWar && truceDays(state, tag, entry.target) === 0)
     .filter(entry => canUseHistoricalTarget(state, tag, entry.target))
     .filter(entry => ownStrength / entry.strength >= requiredRatio);
   candidates.sort((a, b) => a.strength - b.strength);
   const target = candidates[0];
   if (!target) return;
-  declareWar(state, tag, target.target, '边境争端', content);
+  const war = declareWar(state, tag, target.target, '边境争端', content);
+  if (!war) return;
   nation.ai.lastWarDay = state.day;
   nation.ai.target = target.target;
 }

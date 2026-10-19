@@ -14,7 +14,8 @@ export function tradePostMonthlyIncome(state: GameState, content: ContentIndex, 
   let income = 0;
   for (const portId of nation.tradePosts) {
     const def = content.provinces.get(portId);
-    if (!def?.isPort) continue;
+    // 港口被敌方占领后不再产生海贸收入。
+    if (!def?.isPort || state.provinces[portId]?.controller !== tag) continue;
     income += def.development * 80 + (def.isCoastal ? 1500 : 0);
   }
   return Math.round(income);

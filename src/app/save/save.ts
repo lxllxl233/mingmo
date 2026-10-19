@@ -86,7 +86,11 @@ export function decodeSave(text: string): GameState {
     if (typeof army.encircled !== 'boolean') army.encircled = false;
     if (typeof army.encircledDays !== 'number') army.encircledDays = 0;
     if (army.navalOrigin === undefined) army.navalOrigin = null;
-    if (typeof army.maxStrength !== 'number') {
+    for (const key of ['infantry', 'firearm', 'cavalry', 'artillery', 'naval'] as const) {
+      const value = army.composition[key];
+      if (typeof value !== 'number' || !Number.isFinite(value)) army.composition[key] = 0;
+    }
+    if (typeof army.maxStrength !== 'number' || !Number.isFinite(army.maxStrength)) {
       army.maxStrength = army.composition.infantry + army.composition.firearm
         + army.composition.cavalry + army.composition.artillery + army.composition.naval;
     }
@@ -108,7 +112,8 @@ export function decodeSave(text: string): GameState {
         .reduce((sum, army) => sum + (army.maxStrength || 0), 0);
       const cap = Math.max(10000, strength * 6);
       const value = war.casualties[tag] ?? 0;
-      if (value > cap) war.casualties[tag] = cap;
+      if (!Number.isFinite(value)) war.casualties[tag] = 0;
+      else if (value > cap) war.casualties[tag] = cap;
     }
   }
   return parsed.state;

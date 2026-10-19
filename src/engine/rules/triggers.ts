@@ -78,12 +78,16 @@ export function evaluateTrigger(trigger: Trigger, context: TriggerContext): bool
     return atWar === trigger.isAtWar;
   }
   if ('estateLoyalty' in trigger) {
-    return Object.entries(trigger.estateLoyalty).every(([estate, comparison]) =>
-      cmp(current.estates[estate]?.loyalty ?? 0, comparison));
+    return Object.entries(trigger.estateLoyalty).every(([estate, comparison]) => {
+      const value = current.estates[estate]?.loyalty;
+      return value !== undefined && cmp(value, comparison);
+    });
   }
   if ('estateInfluence' in trigger) {
-    return Object.entries(trigger.estateInfluence).every(([estate, comparison]) =>
-      cmp(current.estates[estate]?.influence ?? 0, comparison));
+    return Object.entries(trigger.estateInfluence).every(([estate, comparison]) => {
+      const value = current.estates[estate]?.influence;
+      return value !== undefined && cmp(value, comparison);
+    });
   }
   if ('taxLaw' in trigger) return current.estates[trigger.taxLaw.estate]?.taxLaw === trigger.taxLaw.is;
   if ('hasPrivilege' in trigger) {

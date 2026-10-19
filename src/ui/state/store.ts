@@ -490,6 +490,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     if (!game || game.warAlerts.length === 0) return;
     const next = { ...game, warAlerts: game.warAlerts.slice(1) };
     const stillPaused = next.warAlerts.length > 0
+      || next.peaceOffers.length > 0
       || next.pendingEvents.some(event => event.country === next.playerTag);
     set({
       game: next,
@@ -590,6 +591,12 @@ export const useGameStore = create<UiStore>((set, get) => ({
         trainingRequest: null,
         selectedProvince: game.countries[game.playerTag]?.capital ?? null,
         selectedArmy: null,
+        armyStack: null,
+        selectedBattle: null,
+        peaceWarId: null,
+        menuOpen: false,
+        settingsOpen: false,
+        helpOpen: false,
         message: `已读取 ${slot}`,
       });
     } catch (error) {
@@ -599,6 +606,11 @@ export const useGameStore = create<UiStore>((set, get) => ({
   },
   reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, peaceWarId: null, message: null, menuOpen: false, settingsOpen: false, helpOpen: false }),
 }));
+
+// E2E 测试钩子：仅开发模式暴露 store，生产构建不会包含。
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  (window as typeof window & { __MINGMO_STORE__?: typeof useGameStore }).__MINGMO_STORE__ = useGameStore;
+}
 
 
 

@@ -1,6 +1,7 @@
 import type { ContentIndex } from '../../content/types';
 import { aggregateCountryModifiers } from '../rules/modifiers';
 import { areAtWar } from '../rules/war';
+import { areAllied } from '../rules/diplomacy';
 import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { touchMap } from '../state/types';
@@ -138,22 +139,7 @@ function friendlyRetreat(state: GameState, content: ContentIndex, army: ArmyStat
 }
 
 function retreatOrDestroy(state: GameState, content: ContentIndex, army: ArmyState, provinceName: string): void {
-  if (army.encircled) {
-    const destroyed = compositionTotal(army);
-    for (const war of state.wars) {
-      if (war.attacker === army.tag || war.defender === army.tag) {
-        war.casualties[army.tag] = (war.casualties[army.tag] ?? 0) + destroyed;
-      }
-    }
-    delete state.armies[army.id];
-    state.log.push({
-      day: state.day,
-      category: 'military',
-      text: `${content.countries.get(army.tag)?.name ?? army.tag} 在 ${provinceName} 被围歼`,
-      severity: 'danger',
-    });
-    return;
-  }
+  // 先尝试退往相邻友方/中立地区；只有在无路可退时才按被围歼灭处理。
   const retreat = friendlyRetreat(state, content, army);
   if (retreat) {
     army.province = retreat;
@@ -161,6 +147,8 @@ function retreatOrDestroy(state: GameState, content: ContentIndex, army: ArmySta
     army.movePath = [];
     army.stance = 'hold';
     army.entrenchment = 0;
+    army.encircled = false;
+    army.encircledDays = 0;
     loseStrength(army, Math.max(0, compositionTotal(army) * 0.1));
   } else {
     const destroyed = compositionTotal(army);
@@ -191,8 +179,24 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
     const province = state.provinces[provinceId];
     const def = content.provinces.get(provinceId);
     if (!province || !def) continue;
-    const defenders = armies.filter(army => army.tag === province.controller);
-    const attackers = armies.filter(army => army.tag !== province.controller && areAtWar(state, army.tag, province.controller));
+    const controllerArmies = armies.filter(army => army.tag === province.controller);
+    let defenders: ArmyState[];
+    let attackers: ArmyState[];
+    if (controllerArmies.length > 0) {
+      // 本地守军及其盟友共同防守。
+      defenders = armies.filter(army => army.tag === province.controller
+        || areAllied(state, army.tag, province.controller));
+      attackers = armies.filter(army => !defenders.includes(army)
+        && defenders.some(defender => areAtWar(state, army.tag, defender.tag)));
+    } else {
+      // 第三方省份无本地守军：以在场第一支军队为守方，与其交战者为攻方。
+      const anchor = armies[0];
+      if (!anchor) continue;
+      defenders = armies.filter(army => army.tag === anchor.tag
+        || areAllied(state, army.tag, anchor.tag));
+      attackers = armies.filter(army => !defenders.includes(army)
+        && defenders.some(defender => areAtWar(state, army.tag, defender.tag)));
+    }
     if (defenders.length === 0 || attackers.length === 0) continue;
     const controller = state.countries[province.controller];
     if (!controller) continue;
@@ -394,6 +398,12 @@ function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): b
   return false;
 }
 
+function hasFriendlyRefuge(state: GameState, content: ContentIndex, army: ArmyState): boolean {
+  const def = content.provinces.get(army.province);
+  if (!def) return false;
+  return def.neighbors.some(id => state.provinces[id]?.controller === army.tag);
+}
+
 function updateEncirclement(state: GameState, content: ContentIndex, army: ArmyState): void {
   if (army.embarked) {
     army.encircled = false;
@@ -401,7 +411,8 @@ function updateEncirclement(state: GameState, content: ContentIndex, army: ArmyS
     return;
   }
   const supplied = isSupplied(state, content, army);
-  if (supplied) {
+  // 与本土相邻的军队仍有退路，不应被判为被围（围城军常驻敌省）。
+  if (supplied || hasFriendlyRefuge(state, content, army)) {
     if (army.encircled) {
       state.log.push({
         day: state.day,
@@ -492,11 +503,35 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
             text: `${army.name} 登陆受阻，撤回 ${content.provinces.get(army.navalOrigin)?.name ?? army.navalOrigin}`,
             severity: 'warning',
           });
+        } else {
+          // 目标不可登陆且出发港已失：转往本国任一控制省份，无处可去则全军覆没。
+          const refuge = Object.values(state.provinces).find(province => province.controller === army.tag);
+          if (!refuge) {
+            delete state.armies[army.id];
+            state.log.push({
+              day: state.day,
+              category: 'military',
+              country: army.tag,
+              text: `${army.name} 登陆受阻且无港可归，全军覆没`,
+              severity: 'danger',
+            });
+            continue;
+          }
+          army.history = [...army.history, army.province].slice(-8);
+          army.province = refuge.id;
+          state.log.push({
+            day: state.day,
+            category: 'military',
+            country: army.tag,
+            text: `${army.name} 登陆受阻且出发港失守，转往 ${content.provinces.get(refuge.id)?.name ?? refuge.id}`,
+            severity: 'warning',
+          });
         }
         army.embarked = false;
         army.navalTarget = null;
         army.navalOrigin = null;
         army.navalProgress = 0;
+        army.movePath = [];
         army.stance = 'hold';
       }
       continue;
@@ -575,13 +610,15 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
     }
     const enemiesHere = Object.values(state.armies).some(other =>
       other.id !== army.id
+      && !other.embarked
       && other.province === army.province
       && other.tag !== army.tag
       && areAtWar(state, army.tag, other.tag));
     if (enemiesHere) continue;
     if (province.controller !== 'NEU' && !areAtWar(state, army.tag, province.controller)) continue;
     if (currentDef.isFort) {
-      const siege = province.siege?.attacker === army.tag
+      // 同一交战方的多支军队共享围城进度，避免互相清零。
+      const siege = province.siege && areAtWar(state, province.siege.attacker, province.controller)
         ? province.siege
         : { attacker: army.tag, progress: 0, days: 0 };
       province.siege = siege;
@@ -617,7 +654,8 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
         state.stats.sieges += 1;
       }
     } else {
-      const occupation = province.occupation?.country === army.tag
+      // 同一交战方的多支军队共享占领进度，避免互相清零。
+      const occupation = province.occupation && areAtWar(state, province.occupation.country, province.controller)
         ? province.occupation
         : { country: army.tag, progress: 0, days: 0 };
       province.occupation = occupation;
@@ -642,6 +680,26 @@ export function splitArmy(state: GameState, _content: ContentIndex, armyId: stri
   const ratio = take / total;
   const id = `army_${state.nextArmyId}`;
   state.nextArmyId += 1;
+  // 按实际存在的兵种分配，取整缺口用最大余数补齐，避免凭空造兵或出现负兵种。
+  const keys = ['infantry', 'firearm', 'cavalry', 'artillery', 'naval'] as const;
+  const splitComposition = { infantry: 0, firearm: 0, cavalry: 0, artillery: 0, naval: 0 };
+  const remainders: Array<{ key: typeof keys[number]; fraction: number; available: number }> = [];
+  let assigned = 0;
+  for (const key of keys) {
+    const exact = army.composition[key] * ratio;
+    const amount = Math.min(army.composition[key], Math.floor(exact));
+    splitComposition[key] = amount;
+    assigned += amount;
+    remainders.push({ key, fraction: exact - Math.floor(exact), available: army.composition[key] - amount });
+  }
+  let remaining = take - assigned;
+  remainders.sort((a, b) => b.fraction - a.fraction);
+  for (const entry of remainders) {
+    if (remaining <= 0) break;
+    const amount = Math.min(entry.available, remaining);
+    splitComposition[entry.key] += amount;
+    remaining -= amount;
+  }
   const split: ArmyState = {
     ...army,
     id,
@@ -654,26 +712,14 @@ export function splitArmy(state: GameState, _content: ContentIndex, armyId: stri
     navalOrigin: null,
     navalProgress: 0,
     siegeMode: 'siege',
-    composition: {
-      infantry: Math.floor(army.composition.infantry * ratio),
-      firearm: Math.floor(army.composition.firearm * ratio),
-      cavalry: Math.floor(army.composition.cavalry * ratio),
-      artillery: Math.floor(army.composition.artillery * ratio),
-      naval: Math.floor(army.composition.naval * ratio),
-    },
+    composition: splitComposition,
     maxStrength: take,
     general: null,
     entrenchment: 0,
     forcedMarch: false,
     stance: 'hold',
   };
-  const splitTotal = compositionTotal(split);
-  if (splitTotal < take) split.composition.infantry += take - splitTotal;
-  army.composition.infantry -= split.composition.infantry;
-  army.composition.firearm -= split.composition.firearm;
-  army.composition.cavalry -= split.composition.cavalry;
-  army.composition.artillery -= split.composition.artillery;
-  army.composition.naval -= split.composition.naval;
+  for (const key of keys) army.composition[key] = Math.max(0, army.composition[key] - splitComposition[key]);
   army.maxStrength = Math.max(1, (army.maxStrength ?? total) - take);
   state.armies[id] = split;
   return id;

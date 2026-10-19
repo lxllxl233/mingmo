@@ -78,6 +78,7 @@ province_overrides:
   shenyang: QING
   liaoyang: QING
   guangning: QING
+  shanhaiguan: MING
   kaizhou: QING
   jinzhou: MING
   jinzhou_a: MING
@@ -106,7 +107,7 @@ armies:
   - { tag: MING, template: guanning_army, province: shanhaiguan, size: 3 }
   - { tag: MING, template: ming_guard, province: xian, size: 2 }
   - { tag: MING, template: ming_guard, province: suzhou, size: 2 }
-  - { tag: MING, template: ming_guard, province: chengdu, size: 1 }
+  - { tag: MING, template: ming_guard, province: wuchang, size: 1 }
   - { tag: MING, template: ming_guard, province: datong, size: 2 }
   - { tag: MING, template: ming_guard, province: taiyuan, size: 1 }
   - { tag: MING, template: ming_guard, province: nanjing, size: 2 }

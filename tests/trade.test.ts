@@ -35,6 +35,21 @@ describe('Zheng maritime network', () => {
     expect(takeDividend(state, content, 'ZHENG')).toBe(false);
   });
 
+  it('stops earning from a trade post once the port is occupied', () => {
+    const state = createInitialState(content, '1650', 42, 'ZHENG');
+    const zheng = state.countries['ZHENG'];
+    if (!zheng) throw new Error('missing ZHENG');
+    zheng.treasury = 300000;
+    zheng.politicalPower = 100;
+    const port = Object.values(state.provinces).find(province =>
+      province.controller === 'ZHENG' && content.provinces.get(province.id)?.isPort);
+    if (!port) throw new Error('missing Zheng port');
+    expect(openTradePost(state, content, 'ZHENG', port.id)).toBe(true);
+    expect(tradePostMonthlyIncome(state, content, 'ZHENG')).toBeGreaterThan(0);
+    port.controller = 'QING';
+    expect(tradePostMonthlyIncome(state, content, 'ZHENG')).toBe(0);
+  });
+
   it('can recruit merchants and rejects other countries', () => {
     const state = createInitialState(content, '1650', 42, 'ZHENG');
     const zheng = state.countries['ZHENG'];
