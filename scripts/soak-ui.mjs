@@ -3,6 +3,7 @@ import { chromium } from 'playwright-core';
 const chrome = process.env.UI_BROWSER ?? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const baseUrl = process.env.JIASHEN_URL ?? 'http://127.0.0.1:5173';
 const minutes = Number(process.env.SOAK_MINUTES ?? 10);
+const speed = process.env.SOAK_SPEED ?? '32x';
 const browser = await chromium.launch({ executablePath: chrome, headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const errors = [];
@@ -16,7 +17,7 @@ await page.getByRole('button', { name: '进入势力选择' }).click();
 await page.waitForTimeout(300);
 await page.getByRole('button', { name: '看海模式' }).click();
 await page.waitForTimeout(800);
-await page.getByRole('button', { name: '32x', exact: true }).click();
+await page.getByRole('button', { name: speed, exact: true }).click();
 
 const started = Date.now();
 const samples = [];
