@@ -59,6 +59,15 @@ export function TopBar() {
     + army.composition.infantry + army.composition.firearm + army.composition.cavalry
     + army.composition.artillery + army.composition.naval, 0);
   const provinces = Object.values(game.provinces).filter(province => province.controller === game.playerTag).length;
+  const controlledProvinces = Object.values(game.provinces).filter(province => province.controller === game.playerTag);
+  const totalPopulation = controlledProvinces.reduce((sum, province) => sum + province.population, 0);
+  const corePopulation = controlledProvinces
+    .filter(province => province.cores.includes(game.playerTag))
+    .reduce((sum, province) => sum + province.population, 0);
+  const nonCorePopulation = totalPopulation - corePopulation;
+  const disloyalPopulation = controlledProvinces
+    .filter(province => province.unrest > 50)
+    .reduce((sum, province) => sum + province.population, 0);
   const provinceGroups = controlledProvinceCount(game, content, game.playerTag);
   const playerTraining = game.training.filter(entry => entry.tag === game.playerTag);
   const trainingSilverDay = playerTraining.reduce((sum, entry) =>
@@ -80,10 +89,11 @@ export function TopBar() {
             <span>本月收入 {number(report?.income ?? 0)} 两</span>
             <span>本月支出 {number(report?.expense ?? 0)} 两</span>
             <span>本月净额 <i className={(report?.net ?? 0) >= 0 ? 'good' : 'danger'}>{number(report?.net ?? 0)}</i> 两</span>
-            <span>军饷 {number(report?.expenseArmy ?? 0)} · 官俸 {number(report?.expenseOfficials ?? 0)} · 宗禄 {number(report?.expenseDynasty ?? 0)}</span>
+            <span>军饷 {number(report?.expenseArmy ?? 0)} · 购粮 {number(report?.foodPurchaseSilver ?? 0)}</span>
+            <span>腐败损耗 {number(report?.corruptionLoss ?? 0)} · 忠诚维稳 {number(report?.loyaltyCost ?? 0)}</span>
             <span>训练日耗 {number(trainingSilverDay)} 两</span>
             <span>欠饷 {number(country?.arrears ?? 0)} 两 · {arrearsMonths.toFixed(1)} 个月</span>
-            <small>收入由各阶级按税法与征收效率计算；支出含军饷、官俸、宗禄与赈济。</small>
+            <small>收入由经济大盘按阶级分配、税法与征收效率计算；税后扣腐败、维稳、军饷与购粮。</small>
           </>
         }
       />
@@ -94,13 +104,27 @@ export function TopBar() {
         tooltip={
           <>
             <b>粮储 {number(country?.food ?? 0)} 石</b>
-            <span>本月粮入 {number(report?.foodIncome ?? 0)} 石</span>
+            <span>本月购粮 {number(report?.foodPurchased ?? 0)} 石</span>
             <span>军队口粮 {number(report?.foodArmy ?? 0)} 石</span>
             <span>民用口粮 {number(report?.foodCivilian ?? 0)} 石</span>
+            <span>购粮支出 {number(report?.foodPurchaseSilver ?? 0)} 两</span>
             <span>训练日耗 {number(trainingFoodDay)} 石</span>
             <span>粮价系数 {content.balance.economy.grainPrice.toFixed(2)}</span>
             <span>控制省份 {provinceGroups} / {content.prefectures.size} · 地区 {provinces} / {content.provinces.size}</span>
             <small>军队规模越大，每月军饷和口粮越高；粮储过低会降低稳定。</small>
+          </>
+        }
+      />
+      <Stat
+        label="人口"
+        value={number(totalPopulation)}
+        tooltip={
+          <>
+            <b>总人口 {Math.round(totalPopulation).toLocaleString()}</b>
+            <span>核心人口 {Math.round(corePopulation).toLocaleString()}</span>
+            <span>非核心人口 {Math.round(nonCorePopulation).toLocaleString()}</span>
+            <span className="danger">不忠诚人口 {Math.round(disloyalPopulation).toLocaleString()}</span>
+            <small>人口与田地共同形成经济大盘；非核心与不忠诚人口提供的财政和兵源更低。</small>
           </>
         }
       />

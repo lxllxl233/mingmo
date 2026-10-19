@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { surrenderTendency, warScore, warsOf } from '../../engine/rules/war';
 import { armyStrengthOf } from '../../engine/systems/economy';
 import { useGameStore } from '../state/store';
@@ -6,17 +7,23 @@ export function WarDock() {
   const game = useGameStore(state => state.game);
   const content = useGameStore(state => state.content);
   const openPanel = useGameStore(state => state.openPanel);
+  const [collapsed, setCollapsed] = useState(false);
   if (!game) return null;
   const wars = warsOf(game, game.playerTag);
 
   return (
-    <section className="war-dock">
+    <section className={`war-dock${collapsed ? ' collapsed' : ''}`}>
       <div className="war-dock-head">
         <b>战争视图</b>
-        <button onClick={() => openPanel('diplomacy')}>外交</button>
+        <div className="war-dock-head-actions">
+          <button onClick={() => setCollapsed(value => !value)}>
+            {collapsed ? '展开' : '收起'}
+          </button>
+          <button onClick={() => openPanel('diplomacy')}>外交</button>
+        </div>
       </div>
-      {wars.length === 0 && <p className="war-dock-empty">当前没有战争。宣战后，这里会持续显示双方伤亡、非战斗减员与投降倾向。</p>}
-      {wars.map(war => {
+      {!collapsed && wars.length === 0 && <p className="war-dock-empty">当前没有战争。宣战后，这里会持续显示双方伤亡、非战斗减员与投降倾向。</p>}
+      {!collapsed && wars.map(war => {
         const enemy = war.attacker === game.playerTag ? war.defender : war.attacker;
         const score = warScore(game, war);
         const mine = war.attacker === game.playerTag ? score.attacker : score.defender;

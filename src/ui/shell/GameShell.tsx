@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { musicForFaction } from '../../app/audio/music';
@@ -16,7 +16,6 @@ import { PeaceModal } from '../panels/PeaceModal';
 import { ArmyListPanel } from '../panels/ArmyListPanel';
 import { EstatesPanel } from '../panels/EstatesPanel';
 import { CorePanel } from '../panels/CorePanel';
-import { BudgetPanel } from '../panels/BudgetPanel';
 import { FocusPanel } from '../panels/FocusPanel';
 import { ResearchPanel } from '../panels/ResearchPanel';
 import { MilitaryPanel } from '../panels/MilitaryPanel';
@@ -34,8 +33,7 @@ const SIDEBAR: Array<{ key: PanelKey; label: string }> = [
   { key: 'focus', label: '国策' },
   { key: 'core', label: '核心' },
   { key: 'research', label: '科研' },
-  { key: 'estates', label: '阶级' },
-  { key: 'budget', label: '财政' },
+  { key: 'estates', label: '分配' },
   { key: 'military', label: '军事' },
   { key: 'diplomacy', label: '外交' },
   { key: 'decisions', label: '决议' },
@@ -146,7 +144,6 @@ export function GameShell() {
           {panel === 'armyList' && <ArmyListPanel />}
           {panel === 'estates' && <EstatesPanel />}
           {panel === 'core' && <CorePanel />}
-          {panel === 'budget' && <BudgetPanel />}
           {panel === 'military' && <MilitaryPanel />}
           {panel === 'diplomacy' && <DiplomacyPanel />}
           {panel === 'decisions' && <DecisionPanel />}

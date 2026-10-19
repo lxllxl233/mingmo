@@ -131,12 +131,10 @@ export function makePeace(
     if (province.owner === war.attacker && province.controller === war.defender) {
       province.owner = war.defender;
       province.controller = war.defender;
-      if (!province.cores.includes(war.defender)) province.cores.push(war.defender);
       transferred += 1;
     } else if (province.owner === war.defender && province.controller === war.attacker) {
       province.owner = war.attacker;
       province.controller = war.attacker;
-      if (!province.cores.includes(war.attacker)) province.cores.push(war.attacker);
       transferred += 1;
     }
   }

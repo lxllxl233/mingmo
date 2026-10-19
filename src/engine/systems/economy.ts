@@ -9,7 +9,9 @@ function clamp(value: number, min: number, max: number): number {
 export function coreResourceFactor(state: GameState, tag: string, provinceId: string): number {
   const province = state.provinces[provinceId];
   if (!province || province.controller !== tag) return 0;
-  return province.cores.includes(tag) ? 1 : 0.15;
+  if (province.cores.includes(tag)) return 1;
+  const mandate = state.countries[tag]?.mandate ?? 50;
+  return 0.05 + Math.max(0, Math.min(100, mandate)) / 100 * 0.25;
 }
 
 function governmentProfile(government: string): {
@@ -82,13 +84,37 @@ export function monthlyArmyPay(state: GameState, content: ContentIndex, tag: str
   return strength * content.balance.economy.armyUpkeepPerManMonth * Math.max(0.2, multiplier);
 }
 
-function estateShare(content: ContentIndex, tag: string, estateKey: string): number {
-  return content.countryEstates.get(tag)?.find(estate => estate.key === estateKey)?.incomeShare ?? 0;
-}
-
 function lawOf(content: ContentIndex, nation: CountryState, estateKey: string): TaxLaw | undefined {
   const estate = nation.estates[estateKey];
   return estate ? content.taxLaws.get(estate.taxLaw) : undefined;
+}
+
+export function minimumAllocationShare(influence: number): number {
+  return Math.min(45, 2 + Math.max(0, influence) * 0.13);
+}
+
+function normalizedAllocation(
+  content: ContentIndex,
+  nation: CountryState,
+): { shares: Record<string, number>; minimums: Record<string, number> } {
+  const configs = content.countryEstates.get(nation.tag) ?? [];
+  const keys = configs.length > 0 ? configs.map(config => config.key) : Object.keys(nation.estates);
+  const raw: Record<string, number> = {};
+  const minimums: Record<string, number> = {};
+  for (const key of keys) {
+    const estate = nation.estates[key];
+    if (!estate) continue;
+    minimums[key] = minimumAllocationShare(estate.influence);
+    raw[key] = Math.max(minimums[key], nation.allocation[key] ?? 100 / Math.max(1, keys.length));
+  }
+  const total = Object.values(raw).reduce((sum, value) => sum + value, 0);
+  const shares: Record<string, number> = {};
+  for (const key of Object.keys(raw)) {
+    const value = total > 0 ? (raw[key]! / total) : 0;
+    shares[key] = value;
+    nation.allocation[key] = Math.round(value * 1000) / 10;
+  }
+  return { shares, minimums };
 }
 
 export function runMonthlyEconomy(state: GameState, content: ContentIndex): void {
@@ -118,18 +144,24 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       baseByRegion[regionId] = (baseByRegion[regionId] ?? 0) + contribution;
     }
 
-    let silverIncome = 0;
-    let foodIncome = 0;
+    const stabilityFactor = 0.55 + clamp(nation.stability, 0, 100) / 220;
+    const pie = base * stabilityFactor;
+    const { shares } = normalizedAllocation(content, nation);
+    let totalTax = 0;
+    let corruptionLoss = 0;
+    let loyaltyCost = 0;
+    let foodNeedFactor = 0;
     const silverByEstate: Record<string, number> = {};
     const foodByEstate: Record<string, number> = {};
+    const taxByEstate: Record<string, number> = {};
 
     for (const estate of Object.values(nation.estates)) {
       const law = lawOf(content, nation, estate.key);
+      const share = shares[estate.key] ?? 0;
       if (!law) continue;
-      const share = estateShare(content, nation.tag, estate.key);
-      const annualIncome = base * share;
-      estate.income = annualIncome;
-      const gross = (annualIncome / 12) * law.rate;
+      const allocatedAnnual = pie * share;
+      estate.income = allocatedAnnual;
+      const gross = (allocatedAnnual / 12) * law.rate;
       const evasion = clamp(
         law.evasionBase
         + (100 - estate.loyalty) / 400
@@ -139,43 +171,44 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
         0.8,
       );
       const efficiency = law.estate === 'merchants' ? tradeEfficiency : 1;
-      let collected = gross
+
+      const collectedBeforeDeductions = gross
         * law.efficiency
         * (1 - evasion)
-        * (1 - nation.corruption / 300)
         * taxEfficiency
         * efficiency;
-      if (estate.loyalty < 30) collected *= 0.5 + estate.loyalty / 60;
-      if (estate.reform) collected *= 0.8;
-      collected = Math.max(0, collected);
-      estate.collected = collected;
-      const silver = collected * law.silverShare;
-      const food = (collected * (1 - law.silverShare)) / content.balance.economy.grainPrice;
-      silverIncome += silver;
-      foodIncome += food;
-      silverByEstate[estate.key] = silver;
-      foodByEstate[estate.key] = food;
+      const corrupt = collectedBeforeDeductions * clamp(nation.corruption / 250, 0, 0.7);
+      const stabilityCost = collectedBeforeDeductions * (1 - estate.loyalty / 100) * 0.24;
+      let tax = collectedBeforeDeductions - corrupt - stabilityCost;
+      if (estate.loyalty < 30) tax *= 0.5 + estate.loyalty / 60;
+      if (estate.reform) tax *= 0.8;
+      tax = Math.max(0, tax);
+      estate.collected = tax;
+      totalTax += tax;
+      corruptionLoss += corrupt;
+      loyaltyCost += stabilityCost;
+      silverByEstate[estate.key] = tax;
+      taxByEstate[estate.key] = tax;
+      foodByEstate[estate.key] = (allocatedAnnual / 12) / Math.max(0.1, content.balance.economy.grainPrice);
+      foodNeedFactor += (nation.estateFoodPlan[estate.key] === 'subsidy'
+        ? 1.15
+        : nation.estateFoodPlan[estate.key] === 'ration' ? 0.8 : 1) * share;
     }
 
     const armyPay = monthlyArmyPay(state, content, nation.tag);
     const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth;
-    const silverByRegion: Record<string, number> = {};
-    const foodByRegion: Record<string, number> = {};
-    for (const [regionId, regionBase] of Object.entries(baseByRegion)) {
-      if (base <= 0) continue;
-      silverByRegion[regionId] = silverIncome * (regionBase / base);
-      foodByRegion[regionId] = foodIncome * (regionBase / base);
-    }
-    const officialsPay = provinces.length * content.balance.economy.officialSalaryPerProvinceMonth;
-    const dynastyEstate = nation.estates['dynasty'];
-    const dynasty = dynastyEstate ? (dynastyEstate.income / 12) * 0.22 : 0;
+    const population = provinces.reduce((sum, entry) => sum + entry.state.population, 0);
+    const civilianFood = population * content.balance.economy.foodPerPersonMonth * foodNeedFactor;
+    const foodNeed = civilianFood + armyFood;
+    const availableForFood = Math.max(0, totalTax - armyPay);
+    const foodPurchaseSilver = availableForFood * clamp(nation.foodPurchasePct, 0, 100) / 100;
+    const foodPurchased = foodPurchaseSilver / Math.max(0.1, content.balance.economy.grainPrice);
+    nation.food += foodPurchased;
+
     const hoardCap = 500000 + provinces.length * 4000;
-    const hoardLoss = nation.treasury > hoardCap
-      ? (nation.treasury - hoardCap) * 0.08
-      : 0;
-    const imperialBurden = nation.tag === 'MING' ? provinces.length * 650 : 0;
-    const expense = armyPay + officialsPay + dynasty + hoardLoss + imperialBurden;
-    const net = silverIncome - expense;
+    const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.08 : 0;
+    const expense = armyPay + hoardLoss;
+    const net = totalTax - armyPay - foodPurchaseSilver - hoardLoss;
     nation.treasury += net;
 
     if (nation.treasury < 0) {
@@ -188,23 +221,35 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       nation.arrears = Math.max(0, nation.arrears - repayment);
     }
 
-    nation.food += foodIncome * government.food;
-    const population = provinces.reduce((sum, entry) => sum + entry.state.population, 0);
-    const civilianFood = population * content.balance.economy.foodPerPersonMonth;
-    const foodNeed = civilianFood + armyFood;
     let foodShortage = false;
     if (nation.food < foodNeed) {
       nation.food = 0;
       foodShortage = true;
-      nation.stability = clamp(nation.stability - 0.8, 0, 100);
+      nation.stability = clamp(nation.stability - 0.9, 0, 100);
     } else {
       nation.food -= foodNeed;
     }
     nation.flags['food_shortage'] = foodShortage;
+    for (const estate of Object.values(nation.estates)) {
+      const plan = nation.estateFoodPlan[estate.key] ?? 'market';
+      if (foodShortage) estate.loyalty = clamp(estate.loyalty - 2, 0, 100);
+      else if (plan === 'subsidy') estate.loyalty = clamp(estate.loyalty + 0.12, 0, 100);
+      else if (plan === 'ration') estate.loyalty = clamp(estate.loyalty - 0.18, 0, 100);
+    }
+
+    const silverByRegion: Record<string, number> = {};
+    const foodByRegion: Record<string, number> = {};
+    for (const [regionId, regionBase] of Object.entries(baseByRegion)) {
+      if (base <= 0) continue;
+      silverByRegion[regionId] = totalTax * (regionBase / base);
+      foodByRegion[regionId] = foodPurchased * (regionBase / base);
+    }
 
     nation.manpower += weightedPopulation * content.balance.economy.manpowerRegenRate * government.manpower;
+    const averageLoyalty = Object.values(nation.estates).reduce((sum, estate) => sum + estate.loyalty, 0)
+      / Math.max(1, Object.values(nation.estates).length);
     const momentumTrend = (nation.stability - 50) / 240
-      + (55 - nation.corruption) / 420
+      + (averageLoyalty - 50) / 420
       - nation.warExhaustion / 260
       - (nation.fiscalCrisisDays > 0 ? 0.04 : 0)
       + (nation.treasury > hoardCap ? -0.03 : nation.treasury > 150000 ? 0.01 : -0.01);
@@ -240,7 +285,11 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       100,
     );
     nation.mandate = clamp(
-      nation.mandate + (nation.stability - 50) / 500 + (modifiers['mandate_monthly'] ?? 0),
+      nation.mandate
+      + (averageLoyalty - 50) / 600
+      + (nation.stability - 50) / 1000
+      - nation.corruption / 1200
+      + (modifiers['mandate_monthly'] ?? 0),
       0,
       100,
     );
@@ -264,20 +313,27 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
 
     const report: MonthlyReport = {
       day: state.day,
-      income: silverIncome,
+      income: totalTax,
       expense,
       net,
       silverByEstate,
       foodByEstate,
       silverByRegion,
       foodByRegion,
+      allocation: { ...shares },
+      taxByEstate,
+      economicPie: pie / 12,
+      corruptionLoss,
+      loyaltyCost,
+      foodPurchaseSilver,
+      foodPurchased,
       expenseArmy: armyPay,
-      expenseOfficials: officialsPay,
-      expenseDynasty: dynasty,
+      expenseOfficials: 0,
+      expenseDynasty: 0,
       expenseRelief: 0,
       expenseHoard: hoardLoss,
-      expenseCourt: imperialBurden,
-      foodIncome,
+      expenseCourt: 0,
+      foodIncome: foodPurchased,
       foodArmy: armyFood,
       foodCivilian: civilianFood,
       arrears: nation.arrears,
@@ -285,7 +341,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     nation.lastReport = report;
     nation.monthlyHistory.push(report);
     if (nation.monthlyHistory.length > 24) nation.monthlyHistory.shift();
-    state.stats.taxesRaised += silverIncome;
+    state.stats.taxesRaised += totalTax;
 
     if (net < 0 && nation.treasury < 100000 && state.day % 90 === 0) {
       state.log.push({
@@ -298,3 +354,6 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
   }
 }
+
+
+

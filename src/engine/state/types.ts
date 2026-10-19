@@ -102,6 +102,13 @@ export interface MonthlyReport {
   foodByEstate: Record<string, number>;
   silverByRegion?: Record<string, number>;
   foodByRegion?: Record<string, number>;
+  allocation?: Record<string, number>;
+  taxByEstate?: Record<string, number>;
+  economicPie?: number;
+  corruptionLoss?: number;
+  loyaltyCost?: number;
+  foodPurchaseSilver?: number;
+  foodPurchased?: number;
   expenseArmy: number;
   expenseOfficials: number;
   expenseDynasty: number;
@@ -133,6 +140,9 @@ export interface CountryState {
   economicMomentum: number;
   fiscalCrisisDays: number;
   foodCrisisDays: number;
+  allocation: Record<string, number>;
+  foodPurchasePct: number;
+  estateFoodPlan: Record<string, 'market' | 'subsidy' | 'ration'>;
   estates: Record<string, EstateState>;
   factions: Record<string, number>;
   focus: { id: string; progress: number } | null;

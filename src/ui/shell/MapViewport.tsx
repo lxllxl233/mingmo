@@ -13,17 +13,13 @@ export function MapViewport() {
   const diplomaticMode = useGameStore(state => state.diplomaticMode);
   const diplomaticAnchor = useGameStore(state => state.diplomaticAnchor);
   const panel = useGameStore(state => state.panel);
-  const mapMode = panel === 'estates'
-    ? 'estates'
-    : panel === 'budget'
-      ? 'finance'
-      : panel === 'military'
-        ? 'military'
-        : panel === 'core'
-          ? 'core'
-          : panel === 'diplomacy' || diplomaticMode
-            ? 'diplomacy'
-            : 'normal';
+  const mapMode = panel === 'military'
+    ? 'military'
+    : panel === 'core'
+      ? 'core'
+      : panel === 'diplomacy' || diplomaticMode
+        ? 'diplomacy'
+        : 'normal';
   const mapAnchor = panel === 'diplomacy' ? game?.playerTag ?? null : diplomaticAnchor;
   const selectProvince = useGameStore(state => state.selectProvince);
   const selectArmy = useGameStore(state => state.selectArmy);
@@ -138,29 +134,10 @@ export function MapViewport() {
       {mapMode !== 'normal' && (
         <div className="map-mode-legend">
           <b>
-            {mapMode === 'estates' && '阶级地图'}
-            {mapMode === 'finance' && '财政地图'}
             {mapMode === 'military' && '军事地图'}
             {mapMode === 'core' && '核心地图'}
             {mapMode === 'diplomacy' && '外交地图'}
           </b>
-          {mapMode === 'estates' && (
-            <>
-              <span><i style={{ background: '#b8892e' }} />宗室贵族</span>
-              <span><i style={{ background: '#3f6f9a' }} />官僚</span>
-              <span><i style={{ background: '#5f7d4a' }} />士绅</span>
-              <span><i style={{ background: '#c46a2b' }} />商人</span>
-              <span><i style={{ background: '#9a7b4f' }} />农民</span>
-              <span><i style={{ background: '#a33a32' }} />军人</span>
-            </>
-          )}
-          {mapMode === 'finance' && (
-            <>
-              <span><i style={{ background: '#a33a32' }} />低发展</span>
-              <span><i style={{ background: '#d4b25a' }} />高发展</span>
-              <span className="muted">按地区发展度着色</span>
-            </>
-          )}
           {mapMode === 'military' && (
             <>
               <span><i style={{ background: '#3f6f9a' }} />我军</span>

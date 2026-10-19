@@ -99,8 +99,12 @@ export function createInitialState(
     const starting = mergeStarting(def.starting, scenario.countryOverrides[def.tag]);
     const configs = content.countryEstates.get(def.tag) ?? [];
     const estates: Record<string, EstateState> = {};
+    const allocation: Record<string, number> = {};
+    const estateFoodPlan: Record<string, 'market' | 'subsidy' | 'ration'> = {};
     for (const config of configs) {
       estates[config.key] = buildEstate(content, config.key, config);
+      allocation[config.key] = Math.round(config.incomeShare * 1000) / 10;
+      estateFoodPlan[config.key] = 'market';
     }
     const owned = Object.entries(owners).filter(([, owner]) => owner === def.tag);
     let capital = def.capital;
@@ -134,6 +138,9 @@ export function createInitialState(
       economicMomentum: 0,
       fiscalCrisisDays: 0,
       foodCrisisDays: 0,
+      allocation,
+      foodPurchasePct: 30,
+      estateFoodPlan,
       estates,
       factions,
       focus: null,

@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --paper: #f2ead8;
   --paper-deep: #e6dcc6;
   --ink: #1f1c18;
@@ -729,3 +729,26 @@ button:active { transform: translateY(1px); }
 
 .focus-tree-node.historical { border-top: 3px solid #b8892e; }
 .focus-tree-historical { position: absolute; right: 3px; bottom: 2px; padding: 0 3px; font-size: 8px; color: #7a5a1e; background: rgba(184,137,46,.16); font-style: normal; letter-spacing: .04em; }
+
+.war-dock-head-actions { display: flex; gap: 4px; }
+.war-dock.collapsed { padding-bottom: 0; }
+.war-dock.collapsed .war-dock-head { border-bottom: 0; }
+
+.allocation-top { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: center; margin: 10px 0 14px; }
+.allocation-pie { width: 142px; height: 142px; border-radius: 50%; border: 2px solid var(--line); box-shadow: inset 0 0 0 5px rgba(247,237,217,.8); position: relative; }
+.allocation-pie-hole { position: absolute; inset: 30px; border-radius: 50%; background: #f1e7d2; display: grid; place-content: center; text-align: center; border: 1px solid var(--line); }
+.allocation-pie-hole b { color: var(--red); font-size: 24px; line-height: 1; }
+.allocation-pie-hole small { color: var(--ink-soft); font-size: 10px; }
+.allocation-overview { display: flex; flex-direction: column; gap: 2px; }
+.allocation-overview .row { margin: 0; padding: 3px 0; border-bottom: 1px dashed var(--line); }
+.allocation-card { border: 1px solid var(--line); background: rgba(255,252,244,.45); padding: 8px 10px; margin: 7px 0; }
+.allocation-card-head { display: flex; align-items: center; gap: 7px; }
+.allocation-card-head strong { margin-left: auto; color: var(--red); font-size: 16px; }
+.allocation-swatch { width: 9px; height: 18px; border-radius: 2px; }
+.allocation-range { width: 100%; accent-color: var(--red); margin: 7px 0 3px; }
+.allocation-metrics { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--ink-soft); }
+.allocation-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 7px 0 2px; }
+.allocation-controls label { display: flex; flex-direction: column; gap: 3px; font-size: 10px; color: var(--ink-soft); }
+.allocation-controls select { width: 100%; }
+.allocation-food { border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 8px 0; margin: 5px 0 10px; }
+

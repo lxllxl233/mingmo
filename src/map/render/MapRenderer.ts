@@ -139,6 +139,7 @@ export class MapRenderer {
   private landLayer = new Graphics();
   private shadowLayer = new Graphics();
   private fillLayer = new Graphics();
+  private occupiedLayer = new Graphics();
   private terrainLayer = new Graphics();
   private terrainSymbolLayer = new Container();
   private terrainSymbols: Graphics[] = [];
@@ -243,6 +244,7 @@ export class MapRenderer {
       this.landLayer,
       this.shadowLayer,
       this.fillLayer,
+      this.occupiedLayer,
       this.terrainLayer,
       this.terrainSymbolLayer,
       this.terrainDetailLayer,
@@ -771,6 +773,7 @@ export class MapRenderer {
       this.world.position.x += dx;
       this.world.position.y += dy;
       this.clampWorld();
+      this.drawAttackOverlay();
       this.lastPointer = { x: event.global.x, y: event.global.y };
     });
     stage.on('pointerup', (event) => {
@@ -959,7 +962,7 @@ export class MapRenderer {
     this.selectedProvince = selectedProvince;
     this.selectedArmy = selectedArmy;
     const signature = Object.values(state.provinces)
-      .map(province => `${province.id}:${province.controller}`)
+      .map(province => `${province.id}:${province.controller}:${province.owner}`)
       .join('|');
     if (signature !== this.ownerSignature || !this.hasDrawn) {
       this.ownerSignature = signature;
@@ -978,6 +981,7 @@ export class MapRenderer {
     if (!this.state || this.projected.size === 0) return;
     this.shadowLayer.clear();
     this.fillLayer.clear();
+    this.occupiedLayer.clear();
     for (const [id, points] of this.projected) {
       const province = this.state.provinces[id];
       const color = this.fillColor(province?.controller ?? 'NEU', id);
@@ -985,6 +989,15 @@ export class MapRenderer {
         .fill({ color: 0x2a241c, alpha: 0.13 });
       this.fillLayer.poly(points)
         .fill({ color, alpha: 0.92 });
+      if (province && province.owner !== province.controller) {
+        const centroid = this.centroids.get(id);
+        if (centroid) {
+          const width = Math.max(0.16, 0.55 / Math.max(1, this.world.scale.x));
+          this.occupiedLayer.moveTo(centroid.x - width, centroid.y + 0.18)
+            .lineTo(centroid.x + width, centroid.y + 0.18)
+            .stroke({ width: Math.max(0.02, 2.2 / Math.max(1, this.world.scale.x)), color, alpha: 0.95 });
+        }
+      }
     }
 
     this.provinceBorderLayer.clear();

@@ -58,6 +58,16 @@ export function decodeSave(text: string): GameState {
     if (typeof nation.fiscalCrisisDays !== 'number') nation.fiscalCrisisDays = 0;
     if (typeof nation.foodCrisisDays !== 'number') nation.foodCrisisDays = 0;
     if (typeof nation.economicMomentum !== 'number') nation.economicMomentum = 0;
+    if (!nation.allocation || typeof nation.allocation !== 'object') {
+      const keys = Object.keys(nation.estates);
+      nation.allocation = {};
+      for (const key of keys) nation.allocation[key] = 100 / Math.max(1, keys.length);
+    }
+    if (typeof nation.foodPurchasePct !== 'number') nation.foodPurchasePct = 30;
+    if (!nation.estateFoodPlan || typeof nation.estateFoodPlan !== 'object') {
+      nation.estateFoodPlan = {};
+      for (const key of Object.keys(nation.estates)) nation.estateFoodPlan[key] = 'market';
+    }
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (!Array.isArray(parsed.state.battles)) parsed.state.battles = [];
