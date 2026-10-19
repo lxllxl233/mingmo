@@ -1,4 +1,4 @@
-import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
+﻿import { Application, Container, Graphics, Point, Text, TextStyle } from 'pixi.js';
 import type { ContentIndex, MapGeo } from '../../content/types';
 import type { ArmyState, GameState } from '../../engine/state/types';
 import { relationKey } from '../../engine/state/types';
@@ -152,7 +152,7 @@ export class MapRenderer {
   private countryBorderLayer = new Graphics();
   private seaRouteLayer = new Graphics();
   private trailLayer = new Graphics();
-  private attackLayer = new Graphics();
+  private attackCanvas: HTMLCanvasElement | null = null;
   private hoverLayer = new Graphics();
   private cityLayer = new Graphics();
   private portLayer = new Graphics();
@@ -224,11 +224,18 @@ export class MapRenderer {
     }
     this.app = app;
     this.host.appendChild(app.canvas);
+    this.attackCanvas = document.createElement('canvas');
+    this.attackCanvas.style.position = 'absolute';
+    this.attackCanvas.style.inset = '0';
+    this.attackCanvas.style.width = '100%';
+    this.attackCanvas.style.height = '100%';
+    this.attackCanvas.style.pointerEvents = 'none';
+    this.attackCanvas.style.zIndex = '4';
+    this.host.appendChild(this.attackCanvas);
     app.stage.eventMode = 'static';
     app.stage.hitArea = app.screen;
 
     this.armyLayer.sortableChildren = true;
-    this.attackLayer.eventMode = 'none';
     this.world.addChild(
       this.otherLayer,
       this.seaLabelLayer,
@@ -254,7 +261,6 @@ export class MapRenderer {
       this.portLabelLayer,
       this.trailLayer,
       this.armyLayer,
-      this.attackLayer,
       this.occupationLayer,
       this.battleLayer,
     );
@@ -1248,7 +1254,6 @@ export class MapRenderer {
   private drawArmyTrails(): void {
     if (!this.state) return;
     this.trailLayer.clear();
-    this.attackLayer.clear();
     const lf = this.lineFactor();
     for (const army of Object.values(this.state.armies)) {
       if (army.tag !== this.state.playerTag) continue;
@@ -1273,117 +1278,117 @@ export class MapRenderer {
         }
       }
       if (planned.length > 1) {
-        this.drawTaperedArrow(planned, this.colorOf(army.tag), lf, selected);
+        // planned routes are rendered by the screen-space canvas overlay
       }
     }
+    this.drawAttackOverlay();
   }
 
-  private drawTaperedArrow(
-    points: Array<{ x: number; y: number }>,
-    factionColor: number,
-    factor: number,
-    selected: boolean,
-  ): void {
-    const curve = this.smoothRoute(points);
-    const lengths: number[] = [];
-    let totalLength = 0;
-    for (let i = 1; i < curve.length; i += 1) {
-      const from = curve[i - 1];
-      const to = curve[i];
-      if (!from || !to) continue;
-      const length = Math.hypot(to.x - from.x, to.y - from.y);
-      lengths.push(length);
-      totalLength += length;
+  private drawAttackOverlay(): void {
+    const canvas = this.attackCanvas;
+    const app = this.app;
+    if (!canvas || !app || !this.state) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const width = app.screen.width;
+    const height = app.screen.height;
+    const dpr = typeof window === 'undefined' ? 1 : Math.min(2, window.devicePixelRatio || 1);
+    if (canvas.width !== Math.round(width * dpr) || canvas.height !== Math.round(height * dpr)) {
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
     }
-    if (totalLength < 0.01) return;
-    const widthScale = (selected ? 1.35 : 1.15) * Math.max(0.16, factor);
-    let travelled = 0;
-    for (let i = 1; i < curve.length; i += 1) {
-      const from = curve[i - 1];
-      const to = curve[i];
-      const length = lengths[i - 1] ?? 0;
-      if (!from || !to || length < 0.001) continue;
-      const t0 = travelled / totalLength;
-      const t1 = (travelled + length) / totalLength;
-      const width0 = (0.24 - 0.16 * t0) * widthScale;
-      const width1 = (0.24 - 0.16 * t1) * widthScale;
-      const color0 = lerpColor(0xf7edd9, factionColor, 0.25 + t0 * 0.75);
-      const color1 = lerpColor(0xf7edd9, factionColor, 0.25 + t1 * 0.75);
-      const dx = to.x - from.x;
-      const dy = to.y - from.y;
-      const nx = -dy / length;
-      const ny = dx / length;
-      this.attackLayer.poly([
-        from.x + nx * width0 * 1.9, from.y + ny * width0 * 1.9,
-        to.x + nx * width1 * 1.9, to.y + ny * width1 * 1.9,
-        to.x - nx * width1 * 1.9, to.y - ny * width1 * 1.9,
-        from.x - nx * width0 * 1.9, from.y - ny * width0 * 1.9,
-      ]).fill({ color: factionColor, alpha: 0.07 });
-      this.attackLayer.poly([
-        from.x + nx * width0, from.y + ny * width0,
-        to.x + nx * width1, to.y + ny * width1,
-        to.x - nx * width1, to.y - ny * width1,
-        from.x - nx * width0, from.y - ny * width0,
-      ]).fill({ color: 0x1f1c18, alpha: selected ? 0.42 : 0.25 });
-      this.attackLayer.poly([
-        from.x + nx * width0 * 0.82, from.y + ny * width0 * 0.82,
-        to.x + nx * width1 * 0.82, to.y + ny * width1 * 0.82,
-        to.x - nx * width1 * 0.82, to.y - ny * width1 * 0.82,
-        from.x - nx * width0 * 0.82, from.y - ny * width0 * 0.82,
-      ]).fill({ color: color0, alpha: 0.9 });
-      if (i === 1) {
-        this.attackLayer.circle(from.x, from.y, 0.055 * widthScale)
-          .fill({ color: color1, alpha: 0.9 });
-      }
-      travelled += length;
-    }
-    const firstCurve = curve[0];
-    if (firstCurve) {
-      this.attackLayer.moveTo(firstCurve.x, firstCurve.y);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    const toCss = (color: number) => `#${color.toString(16).padStart(6, '0')}`;
+    for (const army of Object.values(this.state.armies)) {
+      if (army.tag !== this.state.playerTag || army.movePath.length === 0) continue;
+      const worldPoints = this.positions([army.province, ...army.movePath]);
+      if (worldPoints.length < 2) continue;
+      const screenPoints = worldPoints.map(point => this.world.toGlobal(new Point(point.x, point.y)));
+      const curve = this.smoothRoute(screenPoints);
+      const selected = army.id === this.selectedArmy;
+      const faction = this.colorOf(army.tag);
+      const factionCss = toCss(faction);
+      const baseWidth = selected ? 8.6 : 6.2;
+      const left: Array<{ x: number; y: number }> = [];
+      const right: Array<{ x: number; y: number }> = [];
+      let travelled = 0;
+      let totalLength = 0;
+      const segmentLengths: number[] = [];
       for (let i = 1; i < curve.length; i += 1) {
-        const point = curve[i];
-        if (point) this.attackLayer.lineTo(point.x, point.y);
+        const from = curve[i - 1];
+        const to = curve[i];
+        if (!from || !to) continue;
+        const length = Math.hypot(to.x - from.x, to.y - from.y);
+        segmentLengths.push(length);
+        totalLength += length;
       }
-      this.attackLayer.stroke({
-        width: 0.035 * widthScale,
-        color: lerpColor(0xf7edd9, factionColor, 0.55),
-        alpha: 0.62,
-        cap: 'round',
-        join: 'round',
-      });
+      if (totalLength < 1) continue;
+      for (let i = 1; i < curve.length; i += 1) {
+        const from = curve[i - 1];
+        const to = curve[i];
+        const length = segmentLengths[i - 1] ?? 0;
+        if (!from || !to || length < 0.01) continue;
+        const t = (travelled + length * 0.5) / totalLength;
+        const width = baseWidth * (1.15 - 0.55 * t) * 0.5;
+        const nx = -(to.y - from.y) / length;
+        const ny = (to.x - from.x) / length;
+        left.push({ x: to.x + nx * width, y: to.y + ny * width });
+        right.push({ x: to.x - nx * width, y: to.y - ny * width });
+        travelled += length;
+      }
+      if (left.length < 2 || right.length < 2) continue;
+      ctx.beginPath();
+      ctx.moveTo(left[0]!.x, left[0]!.y);
+      for (let i = 1; i < left.length; i += 1) ctx.lineTo(left[i]!.x, left[i]!.y);
+      for (let i = right.length - 1; i >= 0; i -= 1) ctx.lineTo(right[i]!.x, right[i]!.y);
+      ctx.closePath();
+      const gradient = ctx.createLinearGradient(
+        curve[0]!.x, curve[0]!.y,
+        curve[curve.length - 1]!.x, curve[curve.length - 1]!.y,
+      );
+      gradient.addColorStop(0, 'rgba(247,237,217,.72)');
+      gradient.addColorStop(0.45, toCss(lerpColor(0xf7edd9, faction, 0.55)));
+      gradient.addColorStop(1, factionCss);
+      ctx.fillStyle = gradient;
+      ctx.shadowColor = factionCss;
+      ctx.shadowBlur = selected ? 9 : 5;
+      ctx.globalAlpha = 0.98;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = selected ? 'rgba(255,210,122,.95)' : 'rgba(31,28,24,.35)';
+      ctx.lineWidth = selected ? 1.8 : 1;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      const last = curve[curve.length - 1];
+      const previous = curve[curve.length - 2];
+      if (last && previous) {
+        const angle = Math.atan2(last.y - previous.y, last.x - previous.x);
+        const headLength = selected ? 25 : 20;
+        const headWidth = selected ? 13 : 10;
+        const baseX = last.x - Math.cos(angle) * headLength;
+        const baseY = last.y - Math.sin(angle) * headLength;
+        const px = -Math.sin(angle) * headWidth;
+        const py = Math.cos(angle) * headWidth;
+        ctx.beginPath();
+        ctx.moveTo(last.x, last.y);
+        ctx.lineTo(baseX + px, baseY + py);
+        ctx.lineTo(baseX - px, baseY - py);
+        ctx.closePath();
+        ctx.fillStyle = factionCss;
+        ctx.globalAlpha = 0.16;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = factionCss;
+        ctx.fill();
+        ctx.strokeStyle = selected ? '#ffd27a' : 'rgba(31,28,24,.9)';
+        ctx.lineWidth = selected ? 2.4 : 1.6;
+        ctx.stroke();
+      }
     }
-    for (let i = 0; i < points.length - 1; i += 1) {
-      const point = points[i];
-      if (!point) continue;
-      this.attackLayer.circle(point.x, point.y, 0.052 * widthScale)
-        .fill({ color: 0xf7edd9, alpha: 0.95 })
-        .stroke({ width: 0.035 * widthScale, color: factionColor, alpha: 0.95 });
-    }
-    const last = curve[curve.length - 1];
-    const previous = curve[curve.length - 2];
-    if (!last || !previous) return;
-    const angle = Math.atan2(last.y - previous.y, last.x - previous.x);
-    const length = Math.hypot(last.x - previous.x, last.y - previous.y);
-    if (length < 0.01) return;
-    const headLength = Math.min(0.72, length * 0.4) * factor;
-    const headWidth = 0.34 * widthScale;
-    const baseX = last.x - Math.cos(angle) * headLength;
-    const baseY = last.y - Math.sin(angle) * headLength;
-    const perpendicularX = -Math.sin(angle) * headWidth;
-    const perpendicularY = Math.cos(angle) * headWidth;
-    this.attackLayer.poly([
-      last.x, last.y,
-      baseX + perpendicularX * 1.35, baseY + perpendicularY * 1.35,
-      baseX - perpendicularX * 1.35, baseY - perpendicularY * 1.35,
-    ]).fill({ color: factionColor, alpha: 0.12 });
-    this.attackLayer.poly([
-      last.x, last.y,
-      baseX + perpendicularX, baseY + perpendicularY,
-      baseX - perpendicularX, baseY - perpendicularY,
-    ]).fill({ color: factionColor, alpha: 1 })
-      .stroke({ width: (selected ? 0.07 : 0.05) * factor, color: selected ? 0xffd27a : 0x1f1c18, alpha: 0.95 });
   }
-
   private smoothRoute(points: Array<{ x: number; y: number }>): Array<{ x: number; y: number }> {
     if (points.length < 3) return points;
     const result: Array<{ x: number; y: number }> = [];
@@ -1724,6 +1729,8 @@ export class MapRenderer {
     }
     this.app?.destroy(true, { children: true });
     this.app = null;
+    this.attackCanvas?.remove();
+    this.attackCanvas = null;
   }
 }
 
@@ -1866,6 +1873,36 @@ function drawFactionGlyph(graphics: Graphics, tag: string, color: number): void 
       .fill({ color, alpha: 0.9 });
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
