@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+﻿import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
 import { advanceDay } from '../src/engine/tick';
@@ -21,7 +21,7 @@ describe('focus and research', () => {
   it('completes a technology after its cost', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
     expect(startResearch(state, content, 'MING', 'mil_bow')).toBe(true);
-    for (let day = 0; day < 130; day += 1) advanceDay(state, content);
+    for (let day = 0; day < 160; day += 1) advanceDay(state, content);
     expect(state.countries['MING']?.completedTechs).toContain('mil_bow');
   });
 });
@@ -59,3 +59,4 @@ describe('victory', () => {
     expect(result.breakdown['疆域']).toBeGreaterThan(0);
   });
 });
+
