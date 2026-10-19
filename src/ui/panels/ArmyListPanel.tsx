@@ -8,6 +8,7 @@ export function ArmyListPanel() {
   const stack = useGameStore(state => state.armyStack);
   const selectArmy = useGameStore(state => state.selectArmy);
   const close = useGameStore(state => state.closeArmyStack);
+  const stopArmyGroup = useGameStore(state => state.stopArmyGroup);
   if (!game || !stack || stack.length === 0) return null;
   const armies = stack
     .map(id => game.armies[id])
@@ -15,6 +16,7 @@ export function ArmyListPanel() {
   if (armies.length === 0) return null;
   const firstProvince = content.provinces.get(armies[0]?.province ?? '');
   const sameProvince = armies.every(army => army.province === armies[0]?.province);
+  const moving = armies.filter(army => army.movePath.length > 0 || army.embarked || army.stance === 'move').length;
   return (
     <div className="panel army-list-panel">
       <header className="panel-head">
@@ -45,6 +47,14 @@ export function ArmyListPanel() {
             </button>
           );
         })}
+      </div>
+      <div className="panel-actions">
+        <button
+          disabled={moving === 0}
+          onClick={() => stopArmyGroup()}
+        >
+          取消选中军团移动{moving > 0 ? `（${moving}）` : ''}
+        </button>
       </div>
     </div>
   );

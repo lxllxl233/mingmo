@@ -51,6 +51,7 @@ interface ArmyMarker {
   bars: Graphics;
   selection: Graphics;
   label: Text;
+  labelBg: Graphics;
   stackScale: number;
   armyId: string;
   armyIds: string[];
@@ -151,6 +152,7 @@ export class MapRenderer {
   private countryBorderLayer = new Graphics();
   private seaRouteLayer = new Graphics();
   private trailLayer = new Graphics();
+  private attackLayer = new Graphics();
   private hoverLayer = new Graphics();
   private cityLayer = new Graphics();
   private portLayer = new Graphics();
@@ -226,6 +228,7 @@ export class MapRenderer {
     app.stage.hitArea = app.screen;
 
     this.armyLayer.sortableChildren = true;
+    this.attackLayer.eventMode = 'none';
     this.world.addChild(
       this.otherLayer,
       this.seaLabelLayer,
@@ -251,6 +254,7 @@ export class MapRenderer {
       this.portLabelLayer,
       this.trailLayer,
       this.armyLayer,
+      this.attackLayer,
       this.occupationLayer,
       this.battleLayer,
     );
@@ -675,20 +679,26 @@ export class MapRenderer {
   }
 
   private lineFactor(): number {
-    return Math.max(0.035, Math.min(1, 14 / this.world.scale.x));
+    return Math.max(0.035, 16 / this.world.scale.x);
   }
 
   private updateZoomScales(): void {
     const scale = this.world.scale.x;
-    const markerScale = Math.max(0.02, 18 / scale);
+    const zoomT = Math.max(0, Math.min(1, (scale - 4) / 80));
+    const markerPixels = 14 + zoomT * 10;
+    const markerScale = markerPixels / Math.max(0.001, scale);
     for (const marker of this.armyMarkers.values()) {
       marker.container.scale.set(markerScale * marker.stackScale);
+      const showLabel = zoomT > 0.24 || marker.container.zIndex >= 10;
+      marker.label.visible = showLabel;
+      marker.labelBg.visible = showLabel;
     }
+    const bubbleScale = (0.82 + zoomT * 0.25) / Math.max(0.001, scale);
     for (const marker of this.battleMarkers.values()) {
-      marker.scale.set(1 / Math.max(0.001, scale));
+      marker.scale.set(bubbleScale);
     }
     for (const marker of this.occupationMarkers.values()) {
-      marker.scale.set(1 / Math.max(0.001, scale));
+      marker.scale.set(bubbleScale);
     }
     const labelScale = Math.min(1, 18 / scale);
     for (const [label, base] of this.labelBaseScale) {
@@ -1234,6 +1244,7 @@ export class MapRenderer {
   private drawArmyTrails(): void {
     if (!this.state) return;
     this.trailLayer.clear();
+    this.attackLayer.clear();
     const lf = this.lineFactor();
     for (const army of Object.values(this.state.armies)) {
       if (army.tag !== this.state.playerTag) continue;
@@ -1297,26 +1308,26 @@ export class MapRenderer {
       const dy = to.y - from.y;
       const nx = -dy / length;
       const ny = dx / length;
-      this.trailLayer.poly([
+      this.attackLayer.poly([
         from.x + nx * width0 * 1.9, from.y + ny * width0 * 1.9,
         to.x + nx * width1 * 1.9, to.y + ny * width1 * 1.9,
         to.x - nx * width1 * 1.9, to.y - ny * width1 * 1.9,
         from.x - nx * width0 * 1.9, from.y - ny * width0 * 1.9,
       ]).fill({ color: factionColor, alpha: 0.07 });
-      this.trailLayer.poly([
+      this.attackLayer.poly([
         from.x + nx * width0, from.y + ny * width0,
         to.x + nx * width1, to.y + ny * width1,
         to.x - nx * width1, to.y - ny * width1,
         from.x - nx * width0, from.y - ny * width0,
       ]).fill({ color: 0x1f1c18, alpha: selected ? 0.42 : 0.25 });
-      this.trailLayer.poly([
+      this.attackLayer.poly([
         from.x + nx * width0 * 0.82, from.y + ny * width0 * 0.82,
         to.x + nx * width1 * 0.82, to.y + ny * width1 * 0.82,
         to.x - nx * width1 * 0.82, to.y - ny * width1 * 0.82,
         from.x - nx * width0 * 0.82, from.y - ny * width0 * 0.82,
       ]).fill({ color: color0, alpha: 0.9 });
       if (i === 1) {
-        this.trailLayer.circle(from.x, from.y, 0.055 * widthScale)
+        this.attackLayer.circle(from.x, from.y, 0.055 * widthScale)
           .fill({ color: color1, alpha: 0.9 });
       }
       travelled += length;
@@ -1324,7 +1335,7 @@ export class MapRenderer {
     for (let i = 0; i < points.length - 1; i += 1) {
       const point = points[i];
       if (!point) continue;
-      this.trailLayer.circle(point.x, point.y, 0.052 * widthScale)
+      this.attackLayer.circle(point.x, point.y, 0.052 * widthScale)
         .fill({ color: 0xf7edd9, alpha: 0.95 })
         .stroke({ width: 0.035 * widthScale, color: factionColor, alpha: 0.95 });
     }
@@ -1340,12 +1351,12 @@ export class MapRenderer {
     const baseY = last.y - Math.sin(angle) * headLength;
     const perpendicularX = -Math.sin(angle) * headWidth;
     const perpendicularY = Math.cos(angle) * headWidth;
-    this.trailLayer.poly([
+    this.attackLayer.poly([
       last.x, last.y,
       baseX + perpendicularX * 1.35, baseY + perpendicularY * 1.35,
       baseX - perpendicularX * 1.35, baseY - perpendicularY * 1.35,
     ]).fill({ color: factionColor, alpha: 0.12 });
-    this.trailLayer.poly([
+    this.attackLayer.poly([
       last.x, last.y,
       baseX + perpendicularX, baseY + perpendicularY,
       baseX - perpendicularX, baseY - perpendicularY,
@@ -1466,7 +1477,7 @@ export class MapRenderer {
     });
     this.armyLayer.addChild(container);
     const marker: ArmyMarker = {
-      container, body, bars, selection, label, stackScale: 1,
+      container, body, bars, selection, label, labelBg, stackScale: 1,
       armyId: army.id, armyIds: [army.id], targetX: 0, targetY: 0, positioned: false,
     };
     this.armyMarkers.set(key, marker);
@@ -1807,3 +1818,4 @@ function drawFactionGlyph(graphics: Graphics, tag: string, color: number): void 
       .fill({ color, alpha: 0.9 });
   }
 }
+

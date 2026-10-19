@@ -84,6 +84,7 @@ interface UiStore {
   moveArmyTo: (provinceId: string) => boolean;
   moveArmyGroupTo: (provinceId: string) => boolean;
   appendArmyGroupWaypoint: (provinceId: string) => boolean;
+  stopArmyGroup: () => boolean;
   appendArmyWaypoint: (provinceId: string) => boolean;
   openTrainingPicker: (kind: 'land' | 'navy') => void;
   chooseTrainingTemplate: (templateId: string) => void;
@@ -367,6 +368,23 @@ export const useGameStore = create<UiStore>((set, get) => ({
       return false;
     }
     set({ message: `已为 ${moved} 支军团追加统一路线（Ctrl+右键继续追加）` });
+    return true;
+  },
+  stopArmyGroup: () => {
+    const { game, armyStack } = get();
+    if (!game || game.spectator || !armyStack || armyStack.length === 0) return false;
+    let stopped = 0;
+    for (const armyId of armyStack) {
+      const army = game.armies[armyId];
+      if (!army || army.tag !== game.playerTag) continue;
+      if (army.movePath.length === 0 && !army.embarked && army.stance === 'hold') continue;
+      if (get().command({ type: 'army.stop', armyId })) stopped += 1;
+    }
+    if (stopped === 0) {
+      set({ message: '选中的军团没有正在进行的行军' });
+      return false;
+    }
+    set({ message: `${stopped} 支军团已取消移动` });
     return true;
   },
   appendArmyWaypoint: provinceId => {

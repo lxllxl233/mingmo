@@ -185,7 +185,14 @@ export function ArmyPanel() {
 
       <footer className="panel-actions">
         {!readOnly && <button className="primary" onClick={() => openPanel('military')}>军事列表</button>}
-        {!readOnly && <button onClick={() => command({ type: 'army.stop', armyId: army.id })}>停止</button>}
+        {!readOnly && (
+          <button
+            title="取消当前行军或海运，军团留在原地"
+            onClick={() => command({ type: 'army.stop', armyId: army.id })}
+          >
+            取消移动
+          </button>
+        )}
         {!readOnly && (
           <button
             className={army.forcedMarch ? 'primary' : ''}
