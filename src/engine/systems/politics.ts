@@ -144,6 +144,12 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       if ((nation.factions['military'] ?? 0) > 50) nation.manpower += 200;
     }
 
+    if (nation.tag === 'JAPAN') {
+      const open = nation.flags['japan_open'] === true;
+      nation.stability = clamp(nation.stability + (open ? -0.01 : 0.01), 0, 100);
+      if ((nation.factions['clergy'] ?? 0) > 50) nation.stability = clamp(nation.stability + 0.01, 0, 100);
+    }
+
     let rebellions = 0;
     for (const entry of countryProvinceList(state, content, nation.tag)) {
       if (rebellions >= 1) break;

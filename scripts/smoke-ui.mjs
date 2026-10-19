@@ -107,6 +107,15 @@ if (await leagueButton.count() > 0) {
   await page.screenshot({ path: `ui-league-${suffix}.png` });
   await leagueButton.click();
 }
+
+const sakokuButton = page.getByRole('button', { name: '锁国', exact: true });
+if (await sakokuButton.count() > 0) {
+  await sakokuButton.click();
+  await page.waitForTimeout(400);
+  console.log('sakoku:', (await page.locator('.sakoku-panel').innerText()).replace(/\s+/g, ' ').slice(0, 220));
+  await page.screenshot({ path: `ui-sakoku-${suffix}.png` });
+  await sakokuButton.click();
+}
 await page.getByRole('button', { name: '2x', exact: true }).click();
 await page.waitForTimeout(1800);
 console.log('after-tick:', (await page.locator('.bottombar').innerText()).replace(/\s+/g, ' ').slice(0, 240));

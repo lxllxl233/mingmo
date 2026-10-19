@@ -3,6 +3,7 @@ import type { CountryState, GameState, MonthlyReport } from '../state/types';
 import { aggregateCountryModifiers } from '../rules/modifiers';
 import { blockadePenalty } from '../rules/naval';
 import { tradePostMonthlyIncome } from './trade';
+import { sakokuMonthlyIncome } from './sakoku';
 import { rngFor } from '../core/rng';
 
 function clamp(value: number, min: number, max: number): number {
@@ -219,6 +220,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const blockade = blockadePenalty(state, content, nation.tag);
     if (blockade > 0) totalTax *= 1 - blockade;
     totalTax += tradePostMonthlyIncome(state, content, nation.tag);
+    totalTax += sakokuMonthlyIncome(state, content, nation.tag);
     const averageLoyalty = Object.values(nation.estates).reduce((sum, estate) => sum + estate.loyalty, 0)
       / Math.max(1, Object.values(nation.estates).length);
     const corruptionLoss = totalTax * clamp(nation.corruption / 135, 0, 0.85);

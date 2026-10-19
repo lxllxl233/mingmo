@@ -19,6 +19,7 @@ import { extortGentry, landReform, pacifyGentry } from './systems/confiscation';
 import { compromiseCourt, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './systems/legitimacy';
 import { openTradePost, recruitMerchants, takeDividend } from './systems/trade';
 import { holdKurultai, marriagePact, organizeBanners, raidBorder } from './systems/league';
+import { nagasakiTrade, persecuteChristians, toggleSakoku } from './systems/sakoku';
 
 export type Command =
   | { type: 'focus.start'; focusId: string }
@@ -58,6 +59,9 @@ export type Command =
   | { type: 'league.organize' }
   | { type: 'league.raid' }
   | { type: 'league.marriage' }
+  | { type: 'sakoku.toggle' }
+  | { type: 'sakoku.nagasaki' }
+  | { type: 'sakoku.persecute' }
   | { type: 'army.assignGeneral'; armyId: string; generalId: string | null }
   | { type: 'diplomacy.declareWar'; target: string; cb: string }
   | { type: 'diplomacy.gift'; target: string; amount?: number }
@@ -352,6 +356,18 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     }
     case 'league.marriage': {
       if (!marriagePact(state, tag)) throw new CommandError('联姻需要 10 政治点、2 万两且不在冷却');
+      break;
+    }
+    case 'sakoku.toggle': {
+      if (!toggleSakoku(state, tag)) throw new CommandError('锁国/开国需要 10 政治点且不在冷却');
+      break;
+    }
+    case 'sakoku.nagasaki': {
+      if (!nagasakiTrade(state, content, tag)) throw new CommandError('长崎贸易尚在冷却');
+      break;
+    }
+    case 'sakoku.persecute': {
+      if (!persecuteChristians(state, tag)) throw new CommandError('禁教需要 10 政治点且不在冷却');
       break;
     }
     case 'province.integrateCore': {

@@ -12,6 +12,7 @@ const GLYPHS: Record<string, string> = {
   legitimacy: 'M9 2l1.5 4H15l-3.5 2.5L13 13 9 10.5 5 13l1.5-4.5L3 6h4.5z',
   trade: 'M2 13h14l-2 3H4zM4 13l2-6h6l2 6M7 7V4h4v3',
   league: 'M2 14l4-9 3 5 3-7 4 11z',
+  sakoku: 'M4 3h10v12H4zM7 3v12M4 8h10',
   decisions: 'M3 15h7M6 15V6l4-2 4 2v9M8 8h4M8 11h4',
   log: 'M4 2h9v14H4zM6 5h5M6 8h5M6 11h5',
 };

@@ -31,6 +31,7 @@ export type PanelKey =
   | 'legitimacy'
   | 'trade'
   | 'league'
+  | 'sakoku'
   | 'log';
 
 let suppressArmySelectionUntil = 0;

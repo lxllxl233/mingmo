@@ -12,6 +12,7 @@ import { confiscationCooldown, extortGentry, pacifyGentry } from './confiscation
 import { compromiseCourt, legitimacyCooldown, mobilizeLoyalists, proclaimEmperor, uniteLoyalists } from './legitimacy';
 import { dividendCooldown, openTradePost, recruitMerchants, takeDividend } from './trade';
 import { holdKurultai, leagueCooldown, marriagePact, organizeBanners, raidBorder } from './league';
+import { isJapanOpen, nagasakiTrade, persecuteChristians, sakokuCooldown, toggleSakoku } from './sakoku';
 import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { addAlliance, alliesOf, areAllied, improveRelation } from '../rules/diplomacy';
@@ -689,6 +690,17 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
       else if (nation.treasury >= 60000) organizeBanners(state, 'MONGOL');
       else if (nation.treasury < 80000) raidBorder(state, content, 'MONGOL');
       else if (nation.politicalPower >= 10 && nation.treasury >= 30000) marriagePact(state, 'MONGOL');
+    }
+    if (nation.tag === 'JAPAN' && sakokuCooldown(state, 'JAPAN') === 0) {
+      if (!isJapanOpen(state) && nation.treasury < 150000 && nation.politicalPower >= 10) {
+        toggleSakoku(state, 'JAPAN');
+      } else if (isJapanOpen(state) && nation.stability < 45 && nation.politicalPower >= 10) {
+        toggleSakoku(state, 'JAPAN');
+      } else if (isJapanOpen(state)) {
+        nagasakiTrade(state, content, 'JAPAN');
+      } else if (nation.politicalPower >= 10) {
+        persecuteChristians(state, 'JAPAN');
+      }
     }
     manageRebelGrowth(state, content, nation.tag);
     manageCore(state, content, nation.tag);
