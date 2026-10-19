@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../content/types';
+﻿import type { ContentIndex } from '../content/types';
 import { LAST_DAY_INDEX, isMonthStart, isQuarterStart, isYearStart } from './core/clock';
 import { advanceArmies, cleanupEmptyArmies, replenishArmies } from './systems/military';
 import { advanceCoreIntegration } from './systems/core';
@@ -13,6 +13,7 @@ import { applyHistoricalTimeline } from './systems/history';
 import { runMonthlyPolitics } from './systems/politics';
 import { runMonthlyAi } from './systems/ai';
 import { evaluateVictory } from './victory';
+import { resolveFinishedWars } from './rules/war';
 import type { GameState } from './state/types';
 
 function updateTimedModifiers(state: GameState): void {
@@ -94,6 +95,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
 
   updateTimedModifiers(state);
   updateAlive(state, content);
+  resolveFinishedWars(state, content);
   const player = state.countries[state.playerTag];
   if (isYearStart(state.day) || state.day >= LAST_DAY_INDEX || !player?.alive) {
     const result = evaluateVictory(state, content);
@@ -117,4 +119,5 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   }
   return state;
 }
+
 

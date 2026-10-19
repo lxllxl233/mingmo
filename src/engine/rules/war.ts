@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../../content/types';
+﻿import type { ContentIndex } from '../../content/types';
 import type { GameState, WarState } from '../state/types';
 import { relationKey } from '../state/types';
 
@@ -218,5 +218,20 @@ export function surrenderTendency(state: GameState, war: WarState, tag: string):
   const armies = Object.values(state.armies).filter(army => army.tag === tag).length;
   const raw = 42 - (mine - enemy) * 7 + exhaustion * 0.45 + (capitalLost ? 28 : 0) + (armies <= 1 ? 10 : 0);
   return Math.max(0, Math.min(100, Math.round(raw)));
+}
+
+export function resolveFinishedWars(state: GameState, content: ContentIndex): void {
+  for (const war of [...state.wars]) {
+    const provinceCount = (tag: string): number =>
+      Object.values(state.provinces).filter(province => province.controller === tag).length;
+    const attackerControlled = provinceCount(war.attacker);
+    const defenderControlled = provinceCount(war.defender);
+    if (attackerControlled > 0 && defenderControlled > 0) continue;
+    if (attackerControlled === 0 && defenderControlled === 0) {
+      makePeace(state, war.id, content, 'white');
+    } else {
+      makePeace(state, war.id, content, 'demand');
+    }
+  }
 }
 
