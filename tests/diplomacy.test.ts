@@ -23,9 +23,11 @@ describe('diplomacy', () => {
 
   it('calls allies into a defensive war', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
-    expect(addAlliance(state, 'MONGOL', 'JAPAN')).toBe(true);
+    state.truces = {};
+    state.vassals = {};
+    expect(addAlliance(state, 'MONGOL', 'JOSEON')).toBe(true);
     expect(declareWar(state, 'MING', 'MONGOL', 'test', content)).not.toBeNull();
     expect(areAtWar(state, 'MING', 'MONGOL')).toBe(true);
-    expect(areAtWar(state, 'MING', 'JAPAN')).toBe(true);
+    expect(areAtWar(state, 'MING', 'JOSEON')).toBe(true);
   });
 });

@@ -165,6 +165,8 @@ function manageEconomy(state: GameState, content: ContentIndex, tag: string): vo
   }
 }
 function manageDiplomacy(state: GameState, content: ContentIndex, tag: string): void {
+  // 锁国日本不主动结盟，避免被大陆同盟拖入扩张战争。
+  if (tag === 'JAPAN') return;
   const nation = state.countries[tag];
   if (!nation?.alive) return;
   const neighbors = neighborsOf(state, content, tag)
@@ -174,7 +176,7 @@ function manageDiplomacy(state: GameState, content: ContentIndex, tag: string): 
   if (alliesOf(state, tag).length < 2) {
     const friend = neighbors
       .map(target => ({ target, relation: state.relations[relationKey(tag, target)] ?? 0 }))
-      .filter(entry => entry.relation >= 50 && !areAtWar(state, tag, entry.target) && !areAllied(state, tag, entry.target))
+      .filter(entry => entry.target !== 'JAPAN' && entry.relation >= 50 && !areAtWar(state, tag, entry.target) && !areAllied(state, tag, entry.target))
       .sort((a, b) => b.relation - a.relation)[0];
     if (friend && addAlliance(state, tag, friend.target)) {
       state.log.push({
@@ -263,6 +265,7 @@ function historicalWarTarget(state: GameState, tag: string): string | null {
   const year = fromDayIndex(state.day).year;
   const dominant = dominantTag(state);
   if (dominant && dominant.tag !== tag && dominant.share >= 0.38
+    && tag !== 'JAPAN' && tag !== 'JOSEON'
     && !areAllied(state, tag, dominant.tag)) {
     return dominant.tag;
   }
@@ -400,6 +403,8 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
       return;
     }
   }
+  // 锁国日本不主动发动大陆扩张战争；被进攻时仍走上面的防御/议和逻辑。
+  if (tag === 'JAPAN') return;
   if (state.day - nation.ai.lastWarDay < (state.spectator ? Math.min(240, profile.warDelay) : profile.warDelay)) return;
   if (nation.treasury < profile.minTreasury || nation.stability < profile.minStability) return;
   const neighbors = neighborsOf(state, content, tag);

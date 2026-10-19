@@ -94,7 +94,7 @@ export function declareWar(
   const war = createWar(state, attacker, defender, goal, content);
   if (!war) return null;
   for (const ally of alliesOf(state, defender)) {
-    if (ally === attacker || areAllied(state, ally, attacker)) continue;
+    if (ally === attacker || ally === 'JAPAN' || areAllied(state, ally, attacker)) continue;
     if (areAtWar(state, attacker, ally)) continue;
     createWar(state, attacker, ally, '同盟义务', content);
   }
@@ -259,7 +259,7 @@ export function resolveFinishedWars(state: GameState, content: ContentIndex): vo
   }
 }
 
-export function cleanupDefeatedNations(state: GameState): void {
+export function cleanupDefeatedNations(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (nation.tag === 'NEU') {
       nation.alive = true;
@@ -276,10 +276,20 @@ export function cleanupDefeatedNations(state: GameState): void {
     if (controlled) continue;
     // 无实际控制区时，把仍在名下的被占省转给占领者，避免“死国仍占地”。
     const owned = Object.values(state.provinces).filter(province => province.owner === nation.tag);
-    const fallback = Object.values(state.countries).find(country => country.alive && country.tag !== 'NEU')?.tag ?? 'NEU';
     for (const province of owned) {
       const occupier = province.controller;
-      province.owner = occupier && state.countries[occupier]?.alive ? occupier : fallback;
+      let target = occupier && state.countries[occupier]?.alive ? occupier : null;
+      if (!target) {
+        const def = content.provinces.get(province.id);
+        for (const neighborId of def?.neighbors ?? []) {
+          const controller = state.provinces[neighborId]?.controller;
+          if (controller && controller !== 'NEU' && state.countries[controller]?.alive) {
+            target = controller;
+            break;
+          }
+        }
+      }
+      province.owner = target ?? 'NEU';
       province.controller = province.owner;
       province.occupation = null;
       delete province.siege;

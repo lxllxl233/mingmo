@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
 import { cleanupDefeatedNations, declareWar, resolveCapitalCapitulation, resolveFinishedWars } from '../src/engine/rules/war';
@@ -12,7 +12,7 @@ describe('war resolution', () => {
       if (province.owner === 'VOC') province.controller = 'ZHENG';
     }
     resolveFinishedWars(state, content);
-    cleanupDefeatedNations(state);
+    cleanupDefeatedNations(state, content);
     expect(state.wars.some(war =>
       (war.attacker === 'ZHENG' && war.defender === 'VOC')
       || (war.attacker === 'VOC' && war.defender === 'ZHENG'))).toBe(false);

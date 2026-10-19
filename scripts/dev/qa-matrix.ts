@@ -48,6 +48,12 @@ function summarize(state: GameState, scenario: string, difficulty: string, seed:
     victory: state.victory?.reason ?? null,
     alive: alive.length,
     wars: state.wars.length,
+    warList: state.wars.map(war => ({ attacker: war.attacker, defender: war.defender, startDay: war.startDay })),
+    japan: {
+      owned: Object.values(state.provinces).filter(province => province.owner === 'JAPAN').length,
+      controlled: Object.values(state.provinces).filter(province => province.controller === 'JAPAN').length,
+      log: state.log.filter(entry => entry.country === 'JAPAN' || entry.text.includes('日本')).slice(-20),
+    },
     zombies,
     orphanProvinces: orphans.length,
     orphans: orphans.slice(0, 12).map(province => ({

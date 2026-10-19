@@ -105,7 +105,7 @@ export function advanceDay(state: GameState, content: ContentIndex): GameState {
   updateAlive(state, content);
   resolveCapitalCapitulation(state, content);
   resolveFinishedWars(state, content);
-  cleanupDefeatedNations(state);
+  cleanupDefeatedNations(state, content);
   const player = state.countries[state.playerTag];
   if (isYearStart(state.day) || state.day >= LAST_DAY_INDEX || !player?.alive) {
     const result = evaluateVictory(state, content);
