@@ -1,4 +1,4 @@
-﻿id: "1627"
+id: "1627"
 name: 崇祯元年
 start_date: 1627-10-01
 description: 阉党初败，辽东糜烂，陕西饥民方起。大明仍有牌可打。
@@ -139,6 +139,7 @@ armies:
   - { tag: SHUN, template: shun_rebel, province: yanan, size: 4 }
   - { tag: SHUN, template: shun_cavalry, province: yanan, size: 2 }
   - { tag: XI, template: xi_army, province: chengdu, size: 3 }
+  - { tag: XI, template: xi_army, province: chengdu, size: 2 }
   - { tag: ZHENG, template: zheng_navy, province: quanzhou, size: 1 }
   - { tag: ZHENG, template: zheng_marines, province: quanzhou, size: 1 }
   - { tag: NEU, template: neutrals_tribal, province: ava, size: 1 }
@@ -148,6 +149,7 @@ initial_wars:
   - { attacker: SHUN, defender: MING, goal: 陕西民变 }
   - { attacker: XI, defender: MING, goal: 四川割据 }
 initial_events: []
+
 
 
 

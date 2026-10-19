@@ -483,6 +483,51 @@ export function advanceArmies(state: GameState, content: ContentIndex): void {
   }
 }
 
+export function splitArmy(state: GameState, _content: ContentIndex, armyId: string, amount: number): string | null {
+  const army = state.armies[armyId];
+  if (!army || amount <= 0) return null;
+  const total = compositionTotal(army);
+  if (total <= 1) return null;
+  const take = Math.min(Math.floor(amount), total - 1);
+  if (take <= 0) return null;
+  const ratio = take / total;
+  const id = `army_${state.nextArmyId}`;
+  state.nextArmyId += 1;
+  const split: ArmyState = {
+    ...army,
+    id,
+    name: `${army.name} 分营`,
+    history: [],
+    movePath: [],
+    moveProgress: 0,
+    embarked: false,
+    navalTarget: null,
+    navalOrigin: null,
+    navalProgress: 0,
+    composition: {
+      infantry: Math.floor(army.composition.infantry * ratio),
+      firearm: Math.floor(army.composition.firearm * ratio),
+      cavalry: Math.floor(army.composition.cavalry * ratio),
+      artillery: Math.floor(army.composition.artillery * ratio),
+      naval: Math.floor(army.composition.naval * ratio),
+    },
+    maxStrength: take,
+    general: null,
+    entrenchment: 0,
+    forcedMarch: false,
+    stance: 'hold',
+  };
+  const splitTotal = compositionTotal(split);
+  if (splitTotal < take) split.composition.infantry += take - splitTotal;
+  army.composition.infantry -= split.composition.infantry;
+  army.composition.firearm -= split.composition.firearm;
+  army.composition.cavalry -= split.composition.cavalry;
+  army.composition.artillery -= split.composition.artillery;
+  army.composition.naval -= split.composition.naval;
+  army.maxStrength = Math.max(1, (army.maxStrength ?? total) - take);
+  state.armies[id] = split;
+  return id;
+}
 export function recruitArmy(
   state: GameState,
   content: ContentIndex,
@@ -628,5 +673,8 @@ export function setArmyPath(
   army.stance = 'move';
   return true;
 }
+
+
+
 
 

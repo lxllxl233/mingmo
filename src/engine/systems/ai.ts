@@ -1,4 +1,4 @@
-﻿import type { ContentIndex, CountryDef, Tech } from '../../content/types';
+import type { ContentIndex, CountryDef, Tech } from '../../content/types';
 import type { GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { armyStrengthOf } from './economy';
@@ -7,7 +7,7 @@ import { availableTechs, startResearch } from './research';
 import { startTaxReform } from './tax';
 import { enqueueTraining } from './training';
 import { startCoreIntegration } from './core';
-import { setArmyPath } from './military';
+import { setArmyPath, splitArmy } from './military';
 import { areAtWar, declareWar, makePeace, warsOf } from '../rules/war';
 import { canMarchThrough } from '../rules/access';
 import { evaluateTrigger } from '../rules/triggers';
@@ -446,8 +446,13 @@ function manageRebelGrowth(state: GameState, content: ContentIndex, tag: string)
   const target = 2500 + provinces * 900;
   const current = armyStrengthOf(state, tag);
   if (current >= target) return;
-  const armies = Object.values(state.armies).filter(army => army.tag === tag);
-  const army = armies.sort((a, b) => armyStrength(b) - armyStrength(a))[0];
+  let armies = Object.values(state.armies).filter(army => army.tag === tag);
+  const largest = armies.sort((a, b) => armyStrength(b) - armyStrength(a))[0];
+  if (largest && armies.length < 4 && armyStrength(largest) > 3000) {
+    splitArmy(state, content, largest.id, 2000);
+    armies = Object.values(state.armies).filter(army => army.tag === tag);
+  }
+  const army = armies.sort((a, b) => armyStrength(a) - armyStrength(b))[0];
   if (!army || nation.manpower < 150 || nation.food < 10000) return;
   const recruits = Math.min(1000, Math.ceil(target - current), Math.floor(nation.manpower));
   if (recruits <= 0) return;
@@ -479,6 +484,7 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
     manageMovement(state, content, nation.tag);
   }
 }
+
 
 
 
