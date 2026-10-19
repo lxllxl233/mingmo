@@ -63,6 +63,7 @@ export function decodeSave(text: string): GameState {
       nation.allocation = {};
       for (const key of keys) nation.allocation[key] = 100 / Math.max(1, keys.length);
     }
+
     if (typeof nation.foodPurchasePct !== 'number') nation.foodPurchasePct = 30;
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
@@ -128,3 +129,4 @@ export function hasLocal(slot: string): boolean {
   const store = storage();
   return store !== null && store.getItem(`${KEY_PREFIX}${slot}`) !== null;
 }
+

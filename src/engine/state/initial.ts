@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   ContentIndex,
   CountryStarting,
   EstateKey,
@@ -102,8 +102,17 @@ export function createInitialState(
     const allocation: Record<string, number> = {};
     for (const config of configs) {
       estates[config.key] = buildEstate(content, config.key, config);
-      allocation[config.key] = Math.round(config.incomeShare * 1000) / 10;
     }
+    const minimums = configs.map(config => Math.min(45, 2 + Math.max(0, estates[config.key]?.influence ?? 0) * 0.13));
+    const minimumTotal = minimums.reduce((sum, value) => sum + value, 0);
+    const incomeShareTotal = configs.reduce((sum, config) => sum + config.incomeShare, 0) || 1;
+    const remaining = Math.max(0, 100 - minimumTotal);
+    configs.forEach((config, index) => {
+      const base = minimumTotal >= 100
+        ? (minimums[index]! / minimumTotal) * 100
+        : minimums[index]! + remaining * (config.incomeShare / incomeShareTotal);
+      allocation[config.key] = Math.round(base * 10) / 10;
+    });
     const owned = Object.entries(owners).filter(([, owner]) => owner === def.tag);
     let capital = def.capital;
     if (owners[capital] !== def.tag) {
