@@ -46,16 +46,16 @@ export function CourtPanel() {
             <p className="muted">{COURT_FACTION_EFFECTS[faction]}</p>
             <div className="court-actions">
               <button
-                disabled={nation.politicalPower < 30}
+                disabled={nation.politicalPower < 5}
                 onClick={() => command({ type: 'court.favor', faction })}
               >
-                扶植（30）
+                扶植（5）
               </button>
               <button
-                disabled={nation.politicalPower < 40}
+                disabled={nation.politicalPower < 10}
                 onClick={() => command({ type: 'court.suppress', faction })}
               >
-                打压（40，稳定 -2）
+                打压（10，稳定 -2）
               </button>
             </div>
           </div>

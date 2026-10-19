@@ -1,7 +1,24 @@
 import type { ContentIndex, Modifier } from '../../content/types';
 import type { GameState } from '../state/types';
 
+let cachedState: GameState | null = null;
+let cachedDay = -1;
+const cachedModifiers = new Map<string, Modifier>();
+
+export function invalidateBuildingCache(): void {
+  cachedState = null;
+  cachedDay = -1;
+  cachedModifiers.clear();
+}
+
 export function buildingModifiers(state: GameState, content: ContentIndex, tag: string): Modifier {
+  if (cachedState !== state || cachedDay !== state.day) {
+    cachedState = state;
+    cachedDay = state.day;
+    cachedModifiers.clear();
+  }
+  const cached = cachedModifiers.get(tag);
+  if (cached) return cached;
   const total: Modifier = {};
   for (const province of Object.values(state.provinces)) {
     if (province.controller !== tag) continue;
@@ -13,6 +30,7 @@ export function buildingModifiers(state: GameState, content: ContentIndex, tag: 
       }
     }
   }
+  cachedModifiers.set(tag, total);
   return total;
 }
 
@@ -70,6 +88,7 @@ export function advanceBuildings(state: GameState, content: ContentIndex): void 
     if (building.daysLeft > 0) continue;
     if (!province.buildings.includes(building.id)) province.buildings.push(building.id);
     province.building = null;
+    invalidateBuildingCache();
     const def = content.buildings.get(building.id);
     state.log.push({
       day: state.day,

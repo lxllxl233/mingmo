@@ -653,6 +653,7 @@ export function splitArmy(state: GameState, _content: ContentIndex, armyId: stri
     navalTarget: null,
     navalOrigin: null,
     navalProgress: 0,
+    siegeMode: 'siege',
     composition: {
       infantry: Math.floor(army.composition.infantry * ratio),
       firearm: Math.floor(army.composition.firearm * ratio),
@@ -710,6 +711,7 @@ export function recruitArmy(
     navalTarget: null,
     navalOrigin: null,
     navalProgress: 0,
+    siegeMode: 'siege',
     composition: {
       infantry: template.composition.infantry * size,
       firearm: template.composition.firearm * size,

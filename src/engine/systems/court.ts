@@ -45,8 +45,8 @@ export function favorCourtFaction(state: GameState, tag: string, faction: CourtF
   const nation = state.countries[tag];
   if (tag !== 'MING' || !nation?.alive) return false;
   if (!COURT_FACTIONS.includes(faction)) return false;
-  if (nation.politicalPower < 30) return false;
-  nation.politicalPower -= 30;
+  if (nation.politicalPower < 5) return false;
+  nation.politicalPower -= 5;
   nation.factions[faction] = clamp((nation.factions[faction] ?? 0) + 8, 0, 100);
   state.log.push({
     day: state.day,
@@ -62,8 +62,8 @@ export function suppressCourtFaction(state: GameState, tag: string, faction: Cou
   const nation = state.countries[tag];
   if (tag !== 'MING' || !nation?.alive) return false;
   if (!COURT_FACTIONS.includes(faction)) return false;
-  if (nation.politicalPower < 40) return false;
-  nation.politicalPower -= 40;
+  if (nation.politicalPower < 10) return false;
+  nation.politicalPower -= 10;
   nation.factions[faction] = clamp((nation.factions[faction] ?? 0) - 10, 0, 100);
   nation.stability = clamp(nation.stability - 2, 0, 100);
   state.log.push({

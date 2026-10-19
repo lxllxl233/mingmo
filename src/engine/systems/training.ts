@@ -40,6 +40,7 @@ function createArmy(
     navalTarget: null,
     navalOrigin: null,
     navalProgress: 0,
+    siegeMode: 'siege',
     composition: {
       infantry: template.composition.infantry * size,
       firearm: template.composition.firearm * size,

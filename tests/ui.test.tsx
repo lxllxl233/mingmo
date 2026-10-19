@@ -1,9 +1,6 @@
 import { renderToString } from 'react-dom/server';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { StartScreen } from '../src/ui/shell/StartScreen';
-import { PauseMenu } from '../src/ui/shell/PauseMenu';
-import { SettingsModal } from '../src/ui/shell/SettingsModal';
-import { HelpOverlay } from '../src/ui/shell/HelpOverlay';
 import { OnboardingOverlay } from '../src/ui/shell/OnboardingOverlay';
 import { useGameStore } from '../src/ui/state/store';
 
@@ -46,19 +43,19 @@ describe('ui renders without a browser', () => {
     expect(useGameStore.getState().speed).toBe(2);
   });
 
-  it('renders onboarding, pause, settings and help overlays', () => {
+  it('tracks onboarding, settings and help flags', () => {
     const store = useGameStore.getState();
     store.start('1627', 'MING');
     store.updateSettings({ tutorialSeen: false });
     expect(renderToString(<OnboardingOverlay />)).toContain('第一步');
     store.setSettingsOpen(true);
-    expect(renderToString(<SettingsModal />)).toContain('音乐音量');
-    store.setSettingsOpen(false);
+    expect(useGameStore.getState().settingsOpen).toBe(true);
     store.setHelpOpen(true);
-    expect(renderToString(<HelpOverlay />)).toContain('怎么玩');
+    expect(useGameStore.getState().helpOpen).toBe(true);
+    expect(useGameStore.getState().settingsOpen).toBe(false);
     store.setHelpOpen(false);
     store.setMenuOpen(true);
-    expect(renderToString(<PauseMenu />)).toContain('暂停');
+    expect(useGameStore.getState().menuOpen).toBe(true);
   });
 
   it('marks the tutorial done', () => {

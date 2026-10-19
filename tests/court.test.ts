@@ -15,10 +15,10 @@ describe('Ming court factions', () => {
     expect(topCourtFaction(state, 'MING')).toBe('eunuch');
     expect(favorCourtFaction(state, 'MING', 'donglin')).toBe(true);
     expect(ming.factions['donglin']).toBe(18);
-    expect(ming.politicalPower).toBe(70);
+    expect(ming.politicalPower).toBe(95);
     expect(suppressCourtFaction(state, 'MING', 'eunuch')).toBe(true);
     expect(ming.factions['eunuch']).toBe(10);
-    expect(ming.politicalPower).toBe(30);
+    expect(ming.politicalPower).toBe(85);
     expect(topCourtFaction(state, 'MING')).toBe('donglin');
   });
 

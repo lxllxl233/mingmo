@@ -216,6 +216,7 @@ export function createInitialState(
       navalTarget: null,
       navalOrigin: null,
       navalProgress: 0,
+      siegeMode: 'siege',
       composition: {
         infantry: template.composition.infantry * entry.size,
         firearm: template.composition.firearm * entry.size,
