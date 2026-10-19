@@ -189,6 +189,41 @@ function historicalWarTarget(state: GameState, tag: string): string | null {
   return null;
 }
 
+const HISTORICAL_TARGETS: Record<string, Record<string, string[]>> = {
+  '1627': {
+    MING: ['QING', 'SHUN', 'XI'], QING: ['MING'], SHUN: ['MING'], XI: ['MING'],
+    MONGOL: ['QING', 'MING'], TIBET: ['MONGOL'], ZHENG: ['VOC'], VOC: ['ZHENG'],
+  },
+  '1644': {
+    MING: ['QING', 'SHUN', 'XI'], QING: ['SHUN', 'MING', 'XI'], SHUN: ['MING', 'QING'],
+    XI: ['MING'], MONGOL: ['QING'], ZHENG: ['VOC', 'QING'], VOC: ['ZHENG'],
+  },
+  '1650': {
+    QING: ['SMING', 'ZHENG'], SMING: ['QING'], ZHENG: ['QING', 'VOC'],
+    MONGOL: ['QING'], TIBET: ['QING'], VOC: ['ZHENG'],
+  },
+};
+
+const HISTORICAL_EXPANSION_CAP: Record<string, number> = {
+  MING: 120, QING: 120, SHUN: 60, XI: 50, SMING: 30, ZHENG: 20,
+  MONGOL: 8, JOSEON: 6, JAPAN: 12, TIBET: 10, VOC: 5, RUSSIA: 6,
+};
+
+function historicalTargets(state: GameState, tag: string): string[] | null {
+  return HISTORICAL_TARGETS[state.scenarioId]?.[tag] ?? null;
+}
+
+function canUseHistoricalTarget(state: GameState, tag: string, target: string): boolean {
+  const allowed = historicalTargets(state, tag);
+  if (!allowed) return false;
+  if (!allowed.includes(target)) return false;
+  const overlord = state.vassals[target];
+  if (overlord && overlord !== tag) return false;
+  const cap = HISTORICAL_EXPANSION_CAP[tag] ?? 12;
+  const owned = Object.values(state.provinces).filter(province => province.owner === tag).length;
+  return owned < cap;
+}
+
 function manageWar(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   const def = content.countries.get(tag);
@@ -244,6 +279,7 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
       atWar: areAtWar(state, tag, target),
     }))
     .filter(entry => entry.relation <= relationLimit && !entry.atWar)
+    .filter(entry => canUseHistoricalTarget(state, tag, entry.target))
     .filter(entry => ownStrength / entry.strength >= requiredRatio);
   candidates.sort((a, b) => a.strength - b.strength);
   const target = candidates[0];

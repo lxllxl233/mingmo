@@ -1,4 +1,4 @@
-﻿import { create } from 'zustand';
+import { create } from 'zustand';
 import type { ContentIndex } from '../../content/types';
 import { content } from '../../content/browser';
 import { createInitialState } from '../../engine/state/initial';
@@ -82,6 +82,7 @@ interface UiStore {
   closePeace: () => void;
   openCountry: (tag: string) => void;
   moveArmyTo: (provinceId: string) => boolean;
+  moveArmyGroupTo: (provinceId: string) => boolean;
   appendArmyWaypoint: (provinceId: string) => boolean;
   openTrainingPicker: (kind: 'land' | 'navy') => void;
   chooseTrainingTemplate: (templateId: string) => void;
@@ -310,6 +311,25 @@ export const useGameStore = create<UiStore>((set, get) => ({
       return false;
     }
     return get().command({ type: 'army.move', armyId: selectedArmy, path });
+  },
+  moveArmyGroupTo: provinceId => {
+    const { game, armyStack, content } = get();
+    if (!game || game.spectator || !armyStack || armyStack.length === 0) return false;
+    let moved = 0;
+    for (const armyId of armyStack) {
+      const army = game.armies[armyId];
+      if (!army || army.tag !== game.playerTag || army.province === provinceId) continue;
+      const path = findPath(content, game, army.province, provinceId, army.tag);
+      if (!path || path.length === 0) continue;
+      if (get().command({ type: 'army.move', armyId, path })) moved += 1;
+    }
+    if (moved === 0) {
+      sound.play('error');
+      set({ message: '选中的军团没有可通行的统一行军路线' });
+      return false;
+    }
+    set({ message: `${moved} 支军团已统一向目标行军` });
+    return true;
   },
   appendArmyWaypoint: provinceId => {
     const { game, selectedArmy, content } = get();

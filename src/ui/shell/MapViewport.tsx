@@ -72,6 +72,10 @@ export function MapViewport() {
       if (tag) state.openCountry(tag);
       return;
     }
+    if (state.armyStack && state.armyStack.length > 1) {
+      state.moveArmyGroupTo(provinceId);
+      return;
+    }
     if (state.selectedArmy && game.armies[state.selectedArmy]) {
       if (ctrlKey) state.appendArmyWaypoint(provinceId);
       else state.moveArmyTo(provinceId);

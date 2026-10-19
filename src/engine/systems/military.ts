@@ -124,14 +124,20 @@ function retreatOrDestroy(state: GameState, content: ContentIndex, army: ArmySta
     army.movePath = [];
     army.stance = 'hold';
     army.entrenchment = 0;
+    loseStrength(army, Math.max(0, compositionTotal(army) * 0.1));
   } else {
+    const destroyed = compositionTotal(army);
+    for (const war of state.wars) {
+      if (war.attacker === army.tag || war.defender === army.tag) {
+        war.casualties[army.tag] = (war.casualties[army.tag] ?? 0) + destroyed;
+      }
+    }
     delete state.armies[army.id];
   }
-  loseStrength(army, Math.max(0, army.composition.infantry * 0.1));
   state.log.push({
     day: state.day,
     category: 'military',
-    text: `${content.countries.get(army.tag)?.name ?? army.tag} 在 ${provinceName} ${retreat ? '溃退' : '全军覆没'}`,
+    text: `${content.countries.get(army.tag)?.name ?? army.tag} 在 ${provinceName} ${retreat ? '溃退' : '被合围歼灭'}`,
     severity: 'danger',
   });
 }

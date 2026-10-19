@@ -48,6 +48,7 @@ interface EdgeRecord {
 interface ArmyMarker {
   container: Container;
   body: Graphics;
+  bars: Graphics;
   selection: Graphics;
   label: Text;
   stackScale: number;
@@ -1249,7 +1250,7 @@ export class MapRenderer {
         }
       }
       if (planned.length > 1) {
-        const routeColor = selected ? 0xffd27a : 0x2f91b8;
+        const routeColor = selected ? 0xffd27a : 0xa33a32;
         this.strokeTrail(planned, (selected ? 0.09 : 0.11) * lf, 0x1f1c18, selected ? 0.5 : 0.35);
         this.strokeTrail(planned, (selected ? 0.07 : 0.075) * lf, routeColor, selected ? 0.9 : 0.85);
         if (selected) {
@@ -1344,6 +1345,8 @@ export class MapRenderer {
       .stroke({ width: 0.1, color: 0xffd27a, alpha: 1 });
     selection.visible = false;
 
+    const bars = new Graphics();
+
     const label = new Text({
       text: '',
       style: new TextStyle({
@@ -1371,7 +1374,7 @@ export class MapRenderer {
     faction.scale.set(0.7 / 28);
     faction.position.set(0.72, -0.48);
 
-    container.addChild(shadow, body, selection, label, faction);
+    container.addChild(shadow, body, bars, selection, label, faction);
     container.eventMode = 'static';
     container.cursor = 'pointer';
     container.on('pointertap', (event) => {
@@ -1390,11 +1393,25 @@ export class MapRenderer {
     });
     this.armyLayer.addChild(container);
     const marker: ArmyMarker = {
-      container, body, selection, label, stackScale: 1,
+      container, body, bars, selection, label, stackScale: 1,
       armyId: army.id, armyIds: [army.id], targetX: 0, targetY: 0, positioned: false,
     };
     this.armyMarkers.set(key, marker);
     return marker;
+  }
+
+  private drawArmyBars(marker: ArmyMarker, organization: number, strength: number): void {
+    const clampedOrg = Math.max(0, Math.min(1, organization));
+    const clampedStrength = Math.max(0, Math.min(1, strength));
+    marker.bars.clear();
+    marker.bars.roundRect(-1.1, -1.38, 2.2, 0.16, 0.06)
+      .fill({ color: 0x1f1c18, alpha: 0.9 });
+    marker.bars.roundRect(-1.1, -1.38, 2.2 * clampedOrg, 0.16, 0.06)
+      .fill({ color: 0xe8bc42, alpha: 1 });
+    marker.bars.roundRect(-1.1, -1.19, 2.2, 0.16, 0.06)
+      .fill({ color: 0x1f1c18, alpha: 0.9 });
+    marker.bars.roundRect(-1.1, -1.19, 2.2 * clampedStrength, 0.16, 0.06)
+      .fill({ color: 0x62a85c, alpha: 1 });
   }
 
   private updateArmies(): void {
@@ -1417,10 +1434,18 @@ export class MapRenderer {
       const marker = this.ensureArmyMarker(key, representative.tag, representative);
       const count = ordered.length;
       let total = 0;
+      let maxTotal = 0;
+      let organization = 0;
       for (const army of ordered) {
-        total += army.composition.infantry + army.composition.firearm
+        const strength = army.composition.infantry + army.composition.firearm
           + army.composition.cavalry + army.composition.artillery + army.composition.naval;
+        total += strength;
+        maxTotal += Math.max(1, army.maxStrength);
+        organization += army.organization * strength;
       }
+      const organizationPct = total > 0 ? organization / total / 100 : 0;
+      const strengthPct = maxTotal > 0 ? total / maxTotal : 0;
+      this.drawArmyBars(marker, organizationPct, strengthPct);
       marker.armyId = representative.id;
       marker.armyIds = ordered.map(army => army.id);
       const nextId = representative.movePath[0];
