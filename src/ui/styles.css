@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --paper: #f2ead8;
   --paper-deep: #e6dcc6;
   --ink: #1f1c18;
@@ -767,3 +767,79 @@ button:active { transform: translateY(1px); }
 
 
 .stat-tooltip .estate-stability-line { font-size: 10px; padding-left: 6px; border-left: 2px solid var(--line); }
+
+/* ── Q3：开局清单 / 暂停 / 设置 / 帮助 / 引导 ─────────────── */
+.objective-panel h2 { margin-bottom: 2px; }
+.objective-goal { margin: 0 0 10px; padding: 8px 10px; border-left: 3px solid var(--red); background: rgba(158,43,37,.06); color: #6b3a2a; font-size: 13px; line-height: 1.6; }
+.objective-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; padding: 8px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); font-size: 12px; color: var(--ink-soft); }
+.objective-stats b { color: var(--ink); }
+.objective-list { list-style: none; padding: 0; margin: 10px 0; display: flex; flex-direction: column; gap: 7px; }
+.objective-list li { display: flex; flex-direction: column; gap: 2px; }
+.objective-list button { align-self: flex-start; padding: 5px 10px; font-size: 13px; }
+.objective-list span { color: var(--ink-soft); font-size: 11px; line-height: 1.5; }
+.objective-start { width: 100%; margin-top: 4px; padding: 9px; font-size: 15px; letter-spacing: .08em; }
+.objective-help { width: 100%; margin-top: 6px; }
+.objective-panel .muted { font-size: 11px; margin-top: 8px; }
+
+.overlay.pause-overlay, .overlay.settings-overlay, .overlay.help-overlay, .overlay.onboarding-overlay { z-index: 90; }
+.menu-card { width: min(520px, 94vw); max-height: 90vh; overflow: auto; padding: 20px 22px; background: #f7edd9; border: 1px solid #8b6a3f; box-shadow: 0 24px 70px rgba(31,28,24,.4); }
+.menu-card h2 { margin: 2px 0 8px; color: var(--red); letter-spacing: .12em; }
+.menu-card p { line-height: 1.65; }
+.menu-actions { display: flex; flex-direction: column; gap: 7px; margin-top: 14px; }
+.menu-actions button { padding: 8px 12px; font-size: 14px; text-align: left; }
+.menu-actions button.primary { text-align: center; }
+.menu-actions button.danger { color: var(--danger); border-color: rgba(161,43,34,.45); }
+.menu-foot { margin: 12px 0 0; font-size: 11px; }
+
+.settings-card { width: min(560px, 94vw); }
+.setting-row { display: grid; grid-template-columns: 110px 1fr 54px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+.setting-row input[type="range"] { width: 100%; accent-color: var(--red); }
+.setting-row input[type="checkbox"] { justify-self: start; width: 18px; height: 18px; accent-color: var(--red); }
+.setting-row b { text-align: right; font-weight: 600; }
+.setting-row button { justify-self: start; }
+
+.help-card { width: min(760px, 96vw); }
+.help-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.help-scroll { max-height: 62vh; overflow: auto; padding-top: 8px; }
+.help-scroll section { margin-bottom: 14px; }
+.help-scroll h3 { margin: 8px 0 4px; color: var(--red); font-size: 15px; letter-spacing: .08em; }
+.help-scroll p { margin: 3px 0; font-size: 13px; line-height: 1.7; color: var(--ink); }
+
+.onboarding-card { width: min(600px, 94vw); border-top: 4px solid var(--red); }
+.onboarding-body { font-size: 14px; line-height: 1.8; }
+.onboarding-tip { padding: 7px 9px; background: rgba(184,137,46,.12); border-left: 3px solid var(--gold); color: #6b4f2a; font-size: 12px; line-height: 1.6; }
+.onboarding-dots { display: flex; gap: 6px; margin-top: 12px; }
+.onboarding-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(31,28,24,.18); }
+.onboarding-dots span.active { background: var(--red); }
+
+/* 1280–1439：右栏收窄，字号略降但信息保留 */
+@media (max-width: 1439px) {
+  .game-main { grid-template-columns: 58px 1fr minmax(300px, 340px); }
+  .topbar { gap: 10px; padding: 0 10px; font-size: 12px; }
+  .topbar button { padding: 2px 5px; }
+  .panel { padding: 10px 12px 20px; }
+  .focus-tree-canvas { transform-origin: top left; }
+}
+
+/* 1280 以下：右栏变抽屉式覆盖，地图尽量大 */
+@media (max-width: 1279px) {
+  .game-main { grid-template-columns: 54px 1fr minmax(280px, 320px); }
+  .topbar { gap: 8px; font-size: 11px; }
+  .topbar .stat { font-size: 11px; }
+  .right-panel { font-size: 12px; }
+  .objective-stats { grid-template-columns: 1fr; }
+}
+
+/* 低高度（Deck/1366×768）：压缩纵向留白 */
+@media (max-height: 820px) {
+  .panel { padding: 8px 10px 16px; }
+  .panel h2 { font-size: 18px; }
+  .panel h3 { margin: 10px 0 4px; }
+  .help-scroll { max-height: 56vh; }
+  .menu-card { padding: 16px 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+

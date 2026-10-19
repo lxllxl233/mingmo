@@ -10,6 +10,7 @@ import { loadLocal, saveLocal } from '../../app/save/save';
 import { sound } from '../../app/audio/sound';
 import { musicForFaction } from '../../app/audio/music';
 import { canMarchThrough } from '../../engine/rules/access';
+import { loadSettings, persistSettings, type UiSettings } from './settings';
 
 export type PanelKey =
   | 'province'
@@ -67,6 +68,15 @@ interface UiStore {
   selectedBattle: string | null;
   peaceWarId: string | null;
   message: string | null;
+  settings: UiSettings;
+  menuOpen: boolean;
+  settingsOpen: boolean;
+  helpOpen: boolean;
+  setMenuOpen: (open: boolean) => void;
+  setSettingsOpen: (open: boolean) => void;
+  setHelpOpen: (open: boolean) => void;
+  updateSettings: (patch: Partial<UiSettings>) => void;
+  finishTutorial: () => void;
   start: (scenarioId: string, tag: string, seed?: number, difficulty?: Difficulty) => void;
   startSpectator: (scenarioId: string, seed?: number, difficulty?: Difficulty) => void;
   command: (command: Command) => boolean;
@@ -119,6 +129,10 @@ export const useGameStore = create<UiStore>((set, get) => ({
   selectedBattle: null,
   peaceWarId: null,
   message: null,
+  settings: loadSettings(),
+  menuOpen: false,
+  settingsOpen: false,
+  helpOpen: false,
 
   start: (scenarioId, tag, seed = 42, difficulty = 'normal') => {
     const game = createInitialState(content, scenarioId, seed, tag, difficulty);
@@ -142,6 +156,9 @@ export const useGameStore = create<UiStore>((set, get) => ({
       selectedBattle: null,
       peaceWarId: null,
       message: null,
+      menuOpen: false,
+      settingsOpen: false,
+      helpOpen: false,
     });
   },
 
@@ -167,6 +184,9 @@ export const useGameStore = create<UiStore>((set, get) => ({
       selectedBattle: null,
       peaceWarId: null,
       message: '看海模式：全图视野，所有势力由 AI 推演。',
+      menuOpen: false,
+      settingsOpen: false,
+      helpOpen: false,
     });
   },
 
@@ -471,6 +491,67 @@ export const useGameStore = create<UiStore>((set, get) => ({
       message: null,
     });
   },
+  setMenuOpen: open => {
+    const { speed, speedBeforeEvent, game } = get();
+    if (open) {
+      if (game && (game.pendingEvents.length > 0 || game.warAlerts.length > 0 || game.peaceOffers.length > 0)) return;
+      set({
+        menuOpen: true,
+        settingsOpen: false,
+        helpOpen: false,
+        speedBeforeEvent: speed !== 0 ? speed : speedBeforeEvent,
+        speed: 0,
+      });
+    } else {
+      set({ menuOpen: false, speed: speedBeforeEvent, speedBeforeEvent: 0 });
+    }
+  },
+  setSettingsOpen: open => {
+    const { speed, speedBeforeEvent, menuOpen } = get();
+    if (open) {
+      set({
+        settingsOpen: true,
+        helpOpen: false,
+        speedBeforeEvent: speed !== 0 ? speed : speedBeforeEvent,
+        speed: 0,
+      });
+    } else {
+      set({
+        settingsOpen: false,
+        speed: menuOpen ? 0 : speedBeforeEvent,
+        speedBeforeEvent: menuOpen ? speedBeforeEvent : 0,
+      });
+    }
+  },
+  setHelpOpen: open => {
+    const { speed, speedBeforeEvent, menuOpen } = get();
+    if (open) {
+      set({
+        helpOpen: true,
+        settingsOpen: false,
+        speedBeforeEvent: speed !== 0 ? speed : speedBeforeEvent,
+        speed: 0,
+      });
+    } else {
+      set({
+        helpOpen: false,
+        speed: menuOpen ? 0 : speedBeforeEvent,
+        speedBeforeEvent: menuOpen ? speedBeforeEvent : 0,
+      });
+    }
+  },
+  updateSettings: patch => {
+    const next = { ...get().settings, ...patch };
+    persistSettings(next);
+    sound.setMusicVolume(next.musicVolume);
+    if (next.muted !== get().settings.muted) sound.setMuted(next.muted);
+    set({ settings: next });
+  },
+  finishTutorial: () => {
+    const next = { ...get().settings, tutorialSeen: true };
+    persistSettings(next);
+    set({ settings: next });
+  },
   save: slot => {
     const { game } = get();
     if (!game) return;
@@ -507,7 +588,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
       set({ message: error instanceof Error ? error.message : '读档失败' });
     }
   },
-  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, peaceWarId: null, message: null }),
+  reset: () => set({ game: null, speed: 0, speedBeforeEvent: 0, panel: null, countryFocus: null, diplomaticMode: false, diplomaticAnchor: null, trainingPicker: null, trainingRequest: null, selectedProvince: null, selectedArmy: null, armyStack: null, selectedBattle: null, peaceWarId: null, message: null, menuOpen: false, settingsOpen: false, helpOpen: false }),
 }));
 
 

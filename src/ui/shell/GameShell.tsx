@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { musicForFaction } from '../../app/audio/music';
@@ -28,6 +28,10 @@ import { EndModal } from '../overlays/EndModal';
 import { TrainingModal } from '../overlays/TrainingModal';
 import { SpectatorShell } from './SpectatorShell';
 import { SidebarIcon } from './SidebarIcon';
+import { PauseMenu } from './PauseMenu';
+import { SettingsModal } from './SettingsModal';
+import { HelpOverlay } from './HelpOverlay';
+import { OnboardingOverlay } from './OnboardingOverlay';
 
 const SIDEBAR: Array<{ key: PanelKey; label: string }> = [
   { key: 'focus', label: '国策' },
@@ -53,6 +57,12 @@ export function GameShell() {
   const dismissMessage = useGameStore(state => state.dismissMessage);
   const selectedProvince = useGameStore(state => state.selectedProvince);
   const content = useGameStore(state => state.content);
+  const settings = useGameStore(state => state.settings);
+  const menuOpen = useGameStore(state => state.menuOpen);
+  const settingsOpen = useGameStore(state => state.settingsOpen);
+  const helpOpen = useGameStore(state => state.helpOpen);
+  const setMenuOpen = useGameStore(state => state.setMenuOpen);
+  const setHelpOpen = useGameStore(state => state.setHelpOpen);
   const battleCount = useRef(0);
 
   useEffect(() => {
@@ -82,15 +92,64 @@ export function GameShell() {
   useEffect(() => {
     if (!game || game.spectator) return;
     const handle = (event: KeyboardEvent) => {
-      if (event.code !== 'Space') return;
       const target = event.target as HTMLElement | null;
-      if (target?.closest('input, textarea, select, button')) return;
-      event.preventDefault();
-      setSpeed(speed === 0 ? 1 : 0);
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      const state = useGameStore.getState();
+      const overlayOpen = state.menuOpen || state.settingsOpen || state.helpOpen;
+      if (!state.settings.tutorialSeen) return;
+      if (overlayOpen && event.code !== 'Escape' && event.code !== 'F1') return;
+      if (event.code === 'Escape') {
+        if (state.settingsOpen) state.setSettingsOpen(false);
+        else if (state.helpOpen) state.setHelpOpen(false);
+        else if (state.menuOpen) state.setMenuOpen(false);
+        else if (state.panel) state.closePanel();
+        else state.setMenuOpen(true);
+        return;
+      }
+      if (event.code === 'F1') {
+        event.preventDefault();
+        state.setHelpOpen(!state.helpOpen);
+        return;
+      }
+      const speedKeys = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7'];
+      const speedIndex = speedKeys.indexOf(event.code);
+      if (speedIndex >= 0) {
+        event.preventDefault();
+        const speeds = [0, 1, 2, 4, 8, 16, 32] as const;
+        state.setSpeed(speeds[speedIndex] ?? 1);
+        return;
+      }
+      if (event.code === 'Space') {
+        event.preventDefault();
+        state.setSpeed(state.speed === 0 ? (state.speedBeforeEvent || 1) : 0);
+      }
     };
     window.addEventListener('keydown', handle);
     return () => window.removeEventListener('keydown', handle);
-  }, [speed, setSpeed, game?.spectator]);
+  }, [game, game?.spectator]);
+
+  useEffect(() => {
+    if (!game || game.spectator) return;
+    const onVisibility = () => {
+      if (document.hidden) {
+        const state = useGameStore.getState();
+        if (state.speed !== 0) state.setMenuOpen(true);
+      }
+    };
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      const current = useGameStore.getState().game;
+      if (current && !current.ended) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    };
+    window.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => {
+      window.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('beforeunload', beforeUnload);
+    };
+  }, [game?.ended, game?.spectator]);
 
   useEffect(() => {
     if (!message) return;
@@ -112,7 +171,7 @@ export function GameShell() {
       onPointerDown={event => {
         const target = event.target as HTMLElement | null;
         if (target?.closest('button')) sound.play('click');
-        if (event.button === 0 && !target?.closest('.right-panel')) {
+        if (event.button === 0 && !target?.closest('.right-panel, .overlay, .menu-card')) {
           useGameStore.getState().clearArmySelection();
         }
       }}
@@ -152,17 +211,33 @@ export function GameShell() {
           {panel === 'decisions' && <DecisionPanel />}
           {panel === 'log' && <LogPanel />}
           {panel === null && (
-            <div className="panel">
+            <div className="panel objective-panel">
+              <p className="eyebrow">开局清单</p>
               <h2>{country ? content.countries.get(country.tag)?.name : '—'}</h2>
-              <p className="muted">
-                点击地区查看详情。左侧打开国策、科研、分配、军事、外交与决议。
-              </p>
-              <div className="row"><span>国库</span><b>{Math.round(country?.treasury ?? 0).toLocaleString()} 两</b></div>
-              <div className="row"><span>粮储</span><b>{Math.round(country?.food ?? 0).toLocaleString()} 石</b></div>
-              <div className="row"><span>稳定 / 天命</span><b>{Math.round(country?.stability ?? 0)} / {Math.round(country?.mandate ?? 0)}</b></div>
-              <div className="row"><span>腐败 / 皇权</span><b>{Math.round(country?.corruption ?? 0)} / {Math.round(country?.authority ?? 0)}</b></div>
-              <div className="row"><span>军心</span><b>{Math.round(country?.armyLoyalty ?? 0)}</b></div>
-              <div className="row"><span>欠饷</span><b>{Math.round(country?.arrears ?? 0).toLocaleString()} 两</b></div>
+              <p className="objective-goal">{playerDef?.goal ?? '先活下来，再谈天下。'}</p>
+              <div className="objective-stats">
+                <span>银 <b>{Math.round(country?.treasury ?? 0).toLocaleString()}</b></span>
+                <span>粮 <b>{Math.round(country?.food ?? 0).toLocaleString()}</b></span>
+                <span>欠饷 <b>{Math.round(country?.arrears ?? 0).toLocaleString()}</b></span>
+                <span>稳定 <b>{Math.round(country?.stability ?? 0)}</b></span>
+              </div>
+              <ol className="objective-list">
+                <li>
+                  <button onClick={() => openPanel('estates')}>检查分配与税法</button>
+                  <span>先看钱从哪里来、向谁开刀。</span>
+                </li>
+                <li>
+                  <button onClick={() => openPanel('focus')}>选择第一条国策</button>
+                  <span>优先解决财政、边防或民变。</span>
+                </li>
+                <li>
+                  <button onClick={() => openPanel('military')}>检视军团与战争</button>
+                  <span>确认前线、欠饷与补给。</span>
+                </li>
+              </ol>
+              <button className="primary objective-start" onClick={() => setSpeed(1)}>开始推进（空格）</button>
+              <button className="ghost objective-help" onClick={() => setHelpOpen(true)}>打开帮助（F1）</button>
+              <p className="muted">事件会暂停时间；选项会显示代价。Esc 打开暂停菜单。</p>
             </div>
           )}
         </aside>
@@ -188,6 +263,7 @@ export function GameShell() {
         )}
         {selectedProvince && <span className="muted">已选：{content.provinces.get(selectedProvince)?.name}</span>}
         <span className="spacer" />
+        <button className="ghost" onClick={() => setMenuOpen(true)}>菜单（Esc）</button>
         {message && <span className="message">{message}</span>}
         <span className="muted">事件 {pending.length} · 军队 {Object.values(game.armies).filter(army => army.tag === game.playerTag).length}</span>
       </footer>
@@ -211,6 +287,12 @@ export function GameShell() {
       {pending.length === 0 && <TrainingModal />}
       {game.ended && <EndModal />}
       {message && <div className="toast">{message}</div>}
+      {menuOpen && <PauseMenu />}
+      {settingsOpen && <SettingsModal />}
+      {helpOpen && <HelpOverlay />}
+      {!settings.tutorialSeen && pending.length === 0 && !game.ended && !menuOpen && !settingsOpen && !helpOpen && (
+        <OnboardingOverlay />
+      )}
     </div>
   );
 }

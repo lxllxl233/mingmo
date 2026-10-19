@@ -1,4 +1,4 @@
-﻿import { useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
 import { controlledProvinceCount } from '../../engine/rules/geography';
@@ -45,7 +45,7 @@ export function TopBar() {
   const content = useGameStore(state => state.content);
   const save = useGameStore(state => state.save);
   const load = useGameStore(state => state.load);
-  const reset = useGameStore(state => state.reset);
+  const setMenuOpen = useGameStore(state => state.setMenuOpen);
   const [muted, setMuted] = useState(sound.isMuted);
   if (!game) return null;
   const country = game.countries[game.playerTag];
@@ -233,8 +233,8 @@ export function TopBar() {
         {muted ? '♪̶' : '♪'}
       </button>
       <button onClick={() => save('manual')}>存档</button>
-      <button onClick={() => load('manual')}>读档</button>
-      <button onClick={reset}>退出</button>
+      <button onClick={() => { if (window.confirm('读取手动存档会覆盖当前进度，继续？')) load('manual'); }}>读档</button>
+      <button onClick={() => setMenuOpen(true)}>菜单</button>
     </header>
   );
 }
