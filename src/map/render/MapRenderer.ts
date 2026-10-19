@@ -657,6 +657,7 @@ export class MapRenderer {
     this.clampWorld();
     this.updateZoomScales();
     this.drawTerrainDetail();
+    if (this.state) this.drawArmyTrails();
   }
 
   private clampWorld(): void {
@@ -685,11 +686,11 @@ export class MapRenderer {
   private updateZoomScales(): void {
     const scale = this.world.scale.x;
     const zoomT = Math.max(0, Math.min(1, (scale - 4) / 80));
-    const markerPixels = 14 + zoomT * 10;
+    const markerPixels = 16 + zoomT * 10;
     const markerScale = markerPixels / Math.max(0.001, scale);
     for (const marker of this.armyMarkers.values()) {
       marker.container.scale.set(markerScale * marker.stackScale);
-      const showLabel = zoomT > 0.08 || marker.container.zIndex >= 10;
+      const showLabel = zoomT > 0.04 || marker.container.zIndex >= 10;
       marker.label.visible = showLabel;
       marker.labelBg.visible = showLabel;
     }
@@ -802,6 +803,7 @@ export class MapRenderer {
       this.drawHover();
       this.drawSeaRoutes();
       this.drawTerrainDetail();
+      this.drawArmyTrails();
     };
     app.canvas.addEventListener('wheel', this.wheelHandler, { passive: false });
     this.contextHandler = (event: MouseEvent) => {
@@ -1335,6 +1337,21 @@ export class MapRenderer {
       }
       travelled += length;
     }
+    const firstCurve = curve[0];
+    if (firstCurve) {
+      this.attackLayer.moveTo(firstCurve.x, firstCurve.y);
+      for (let i = 1; i < curve.length; i += 1) {
+        const point = curve[i];
+        if (point) this.attackLayer.lineTo(point.x, point.y);
+      }
+      this.attackLayer.stroke({
+        width: 0.035 * widthScale,
+        color: lerpColor(0xf7edd9, factionColor, 0.55),
+        alpha: 0.62,
+        cap: 'round',
+        join: 'round',
+      });
+    }
     for (let i = 0; i < points.length - 1; i += 1) {
       const point = points[i];
       if (!point) continue;
@@ -1370,7 +1387,7 @@ export class MapRenderer {
   private smoothRoute(points: Array<{ x: number; y: number }>): Array<{ x: number; y: number }> {
     if (points.length < 3) return points;
     const result: Array<{ x: number; y: number }> = [];
-    const samples = 8;
+    const samples = 16;
     for (let i = 0; i < points.length - 1; i += 1) {
       const p0 = points[i - 1] ?? points[i]!;
       const p1 = points[i]!;
@@ -1439,10 +1456,10 @@ export class MapRenderer {
     drawUnitIcon(plate, army.composition, INK, tag);
 
     const badge = new Graphics();
-    badge.circle(0.82, -0.42, 0.38)
+    badge.circle(0.72, -0.38, 0.42)
       .fill({ color: 0xf7edd9, alpha: 0.98 })
       .stroke({ width: 0.07, color: INK, alpha: 0.95 });
-    badge.circle(0.82, -0.42, 0.29)
+    badge.circle(0.72, -0.38, 0.33)
       .fill({ color, alpha: 0.95 });
 
     const selection = new Graphics();
@@ -1463,14 +1480,14 @@ export class MapRenderer {
       }),
     });
     label.anchor.set(0.5);
-    label.scale.set(0.72 / 40);
-    label.position.set(0, 0.72);
-    label.resolution = 3;
+    label.scale.set(0.66 / 40);
+    label.position.set(0, 0.68);
+    label.resolution = 4;
 
     const labelBg = new Graphics();
-    labelBg.roundRect(-1.27, 0.42, 2.54, 0.62, 0.12)
-      .fill({ color: 0xf7edd9, alpha: 0.96 })
-      .stroke({ width: 0.035, color, alpha: 0.9 });
+    labelBg.roundRect(-0.98, 0.42, 1.96, 0.56, 0.1)
+      .fill({ color: 0xf7edd9, alpha: 0.94 })
+      .stroke({ width: 0.03, color, alpha: 0.9 });
 
     const faction = new Text({
       text: FACTION_MARKS[tag] ?? tag.slice(0, 1),
@@ -1483,8 +1500,8 @@ export class MapRenderer {
       }),
     });
     faction.anchor.set(0.5);
-    faction.scale.set(0.78 / 28);
-    faction.position.set(0.82, -0.42);
+    faction.scale.set(0.48 / 28);
+    faction.position.set(0.72, -0.38);
     faction.resolution = 3;
 
     container.addChild(shadow, body, plate, badge, bars, selection, labelBg, label, faction);
@@ -1764,8 +1781,11 @@ function hashString(text: string): number {
 }
 
 function strengthText(strength: number): string {
-  if (strength >= 10000) return `${(strength / 1000).toFixed(0)}k`;
-  if (strength >= 1000) return `${(strength / 1000).toFixed(1)}k`;
+  if (strength >= 10000) return `${Math.round(strength / 1000)}k`;
+  if (strength >= 1000) {
+    const value = strength / 1000;
+    return `${value >= 5 ? value.toFixed(0) : value.toFixed(1).replace(/\.0$/, '')}k`;
+  }
   return String(Math.max(0, Math.round(strength)));
 }
 
