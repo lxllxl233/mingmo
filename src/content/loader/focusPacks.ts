@@ -115,10 +115,10 @@ const COUNTRY_FLAVOR: Record<string, { faction: string; effect: EffectBuilder }>
   MONGOL: { faction: 'nobles', effect: scale => ({ addManpower: 400 * scale }) },
   JAPAN: { faction: 'merchants', effect: scale => ({ addTreasury: 3000 * scale }) },
   JOSEON: { faction: 'officials', effect: scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }) },
-  XI: { faction: 'military', effect: scale => ({ addManpower: 400 * scale }) },
+  XI: { faction: 'farmers', effect: scale => ({ addManpower: 600 * scale }) },
   TIBET: { faction: 'clergy', effect: scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }) },
   VOC: { faction: 'merchants', effect: scale => ({ addTreasury: 3000 * scale }) },
-  RUSSIA: { faction: 'military', effect: scale => ({ addManpower: 400 * scale }) },
+  RUSSIA: { faction: 'military', effect: scale => ({ addTreasury: 2000 * scale }) },
 };
 
 /** 六条分支各有一项额外倾向，避免同势力内各分支只按 kind 复制。 */

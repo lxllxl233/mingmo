@@ -63,4 +63,10 @@ describe('ui renders without a browser', () => {
     useGameStore.getState().finishTutorial();
     expect(useGameStore.getState().settings.tutorialSeen).toBe(true);
   });
+
+  it('stores separate music and sfx volumes', () => {
+    useGameStore.getState().updateSettings({ musicVolume: 0.4, sfxVolume: 0.3 });
+    expect(useGameStore.getState().settings.musicVolume).toBe(0.4);
+    expect(useGameStore.getState().settings.sfxVolume).toBe(0.3);
+  });
 });

@@ -552,6 +552,7 @@ export const useGameStore = create<UiStore>((set, get) => ({
     const next = { ...get().settings, ...patch };
     persistSettings(next);
     sound.setMusicVolume(next.musicVolume);
+    sound.setSfxVolume(next.sfxVolume);
     if (next.muted !== get().settings.muted) sound.setMuted(next.muted);
     set({ settings: next });
   },

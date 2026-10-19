@@ -22,6 +22,7 @@ class SoundEngine {
   private musicLoop: MusicLoop = 'list';
   private musicPlaying = false;
   private musicVolume = 0.65;
+  private sfxVolume = 0.8;
   private musicAudio: HTMLAudioElement | null = null;
   private voiceAudio: HTMLAudioElement | null = null;
   private musicToken = 0;
@@ -32,6 +33,9 @@ class SoundEngine {
       const storedVolume = localStorage.getItem('jiashen.musicVolume');
       const savedVolume = storedVolume === null ? 0.65 : Number(storedVolume);
       if (Number.isFinite(savedVolume) && savedVolume >= 0 && savedVolume <= 1) this.musicVolume = savedVolume;
+      const storedSfx = localStorage.getItem('jiashen.sfxVolume');
+      const savedSfx = storedSfx === null ? 0.8 : Number(storedSfx);
+      if (Number.isFinite(savedSfx) && savedSfx >= 0 && savedSfx <= 1) this.sfxVolume = savedSfx;
     } catch {
       this.muted = false;
     }
@@ -86,6 +90,15 @@ class SoundEngine {
     if (this.musicAudio) this.musicAudio.volume = this.musicVolume;
     try {
       localStorage.setItem('jiashen.musicVolume', String(this.musicVolume));
+    } catch {
+      // 忽略隐私模式下的存储错误。
+    }
+  }
+
+  setSfxVolume(volume: number): void {
+    this.sfxVolume = Math.max(0, Math.min(1, volume));
+    try {
+      localStorage.setItem('jiashen.sfxVolume', String(this.sfxVolume));
     } catch {
       // 忽略隐私模式下的存储错误。
     }
@@ -188,41 +201,27 @@ class SoundEngine {
       VOC: 'voc_line.mp3',
       RUSSIA: 'russia_line.mp3',
     };
-    let phrase = '集合！';
     let file = factionVoice[tag] ?? 'default_assemble.mp3';
     const chineseFaction = ['MING', 'QING', 'SHUN', 'XI', 'SMING', 'ZHENG', 'TIBET'].includes(tag);
-    if (chineseFaction && total > 0 && composition.naval / total >= 0.35) { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
-    else if (chineseFaction && total > 0 && composition.cavalry / total >= 0.3) { phrase = '上马！'; file = 'cavalry_mount.mp3'; }
-    else if (tag === 'ZHENG' && total > 0 && composition.naval / total >= 0.25) { phrase = '扬帆！'; file = 'navy_sail.mp3'; }
-    this.playVoice(file, phrase);
+    if (chineseFaction && total > 0 && composition.naval / total >= 0.35) file = 'navy_sail.mp3';
+    else if (chineseFaction && total > 0 && composition.cavalry / total >= 0.3) file = 'cavalry_mount.mp3';
+    else if (tag === 'ZHENG' && total > 0 && composition.naval / total >= 0.25) file = 'navy_sail.mp3';
+    this.playVoice(file);
     this.tone(96, 0.1, 'triangle', 0.025, 64);
   }
 
-  private playVoice(file: string, fallbackText: string): void {
+  private playVoice(file: string): void {
     if (this.muted) return;
     try {
       if (!this.voiceAudio) this.voiceAudio = new Audio();
       this.voiceAudio.pause();
       this.voiceAudio.src = `/audio/voices/${file}`;
-      this.voiceAudio.volume = 0.8;
-      void this.voiceAudio.play().catch(() => this.shout(fallbackText, 1));
+      this.voiceAudio.volume = 0.8 * this.sfxVolume;
+      void this.voiceAudio.play().catch(() => {
+        // 录音不可用时保留鼓点提示；不再回退到浏览器 TTS。
+      });
     } catch {
-      this.shout(fallbackText, 1);
-    }
-  }
-
-  private shout(text: string, pitch: number): void {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'zh-CN';
-      utterance.rate = 1.12;
-      utterance.pitch = pitch;
-      utterance.volume = this.muted ? 0 : 0.7;
-      window.speechSynthesis.speak(utterance);
-    } catch {
-      // 系统语音不可用时保留鼓点提示。
+      // 录音不可用时保留鼓点提示。
     }
   }
 
@@ -276,7 +275,7 @@ class SoundEngine {
     const context = this.context;
     if (!context) return;
     const start = context.currentTime + delay;
-    const safeVolume = Math.max(0.0001, volume);
+    const safeVolume = Math.max(0.0001, volume * this.sfxVolume);
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.type = type;
@@ -306,7 +305,8 @@ class SoundEngine {
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(lowpass, context.currentTime);
     const gain = context.createGain();
-    gain.gain.setValueAtTime(volume, context.currentTime);
+    const scaled = Math.max(0.0001, volume * this.sfxVolume);
+    gain.gain.setValueAtTime(scaled, context.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + duration);
     source.connect(filter).connect(gain).connect(context.destination);
     source.start();

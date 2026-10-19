@@ -24,6 +24,18 @@ export function SettingsModal() {
           <b>{Math.round(settings.musicVolume * 100)}%</b>
         </label>
         <label className="setting-row">
+          <span>音效音量</span>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={settings.sfxVolume}
+            onChange={event => update({ sfxVolume: Number(event.target.value) })}
+          />
+          <b>{Math.round(settings.sfxVolume * 100)}%</b>
+        </label>
+        <label className="setting-row">
           <span>静音</span>
           <input
             type="checkbox"
