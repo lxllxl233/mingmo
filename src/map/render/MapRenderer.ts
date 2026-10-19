@@ -1130,8 +1130,7 @@ export class MapRenderer {
           fontSize: baseSize,
           fontWeight: '600',
           fill: lightText ? PAPER : INK,
-          stroke: { color: lightText ? INK : PAPER, width: 3.2 },
-          letterSpacing: 6,
+          letterSpacing: 4,
         }),
       });
       text.anchor.set(0.5);
