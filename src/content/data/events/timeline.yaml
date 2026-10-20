@@ -577,20 +577,83 @@ events:
     options:
       - id: north
         name: 全力北伐
-        tooltip: 兵源与军心上升，国库与稳定受损。
+        tooltip: 兵源与军心上升，国库与稳定受损；若受挫则大伤元气。
         ai_chance: 55
         effect:
           - add_manpower: 5000
           - add_treasury: -60000
           - add_faction_influence: { military: 5 }
           - add_stability: -2
+          - set_flag: zheng_nanjing_risked
       - id: hold_sea
         name: 回守海疆
-        tooltip: 国库与商人支持上升。
+        tooltip: 国库与商人支持上升，保全根本。
         ai_chance: 45
         effect:
           - add_treasury: 30000
           - add_faction_influence: { merchants: 4, military: -2 }
+          - set_flag: zheng_nanjing_held
+
+  # 南京之役的长期后果：全力北伐 → 南京受挫（兵败回厦）；回守海疆 → 海疆稳固（海贸反哺）。
+  - id: ZHENG_e_nanjing_failed
+    title: 南京受挫
+    desc: 北伐大军顿兵坚城之下，清军援兵四集，郑军败退厦门，精锐折损泰半。
+    historical_context: 1659 年郑成功围南京失利，主力受损，自此无力再图江南。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1660-01-01, before: 1662-12-31 }
+        - has_flag: zheng_nanjing_risked
+    mtth: 150
+    fire_once: true
+    options:
+      - id: withdraw
+        name: 收兵回厦
+        tooltip: 精锐折损，军心与稳定大降。
+        ai_chance: 60
+        effect:
+          - add_stability: -4
+          - add_manpower: -8000
+          - add_army_loyalty: -3
+      - id: regroup
+        name: 重整再战
+        tooltip: 耗银重整，挽回部分士气。
+        ai_chance: 40
+        effect:
+          - add_treasury: -40000
+          - add_manpower: -5000
+          - add_army_loyalty: 1
+
+  - id: ZHENG_e_sea_stable
+    title: 海疆稳固
+    desc: 郑氏回守海疆，以海贸养兵，商人归心，海上网络愈发稳固。
+    historical_context: 郑氏若专注海贸，可凭海商网络与清军周旋更久。
+    scope: country
+    country: ZHENG
+    trigger:
+      all:
+        - date: { after: 1660-01-01, before: 1662-12-31 }
+        - has_flag: zheng_nanjing_held
+    mtth: 150
+    fire_once: true
+    options:
+      - id: trade
+        name: 大兴海贸
+        tooltip: 商人归心，国库充盈。
+        ai_chance: 60
+        effect:
+          - add_treasury: 40000
+          - add_stability: 2
+          - add_estate_loyalty: { estate: merchants, value: 4 }
+      - id: build_navy
+        name: 添置战船
+        tooltip: 耗银造船，水师更强。
+        ai_chance: 40
+        effect:
+          - add_treasury: -50000
+          - add_army_loyalty: 2
+          - add_modifier: { naval_attack_pct: 4 }
 
   - id: ZHENG_e_taiwan
     title: 收复台湾
