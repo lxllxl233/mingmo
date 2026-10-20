@@ -400,3 +400,72 @@ events:
         effect:
           - add_food: -20000
           - add_stability: -1
+
+  # 1650 单极的追赶路径（Phase 2.2）：三藩之乱是真实历史，1673 年吴三桂起兵反清，
+  # 半壁动摇。它只在大清仍占有 ≥200 省（即还在雪球）时触发，用真机制给反清势力开一个窗口，
+  # 取代上一任靠 dominantTag hack 强行围攻的做法。flag 驱动的后续事件是 Phase 3 的长线后果示范。
+  - id: late_e_three_feudatories
+    title: 三藩之乱
+    desc: 吴三桂起兵反清，耿精忠、尚之信相继响应，云贵、两广、福建、陕西同时易帜。半壁江山一朝动摇。
+    historical_context: 1673 年吴三桂以「兴明讨虏」为号起兵，三藩之乱持续八年，几乎颠覆清朝。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1673-01-01, before: 1683-12-31 }
+        - provinceCount: { gte: 200 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: quell
+        name: 全力平叛
+        tooltip: 糜烂数年，国库、兵源与稳定大损。
+        ai_chance: 60
+        effect:
+          - add_stability: -8
+          - add_manpower: -40000
+          - add_treasury: -150000
+          - add_army_loyalty: -8
+          - add_corruption: 3
+          - set_flag: qing_three_feudatories
+      - id: negotiate
+        name: 招抚议和
+        tooltip: 暂缓兵戈，但养痈遗患，腐败滋生。
+        ai_chance: 40
+        effect:
+          - add_stability: -4
+          - add_treasury: -80000
+          - add_corruption: 6
+          - add_army_loyalty: -3
+          - set_flag: qing_three_feudatories
+
+  - id: late_e_three_feudatories_end
+    title: 三藩平定
+    desc: 八年血战，吴三桂病亡，清军逐一克复云南、贵州、福建。乱后清廷得以重整朝纲，也确立了直接统治西南的格局。
+    historical_context: 1681 年清军攻入昆明，三藩之乱平定，清朝从此牢牢控制南方。
+    scope: country
+    country: QING
+    trigger:
+      all:
+        - date: { after: 1680-01-01, before: 1683-12-31 }
+        - has_flag: qing_three_feudatories
+    mtth: 120
+    fire_once: true
+    options:
+      - id: consolidate
+        name: 收拢人心
+        tooltip: 乱后重建，朝局渐稳，皇权上升。
+        ai_chance: 60
+        effect:
+          - add_stability: 4
+          - add_authority: 4
+          - add_treasury: 100000
+      - id: purge
+        name: 秋后算账
+        tooltip: 严惩从逆，吏治稍清，却失人心。
+        ai_chance: 40
+        effect:
+          - add_authority: 6
+          - add_corruption: -3
+          - add_stability: -2
+
