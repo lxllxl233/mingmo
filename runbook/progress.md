@@ -92,11 +92,19 @@
   - **顺**：山海关（决战→弃京西走 / 退守→保存实力）（`timeline2.yaml`）
 - 所有链 `pnpm validate` + `audit:content` 0 死 flag。事件总量 214 → **221**。
 
-### 待办
+### 已完成（3.1 事件决策链）✅ 8/8 势力
 
-- 3.1 剩余 5 个势力（南明/郑/蒙古/朝鲜/日本）各补 1–2 条决策链。
-- 3.2 AI 策略性（兵力集中/记仇/制海权）：`ai.ts` 当前仍是「BFS 到最近敌省 + 硬编码历史目标 + `dominantTag≥0.38` hack」，未改。
-- 3.3 内容重复审计。
+清/明/顺/郑/南明/蒙古/朝鲜/日本 各 1 条决策链（选择 → set_flag → 后续 → 长线后果），事件 214 → 230，validate/audit 全绿。
+
+### 待办（3.2 AI 策略性，未改，为最大「好玩」杠杆）
+
+`ai.ts` 现状：行军 = `frontCandidates`/`frontTargets`（每个军团 BFS 到「最近的高 support 边境省」，`assigned` 集合强制**各自占不同省**，无兵力集中）；宣战 = `HISTORICAL_TARGETS` 硬编码表 + `dominantTag≥0.38` hack；无记仇、无制海权。
+
+- **兵力集中**（`ai.ts:599-615` `manageMovement`）：改为「最强的 2 支军团共享最高分目标（会合打赢敌军），其余再分散」，而非每支各占一省。需改 `frontTargets` 的 target 去重逻辑 + 用敌方驻军强度做评分（当前评分只有 `support/pathLength/development`，不看来敌）。改完重跑 45 局矩阵对比。
+- **记仇**：新增持久化 grudge 状态（背盟/被宣战的 tag），让 `historicalWarTarget` 优先报复背刺者，而非只看当前关系阈值。需改 `state/types.ts`（加字段）+ `rules/diplomacy.ts`（背盟时记录）+ `ai.ts`（用 grudge）。
+- **制海权**（可选项）：郑/清/荷/日按港口价值选目标；成本高则明确写「已知限制」，不假装。
+
+### 待办（3.3 内容重复审计）
 
 ## Phase 4 — UX 打磨 + 文档校准（进行中）
 
