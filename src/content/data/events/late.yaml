@@ -3,8 +3,12 @@
 # 补强理由：player-bot 8 局长局审计显示，存活到 1683 的 4 局在 1650 年后人均只触发
 # 3.3 次事件，末期可用事件池仅 1–5 个，构成内容干旱。本文件只补通用/势力后期事件，
 # 时间窗全部止于 1683，不改变 1627–1650 的平衡基线。
-# 通用事件加 provinceCount < 200 的追赶门槛：避免唯一的大国（如 1650 开局即 291 省的清）
-# 继续吃后期奖励，把 1650 剧本锁死成单一胜者；小国获得内容与追赶机会。
+#
+# 去 hack（Phase 2）：原实现对通用事件加 provinceCount < 200 门槛，用「饿死大国内容」
+# 来掩盖 1650 清一极化。这会让大国玩家在 1650 后几乎看不到任何晚期事件（体验 bug）。
+# 现已移除门槛，所有势力都能触发；奖励是固定小数额，对大国而言相对收益天然递减，
+# 不构成额外雪球。1650 单极问题由反清势力的追赶路径（联盟/海贸/藩属收入）在引擎层解决，
+# 不再靠屏蔽内容。
 events:
   - id: late_e_silver_drought
     title: 银荒
@@ -15,7 +19,6 @@ events:
     trigger:
       all:
         - date: { after: 1660-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 300
     fire_once: true
     options:
@@ -45,7 +48,6 @@ events:
     trigger:
       all:
         - date: { after: 1656-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 240
     fire_once: true
     options:
@@ -75,7 +77,6 @@ events:
     trigger:
       all:
         - date: { after: 1665-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 320
     fire_once: true
     options:
@@ -103,7 +104,6 @@ events:
     trigger:
       all:
         - date: { after: 1650-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 260
     fire_once: true
     options:
@@ -132,7 +132,6 @@ events:
     trigger:
       all:
         - date: { after: 1650-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 280
     fire_once: true
     options:
@@ -161,7 +160,6 @@ events:
     trigger:
       all:
         - date: { after: 1660-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 340
     fire_once: true
     options:
@@ -190,7 +188,6 @@ events:
     trigger:
       all:
         - date: { after: 1655-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 300
     fire_once: true
     options:
@@ -219,7 +216,6 @@ events:
     trigger:
       all:
         - date: { after: 1650-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 300
     fire_once: true
     options:
@@ -249,7 +245,6 @@ events:
     trigger:
       all:
         - date: { after: 1655-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 320
     fire_once: true
     options:
@@ -277,7 +272,6 @@ events:
     trigger:
       all:
         - date: { after: 1650-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 360
     fire_once: true
     options:
@@ -387,7 +381,6 @@ events:
     trigger:
       all:
         - date: { after: 1650-01-01, before: 1683-12-31 }
-        - provinceCount: { lt: 200 }
     mtth: 400
     repeatable: true
     cooldown_days: 1825

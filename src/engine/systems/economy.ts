@@ -247,8 +247,11 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const foodOutput = government.food * (1 + clamp(modifiers['food_output_pct'] ?? 0, -80, 100) / 100);
     const foodPurchased = foodPurchaseSilver / grainPrice * Math.max(0.2, foodOutput);
     const famineResistance = clamp(modifiers['famine_resistance'] ?? 0, 0, 0.8);
-    const hoardCap = 500000 + provinces.length * 4000;
-    const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.25 : 0;
+    // 囤银硬 sink：国库超过「规模上限」后按月烧掉超出部分，火耗/库藏积压随之上升。
+    // 上一版 0.25 的烧除率让均衡国库 = 上限 + 月净收入×4，郑氏等海贸/富省势力仍能囤到上千万两。
+    // 提高到 0.5 后均衡 ≈ 上限 + 月净收入×2，配合更低的基数上限，把大国国库压到数月支出以内。
+    const hoardCap = 350000 + provinces.length * 3000;
+    const hoardLoss = nation.treasury > hoardCap ? (nation.treasury - hoardCap) * 0.5 : 0;
     const net = availableBeforeFood - foodPurchaseSilver - armyPay - hoardLoss;
     const expense = corruptionLoss + loyaltyCost + pressureCost + armyPay + foodPurchaseSilver + hoardLoss;
     nation.food += foodPurchased + foodIncome;
@@ -319,7 +322,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     nation.corruption = clamp(
       nation.corruption + content.balance.economy.corruptionDrift
       + (modifiers['corruption_monthly'] ?? 0)
-      + (nation.treasury > hoardCap ? 0.05 : 0)
+      + (nation.treasury > hoardCap ? 0.08 : 0)
       + ((officials?.loyalty ?? 50) < 30 ? 0.12 : 0)
       - nation.authority / 1000,
       0,

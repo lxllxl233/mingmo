@@ -37,7 +37,8 @@ describe('monthly economy', () => {
     zheng.inflation = 0;
     zheng.foodPurchasePct = 0;
     zheng.arrears = 1000;
-    zheng.treasury = 500000;
+    // 国库保持在囤银上限以下，只验证「偿债是真实流出」，不触发火耗。
+    zheng.treasury = 200000;
     const before = zheng.treasury;
     runMonthlyEconomy(state, content);
     const report = zheng.lastReport;
@@ -46,5 +47,20 @@ describe('monthly economy', () => {
     expect(zheng.arrears).toBeLessThan(1000);
     expect(report.expense).toBeGreaterThan(0);
     expect(zheng.treasury - before).toBeCloseTo(report.net, 6);
+  });
+
+  it('drains treasury above the hoard cap (囤银 sink)', () => {
+    const state = createInitialState(content, '1650', 42, 'ZHENG');
+    const zheng = state.countries['ZHENG'];
+    if (!zheng) throw new Error('missing ZHENG');
+    zheng.inflation = 0;
+    zheng.foodPurchasePct = 0;
+    // 远超上限（350000 + 省数×3000）的囤银必须被火耗/库藏积压按月烧掉。
+    zheng.treasury = 10000000;
+    runMonthlyEconomy(state, content);
+    const report = zheng.lastReport;
+    if (!report) throw new Error('missing report');
+    expect(report.expenseHoard).toBeGreaterThan(0);
+    expect(report.net).toBeLessThan(0);
   });
 });
