@@ -105,22 +105,87 @@ events:
     options:
       - id: push
         name: 催战出关
-        tooltip: 迎合朝议，但准备不足。
+        tooltip: 迎合朝议，短期皇权与军功可期，却埋下潼关失守的隐患。
         ai_chance: 55
         effect:
           - add_mandate: -4
           - add_stability: -3
           - add_army_loyalty: -4
           - add_faction_influence: { eunuch: 3, military: -3 }
+          - set_flag: ming_tongguan_risk
       - id: hold
         name: 固守潼关
-        tooltip: 抗旨固守，争取练兵时间。
+        tooltip: 抗旨固守，花钱换时间，练兵有成后潼关可保。
         ai_chance: 45
         effect:
           - add_treasury: -30000
           - add_stability: 1
           - add_army_loyalty: 2
           - add_faction_influence: { military: 4, eunuch: -3 }
+          - set_flag: ming_tongguan_held
+
+  # 孙传庭出关的长期后果：催战 → 潼关失守（关中门户洞开）；固守 → 潼关稳固（练兵有成）。
+  - id: MING_e_tongguan_fallen
+    title: 潼关失守
+    desc: 孙传庭兵败身死，潼关陷落，关中门户洞开，闯军长驱直入。
+    historical_context: 1643 年孙传庭在郏县大败，潼关旋失，李自成随即入据西安。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1646-12-31 }
+        - has_flag: ming_tongguan_risk
+    mtth: 200
+    fire_once: true
+    options:
+      - id: flee
+        name: 收缩防线
+        tooltip: 关中失守，朝廷震动，兵源与天命大损。
+        ai_chance: 60
+        effect:
+          - add_stability: -5
+          - add_mandate: -8
+          - add_manpower: -20000
+          - add_army_loyalty: -5
+      - id: counter
+        name: 调京营反扑
+        tooltip: 耗银调兵，挽回颓势，但京畿空虚。
+        ai_chance: 40
+        effect:
+          - add_treasury: -50000
+          - add_manpower: -15000
+          - add_stability: -3
+          - add_mandate: -3
+
+  - id: MING_e_tongguan_held
+    title: 潼关稳固
+    desc: 孙传庭固守潼关，练兵渐成，闯军屡攻不克。关中的屏障保住了。
+    historical_context: 若孙传庭得以固守，潼关可阻李自成入陕，明朝国祚或可稍延。
+    scope: country
+    country: MING
+    trigger:
+      all:
+        - date: { after: 1644-01-01, before: 1646-12-31 }
+        - has_flag: ming_tongguan_held
+    mtth: 200
+    fire_once: true
+    options:
+      - id: press
+        name: 趁势练兵
+        tooltip: 潼关稳固，兵源与军心回升。
+        ai_chance: 60
+        effect:
+          - add_stability: 3
+          - add_army_loyalty: 4
+          - add_manpower: 15000
+      - id: reward
+        name: 犒赏将士
+        tooltip: 破财犒军，军心大振，稳定略升。
+        ai_chance: 40
+        effect:
+          - add_treasury: -30000
+          - add_army_loyalty: 6
+          - add_stability: 2
 
   # ── 大清 1627–1645 ─────────────────────────────────────────────
   - id: QING_e_han_banners
