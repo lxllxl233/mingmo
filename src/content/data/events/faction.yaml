@@ -245,20 +245,82 @@ events:
     options:
       - id: unity
         name: 调停朝争
-        tooltip: 稳定上升，但需要让权。
+        tooltip: 稳定上升，但需要让权；朝局稍安，可同心抗清。
         ai_chance: 50
         effect:
           - add_stability: 4
           - add_authority: -3
           - add_estate_loyalty: { estate: officials, value: 5 }
+          - set_flag: sming_conciliated
       - id: faction
         name: 倚重马阮
-        tooltip: 皇权集中，士林离心。
+        tooltip: 皇权集中，士林离心；内耗埋下祸根。
         ai_chance: 50
         effect:
           - add_authority: 4
           - add_stability: -5
           - add_estate_loyalty: { estate: officials, value: -8 }
+          - set_flag: sming_partisan
+
+  # 弘光朝议的长期后果：调停 → 朝局稍安；倚重马阮 → 东林出奔、内耗加剧。
+  - id: SMING_e_court_calm
+    title: 朝局稍安
+    desc: 朝争暂息，江南士绅归心，南明得以整军经武，同心抗清。
+    historical_context: 若弘光能调和党争，南明本可凭江南财赋与长江天险坚持更久。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1644-06-01, before: 1648-12-31 }
+        - has_flag: sming_conciliated
+    mtth: 200
+    fire_once: true
+    options:
+      - id: consolidate
+        name: 整军经武
+        tooltip: 兵源与军心上升。
+        ai_chance: 60
+        effect:
+          - add_manpower: 10000
+          - add_army_loyalty: 3
+          - add_stability: 2
+      - id: tax_jiangnan
+        name: 征江南财赋
+        tooltip: 国库充盈，士绅微怨。
+        ai_chance: 40
+        effect:
+          - add_treasury: 80000
+          - add_estate_loyalty: { estate: gentry, value: -3 }
+
+  - id: SMING_e_donglin_exile
+    title: 东林出奔
+    desc: 马阮专权，东林名士或贬或走，江南士心涣散，内耗愈演愈烈。
+    historical_context: 弘光朝马阮排挤东林，朝政益坏，为清军南下可乘之机。
+    scope: country
+    country: SMING
+    trigger:
+      all:
+        - date: { after: 1644-06-01, before: 1648-12-31 }
+        - has_flag: sming_partisan
+    mtth: 200
+    fire_once: true
+    options:
+      - id: purge
+        name: 一意排挤
+        tooltip: 皇权上升，人心尽失。
+        ai_chance: 55
+        effect:
+          - add_authority: 4
+          - add_stability: -5
+          - add_estate_loyalty: { estate: officials, value: -6 }
+      - id: mend
+        name: 亡羊补牢
+        tooltip: 耗银挽回部分人心。
+        ai_chance: 45
+        effect:
+          - add_treasury: -40000
+          - add_stability: 2
+          - add_estate_loyalty: { estate: officials, value: 3 }
 
   - id: flavor_sming_zheng
     title: 郑氏援师
@@ -359,20 +421,83 @@ events:
     options:
       - id: kurultai
         name: 大会诸部
-        tooltip: 兵源与权威上升，耗银。
+        tooltip: 兵源与权威上升，耗银；会盟或可重振汗权。
         ai_chance: 55
         effect:
           - add_manpower: 10000
           - add_authority: 4
           - add_treasury: -30000
+          - set_flag: mongol_league_formed
       - id: raid
         name: 纵骑掠边
-        tooltip: 得银，诸部离心。
+        tooltip: 得银，诸部离心；一味劫掠难聚人心。
         ai_chance: 45
         effect:
           - add_treasury: 50000
           - add_army_loyalty: 3
           - add_stability: -5
+          - set_flag: mongol_raid
+
+  # 会盟诸部的长期后果：大会 → 汗权重振；掠边 → 诸部离心、转投后金。
+  - id: MONGOL_e_khan_resurgent
+    title: 汗权重振
+    desc: 会盟之后，科尔沁、喀尔喀等部重新聚拢到察哈尔汗帐下，蒙古诸部渐成一军。
+    historical_context: 林丹汗若能真正统一蒙古，或可成后金腹背之患。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1645-12-31 }
+        - has_flag: mongol_league_formed
+    mtth: 260
+    fire_once: true
+    options:
+      - id: levy
+        name: 征发各部
+        tooltip: 兵源大增，部众微怨。
+        ai_chance: 60
+        effect:
+          - add_manpower: 20000
+          - add_authority: 3
+          - add_stability: -1
+      - id: gift
+        name: 赏赐诸部
+        tooltip: 耗银收心，汗权更固。
+        ai_chance: 40
+        effect:
+          - add_treasury: -40000
+          - add_authority: 5
+          - add_stability: 2
+
+  - id: MONGOL_e_clan_defect
+    title: 诸部离心
+    desc: 一味掠边难以服众，科尔沁等部与后金联姻结盟，渐生二心，有的已暗通后金。
+    historical_context: 林丹汗失人心，蒙古诸部纷纷投向后金，汗权愈发孤立。
+    scope: country
+    country: MONGOL
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1645-12-31 }
+        - has_flag: mongol_raid
+    mtth: 260
+    fire_once: true
+    options:
+      - id: concede
+        name: 默认既成事实
+        tooltip: 兵源流失，权威大损。
+        ai_chance: 55
+        effect:
+          - add_manpower: -12000
+          - add_authority: -5
+          - add_stability: -3
+      - id: punish
+        name: 兴兵问罪
+        tooltip: 耗银用兵，或可立威。
+        ai_chance: 45
+        effect:
+          - add_treasury: -50000
+          - add_manpower: -8000
+          - add_authority: 2
 
   - id: flavor_mongol_pasture
     title: 牧场之争
@@ -415,20 +540,82 @@ events:
     options:
       - id: real
         name: 务实事清
-        tooltip: 稳定与财政改善，士林不满。
+        tooltip: 稳定与财政改善，士林不满；边衅可息。
         ai_chance: 55
         effect:
           - add_stability: 4
           - add_treasury: 30000
           - add_estate_loyalty: { estate: officials, value: -4 }
+          - set_flag: joseon_pragmatic
       - id: north
         name: 密议北伐
-        tooltip: 军心上升，外交风险。
+        tooltip: 军心上升，外交风险；清廷一旦察觉将是大祸。
         ai_chance: 45
         effect:
           - add_army_loyalty: 5
           - add_stability: -3
           - add_relation: { target: QING, value: -10 }
+          - set_flag: joseon_north_plot
+
+  # 仁祖朝局的长期后果：务实 → 事清而安；北伐 → 事泄招祸。
+  - id: JOSEON_e_peace_with_qing
+    title: 事清而安
+    desc: 朝鲜务实事清，边境无事，岁贡虽重，国祚得安，朝野渐定。
+    historical_context: 朝鲜在丙子之役后务实对清，换得二百余年国祚延续。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1665-12-31 }
+        - has_flag: joseon_pragmatic
+    mtth: 300
+    fire_once: true
+    options:
+      - id: trade
+        name: 兴边市贸易
+        tooltip: 财政改善，商人得利。
+        ai_chance: 60
+        effect:
+          - add_treasury: 50000
+          - add_stability: 2
+          - add_estate_loyalty: { estate: merchants, value: 4 }
+      - id: farm
+        name: 劝课农桑
+        tooltip: 粮储与人口上升。
+        ai_chance: 40
+        effect:
+          - add_food: 60000
+          - add_stability: 3
+
+  - id: JOSEON_e_north_plot_exposed
+    title: 北伐事发
+    desc: 密议北伐的传闻传到清廷，清使来责，朝鲜君臣惶恐谢罪，主战派被下狱。
+    historical_context: 朝鲜北伐多停留在口号，一旦事泄即遭清廷严惩。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1628-01-01, before: 1665-12-31 }
+        - has_flag: joseon_north_plot
+    mtth: 300
+    fire_once: true
+    options:
+      - id: apologize
+        name: 谢罪息事
+        tooltip: 赔款谢罪，人心受挫。
+        ai_chance: 60
+        effect:
+          - add_treasury: -60000
+          - add_stability: -4
+          - add_relation: { target: QING, value: 5 }
+      - id: resist
+        name: 拒不认错
+        tooltip: 激怒清廷，或有边衅。
+        ai_chance: 40
+        effect:
+          - add_relation: { target: QING, value: -20 }
+          - add_army_loyalty: 3
+          - add_stability: -2
 
   - id: flavor_joseon_tribute
     title: 贡路与岁币
@@ -472,20 +659,83 @@ events:
     options:
       - id: sakoku
         name: 严守锁国
-        tooltip: 稳定上升，贸易减少。
+        tooltip: 稳定上升，贸易减少；闭关可固根本。
         ai_chance: 60
         effect:
           - add_stability: 5
           - add_treasury: -30000
           - add_estate_loyalty: { estate: merchants, value: -5 }
+          - set_flag: japan_closed
       - id: window
         name: 留长崎一窗
-        tooltip: 贸易与银入增加，保守派不满。
+        tooltip: 贸易与银入增加，保守派不满；开一窗可通东西洋。
         ai_chance: 40
         effect:
           - add_treasury: 50000
           - add_stability: -2
           - add_estate_loyalty: { estate: merchants, value: 5 }
+          - set_flag: japan_window
+
+  # 锁国令的长期后果：严守 → 锁国巩固；留窗 → 长崎贸易兴。
+  - id: JAPAN_e_sakoku_firm
+    title: 锁国巩固
+    desc: 幕府彻底锁国，基督教禁绝，寺社归心，日本进入两百年太平，也与大陆渐行渐远。
+    historical_context: 德川幕府锁国体制确立，换来长期和平，却也使日本逐渐隔绝于世界。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1683-12-31 }
+        - has_flag: japan_closed
+    mtth: 340
+    fire_once: true
+    options:
+      - id: temple
+        name: 扶持寺社
+        tooltip: 稳定与寺社归心，耗银。
+        ai_chance: 60
+        effect:
+          - add_stability: 4
+          - add_estate_loyalty: { estate: clergy, value: 5 }
+          - add_treasury: -30000
+      - id: domain
+        name: 整饬藩政
+        tooltip: 权威上升，军心略升。
+        ai_chance: 40
+        effect:
+          - add_authority: 4
+          - add_army_loyalty: 2
+          - add_stability: 1
+
+  - id: JAPAN_e_nagasaki_trade
+    title: 长崎贸易兴
+    desc: 长崎一窗保留，荷兰、唐船辐辏，白银与货物流入，商人势力渐起。
+    historical_context: 长崎是锁国时期日本唯一的对外窗口，贸易带来白银与情报。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1635-01-01, before: 1683-12-31 }
+        - has_flag: japan_window
+    mtth: 340
+    fire_once: true
+    options:
+      - id: merch
+        name: 倚重商人
+        tooltip: 国库与商人归心，保守派不满。
+        ai_chance: 60
+        effect:
+          - add_treasury: 80000
+          - add_estate_loyalty: { estate: merchants, value: 6 }
+          - add_stability: -1
+      - id: navy
+        name: 扩建水师
+        tooltip: 耗银造船，海防更强。
+        ai_chance: 40
+        effect:
+          - add_treasury: -60000
+          - add_army_loyalty: 2
+          - add_modifier: { naval_attack_pct: 4 }
 
   - id: flavor_japan_ronin
     title: 浪人渡海
