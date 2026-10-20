@@ -1,5 +1,4 @@
 import type { ContentIndex } from '../../content/types';
-import { fromDayIndex } from '../core/clock';
 import type { ArmyState, CountryState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
 import { touchMap } from '../state/types';
@@ -38,11 +37,12 @@ function collapseProvinces(state: GameState, content: ContentIndex, nation: Coun
     .filter(province => province.owner === nation.tag || province.controller === nation.tag);
   if (owned.length === 0) return;
   const sming = state.countries['SMING'];
+  // 大明若在 1644 年前就崩溃，南方士绅同样会拥立新君；否则 225 个省会整块落入
+  // 清廷，造成 1627 剧本里清一日吞并半个中国。崩溃分家按地域处理，与南明建立事件一致。
   const canFoundSming = nation.tag === 'MING'
     && sming !== undefined
     && !sming.alive
     && state.scenarioId !== '1650'
-    && fromDayIndex(state.day).year >= 1644
     && (state.spectator || state.playerTag !== 'MING');
   const southern = canFoundSming
     ? owned.filter(province => MING_SOUTH.has(content.provinces.get(province.id)?.regionId ?? ''))
@@ -64,8 +64,10 @@ function collapseProvinces(state: GameState, content: ContentIndex, nation: Coun
     if (nation.tag === 'MING') {
       const region = def?.regionId ?? '';
       if (sming?.alive && MING_SOUTH.has(region)) target = 'SMING';
-      else if (region === 'reg_sichuan' && state.countries['XI']?.alive) target = 'XI';
-      else if (MING_NORTHWEST.has(region) && state.countries['SHUN']?.alive) target = 'SHUN';
+      // 继承者已亡时，西北与四川退回地方势力（NEU），不能整块并入清廷；
+      // 否则清在崩溃日白得六十余省，1627 剧本必成滚雪球。
+      else if (region === 'reg_sichuan') target = state.countries['XI']?.alive ? 'XI' : 'NEU';
+      else if (MING_NORTHWEST.has(region)) target = state.countries['SHUN']?.alive ? 'SHUN' : 'NEU';
       else if (state.countries['QING']?.alive) target = 'QING';
       else if (state.countries['SHUN']?.alive) target = 'SHUN';
       else if (sming?.alive) target = 'SMING';
@@ -80,6 +82,9 @@ function collapseProvinces(state: GameState, content: ContentIndex, nation: Coun
     }
     province.owner = target;
     province.controller = target;
+    // 南明以大明继承者自居，接收的南方省份必须同时获得核心，否则 coreResourceFactor
+    // 只给 5%~30% 产出，南明建国即入不敷出，两年内二次崩溃并把地盘送给清。
+    if (target === 'SMING' && !province.cores.includes('SMING')) province.cores.push('SMING');
     province.occupation = null;
     province.building = null;
     delete province.siege;

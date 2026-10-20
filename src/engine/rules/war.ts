@@ -12,27 +12,64 @@ export interface WarScore {
   defenderOccupied: number;
 }
 
+interface WarPairCache {
+  state: GameState | null;
+  day: number;
+  length: number;
+  nextWarId: number;
+  pairs: Set<string>;
+}
+
+let warPairCache: WarPairCache | null = null;
+
+function warPairKey(a: string, b: string): string {
+  return a < b ? `${a}|${b}` : `${b}|${a}`;
+}
+
 export function areAtWar(state: GameState, a: string, b: string): boolean {
-  return state.wars.some(war =>
-    (war.attacker === a && war.defender === b)
-    || (war.attacker === b && war.defender === a));
+  if (a === b) return false;
+  if (warPairCache === null
+    || warPairCache.state !== state
+    || warPairCache.day !== state.day
+    || warPairCache.length !== state.wars.length
+    || warPairCache.nextWarId !== state.nextWarId) {
+    const pairs = new Set<string>();
+    for (const war of state.wars) pairs.add(warPairKey(war.attacker, war.defender));
+    warPairCache = { state, day: state.day, length: state.wars.length, nextWarId: state.nextWarId, pairs };
+  }
+  return warPairCache.pairs.has(warPairKey(a, b));
+}
+
+let occupancyCache: { state: GameState; day: number; revision: number; counts: Map<string, number> } | null = null;
+
+/** 占领对索引：`controller|owner` → 省数。按 day + mapRevision 缓存，多处战争查询复用。 */
+function occupancyCounts(state: GameState): Map<string, number> {
+  if (occupancyCache === null
+    || occupancyCache.state !== state
+    || occupancyCache.day !== state.day
+    || occupancyCache.revision !== state.mapRevision) {
+    const counts = new Map<string, number>();
+    for (const id in state.provinces) {
+      const province = state.provinces[id];
+      if (!province || province.controller === province.owner) continue;
+      const key = `${province.controller}|${province.owner}`;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    occupancyCache = { state, day: state.day, revision: state.mapRevision, counts };
+  }
+  return occupancyCache.counts;
 }
 
 export function warScore(state: GameState, war: WarState): WarScore {
-  let attacker = 0;
-  let defender = 0;
-  let attackerOccupied = 0;
-  let defenderOccupied = 0;
-  for (const province of Object.values(state.provinces)) {
-    if (province.owner === war.defender && province.controller === war.attacker) {
-      attacker += 1;
-      attackerOccupied += 1;
-    } else if (province.owner === war.attacker && province.controller === war.defender) {
-      defender += 1;
-      defenderOccupied += 1;
-    }
-  }
-  return { attacker, defender, attackerOccupied, defenderOccupied };
+  const counts = occupancyCounts(state);
+  const attackerOccupied = counts.get(`${war.attacker}|${war.defender}`) ?? 0;
+  const defenderOccupied = counts.get(`${war.defender}|${war.attacker}`) ?? 0;
+  return {
+    attacker: attackerOccupied,
+    defender: defenderOccupied,
+    attackerOccupied,
+    defenderOccupied,
+  };
 }
 
 export function truceDays(state: GameState, a: string, b: string): number {
@@ -272,22 +309,42 @@ export function surrenderTendency(state: GameState, war: WarState, tag: string):
   return Math.max(0, Math.min(100, Math.round(raw)));
 }
 
+function countControllers(state: GameState): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const province of Object.values(state.provinces)) {
+    counts.set(province.controller, (counts.get(province.controller) ?? 0) + 1);
+  }
+  return counts;
+}
+
 export function resolveFinishedWars(state: GameState, content: ContentIndex): void {
+  if (state.wars.length === 0) return;
+  let counts = countControllers(state);
   for (const war of [...state.wars]) {
-    const provinceCount = (tag: string): number =>
-      Object.values(state.provinces).filter(province => province.controller === tag).length;
-    const attackerControlled = provinceCount(war.attacker);
-    const defenderControlled = provinceCount(war.defender);
+    const attackerControlled = counts.get(war.attacker) ?? 0;
+    const defenderControlled = counts.get(war.defender) ?? 0;
     if (attackerControlled > 0 && defenderControlled > 0) continue;
     if (attackerControlled === 0 && defenderControlled === 0) {
       makePeace(state, war.id, content, 'white');
     } else {
       makePeace(state, war.id, content, 'demand');
     }
+    // 和约可能转移省份，后续战争必须基于最新控制情况判定。
+    counts = countControllers(state);
   }
 }
 
 export function cleanupDefeatedNations(state: GameState, content: ContentIndex): void {
+  // 一次扫描得到各势力控制省数；后续转移只会把省份转给已有控制区的势力，零控制判定仍然有效。
+  let transferred = false;
+  let neuOwnsProvince = false;
+  const controlledCounts = new Map<string, number>();
+  for (const id in state.provinces) {
+    const province = state.provinces[id];
+    if (!province) continue;
+    controlledCounts.set(province.controller, (controlledCounts.get(province.controller) ?? 0) + 1);
+    if (province.owner === 'NEU') neuOwnsProvince = true;
+  }
   for (const nation of Object.values(state.countries)) {
     if (nation.tag === 'NEU') continue;
     if (!nation.alive) {
@@ -297,8 +354,7 @@ export function cleanupDefeatedNations(state: GameState, content: ContentIndex):
       state.training = state.training.filter(item => item.tag !== nation.tag);
       continue;
     }
-    const controlled = Object.values(state.provinces).some(province => province.controller === nation.tag);
-    if (controlled) continue;
+    if ((controlledCounts.get(nation.tag) ?? 0) > 0) continue;
     // 无实际控制区时，把仍在名下的被占省转给占领者，避免“死国仍占地”。
     const owned = Object.values(state.provinces).filter(province => province.owner === nation.tag);
     for (const province of owned) {
@@ -314,12 +370,20 @@ export function cleanupDefeatedNations(state: GameState, content: ContentIndex):
           }
         }
       }
+      const previousController = province.controller;
       province.owner = target ?? 'NEU';
       province.controller = province.owner;
+      if (province.controller !== previousController) {
+        controlledCounts.set(previousController, Math.max(0, (controlledCounts.get(previousController) ?? 0) - 1));
+        controlledCounts.set(province.controller, (controlledCounts.get(province.controller) ?? 0) + 1);
+      }
       province.occupation = null;
       delete province.siege;
     }
-    if (owned.length > 0) touchMap(state);
+    if (owned.length > 0) {
+      touchMap(state);
+      transferred = true;
+    }
     nation.alive = false;
     for (const [id, army] of Object.entries(state.armies)) {
       if (army.tag === nation.tag) delete state.armies[id];
@@ -336,10 +400,7 @@ export function cleanupDefeatedNations(state: GameState, content: ContentIndex):
 
   // NEU 是地理兜底势力：只有实际持有省份时才存活，避免死国仍被计为存活。
   const neu = state.countries.NEU;
-  if (neu) {
-    neu.alive = Object.values(state.provinces).some(province =>
-      province.owner === 'NEU' || province.controller === 'NEU');
-  }
+  if (neu) neu.alive = neuOwnsProvince || (controlledCounts.get('NEU') ?? 0) > 0;
 
   // 兜底：任何省份的 owner/controller 已死亡时，转给存活占领者/邻国/NEU。
   let repaired = false;
@@ -365,8 +426,9 @@ export function cleanupDefeatedNations(state: GameState, content: ContentIndex):
     repaired = true;
   }
   if (repaired) touchMap(state);
-  // 清理死国后，本 tick 内仍可能残留“死国参战”的战争；立即结算，保证日末状态一致。
-  resolveFinishedWars(state, content);
+  // 本 tick 已在调用本函数前结算过一次战争；只有本次清理转移了省份，
+  // 控制数才会变化，才需要再结算一次。
+  if (transferred || repaired) resolveFinishedWars(state, content);
 }
 
 
@@ -384,6 +446,15 @@ export function resolveCapitalCapitulation(state: GameState, content: ContentInd
     if (!state.countries[occupier]?.alive || !areAtWar(state, nation.tag, occupier)) continue;
     const owned = Object.values(state.provinces).filter(province => province.owner === nation.tag);
     if (owned.length === 0) continue;
+    // 大国不会因首都失守而整体投降：只割让被占领土，余部继续抵抗。
+    // 否则一次首都陷落会把两百多个省整体转给占领者，直接造成滚雪球。
+    if (owned.length > 40) {
+      const war = state.wars.find(entry =>
+        (entry.attacker === nation.tag && entry.defender === occupier)
+        || (entry.defender === nation.tag && entry.attacker === occupier));
+      if (war) makePeace(state, war.id, content, 'demand');
+      continue;
+    }
     for (const province of owned) {
       province.owner = occupier;
       province.controller = occupier;
