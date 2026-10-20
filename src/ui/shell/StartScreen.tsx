@@ -26,6 +26,13 @@ const MECHANIC_LABELS: Record<string, string> = {
   tributary: '藩属',
 };
 
+// 只有真正实现了独特机制面板的势力，才在势力卡上展示机制标签；
+// 其余（大西/西藏/荷兰/沙俄）仍是可选势力，但不虚假宣传「恐怖统治/公司分红」等未实现的机制（BUG-006 选项 B）。
+const IMPLEMENTED_MECHANICS = new Set([
+  'party_strife', 'banner_system', 'confiscation', 'legitimacy_contest',
+  'maritime_network', 'banner_league', 'tribute', 'sakoku',
+]);
+
 const PERSONALITY_LABELS: Record<string, string> = {
   aggressive: '好战',
   defensive: '守成',
@@ -189,7 +196,7 @@ export function StartScreen() {
                     {leader && <LeaderPortrait leader={leader} size={28} />}
                   </div>
                   <h3>{country.name}</h3>
-                  <p className="faction-leader">领袖：{leader?.name ?? '—'} · {MECHANIC_LABELS[country.uniqueMechanic] ?? country.uniqueMechanic} · {PERSONALITY_LABELS[country.aiPersonality] ?? country.aiPersonality}</p>
+                  <p className="faction-leader">领袖：{leader?.name ?? '—'}{IMPLEMENTED_MECHANICS.has(country.uniqueMechanic) ? ` · ${MECHANIC_LABELS[country.uniqueMechanic] ?? country.uniqueMechanic}` : ''} · {PERSONALITY_LABELS[country.aiPersonality] ?? country.aiPersonality}</p>
                   <p className="goal">{country.goal}</p>
                   {country.background && <p className="faction-background">{country.background}</p>}
                 </div>

@@ -40,12 +40,13 @@
 - **修复**：同步为 214 / 154 / 86，并同步 §7「事件总量 102 条 → 214 条」。
 - **测试**：与 `pnpm validate` / `pnpm test` 输出一致。
 
-### BUG-006 范围与实现不符：4 个「AI-only」势力实际可选、但无独特机制面板（P2，open）
+### BUG-006 范围与实现不符：4 个「AI-only」势力实际可选、但无独特机制面板（P2，fixed，选项 B）
 
-- **症状**：势力选择屏 1627/1644 各列出 **11** 张可选卡、1650 列出 10 张；大西/和硕特·西藏/荷兰东印度/沙俄均可选。但启动后它们的侧栏只有 8 个通用面板（国策/核心/科研/分配/军事/外交/决议/日志），**没有**各自独特机制面板；`src/engine/systems/` 里也没有 `terror`/`theocracy`/`company_dividend`/`cossack_host` 对应实现。
-- **根因**：`countries.yaml` 给 13 国（除 NEU）全部标 `playable: true`，`scenarios/*.yaml` 的 `playable_tags` 也包含这 4 方；但它们的 `unique_mechanic`（恐怖统治/政教合一/公司分红/哥萨克）从未实现为面板或系统。`quality-bar.md` §3「8 可玩 + 4 AI-only」反映的是**原设计意图**，与当前实现脱节。
-- **证据**：`probe-extra.mjs` 实测 4 方均可启动（无 console error、player tag 正确），侧栏无独特按钮。
-- **状态**：open——**需用户决策**：① 把 4 方改为真 AI-only（从 `playable_tags` 移除、势力卡标「AI 势力」，符合 master-plan「8 可玩 + 4 AI-only」）；② 保持可选但把势力卡的「恐怖统治/公司分红」等机制标签改掉，避免假承诺；③ 补 4 个独特面板（超出「不新增内容量」范围）。默认不擅自删除可选势力。
+- **症状**：势力选择屏 1627/1644 各列出 **11** 张可选卡、1650 列出 10 张；大西/和硕特·西藏/荷兰东印度/沙俄均可选。但启动后它们的侧栏只有 8 个通用面板，**没有**独特机制面板；`src/engine/systems/` 也没有 `terror`/`theocracy`/`company_dividend`/`cossack_host` 实现。势力卡却仍标「恐怖统治/政教合一/公司分红/哥萨克」，构成假承诺。
+- **根因**：`countries.yaml` 13 国（除 NEU）全部 `playable: true`，`unique_mechanic` 为 4 方从未实现。
+- **用户决策**：选项 B——保留可选，去掉势力卡的假机制标签。
+- **修复**：`StartScreen.tsx` 新增 `IMPLEMENTED_MECHANICS` 白名单（8 个已实现机制），势力卡只对白名单内机制渲染标签；其余 4 方只显示「领袖 · 性格」。
+- **测试**：`probe-mechanic.mjs` 实测大西/西藏/荷兰/沙俄卡片为「领袖：X · 性格」（无机制标签），明/郑等 8 方仍显示机制标签；typecheck 通过。
 
 ### BUG-007 战争首日「投降倾向 42%」（P3，fixed）
 
