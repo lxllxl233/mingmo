@@ -105,10 +105,19 @@ function TopBarStats() {
       warExhaustion: country?.warExhaustion ?? 0,
       corruption: country?.corruption ?? 0,
       arrears: country?.arrears ?? 0,
+      wageArrears: country?.wageArrears ?? 0,
       income: report?.income ?? 0,
+      taxIncome: report?.taxIncome ?? 0,
+      tradePostIncome: report?.tradePostIncome ?? 0,
+      sakokuIncome: report?.sakokuIncome ?? 0,
       expense: report?.expense ?? 0,
       net: report?.net ?? 0,
       expenseArmy: report?.expenseArmy ?? 0,
+      expenseArmyPaid: report?.expenseArmyPaid ?? 0,
+      wageShortfall: report?.wageShortfall ?? 0,
+      expenseTraining: report?.expenseTraining ?? 0,
+      expenseCourt: report?.expenseCourt ?? 0,
+      hoardPressure: report?.hoardPressure ?? 0,
       foodPurchaseSilver: report?.foodPurchaseSilver ?? 0,
       corruptionLoss: report?.corruptionLoss ?? 0,
       loyaltyCost: report?.loyaltyCost ?? 0,
@@ -145,14 +154,16 @@ function TopBarStats() {
         tooltip={() => (
           <>
             <b>国库 {number(data.treasury)} 两</b>
-            <span>本月收入 {number(data.income)} 两</span>
+            <span>本月收入 {number(data.income)} 两（税 {number(data.taxIncome)} · 贸易站 {number(data.tradePostIncome)} · 锁国 {number(data.sakokuIncome)}）</span>
             <span>本月支出 {number(data.expense)} 两</span>
             <span>本月净额 <i className={data.net >= 0 ? 'good' : 'danger'}>{number(data.net)}</i> 两</span>
-            <span>军饷 {number(data.expenseArmy)} · 购粮 {number(data.foodPurchaseSilver)}</span>
-            <span>腐败损耗 {number(data.corruptionLoss)} · 忠诚维稳 {number(data.loyaltyCost)}</span>
-            <span>训练日耗 {number(data.trainingSilverDay)} 两</span>
-            <span>欠饷 {number(data.arrears)} 两 · {arrearsMonths.toFixed(1)} 个月</span>
-            <small>收入由经济大盘按阶级分配、税法与征收效率计算；税后扣腐败、维稳、军饷与购粮。</small>
+            <span>军饷 实付 {number(data.expenseArmyPaid)} / 应付 {number(data.expenseArmy)} · 购粮 {number(data.foodPurchaseSilver)}</span>
+            {data.wageShortfall > 0 && <span className="danger">本月欠饷 {number(data.wageShortfall)} 两（只有军饷缺口形成债务）</span>}
+            <span>腐败损耗 {number(data.corruptionLoss)} · 基层维稳 {number(data.loyaltyCost)} · 维持成本 {number(data.expenseCourt)}</span>
+            <span>训练支出 {number(data.expenseTraining)} · 日耗 {number(data.trainingSilverDay)} 两</span>
+            {data.hoardPressure > 0 && <span className="warn">囤银压力 {(data.hoardPressure * 100).toFixed(0)}%：腐败与通胀上升</span>}
+            <span>债务 {number(data.arrears)} 两 · {arrearsMonths.toFixed(1)} 个月军饷</span>
+            <small>结算顺序：税收 → 腐败/基层维稳 → 维持成本 → 军饷 → 购粮；购粮不足不形成债务。</small>
           </>
         )}
       />
@@ -196,7 +207,7 @@ function TopBarStats() {
             <b>可用兵源 {number(data.manpower)}</b>
             <span>军团 {data.armyCount} 支 · 总兵力 {number(data.armyStrength)}</span>
             <span>军心 {Math.round(data.armyLoyalty)}</span>
-            <small>兵源按人口与稳定恢复；欠饷会先打击募兵，再打击家丁。</small>
+            <small>兵源按人口与稳定恢复；拖欠军饷会先打击募兵，再打击家丁。</small>
           </>
         )}
       />
@@ -268,15 +279,16 @@ function TopBarStats() {
         )}
       />
       <Stat
-        label="欠饷"
-        value={`${arrearsMonths.toFixed(1)} 月`}
+        label="债务"
+        value={number(data.arrears)}
         tone={arrearsMonths > 3 ? 'danger' : ''}
         tooltip={() => (
           <>
-            <b>欠饷 {number(data.arrears)} 两</b>
+            <b>债务 {number(data.arrears)} 两</b>
+            {data.wageArrears > 0 && <span className="danger">其中欠饷 {number(data.wageArrears)} 两</span>}
             <span>每月军饷 {number(data.expenseArmy)} 两</span>
-            <span>折合 {arrearsMonths.toFixed(1)} 个月</span>
-            <small>欠饷超过 3 个月会快速降低军心与组织度，并可能触发兵变。</small>
+            <span>折合 {arrearsMonths.toFixed(1)} 个月军饷</span>
+            <small>欠饷持续会重创军队战斗力并禁止募新兵；其他债务最多削弱 10% 战力。</small>
           </>
         )}
       />

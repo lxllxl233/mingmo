@@ -7,7 +7,7 @@ import { armyStrength } from '../state/types';
 import { touchMap } from '../state/types';
 import { generalTraitBonus } from '../rules/generalTraits';
 import { canMarchThrough } from '../rules/access';
-import { crisisCombatPenalty } from './crisis';
+import { crisisCombatPenalty, debtCombatPenalty } from './crisis';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -227,9 +227,9 @@ function resolveProvinceBattles(state: GameState, content: ContentIndex): void {
       const mods = nation ? aggregateCountryModifiers(state, content, tag) : {};
       if (nation) {
         mods['army_attack_pct'] = (mods['army_attack_pct'] ?? 0) + crisisCombatPenalty(nation)
-          + (nation.armyLoyalty - 50) / 10;
+          + debtCombatPenalty(nation) + (nation.armyLoyalty - 50) / 10;
         mods['army_defense_pct'] = (mods['army_defense_pct'] ?? 0) + crisisCombatPenalty(nation)
-          + (nation.armyLoyalty - 50) / 10;
+          + debtCombatPenalty(nation) + (nation.armyLoyalty - 50) / 10;
       }
       return mods;
     };

@@ -111,6 +111,11 @@ function createWar(
     });
   }
   state.relations[relationKey(attacker, defender)] = -80;
+  // 记仇：被宣战方（及其被拖入的盟友）对侵略者累积怨气，供 AI 优先报复用。
+  const grudged = state.countries[defender];
+  if (grudged) {
+    grudged.grudges[attacker] = Math.min(100, (grudged.grudges[attacker] ?? 0) + 60);
+  }
   const attackerName = content.countries.get(attacker)?.name ?? attacker;
   const defenderName = content.countries.get(defender)?.name ?? defender;
   state.log.push({

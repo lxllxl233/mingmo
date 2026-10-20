@@ -16,7 +16,7 @@ describe('content pipeline', () => {
     for (const country of content.countries.values()) {
       const estates = content.countryEstates.get(country.tag);
       expect(estates, country.tag).toBeDefined();
-      expect(estates?.length, country.tag).toBeGreaterThanOrEqual(4);
+      expect(estates?.length, country.tag).toBeGreaterThanOrEqual(3);
       expect(content.provinces.has(country.capital), country.tag).toBe(true);
     }
   });
@@ -31,7 +31,7 @@ describe('content pipeline', () => {
   it('loads tax laws and privileges', () => {
     expect(content.taxLaws.size).toBeGreaterThanOrEqual(25);
     expect(content.privileges.size).toBeGreaterThanOrEqual(9);
-    for (const estate of ['dynasty', 'nobles', 'officials', 'gentry', 'merchants', 'peasants', 'soldiers', 'clergy']) {
+    for (const estate of ['ruling', 'merchants', 'landlords', 'artisans', 'peasants'] as const) {
       expect(content.taxLawsByEstate.get(estate)?.length ?? 0, estate).toBeGreaterThanOrEqual(3);
     }
   });

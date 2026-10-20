@@ -41,6 +41,11 @@ export function TrainingModal() {
           </div>
           <button onClick={close}>关闭</button>
         </div>
+        {(game.countries[game.playerTag]?.wageArrears ?? 0) > 0 && (
+          <p className="danger">
+            有欠饷未清（拖欠军饷 {Math.round(game.countries[game.playerTag]?.wageArrears ?? 0).toLocaleString()} 两），暂时无法训练新军队。
+          </p>
+        )}
         <h3>本国军种</h3>
         <div className="training-options">
           {own.map(template => (

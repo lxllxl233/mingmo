@@ -1176,7 +1176,7 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: -20000
-          - add_estate_loyalty: { estate: gentry, value: 5 }
+          - add_estate_loyalty: { estate: landlords, value: 5 }
           - add_stability: 2
       - id: postpone
         name: 停科省钱
@@ -1184,7 +1184,7 @@ events:
         ai_chance: 45
         effect:
           - add_treasury: 10000
-          - add_estate_loyalty: { estate: gentry, value: -5 }
+          - add_estate_loyalty: { estate: landlords, value: -5 }
           - add_stability: -1
 
   - id: shared_e_sea_ban

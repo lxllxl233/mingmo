@@ -1,4 +1,4 @@
-import type { GameState } from '../../engine/state/types';
+import type { EstateState, GameState } from '../../engine/state/types';
 import { hashState } from '../../engine/state/hash';
 
 export interface SaveFile {
@@ -10,7 +10,155 @@ export interface SaveFile {
   checksum: string;
 }
 
-export const SAVE_VERSION = 6;
+export const SAVE_VERSION = 7;
+
+const OLD_ESTATE_MAP: Record<string, string> = {
+  dynasty: 'ruling',
+  nobles: 'ruling',
+  officials: 'ruling',
+  soldiers: 'ruling',
+  gentry: 'landlords',
+  clergy: 'landlords',
+  scholars: 'landlords',
+  merchants: 'merchants',
+  peasants: 'peasants',
+  natives: 'peasants',
+  'custom:natives': 'peasants',
+};
+
+const NEW_ESTATE_KEYS = ['ruling', 'merchants', 'landlords', 'artisans', 'peasants'] as const;
+type NewEstateKey = (typeof NEW_ESTATE_KEYS)[number];
+
+const NO_ARTISANS = new Set(['MONGOL', 'TIBET', 'NEU']);
+
+const FALLBACK_TAX_LAW: Record<NewEstateKey, string> = {
+  ruling: 'tax_officials_thin_salary',
+  merchants: 'tax_merchants_inland_customs',
+  landlords: 'tax_gentry_exemption',
+  artisans: 'tax_artisans_guild',
+  peasants: 'tax_peasants_single_whip',
+};
+
+const REMOVED_TAX_LAWS: Record<string, string> = {
+  tax_nobles_full_stipend: 'tax_nobles_reduced_stipend',
+  tax_dynasty_reduced: 'tax_dynasty_stipend',
+  tax_dynasty_manor: 'tax_dynasty_stipend',
+};
+
+// Laws whose estate changed during the 8→5 class migration.
+const MOVED_TAX_LAWS: Record<string, NewEstateKey> = {
+  tax_soldiers_weisuo: 'peasants',
+  tax_natives_trade: 'merchants',
+};
+
+function clamp100(value: number): number {
+  return Math.max(0, Math.min(100, value));
+}
+
+function mergeEstateGroup(
+  estates: Record<string, EstateState>,
+  oldKeys: string[],
+  newKey: NewEstateKey,
+): { state: EstateState; allocation: number } | null {
+  const members = oldKeys.map(key => estates[key]).filter((value): value is EstateState => value !== undefined);
+  if (members.length === 0) return null;
+  const influenceSum = members.reduce((sum, estate) => sum + Math.max(0, estate.influence), 0);
+  const weightOf = (estate: EstateState): number =>
+    influenceSum > 0 ? Math.max(0, estate.influence) / influenceSum : 1 / members.length;
+  const weighted = (pick: (estate: EstateState) => number): number =>
+    members.reduce((sum, estate) => sum + pick(estate) * weightOf(estate), 0);
+  const dominant = members.reduce((best, estate) => (estate.influence > best.influence ? estate : best), members[0]!);
+  let taxLaw = REMOVED_TAX_LAWS[dominant.taxLaw] ?? dominant.taxLaw;
+  if (MOVED_TAX_LAWS[taxLaw] !== undefined && MOVED_TAX_LAWS[taxLaw] !== newKey) {
+    taxLaw = FALLBACK_TAX_LAW[newKey];
+  }
+  const reform = members.map(estate => estate.reform).find(value => value !== null) ?? null;
+  return {
+    state: {
+      key: newKey,
+      influence: clamp100(influenceSum),
+      loyalty: clamp100(weighted(estate => estate.loyalty)),
+      income: members.reduce((sum, estate) => sum + estate.income, 0),
+      taxLaw,
+      privileges: [...new Set(members.flatMap(estate => estate.privileges))],
+      reform,
+      cooldownDays: Math.max(...members.map(estate => estate.cooldownDays)),
+      collected: members.reduce((sum, estate) => sum + estate.collected, 0),
+      effectiveRate: weighted(estate => estate.effectiveRate),
+      customaryRate: weighted(estate => estate.customaryRate),
+    },
+    allocation: 0,
+  };
+}
+
+function migrateEstatesV7(state: GameState): void {
+  for (const nation of Object.values(state.countries)) {
+    const old = nation.estates;
+    const groups: Record<string, string[]> = {
+      ruling: [],
+      merchants: [],
+      landlords: [],
+      peasants: [],
+    };
+    for (const key of Object.keys(old)) {
+      const target = OLD_ESTATE_MAP[key];
+      if (target && groups[target]) groups[target]!.push(key);
+    }
+    const next: Record<string, EstateState> = {};
+    for (const key of NEW_ESTATE_KEYS) {
+      if (key === 'artisans') continue;
+      const merged = mergeEstateGroup(old, groups[key] ?? [], key);
+      if (merged) next[key] = merged.state;
+    }
+    if (!NO_ARTISANS.has(nation.tag)) {
+      next.artisans = {
+        key: 'artisans',
+        influence: 5,
+        loyalty: 45,
+        income: 0,
+        taxLaw: FALLBACK_TAX_LAW.artisans,
+        privileges: ['priv_artisan_guild'],
+        reform: null,
+        cooldownDays: 0,
+        collected: 0,
+        effectiveRate: 0.04,
+        customaryRate: 0.04,
+      };
+    }
+    // Preserve any custom estates not covered by the fixed 5-class set.
+    for (const [key, estate] of Object.entries(old)) {
+      if (!OLD_ESTATE_MAP[key] && !next[key]) next[key] = estate;
+    }
+    const keys = Object.keys(next);
+    const influenceTotal = keys.reduce((sum, key) => sum + next[key]!.influence, 0);
+    if (influenceTotal > 100) {
+      for (const key of keys) next[key]!.influence = clamp100(next[key]!.influence * 100 / influenceTotal);
+    }
+
+    const allocation: Record<string, number> = {};
+    for (const key of keys) allocation[key] = 0;
+    for (const [oldKey, estateKey] of Object.entries(OLD_ESTATE_MAP)) {
+      if (allocation[estateKey] === undefined) continue;
+      allocation[estateKey]! += nation.allocation?.[oldKey] ?? 0;
+    }
+    if (!NO_ARTISANS.has(nation.tag)) {
+      allocation.artisans = (allocation.artisans ?? 0) + (nation.allocation?.artisans ?? 0) || 5;
+    }
+    const allocTotal = Object.values(allocation).reduce((sum, value) => sum + value, 0);
+    if (allocTotal > 0) {
+      for (const key of Object.keys(allocation)) allocation[key] = allocation[key]! * 100 / allocTotal;
+    } else {
+      for (const key of Object.keys(allocation)) allocation[key] = 100 / Math.max(1, Object.keys(allocation).length);
+    }
+    nation.estates = next;
+    nation.allocation = allocation;
+    nation.lastReport = null;
+    nation.monthlyHistory = [];
+  }
+  for (const army of Object.values(state.armies)) {
+    army.sourceEstate = OLD_ESTATE_MAP[army.sourceEstate] ?? army.sourceEstate;
+  }
+}
 
 export function encodeSave(state: GameState): string {
   const payload = {
@@ -31,7 +179,7 @@ export function decodeSave(text: string): GameState {
   } catch {
     throw new Error('存档不是合法 JSON');
   }
-  if (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== 3 && parsed.version !== 4 && parsed.version !== 5 && parsed.version !== SAVE_VERSION) {
+  if (!Number.isInteger(parsed.version) || parsed.version < 1 || parsed.version > SAVE_VERSION) {
     throw new Error(`存档版本 ${parsed.version} 与当前版本 ${SAVE_VERSION} 不兼容`);
   }
   const checksum = hashState(parsed.state);
@@ -67,6 +215,8 @@ export function decodeSave(text: string): GameState {
 
     if (typeof nation.foodPurchasePct !== 'number') nation.foodPurchasePct = 30;
     if (!Array.isArray(nation.tradePosts)) nation.tradePosts = [];
+    if (!nation.grudges || typeof nation.grudges !== 'object' || Array.isArray(nation.grudges)) nation.grudges = {};
+    if (typeof nation.wageArrears !== 'number') nation.wageArrears = 0;
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (!Array.isArray(parsed.state.battles)) parsed.state.battles = [];
@@ -116,6 +266,7 @@ export function decodeSave(text: string): GameState {
       else if (value > cap) war.casualties[tag] = cap;
     }
   }
+  if (parsed.version <= 6) migrateEstatesV7(parsed.state);
   return parsed.state;
 }
 

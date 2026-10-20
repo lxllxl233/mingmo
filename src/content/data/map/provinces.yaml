@@ -12,7 +12,7 @@ provinces:
     population: 7478
     landholding: 7
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3725
     neighbors:
       - albazin_a
@@ -31,7 +31,7 @@ provinces:
     population: 6314
     landholding: 6
     development: 5
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 1372
     neighbors:
       - albazin
@@ -54,7 +54,7 @@ provinces:
     population: 8046
     landholding: 8
     development: 12
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3212
     neighbors:
       - albazin
@@ -139,7 +139,7 @@ provinces:
     population: 361428
     landholding: 361
     development: 63
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20497
     neighbors:
       - anqing_a
@@ -161,7 +161,7 @@ provinces:
     population: 474903
     landholding: 475
     development: 74
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 24650
     neighbors:
       - anqing
@@ -184,7 +184,7 @@ provinces:
     population: 446940
     landholding: 447
     development: 72
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 23811
     neighbors:
       - anqing
@@ -209,7 +209,7 @@ provinces:
     population: 109684
     landholding: 110
     development: 17
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5669
     neighbors:
       - ava_a
@@ -228,7 +228,7 @@ provinces:
     population: 106226
     landholding: 106
     development: 21
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6670
     neighbors:
       - ava
@@ -248,7 +248,7 @@ provinces:
     population: 119810
     landholding: 120
     development: 27
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8385
     neighbors:
       - ava
@@ -293,7 +293,7 @@ provinces:
     population: 349386
     landholding: 349
     development: 60
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 19580
     neighbors:
       - baoding
@@ -315,7 +315,7 @@ provinces:
     population: 322009
     landholding: 322
     development: 61
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 19528
     neighbors:
       - baoding
@@ -407,7 +407,7 @@ provinces:
     population: 679555
     landholding: 680
     development: 74
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 26981
     neighbors:
       - baoding_b
@@ -451,7 +451,7 @@ provinces:
     population: 280312
     landholding: 280
     development: 64
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 19833
     neighbors:
       - baoding_b
@@ -472,7 +472,7 @@ provinces:
     population: 128534
     landholding: 129
     development: 28
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8744
     neighbors:
       - ava_b
@@ -493,7 +493,7 @@ provinces:
     population: 96599
     landholding: 97
     development: 19
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6040
     neighbors:
       - ava_b
@@ -512,7 +512,7 @@ provinces:
     population: 132252
     landholding: 132
     development: 19
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6446
     neighbors:
       - ava_b
@@ -597,7 +597,7 @@ provinces:
     population: 122473
     landholding: 122
     development: 22
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7115
     neighbors:
       - chahar_a
@@ -619,7 +619,7 @@ provinces:
     population: 126800
     landholding: 127
     development: 17
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5864
     neighbors:
       - chahar
@@ -640,7 +640,7 @@ provinces:
     population: 119768
     landholding: 120
     development: 18
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6044
     neighbors:
       - chahar
@@ -664,7 +664,7 @@ provinces:
     population: 62830
     landholding: 63
     development: 8
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 2796
     neighbors:
       - chamdo_a
@@ -684,7 +684,7 @@ provinces:
     population: 78952
     landholding: 79
     development: 6
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 2459
     neighbors:
       - chamdo
@@ -707,7 +707,7 @@ provinces:
     population: 76395
     landholding: 76
     development: 7
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 2690
     neighbors:
       - chamdo
@@ -797,7 +797,7 @@ provinces:
     population: 381212
     landholding: 381
     development: 75
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 23842
     neighbors:
       - changzhou_a
@@ -818,7 +818,7 @@ provinces:
     population: 441294
     landholding: 441
     development: 67
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22447
     neighbors:
       - changzhou
@@ -840,7 +840,7 @@ provinces:
     population: 384869
     landholding: 385
     development: 63
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20764
     neighbors:
       - changzhou
@@ -920,7 +920,7 @@ provinces:
     population: 55984
     landholding: 56
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4278
     neighbors:
       - chechen_a
@@ -939,7 +939,7 @@ provinces:
     population: 70905
     landholding: 71
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4188
     neighbors:
       - chahar_b
@@ -965,7 +965,7 @@ provinces:
     population: 77293
     landholding: 77
     development: 9
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3220
     neighbors:
       - chechen
@@ -1187,7 +1187,7 @@ provinces:
     population: 98253
     landholding: 98
     development: 31
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9179
     neighbors:
       - dali_a
@@ -1207,7 +1207,7 @@ provinces:
     population: 103487
     landholding: 103
     development: 33
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9759
     neighbors:
       - dali
@@ -1230,7 +1230,7 @@ provinces:
     population: 98895
     landholding: 99
     development: 29
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8667
     neighbors:
       - chamdo
@@ -1436,7 +1436,7 @@ provinces:
     population: 49487
     landholding: 49
     development: 34
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9404
     neighbors:
       - beijing_b
@@ -1457,7 +1457,7 @@ provinces:
     population: 38802
     landholding: 39
     development: 36
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9802
     neighbors:
       - beijing
@@ -1481,7 +1481,7 @@ provinces:
     population: 39793
     landholding: 40
     development: 28
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 7733
     neighbors:
       - chahar
@@ -1503,7 +1503,7 @@ provinces:
     population: 1106062
     landholding: 1106
     development: 58
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 27679
     neighbors:
       - edo_a
@@ -1521,7 +1521,7 @@ provinces:
     population: 433324
     landholding: 433
     development: 37
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 14556
     neighbors:
       - edo
@@ -1540,7 +1540,7 @@ provinces:
     population: 332916
     landholding: 333
     development: 42
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 14712
     neighbors:
       - edo
@@ -1820,7 +1820,7 @@ provinces:
     population: 101519
     landholding: 102
     development: 36
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 10516
     neighbors:
       - ganzhou_hexi_a
@@ -1841,7 +1841,7 @@ provinces:
     population: 75602
     landholding: 76
     development: 25
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 7361
     neighbors:
       - ganzhou_hexi
@@ -1861,7 +1861,7 @@ provinces:
     population: 105531
     landholding: 106
     development: 26
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 7962
     neighbors:
       - ganzhou_hexi
@@ -1885,7 +1885,7 @@ provinces:
     population: 148852
     landholding: 149
     development: 35
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 10796
     neighbors:
       - guangning_a
@@ -1904,7 +1904,7 @@ provinces:
     population: 131523
     landholding: 132
     development: 35
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 10598
     neighbors:
       - guangning
@@ -1926,7 +1926,7 @@ provinces:
     population: 143928
     landholding: 144
     development: 40
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12040
     neighbors:
       - dengzhou
@@ -2148,7 +2148,7 @@ provinces:
     population: 125111
     landholding: 125
     development: 16
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5585
     neighbors:
       - guihua_a
@@ -2168,7 +2168,7 @@ provinces:
     population: 129767
     landholding: 130
     development: 20
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6678
     neighbors:
       - chahar
@@ -2192,7 +2192,7 @@ provinces:
     population: 112255
     landholding: 112
     development: 15
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5179
     neighbors:
       - chahar
@@ -2281,7 +2281,7 @@ provinces:
     population: 99527
     landholding: 100
     development: 22
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6854
     neighbors:
       - guiyang_a
@@ -2302,7 +2302,7 @@ provinces:
     population: 76086
     landholding: 76
     development: 34
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9707
     neighbors:
       - caobang_a
@@ -2324,7 +2324,7 @@ provinces:
     population: 85463
     landholding: 85
     development: 27
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7994
     neighbors:
       - chongqing_b
@@ -2347,7 +2347,7 @@ provinces:
     population: 103983
     landholding: 104
     development: 12
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4304
     neighbors:
       - haixi_a
@@ -2367,7 +2367,7 @@ provinces:
     population: 99239
     landholding: 99
     development: 20
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6330
     neighbors:
       - haixi
@@ -2390,7 +2390,7 @@ provinces:
     population: 122020
     landholding: 122
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5030
     neighbors:
       - haixi
@@ -2430,7 +2430,7 @@ provinces:
     population: 293771
     landholding: 294
     development: 41
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 14006
     neighbors:
       - hanseong_b
@@ -2448,7 +2448,7 @@ provinces:
     population: 361320
     landholding: 361
     development: 44
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 15556
     neighbors:
       - osaka_b
@@ -2465,7 +2465,7 @@ provinces:
     population: 213240
     landholding: 213
     development: 41
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 13089
     neighbors:
       - hamhung_a
@@ -2486,7 +2486,7 @@ provinces:
     population: 195481
     landholding: 195
     development: 40
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 12627
     neighbors:
       - haixi_a
@@ -2506,7 +2506,7 @@ provinces:
     population: 196586
     landholding: 197
     development: 35
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 11339
     neighbors:
       - hamhung
@@ -2527,7 +2527,7 @@ provinces:
     population: 287568
     landholding: 288
     development: 65
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20176
     neighbors:
       - hangzhou_a
@@ -2548,7 +2548,7 @@ provinces:
     population: 359972
     landholding: 360
     development: 62
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20220
     neighbors:
       - hangzhou
@@ -2569,7 +2569,7 @@ provinces:
     population: 371604
     landholding: 372
     development: 60
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 19833
     neighbors:
       - hangzhou
@@ -2590,7 +2590,7 @@ provinces:
     population: 400352
     landholding: 400
     development: 54
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 18600
     neighbors:
       - hanseong_a
@@ -2609,7 +2609,7 @@ provinces:
     population: 177993
     landholding: 178
     development: 41
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 12688
     neighbors:
       - hanseong
@@ -2628,7 +2628,7 @@ provinces:
     population: 178095
     landholding: 178
     development: 46
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 13989
     neighbors:
       - hakata_a
@@ -2776,7 +2776,7 @@ provinces:
     population: 109270
     landholding: 109
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4885
     neighbors:
       - albazin_a
@@ -2796,7 +2796,7 @@ provinces:
     population: 119201
     landholding: 119
     development: 7
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3178
     neighbors:
       - albazin_a
@@ -2820,7 +2820,7 @@ provinces:
     population: 94380
     landholding: 94
     development: 8
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3155
     neighbors:
       - albazin
@@ -2844,7 +2844,7 @@ provinces:
     population: 68509
     landholding: 69
     development: 5
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 2080
     neighbors:
       - chamdo_a
@@ -2864,7 +2864,7 @@ provinces:
     population: 56800
     landholding: 57
     development: 16
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4807
     neighbors:
       - chamdo_a
@@ -2887,7 +2887,7 @@ provinces:
     population: 64862
     landholding: 65
     development: 15
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4639
     neighbors:
       - chamdo_a
@@ -2909,7 +2909,7 @@ provinces:
     population: 111291
     landholding: 111
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4908
     neighbors:
       - hetuala_a
@@ -2928,7 +2928,7 @@ provinces:
     population: 114388
     landholding: 114
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4683
     neighbors:
       - hetuala
@@ -2953,7 +2953,7 @@ provinces:
     population: 101045
     landholding: 101
     development: 10
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3751
     neighbors:
       - hetuala
@@ -2977,7 +2977,7 @@ provinces:
     population: 107028
     landholding: 107
     development: 23
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7199
     neighbors:
       - haixi_b
@@ -2997,7 +2997,7 @@ provinces:
     population: 103953
     landholding: 104
     development: 16
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5344
     neighbors:
       - albazin_b
@@ -3021,7 +3021,7 @@ provinces:
     population: 93909
     landholding: 94
     development: 11
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3930
     neighbors:
       - dushikou_a
@@ -3046,7 +3046,7 @@ provinces:
     population: 446014
     landholding: 446
     development: 70
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 23281
     neighbors:
       - huaian_a
@@ -3066,7 +3066,7 @@ provinces:
     population: 477949
     landholding: 478
     development: 71
-    dominant_estate: gentry
+    dominant_estate: artisans
     supply_limit: 23904
     neighbors:
       - huaian
@@ -3088,7 +3088,7 @@ provinces:
     population: 392621
     landholding: 393
     development: 74
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 23712
     neighbors:
       - huaian
@@ -3233,7 +3233,7 @@ provinces:
     population: 399224
     landholding: 399
     development: 61
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20408
     neighbors:
       - guangxin_b
@@ -3253,7 +3253,7 @@ provinces:
     population: 360170
     landholding: 360
     development: 69
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22043
     neighbors:
       - anqing_a
@@ -3275,7 +3275,7 @@ provinces:
     population: 381864
     landholding: 382
     development: 71
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22810
     neighbors:
       - anqing
@@ -3357,7 +3357,7 @@ provinces:
     population: 298991
     landholding: 299
     development: 66
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20566
     neighbors:
       - hangzhou_b
@@ -3379,7 +3379,7 @@ provinces:
     population: 296619
     landholding: 297
     development: 70
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 21579
     neighbors:
       - changzhou
@@ -3400,7 +3400,7 @@ provinces:
     population: 342310
     landholding: 342
     development: 63
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20279
     neighbors:
       - hangzhou
@@ -3421,7 +3421,7 @@ provinces:
     population: 58410
     landholding: 58
     development: 16
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4825
     neighbors:
       - ili_b
@@ -3439,7 +3439,7 @@ provinces:
     population: 61518
     landholding: 62
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4081
     neighbors:
       - shigatse_a
@@ -3459,7 +3459,7 @@ provinces:
     population: 72989
     landholding: 73
     development: 16
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4991
     neighbors:
       - ili
@@ -3607,7 +3607,7 @@ provinces:
     population: 117778
     landholding: 118
     development: 19
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6282
     neighbors:
       - hamhung
@@ -3628,7 +3628,7 @@ provinces:
     population: 108889
     landholding: 109
     development: 8
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3320
     neighbors:
       - haixi
@@ -3652,7 +3652,7 @@ provinces:
     population: 110075
     landholding: 110
     development: 9
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3594
     neighbors:
       - hetuala
@@ -3673,7 +3673,7 @@ provinces:
     population: 316938
     landholding: 317
     development: 66
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20770
     neighbors:
       - hangzhou_b
@@ -3692,7 +3692,7 @@ provinces:
     population: 299756
     landholding: 300
     development: 62
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 19535
     neighbors:
       - ningbo
@@ -3712,7 +3712,7 @@ provinces:
     population: 336208
     landholding: 336
     development: 59
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 19170
     neighbors:
       - hangzhou_b
@@ -3935,7 +3935,7 @@ provinces:
     population: 142318
     landholding: 142
     development: 40
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12021
     neighbors:
       - guangning_b
@@ -3955,7 +3955,7 @@ provinces:
     population: 147213
     landholding: 147
     development: 39
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 11817
     neighbors:
       - guangning
@@ -3977,7 +3977,7 @@ provinces:
     population: 128725
     landholding: 129
     development: 36
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 10826
     neighbors:
       - jinzhou
@@ -4059,7 +4059,7 @@ provinces:
     population: 160193
     landholding: 160
     development: 40
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 12225
     neighbors:
       - hanseong_a
@@ -4078,7 +4078,7 @@ provinces:
     population: 169223
     landholding: 169
     development: 35
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 11028
     neighbors:
       - kaesong
@@ -4098,7 +4098,7 @@ provinces:
     population: 174182
     landholding: 174
     development: 39
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 12124
     neighbors:
       - hamhung_b
@@ -4184,7 +4184,7 @@ provinces:
     population: 115593
     landholding: 116
     development: 43
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12497
     neighbors:
       - hetuala_b
@@ -4204,7 +4204,7 @@ provinces:
     population: 108200
     landholding: 108
     development: 35
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 10333
     neighbors:
       - hetuala_a
@@ -4225,7 +4225,7 @@ provinces:
     population: 137173
     landholding: 137
     development: 32
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9883
     neighbors:
       - haixi_b
@@ -4382,7 +4382,7 @@ provinces:
     population: 64606
     landholding: 65
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4116
     neighbors:
       - chechen_a
@@ -4402,7 +4402,7 @@ provinces:
     population: 72628
     landholding: 73
     development: 10
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3427
     neighbors:
       - chechen
@@ -4423,7 +4423,7 @@ provinces:
     population: 57938
     landholding: 58
     development: 6
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 2220
     neighbors:
       - chechen_b
@@ -4445,7 +4445,7 @@ provinces:
     population: 300825
     landholding: 301
     development: 51
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 16687
     neighbors:
       - kyoto_a
@@ -4467,7 +4467,7 @@ provinces:
     population: 351670
     landholding: 352
     development: 52
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 17526
     neighbors:
       - kyoto
@@ -4490,7 +4490,7 @@ provinces:
     population: 302042
     landholding: 302
     development: 41
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 14101
     neighbors:
       - kyoto
@@ -4573,7 +4573,7 @@ provinces:
     population: 161962
     landholding: 162
     development: 18
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 6525
     neighbors:
       - lhasa_a
@@ -4593,7 +4593,7 @@ provinces:
     population: 70572
     landholding: 71
     development: 12
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 3924
     neighbors:
       - lhasa
@@ -4612,7 +4612,7 @@ provinces:
     population: 59745
     landholding: 60
     development: 4
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 1721
     neighbors:
       - chamdo_b
@@ -4635,7 +4635,7 @@ provinces:
     population: 92584
     landholding: 93
     development: 27
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8075
     neighbors:
       - liangzhou_a
@@ -4654,7 +4654,7 @@ provinces:
     population: 88608
     landholding: 89
     development: 36
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 10369
     neighbors:
       - ganzhou_hexi_b
@@ -4675,7 +4675,7 @@ provinces:
     population: 98833
     landholding: 99
     development: 27
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8146
     neighbors:
       - ganzhou_hexi_b
@@ -4699,7 +4699,7 @@ provinces:
     population: 146625
     landholding: 147
     development: 38
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 11550
     neighbors:
       - guangning_b
@@ -4719,7 +4719,7 @@ provinces:
     population: 124880
     landholding: 125
     development: 42
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12343
     neighbors:
       - guangning_a
@@ -4741,7 +4741,7 @@ provinces:
     population: 148134
     landholding: 148
     development: 41
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12347
     neighbors:
       - guangning_b
@@ -4763,7 +4763,7 @@ provinces:
     population: 101691
     landholding: 102
     development: 38
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 11038
     neighbors:
       - kunming
@@ -4784,7 +4784,7 @@ provinces:
     population: 78819
     landholding: 79
     development: 37
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 10518
     neighbors:
       - caobang_a
@@ -4810,7 +4810,7 @@ provinces:
     population: 99927
     landholding: 100
     development: 36
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 10498
     neighbors:
       - ava_b
@@ -5053,7 +5053,7 @@ provinces:
     population: 303104
     landholding: 303
     development: 47
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 15673
     neighbors:
       - hakata_a
@@ -5072,7 +5072,7 @@ provinces:
     population: 305365
     landholding: 305
     development: 48
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 15958
     neighbors:
       - nagasaki_a
@@ -5089,7 +5089,7 @@ provinces:
     population: 446309
     landholding: 446
     development: 42
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 16004
     neighbors:
       - kyoto_a
@@ -5112,7 +5112,7 @@ provinces:
     population: 444647
     landholding: 445
     development: 43
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 16245
     neighbors:
       - kyoto
@@ -5135,7 +5135,7 @@ provinces:
     population: 377439
     landholding: 377
     development: 35
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 13399
     neighbors:
       - kyoto
@@ -5227,7 +5227,7 @@ provinces:
     population: 1114872
     landholding: 1115
     development: 79
-    dominant_estate: gentry
+    dominant_estate: artisans
     supply_limit: 33240
     neighbors:
       - anqing
@@ -5249,7 +5249,7 @@ provinces:
     population: 424060
     landholding: 424
     development: 74
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 24071
     neighbors:
       - anqing
@@ -5271,7 +5271,7 @@ provinces:
     population: 479608
     landholding: 480
     development: 68
-    dominant_estate: gentry
+    dominant_estate: artisans
     supply_limit: 23143
     neighbors:
       - anqing
@@ -5425,7 +5425,7 @@ provinces:
     population: 7663
     landholding: 8
     development: 7
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 1907
     neighbors:
       - chechen_b
@@ -5444,7 +5444,7 @@ provinces:
     population: 6687
     landholding: 7
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3456
     neighbors:
       - albazin_b
@@ -5467,7 +5467,7 @@ provinces:
     population: 8580
     landholding: 9
     development: 3
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 878
     neighbors:
       - albazin_b
@@ -5508,7 +5508,7 @@ provinces:
     population: 359729
     landholding: 360
     development: 65
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20998
     neighbors:
       - jiaxing_a
@@ -5528,7 +5528,7 @@ provinces:
     population: 282397
     landholding: 282
     development: 72
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 21937
     neighbors:
       - ningbo
@@ -5546,7 +5546,7 @@ provinces:
     population: 93585
     landholding: 94
     development: 12
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4186
     neighbors:
       - heilongjiang_a
@@ -5565,7 +5565,7 @@ provinces:
     population: 120557
     landholding: 121
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4753
     neighbors:
       - haixi_a
@@ -5585,7 +5585,7 @@ provinces:
     population: 121086
     landholding: 121
     development: 18
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6059
     neighbors:
       - heilongjiang_a
@@ -5605,7 +5605,7 @@ provinces:
     population: 88707
     landholding: 89
     development: 34
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9850
     neighbors:
       - ningxia_a
@@ -5625,7 +5625,7 @@ provinces:
     population: 104831
     landholding: 105
     development: 26
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 7954
     neighbors:
       - ningxia
@@ -5649,7 +5649,7 @@ provinces:
     population: 87720
     landholding: 88
     development: 32
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9319
     neighbors:
       - liangzhou_b
@@ -5672,7 +5672,7 @@ provinces:
     population: 134831
     landholding: 135
     development: 44
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12976
     neighbors:
       - dengzhou
@@ -5690,7 +5690,7 @@ provinces:
     population: 124369
     landholding: 124
     development: 42
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12337
     neighbors:
       - ningyuan_b
@@ -5709,7 +5709,7 @@ provinces:
     population: 127464
     landholding: 127
     development: 37
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 11072
     neighbors:
       - horqin_b
@@ -5733,7 +5733,7 @@ provinces:
     population: 7248
     landholding: 7
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3463
     neighbors:
       - okhotsk_a
@@ -5750,7 +5750,7 @@ provinces:
     population: 8057
     landholding: 8
     development: 5
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 1392
     neighbors:
       - albazin_a
@@ -5771,7 +5771,7 @@ provinces:
     population: 8672
     landholding: 9
     development: 10
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 2699
     neighbors:
       - albazin_a
@@ -5791,7 +5791,7 @@ provinces:
     population: 105955
     landholding: 106
     development: 25
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7707
     neighbors:
       - ordos_a
@@ -5810,7 +5810,7 @@ provinces:
     population: 127967
     landholding: 128
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5098
     neighbors:
       - ordos
@@ -5833,7 +5833,7 @@ provinces:
     population: 107043
     landholding: 107
     development: 11
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4079
     neighbors:
       - chechen_a
@@ -5881,7 +5881,7 @@ provinces:
     population: 294740
     landholding: 295
     development: 50
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 16357
     neighbors:
       - kyoto_a
@@ -5900,7 +5900,7 @@ provinces:
     population: 371028
     landholding: 371
     development: 46
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 16186
     neighbors:
       - hakata_b
@@ -5919,7 +5919,7 @@ provinces:
     population: 106410
     landholding: 106
     development: 30
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9012
     neighbors:
       - pegu_a
@@ -5938,7 +5938,7 @@ provinces:
     population: 103100
     landholding: 103
     development: 26
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7934
     neighbors:
       - hue_a
@@ -5959,7 +5959,7 @@ provinces:
     population: 113027
     landholding: 113
     development: 29
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8828
     neighbors:
       - pegu
@@ -6045,7 +6045,7 @@ provinces:
     population: 45474
     landholding: 45
     development: 29
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8058
     neighbors:
       - ordos_a
@@ -6066,7 +6066,7 @@ provinces:
     population: 41137
     landholding: 41
     development: 29
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8009
     neighbors:
       - fenzhou_a
@@ -6089,7 +6089,7 @@ provinces:
     population: 46833
     landholding: 47
     development: 36
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9893
     neighbors:
       - ordos_a
@@ -6245,7 +6245,7 @@ provinces:
     population: 175681
     landholding: 176
     development: 34
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 10841
     neighbors:
       - kaesong_a
@@ -6264,7 +6264,7 @@ provinces:
     population: 187282
     landholding: 187
     development: 38
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 12013
     neighbors:
       - hamhung_b
@@ -6285,7 +6285,7 @@ provinces:
     population: 205064
     landholding: 205
     development: 41
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 12996
     neighbors:
       - hamhung_b
@@ -6305,7 +6305,7 @@ provinces:
     population: 61811
     landholding: 62
     development: 8
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 2784
     neighbors:
       - qaidam_a
@@ -6324,7 +6324,7 @@ provinces:
     population: 75897
     landholding: 76
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4505
     neighbors:
       - chamdo_b
@@ -6347,7 +6347,7 @@ provinces:
     population: 71763
     landholding: 72
     development: 18
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5497
     neighbors:
       - hesute_a
@@ -6369,7 +6369,7 @@ provinces:
     population: 73219
     landholding: 73
     development: 9
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3174
     neighbors:
       - hesute_b
@@ -6389,7 +6389,7 @@ provinces:
     population: 61837
     landholding: 62
     development: 15
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4604
     neighbors:
       - chengdu_a
@@ -6411,7 +6411,7 @@ provinces:
     population: 56978
     landholding: 57
     development: 11
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3509
     neighbors:
       - ganzhou_hexi
@@ -6627,7 +6627,7 @@ provinces:
     population: 81573
     landholding: 82
     development: 31
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8989
     neighbors:
       - kunming
@@ -6649,7 +6649,7 @@ provinces:
     population: 98755
     landholding: 99
     development: 33
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9705
     neighbors:
       - caobang_a
@@ -6674,7 +6674,7 @@ provinces:
     population: 79390
     landholding: 79
     development: 34
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9744
     neighbors:
       - kunming
@@ -6760,7 +6760,7 @@ provinces:
     population: 359709
     landholding: 360
     development: 45
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 15797
     neighbors:
       - sendai_b
@@ -6778,7 +6778,7 @@ provinces:
     population: 379952
     landholding: 380
     development: 48
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 16808
     neighbors:
       - sendai
@@ -6795,7 +6795,7 @@ provinces:
     population: 392023
     landholding: 392
     development: 43
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 15646
     neighbors:
       - edo_a
@@ -6814,7 +6814,7 @@ provinces:
     population: 46989
     landholding: 47
     development: 32
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8855
     neighbors:
       - datong
@@ -6836,7 +6836,7 @@ provinces:
     population: 38338
     landholding: 38
     development: 35
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9537
     neighbors:
       - pianguan
@@ -6857,7 +6857,7 @@ provinces:
     population: 52993
     landholding: 53
     development: 36
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9964
     neighbors:
       - datong
@@ -6878,7 +6878,7 @@ provinces:
     population: 140595
     landholding: 141
     development: 32
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9922
     neighbors:
       - ningyuan_a
@@ -6899,7 +6899,7 @@ provinces:
     population: 148376
     landholding: 148
     development: 31
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9750
     neighbors:
       - ningyuan_a
@@ -6919,7 +6919,7 @@ provinces:
     population: 150591
     landholding: 151
     development: 42
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 12635
     neighbors:
       - ningyuan_b
@@ -6940,7 +6940,7 @@ provinces:
     population: 79577
     landholding: 80
     development: 15
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 4806
     neighbors:
       - lhasa_b
@@ -6959,7 +6959,7 @@ provinces:
     population: 61758
     landholding: 62
     development: 4
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 1743
     neighbors:
       - lhasa
@@ -6980,7 +6980,7 @@ provinces:
     population: 73841
     landholding: 74
     development: 16
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 5001
     neighbors:
       - chamdo_b
@@ -7000,7 +7000,7 @@ provinces:
     population: 374204
     landholding: 374
     development: 61
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20123
     neighbors:
       - hangzhou
@@ -7020,7 +7020,7 @@ provinces:
     population: 321197
     landholding: 321
     development: 65
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20559
     neighbors:
       - guangxin_b
@@ -7047,7 +7047,7 @@ provinces:
     population: 285200
     landholding: 285
     development: 61
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 19109
     neighbors:
       - jiaxing_a
@@ -7139,7 +7139,7 @@ provinces:
     population: 349985
     landholding: 350
     development: 52
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 17507
     neighbors:
       - hetuala_a
@@ -7160,7 +7160,7 @@ provinces:
     population: 117272
     landholding: 117
     development: 41
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 11996
     neighbors:
       - guangning_a
@@ -7183,7 +7183,7 @@ provinces:
     population: 117786
     landholding: 118
     development: 45
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 13042
     neighbors:
       - hetuala_a
@@ -7204,7 +7204,7 @@ provinces:
     population: 70784
     landholding: 71
     development: 15
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 4706
     neighbors:
       - shigatse_a
@@ -7222,7 +7222,7 @@ provinces:
     population: 75459
     landholding: 75
     development: 7
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 2680
     neighbors:
       - ili_a
@@ -7241,7 +7241,7 @@ provinces:
     population: 67953
     landholding: 68
     development: 14
-    dominant_estate: clergy
+    dominant_estate: landlords
     supply_limit: 4414
     neighbors:
       - ili_a
@@ -7332,7 +7332,7 @@ provinces:
     population: 94533
     landholding: 95
     development: 30
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8877
     neighbors:
       - guiyang_b
@@ -7354,7 +7354,7 @@ provinces:
     population: 74487
     landholding: 74
     development: 22
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6568
     neighbors:
       - chongqing
@@ -7378,7 +7378,7 @@ provinces:
     population: 90664
     landholding: 91
     development: 28
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8313
     neighbors:
       - sinan
@@ -7419,7 +7419,7 @@ provinces:
     population: 381552
     landholding: 382
     development: 68
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22026
     neighbors:
       - changzhou_b
@@ -7436,7 +7436,7 @@ provinces:
     population: 426441
     landholding: 426
     development: 62
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20978
     neighbors:
       - songjiang
@@ -7453,7 +7453,7 @@ provinces:
     population: 381397
     landholding: 381
     development: 39
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 14485
     neighbors:
       - edo_b
@@ -7473,7 +7473,7 @@ provinces:
     population: 417569
     landholding: 418
     development: 37
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 14377
     neighbors:
       - edo_b
@@ -7495,7 +7495,7 @@ provinces:
     population: 429984
     landholding: 430
     development: 37
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 14518
     neighbors:
       - edo_b
@@ -7517,7 +7517,7 @@ provinces:
     population: 398264
     landholding: 398
     development: 73
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 23517
     neighbors:
       - huzhou
@@ -7537,7 +7537,7 @@ provinces:
     population: 395861
     landholding: 396
     development: 63
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20889
     neighbors:
       - hangzhou_a
@@ -7560,7 +7560,7 @@ provinces:
     population: 361671
     landholding: 362
     development: 70
-    dominant_estate: gentry
+    dominant_estate: artisans
     supply_limit: 22320
     neighbors:
       - jiaxing_b
@@ -7579,7 +7579,7 @@ provinces:
     population: 95501
     landholding: 96
     development: 34
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9928
     neighbors:
       - ganzhou_hexi
@@ -7600,7 +7600,7 @@ provinces:
     population: 93287
     landholding: 93
     development: 27
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8083
     neighbors:
       - ganzhou_hexi_a
@@ -7622,7 +7622,7 @@ provinces:
     population: 86103
     landholding: 86
     development: 29
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8521
     neighbors:
       - ganzhou_hexi
@@ -7777,7 +7777,7 @@ provinces:
     population: 312276
     landholding: 312
     development: 72
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22277
     neighbors:
       - taizhou_a
@@ -7796,7 +7796,7 @@ provinces:
     population: 358210
     landholding: 358
     development: 72
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22800
     neighbors:
       - taizhou
@@ -7814,7 +7814,7 @@ provinces:
     population: 363950
     landholding: 364
     development: 67
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 21566
     neighbors:
       - ningbo
@@ -7902,7 +7902,7 @@ provinces:
     population: 101400
     landholding: 101
     development: 25
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7655
     neighbors:
       - bhamo
@@ -7922,7 +7922,7 @@ provinces:
     population: 83365
     landholding: 83
     development: 35
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 10050
     neighbors:
       - bhamo_b
@@ -7945,7 +7945,7 @@ provinces:
     population: 91096
     landholding: 91
     development: 38
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 10918
     neighbors:
       - ava_b
@@ -8164,7 +8164,7 @@ provinces:
     population: 73687
     landholding: 74
     development: 32
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9159
     neighbors:
       - guilin_b
@@ -8184,7 +8184,7 @@ provinces:
     population: 73292
     landholding: 73
     development: 28
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8115
     neighbors:
       - changsha_b
@@ -8211,7 +8211,7 @@ provinces:
     population: 81859
     landholding: 82
     development: 23
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6912
     neighbors:
       - guilin_b
@@ -8233,7 +8233,7 @@ provinces:
     population: 123256
     landholding: 123
     development: 21
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 6864
     neighbors:
       - ava_a
@@ -8253,7 +8253,7 @@ provinces:
     population: 98767
     landholding: 99
     development: 26
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7885
     neighbors:
       - ava_a
@@ -8273,7 +8273,7 @@ provinces:
     population: 124407
     landholding: 124
     development: 25
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7917
     neighbors:
       - ava
@@ -8297,7 +8297,7 @@ provinces:
     population: 107895
     landholding: 108
     development: 17
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5649
     neighbors:
       - guihua
@@ -8318,7 +8318,7 @@ provinces:
     population: 95186
     landholding: 95
     development: 24
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7324
     neighbors:
       - guihua_a
@@ -8340,7 +8340,7 @@ provinces:
     population: 120411
     landholding: 120
     development: 23
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7352
     neighbors:
       - guihua
@@ -8362,7 +8362,7 @@ provinces:
     population: 62152
     landholding: 62
     development: 19
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5648
     neighbors:
       - kulun_b
@@ -8382,7 +8382,7 @@ provinces:
     population: 62421
     landholding: 62
     development: 16
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4871
     neighbors:
       - chechen_a
@@ -8403,7 +8403,7 @@ provinces:
     population: 76692
     landholding: 77
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4514
     neighbors:
       - chechen_a
@@ -8427,7 +8427,7 @@ provinces:
     population: 181950
     landholding: 182
     development: 42
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 12993
     neighbors:
       - liaoyang_b
@@ -8446,7 +8446,7 @@ provinces:
     population: 167190
     landholding: 167
     development: 37
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 11524
     neighbors:
       - hamhung
@@ -8470,7 +8470,7 @@ provinces:
     population: 153587
     landholding: 154
     development: 46
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 13710
     neighbors:
       - hetuala_a
@@ -8490,7 +8490,7 @@ provinces:
     population: 58218
     landholding: 58
     development: 13
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4043
     neighbors:
       - ili_a
@@ -8510,7 +8510,7 @@ provinces:
     population: 65108
     landholding: 65
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 4382
     neighbors:
       - ili
@@ -8531,7 +8531,7 @@ provinces:
     population: 70217
     landholding: 70
     development: 12
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3920
     neighbors:
       - qaidam
@@ -8622,7 +8622,7 @@ provinces:
     population: 277201
     landholding: 277
     development: 70
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 21358
     neighbors:
       - shaoxing_a
@@ -8641,7 +8641,7 @@ provinces:
     population: 287142
     landholding: 287
     development: 62
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 19391
     neighbors:
       - fuzhou_b
@@ -8662,7 +8662,7 @@ provinces:
     population: 340254
     landholding: 340
     development: 68
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 21556
     neighbors:
       - shaoxing_a
@@ -8948,7 +8948,7 @@ provinces:
     population: 78338
     landholding: 78
     development: 24
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 7132
     neighbors:
       - chengdu_b
@@ -8968,7 +8968,7 @@ provinces:
     population: 104258
     landholding: 104
     development: 31
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9248
     neighbors:
       - ganzhou_hexi_b
@@ -8991,7 +8991,7 @@ provinces:
     population: 83447
     landholding: 83
     development: 27
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 7971
     neighbors:
       - baoning_b
@@ -9015,7 +9015,7 @@ provinces:
     population: 464833
     landholding: 465
     development: 65
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22195
     neighbors:
       - guide_b
@@ -9035,7 +9035,7 @@ provinces:
     population: 452111
     landholding: 452
     development: 65
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22050
     neighbors:
       - anqing_b
@@ -9057,7 +9057,7 @@ provinces:
     population: 437166
     landholding: 437
     development: 65
-    dominant_estate: gentry
+    dominant_estate: artisans
     supply_limit: 21880
     neighbors:
       - huaian_a
@@ -9208,7 +9208,7 @@ provinces:
     population: 477806
     landholding: 478
     development: 70
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 23643
     neighbors:
       - changzhou_a
@@ -9230,7 +9230,7 @@ provinces:
     population: 363538
     landholding: 364
     development: 63
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 20521
     neighbors:
       - changzhou_a
@@ -9253,7 +9253,7 @@ provinces:
     population: 375091
     landholding: 375
     development: 65
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 21173
     neighbors:
       - changzhou
@@ -9275,7 +9275,7 @@ provinces:
     population: 41489
     landholding: 41
     development: 37
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 10093
     neighbors:
       - datong
@@ -9296,7 +9296,7 @@ provinces:
     population: 41007
     landholding: 41
     development: 31
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8527
     neighbors:
       - datong
@@ -9320,7 +9320,7 @@ provinces:
     population: 39949
     landholding: 40
     development: 31
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 8515
     neighbors:
       - datong
@@ -9474,7 +9474,7 @@ provinces:
     population: 333181
     landholding: 333
     development: 62
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 19915
     neighbors:
       - shanhaiguan
@@ -9668,7 +9668,7 @@ provinces:
     population: 81231
     landholding: 81
     development: 31
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8985
     neighbors:
       - kunming_a
@@ -9689,7 +9689,7 @@ provinces:
     population: 90721
     landholding: 91
     development: 26
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7793
     neighbors:
       - dali_a
@@ -9710,7 +9710,7 @@ provinces:
     population: 90108
     landholding: 90
     development: 39
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 11166
     neighbors:
       - dali_a
@@ -9798,7 +9798,7 @@ provinces:
     population: 47708
     landholding: 48
     development: 35
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9643
     neighbors:
       - baoding_b
@@ -9819,7 +9819,7 @@ provinces:
     population: 39459
     landholding: 39
     development: 34
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9289
     neighbors:
       - baoding_b
@@ -9840,7 +9840,7 @@ provinces:
     population: 50432
     landholding: 50
     development: 35
-    dominant_estate: soldiers
+    dominant_estate: ruling
     supply_limit: 9674
     neighbors:
       - baoding_b
@@ -9982,7 +9982,7 @@ provinces:
     population: 74900
     landholding: 75
     development: 18
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 5533
     neighbors:
       - liangzhou_b
@@ -10003,7 +10003,7 @@ provinces:
     population: 70297
     landholding: 70
     development: 12
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3921
     neighbors:
       - kulun_b
@@ -10024,7 +10024,7 @@ provinces:
     population: 70499
     landholding: 70
     development: 10
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 3403
     neighbors:
       - ganzhou_hexi_b
@@ -10047,7 +10047,7 @@ provinces:
     population: 289407
     landholding: 289
     development: 53
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 17077
     neighbors:
       - baoding_a
@@ -10117,7 +10117,7 @@ provinces:
     population: 479291
     landholding: 479
     development: 71
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 23920
     neighbors:
       - changzhou_a
@@ -10136,7 +10136,7 @@ provinces:
     population: 461095
     landholding: 461
     development: 65
-    dominant_estate: gentry
+    dominant_estate: landlords
     supply_limit: 22152
     neighbors:
       - huaian
@@ -10160,7 +10160,7 @@ provinces:
     population: 343463
     landholding: 343
     development: 72
-    dominant_estate: gentry
+    dominant_estate: artisans
     supply_limit: 22632
     neighbors:
       - changzhou
@@ -10182,7 +10182,7 @@ provinces:
     population: 79161
     landholding: 79
     development: 28
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 8182
     neighbors:
       - guiyang
@@ -10204,7 +10204,7 @@ provinces:
     population: 77706
     landholding: 78
     development: 25
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 7385
     neighbors:
       - guilin_b
@@ -10227,7 +10227,7 @@ provinces:
     population: 76546
     landholding: 77
     development: 34
-    dominant_estate: nobles
+    dominant_estate: ruling
     supply_limit: 9712
     neighbors:
       - sinan
@@ -10269,7 +10269,7 @@ provinces:
     population: 354013
     landholding: 354
     development: 54
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 18073
     neighbors:
       - baoding
@@ -10290,7 +10290,7 @@ provinces:
     population: 248667
     landholding: 249
     development: 54
-    dominant_estate: peasants
+    dominant_estate: artisans
     supply_limit: 16873
     neighbors:
       - beijing_a

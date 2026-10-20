@@ -2,7 +2,7 @@ army_templates:
   - id: ming_guard
     name: 京营
     composition: { infantry: 700, firearm: 200, cavalry: 100, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 1.0
     training: 45
     equipment: 50
@@ -10,7 +10,7 @@ army_templates:
   - id: guanning_army
     name: 关宁军
     composition: { infantry: 500, firearm: 300, cavalry: 200, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 1.3
     training: 65
     equipment: 60
@@ -18,7 +18,7 @@ army_templates:
   - id: ming_artillery
     name: 神机营
     composition: { infantry: 300, firearm: 500, cavalry: 0, artillery: 200, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 1.5
     training: 55
     equipment: 70
@@ -34,7 +34,7 @@ army_templates:
   - id: qing_banner
     name: 八旗
     composition: { infantry: 400, firearm: 200, cavalry: 400, artillery: 0, naval: 0 }
-    source_estate: nobles
+    source_estate: ruling
     upkeep: 0.9
     training: 88
     equipment: 78
@@ -42,7 +42,7 @@ army_templates:
   - id: qing_green
     name: 绿营
     composition: { infantry: 800, firearm: 100, cavalry: 100, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 0.7
     training: 40
     equipment: 40
@@ -58,7 +58,7 @@ army_templates:
   - id: shun_cavalry
     name: 闯营骑兵
     composition: { infantry: 200, firearm: 0, cavalry: 800, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 0.9
     training: 65
     equipment: 40
@@ -66,7 +66,7 @@ army_templates:
   - id: xi_army
     name: 大西营
     composition: { infantry: 700, firearm: 100, cavalry: 200, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 0.7
     training: 55
     equipment: 35
@@ -74,7 +74,7 @@ army_templates:
   - id: sming_army
     name: 南明营
     composition: { infantry: 600, firearm: 200, cavalry: 200, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 0.9
     training: 45
     equipment: 45
@@ -90,7 +90,7 @@ army_templates:
   - id: zheng_marines
     name: 郑氏陆师
     composition: { infantry: 700, firearm: 200, cavalry: 100, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 1.0
     training: 65
     equipment: 60
@@ -98,7 +98,7 @@ army_templates:
   - id: mongol_cavalry
     name: 蒙古骑兵
     composition: { infantry: 100, firearm: 0, cavalry: 900, artillery: 0, naval: 0 }
-    source_estate: nobles
+    source_estate: ruling
     upkeep: 0.7
     training: 70
     equipment: 45
@@ -106,7 +106,7 @@ army_templates:
   - id: joseon_army
     name: 朝鲜军
     composition: { infantry: 700, firearm: 200, cavalry: 100, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 0.8
     training: 45
     equipment: 45
@@ -114,7 +114,7 @@ army_templates:
   - id: japan_samurai
     name: 日本武士
     composition: { infantry: 500, firearm: 100, cavalry: 400, artillery: 0, naval: 0 }
-    source_estate: nobles
+    source_estate: ruling
     upkeep: 1.1
     training: 75
     equipment: 65
@@ -130,7 +130,7 @@ army_templates:
   - id: tibet_army
     name: 藏兵
     composition: { infantry: 500, firearm: 50, cavalry: 450, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 0.5
     training: 45
     equipment: 30
@@ -138,7 +138,7 @@ army_templates:
   - id: voc_company
     name: 公司卫队
     composition: { infantry: 400, firearm: 500, cavalry: 100, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 1.5
     training: 70
     equipment: 75
@@ -154,7 +154,7 @@ army_templates:
   - id: russia_cossack
     name: 哥萨克
     composition: { infantry: 300, firearm: 100, cavalry: 600, artillery: 0, naval: 0 }
-    source_estate: soldiers
+    source_estate: ruling
     upkeep: 0.7
     training: 65
     equipment: 45
@@ -162,7 +162,7 @@ army_templates:
   - id: neutrals_tribal
     name: 土司兵
     composition: { infantry: 600, firearm: 0, cavalry: 400, artillery: 0, naval: 0 }
-    source_estate: nobles
+    source_estate: ruling
     upkeep: 0.5
     training: 40
     equipment: 25

@@ -1,7 +1,8 @@
-import type { ContentIndex, CountryDef, Tech } from '../../content/types';
+import type { ContentIndex, CountryDef, EstateKey, Tech } from '../../content/types';
 import type { ArmyState, GameState } from '../state/types';
 import { armyStrength } from '../state/types';
-import { armyStrengthOf } from './economy';
+import { armyStrengthOf, estatePopulationShare, governmentProfile } from './economy';
+import { aggregateCountryModifiers } from '../rules/modifiers';
 import { availableFocuses, startFocus } from './focus';
 import { availableTechs, startResearch } from './research';
 import { startTaxReform } from './tax';
@@ -124,21 +125,73 @@ function manageResearch(state: GameState, content: ContentIndex, tag: string): v
   }
 }
 
+function clampNumber(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+/**
+ * 税法评分用「预期净收入」而不是名义税率：
+ * revenue = 税基 × 税率 × 效率 × (1-逃税) × 币化价值 × (1-腐败侵蚀)，
+ * 再扣掉加税导致的忠诚/维稳成本。避免 AI 永远选最高名义税率。
+ */
+export function expectedTaxNet(
+  state: GameState,
+  content: ContentIndex,
+  tag: string,
+  estateKey: EstateKey,
+  law: NonNullable<ReturnType<ContentIndex['taxLaws']['get']>>,
+): number {
+  const nation = state.countries[tag];
+  const estate = nation?.estates[estateKey];
+  if (!nation || !estate) return Number.NEGATIVE_INFINITY;
+  const modifiers = aggregateCountryModifiers(state, content, tag);
+  const government = governmentProfile(content.countries.get(tag)?.government ?? 'monarchy');
+  const rulers = nation.estates['ruling'];
+  const adminCapacity = content.balance.economy.adminCapacityBase + (rulers?.influence ?? 0) * 0.6;
+  const monthlyBase = Math.max(0, estate.income) / 12;
+  const gross = monthlyBase * law.rate;
+  const evasion = clampNumber(
+    law.evasionBase + (100 - estate.loyalty) / 400 + estate.influence / 500 - adminCapacity / 300,
+    0,
+    0.8,
+  );
+  const taxEfficiency = (1 + (modifiers['tax_efficiency_pct'] ?? 0) / 100)
+    * government.tax
+    * (1 + clampNumber(nation.economicMomentum, -1, 1) * 0.3);
+  const corruptionFactor = 1 - clampNumber(nation.corruption / 135, 0, 0.85);
+  const monetization = clampNumber(
+    Math.max(1, government.trade) * (1 + (modifiers['trade_efficiency_pct'] ?? 0) / 100),
+    0.5,
+    1.8,
+  );
+  const valueFactor = 1 + clampNumber(law.silverShare, 0, 1) * (monetization - 1);
+  const revenue = gross * law.efficiency * (1 - evasion) * taxEfficiency * corruptionFactor * valueFactor;
+  const sensitivity = content.estateDefs.get(estateKey)?.sensitivity ?? 1;
+  const loyaltyShock = Math.max(0, law.rate - estate.customaryRate) * sensitivity * 4;
+  const popShare = estatePopulationShare(content, tag, estateKey);
+  const income = Math.max(0, nation.lastReport?.income ?? monthlyBase);
+  const loyaltyPenalty = income * popShare * 0.55 * loyaltyShock / 100;
+  return revenue - loyaltyPenalty + law.aiWeight * 0.1;
+}
+
 function manageTax(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   if (!nation) return;
   if ((nation.cooldowns['ai-tax'] ?? 0) > state.day) return;
   const report = nation.lastReport;
   if (report && report.net >= 0 && nation.treasury > 100000) return;
-  const candidates: Array<{ estate: string; law: string; score: number }> = [];
+  const candidates: Array<{ estate: EstateKey; law: string; score: number }> = [];
   for (const estate of Object.values(nation.estates)) {
     const current = content.taxLaws.get(estate.taxLaw);
     if (estate.reform || estate.cooldownDays > 0) continue;
+    const currentScore = current ? expectedTaxNet(state, content, tag, estate.key, current) : Number.NEGATIVE_INFINITY;
     for (const law of content.taxLawsByEstate.get(estate.key) ?? []) {
       if (law.country !== undefined && law.country !== tag) continue;
-      if (law.rate <= (current?.rate ?? 0)) continue;
+      if (law.id === estate.taxLaw) continue;
       if (law.require && !evaluateTrigger(law.require, { state, content, country: tag })) continue;
-      const score = law.rate * 500 + law.aiWeight - estate.influence * 0.6;
+      const score = expectedTaxNet(state, content, tag, estate.key, law);
+      // 只有显著优于现行税法才值得付 50 政治点与改革风险。
+      if (score <= currentScore + Math.max(50, Math.abs(currentScore) * 0.03)) continue;
       candidates.push({ estate: estate.key, law: law.id, score });
     }
   }
@@ -207,10 +260,13 @@ function manageArmy(state: GameState, content: ContentIndex, tag: string): void 
   const profile = aiProfile(state);
   const provinces = Object.values(state.provinces).filter(province => province.controller === tag).length;
   const atWar = warsOf(state, tag).length > 0;
+  const isRebel = content.countries.get(tag)?.government === 'rebel';
   const target = Math.min(provinces, 120) * (atWar ? 250 : 140) * profile.armyTarget;
   const current = armyStrengthOf(state, tag);
   if (current >= target) {
-    if (current > target * 1.5 && nation.treasury < 120000) {
+    // 流寇军队靠饥民来投维系（见 manageRebelGrowth），不因银库一时紧张而主动裁军；
+    // 否则一省的大顺/大西会在休战期被 AI 自行解散到无兵可用。
+    if (!isRebel && current > target * 1.5 && nation.treasury < 120000) {
       const weakest = Object.values(state.armies)
         .filter(army => army.tag === tag)
         .sort((a, b) => armyStrength(a) - armyStrength(b))[0];
@@ -263,6 +319,9 @@ function dominantTag(state: GameState): { tag: string; share: number } | null {
 function historicalWarTarget(state: GameState, tag: string): string | null {
   const alive = (target: string) => Boolean(state.countries[target]?.alive) && target !== tag;
   const year = fromDayIndex(state.day).year;
+  // 反雪球：任一势力版图占比 ≥38% 时，其余势力视其为头号威胁优先合纵攻之。
+  // 这是「威胁制衡」的简化实现，而非真·合纵机制；Phase 3.2 曾尝试用门控合纵替换，
+  // 但矩阵实测（1650 清统一、1627/1644 南明单极）证明门控版无法抑制结构性雪球，故保留此机制。
   const dominant = dominantTag(state);
   if (dominant && dominant.tag !== tag && dominant.share >= 0.38
     && tag !== 'JAPAN' && tag !== 'JOSEON'
@@ -366,6 +425,21 @@ function canUseHistoricalTarget(state: GameState, tag: string, target: string): 
   return owned < cap;
 }
 
+/** 记仇报复目标：怨气最重、可打且无休战/同盟/交战约束的势力。 */
+function grudgeWarTarget(state: GameState, tag: string): string | null {
+  const nation = state.countries[tag];
+  if (!nation) return null;
+  let best: { target: string; grudge: number } | null = null;
+  for (const [target, grudge] of Object.entries(nation.grudges)) {
+    if (grudge < 40) continue;
+    if (!state.countries[target]?.alive || target === tag) continue;
+    if (areAtWar(state, tag, target) || areAllied(state, tag, target)) continue;
+    if (truceDays(state, tag, target) > 0) continue;
+    if (!best || grudge > best.grudge) best = { target, grudge };
+  }
+  return best?.target ?? null;
+}
+
 function manageWar(state: GameState, content: ContentIndex, tag: string): void {
   const nation = state.countries[tag];
   const def = content.countries.get(tag);
@@ -400,6 +474,18 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
     if (war) {
       nation.ai.lastWarDay = state.day;
       nation.ai.target = scripted;
+      return;
+    }
+  }
+  // 记仇报复：被宣战过的势力优先回敬侵略者，而非只看当前关系阈值。
+  const grudge = grudgeWarTarget(state, tag);
+  if (grudge && state.day - nation.ai.lastWarDay >= 90
+    && nation.treasury >= profile.minTreasury * 0.5
+    && nation.stability >= profile.minStability * 0.6) {
+    const war = declareWar(state, tag, grudge, '复仇', content);
+    if (war) {
+      nation.ai.lastWarDay = state.day;
+      nation.ai.target = grudge;
       return;
     }
   }
@@ -619,9 +705,11 @@ function manageRebelGrowth(state: GameState, content: ContentIndex, tag: string)
   const nation = state.countries[tag];
   const def = content.countries.get(tag);
   if (!nation || !def || def.government !== 'rebel') return;
-  if (warsOf(state, tag).length === 0) return;
   const provinces = Object.values(state.provinces).filter(province => province.controller === tag).length;
-  const target = 2500 + provinces * 900;
+  // 流寇靠饥民来投补充兵员，无需处于战争状态（休战期也能壮大）。
+  // 目标至少 8000 兵，否则一省的大顺/大西会因目标低于初始兵力而从不触发成长，
+  // 只能以几千残兵硬冲大明，2~4 个月就被灭（历史上一省流寇根本滚不起来）。
+  const target = Math.max(8000, 2500 + provinces * 900);
   const current = armyStrengthOf(state, tag);
   if (current >= target) return;
   let armies = Object.values(state.armies).filter(army => army.tag === tag);
@@ -701,10 +789,22 @@ function manageInvestments(state: GameState, content: ContentIndex, tag: string)
 
   const excess = nation.treasury - reserve;
   if (excess > 100000) {
-    const spend = excess * 0.2;
+    // 把多余银投入真实赈济/吏治，回报与花费成正比（而非上一版近乎打水漂的 +0.15）。
+    // 每 5 万两/月换：稳定 +0.25、吏治 -0.25；回报封顶防「花钱买稳定」刷满。
+    const spend = excess * 0.3;
     nation.treasury -= spend;
-    nation.stability = Math.min(100, nation.stability + 0.15);
-    nation.corruption = Math.max(0, nation.corruption - 0.15);
+    const magnitude = Math.min(3, spend / 50000);
+    nation.stability = Math.min(100, nation.stability + 0.25 * magnitude);
+    nation.corruption = Math.max(0, nation.corruption - 0.25 * magnitude);
+    if (state.day % 365 === 0) {
+      state.log.push({
+        day: state.day,
+        category: 'economy',
+        country: tag,
+        text: `${content.countries.get(tag)?.name ?? tag} 将库银投入赈济与吏治（稳定 +${(0.25 * magnitude).toFixed(2)}、吏治 -${(0.25 * magnitude).toFixed(2)}）`,
+        severity: 'info',
+      });
+    }
   }
 
   if (state.day % 365 === 0 && nation.treasury > reserve * 3) {
@@ -722,6 +822,12 @@ export function runMonthlyAi(state: GameState, content: ContentIndex): void {
   for (const nation of Object.values(state.countries)) {
     if (nation.tag === 'NEU') continue;
     if (!nation.alive || (!state.spectator && nation.tag === state.playerTag)) continue;
+    // 记仇随时间淡去（每月 -1），但不会立刻遗忘。
+    for (const [target, grudge] of Object.entries(nation.grudges)) {
+      const next = grudge - 1;
+      if (next <= 0) delete nation.grudges[target];
+      else nation.grudges[target] = next;
+    }
     manageFocus(state, content, nation.tag);
     manageResearch(state, content, nation.tag);
     manageTax(state, content, nation.tag);

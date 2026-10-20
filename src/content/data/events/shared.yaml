@@ -29,7 +29,7 @@ events:
         effect:
           - add_treasury: -25000
           - add_estate_loyalty: { estate: peasants, value: 4 }
-          - add_estate_loyalty: { estate: gentry, value: -2 }
+          - add_estate_loyalty: { estate: landlords, value: -2 }
       - id: ignore
         name: 严催如故
         tooltip: 不失岁入，但民怨沸腾。
@@ -129,7 +129,7 @@ events:
         effect:
           - add_treasury: -20000
           - add_mandate: 3
-          - add_estate_loyalty: { estate: clergy, value: 4 }
+          - add_estate_loyalty: { estate: landlords, value: 4 }
       - id: ignore
         name: 无力救治
         ai_chance: 30
@@ -297,11 +297,11 @@ events:
     title: 绅衿抗税
     desc: 江南士绅联名上书，称清丈扰民，实则惧隐田曝光。
     scope: estate
-    estate: gentry
+    estate: landlords
     trigger:
       all:
-        - estate_loyalty: { gentry: { lt: 25 } }
-        - estate_influence: { gentry: { gte: 30 } }
+        - estate_loyalty: { landlords: { lt: 25 } }
+        - estate_influence: { landlords: { gte: 30 } }
     mtth: 180
     fire_once: true
     options:
@@ -309,13 +309,13 @@ events:
         name: 暂缓清丈
         ai_chance: 40
         effect:
-          - add_estate_loyalty: { estate: gentry, value: 10 }
+          - add_estate_loyalty: { estate: landlords, value: 10 }
           - add_modifier: { tax_efficiency_pct: -3 }
       - id: crack_down
         name: 拿问首事
         ai_chance: 60
         effect:
-          - add_estate_loyalty: { estate: gentry, value: -15 }
+          - add_estate_loyalty: { estate: landlords, value: -15 }
           - add_stability: -4
           - add_modifier: { tax_efficiency_pct: 5 }
 
@@ -347,10 +347,10 @@ events:
     title: 兵变
     desc: 欠饷经年，营兵鼓噪，杀参将，焚官署。
     scope: estate
-    estate: soldiers
+    estate: ruling
     trigger:
       all:
-        - estate_loyalty: { soldiers: { lt: 20 } }
+        - estate_loyalty: { ruling: { lt: 20 } }
         - date: { after: 1625-01-01, before: 1670-12-31 }
     mtth: 150
     fire_once: true
@@ -360,13 +360,13 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: -80000
-          - add_estate_loyalty: { estate: soldiers, value: 12 }
+          - add_estate_loyalty: { estate: ruling, value: 12 }
           - add_army_loyalty: 5
       - id: suppress
         name: 调兵镇压
         ai_chance: 60
         effect:
-          - add_estate_loyalty: { estate: soldiers, value: -15 }
+          - add_estate_loyalty: { estate: ruling, value: -15 }
           - add_army_loyalty: -8
           - add_stability: -5
 
@@ -374,9 +374,9 @@ events:
     title: 官员怠政
     desc: 俸薄不足以养廉，州县官多弃印而去。政令不出衙门。
     scope: estate
-    estate: officials
+    estate: ruling
     trigger:
-      estate_loyalty: { officials: { lt: 25 } }
+      estate_loyalty: { ruling: { lt: 25 } }
     mtth: 240
     fire_once: true
     options:
@@ -385,22 +385,22 @@ events:
         ai_chance: 45
         effect:
           - add_treasury: -50000
-          - add_estate_loyalty: { estate: officials, value: 10 }
+          - add_estate_loyalty: { estate: ruling, value: 10 }
           - add_modifier: { corruption_monthly: -0.1 }
       - id: punish
         name: 严考成
         ai_chance: 55
         effect:
-          - add_estate_loyalty: { estate: officials, value: -10 }
+          - add_estate_loyalty: { estate: ruling, value: -10 }
           - add_modifier: { tax_efficiency_pct: 3 }
 
   - id: rand_estate_dynasty_01
     title: 宗室索禄
     desc: 藩王联名上疏，请补积欠宗禄。户部无银，宗室聚哭于宫门。
     scope: estate
-    estate: dynasty
+    estate: ruling
     trigger:
-      estate_loyalty: { dynasty: { lt: 30 } }
+      estate_loyalty: { ruling: { lt: 30 } }
     mtth: 240
     fire_once: true
     options:
@@ -409,22 +409,22 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: -70000
-          - add_estate_loyalty: { estate: dynasty, value: 12 }
+          - add_estate_loyalty: { estate: ruling, value: 12 }
       - id: refuse
         name: 严旨申饬
         ai_chance: 60
         effect:
-          - add_estate_loyalty: { estate: dynasty, value: -12 }
+          - add_estate_loyalty: { estate: ruling, value: -12 }
           - add_stability: -3
 
   - id: rand_estate_nobles_01
     title: 勋贵圈地
     desc: 勋贵以“无主荒地”为名，圈占民田。失地农民聚众告状。
     scope: estate
-    estate: nobles
+    estate: ruling
     trigger:
       all:
-        - estate_influence: { nobles: { gte: 25 } }
+        - estate_influence: { ruling: { gte: 25 } }
         - estate_loyalty: { peasants: { lt: 40 } }
     mtth: 300
     fire_once: true
@@ -433,14 +433,14 @@ events:
         name: 禁止圈地
         ai_chance: 45
         effect:
-          - add_estate_loyalty: { estate: nobles, value: -10 }
+          - add_estate_loyalty: { estate: ruling, value: -10 }
           - add_estate_loyalty: { estate: peasants, value: 8 }
           - add_modifier: { tax_efficiency_pct: 2 }
       - id: allow
         name: 默许
         ai_chance: 55
         effect:
-          - add_estate_loyalty: { estate: nobles, value: 8 }
+          - add_estate_loyalty: { estate: ruling, value: 8 }
           - add_estate_loyalty: { estate: peasants, value: -8 }
           - add_modifier: { unrest_monthly: 0.3 }
 
@@ -448,10 +448,10 @@ events:
     title: 寺产争议
     desc: 地方官请以寺产充饷，僧道聚众抗议，信众附和。
     scope: estate
-    estate: clergy
+    estate: landlords
     trigger:
       all:
-        - estate_loyalty: { clergy: { lt: 35 } }
+        - estate_loyalty: { landlords: { lt: 35 } }
         - date: { after: 1620-01-01, before: 1670-12-31 }
     mtth: 360
     fire_once: true
@@ -461,29 +461,29 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: 60000
-          - add_estate_loyalty: { estate: clergy, value: -20 }
+          - add_estate_loyalty: { estate: landlords, value: -20 }
           - add_mandate: -3
       - id: compromise
         name: 限田留寺
         ai_chance: 40
         effect:
           - add_treasury: 20000
-          - add_estate_loyalty: { estate: clergy, value: -5 }
+          - add_estate_loyalty: { estate: landlords, value: -5 }
       - id: protect
         name: 保护寺产
         ai_chance: 20
         effect:
-          - add_estate_loyalty: { estate: clergy, value: 8 }
+          - add_estate_loyalty: { estate: landlords, value: 8 }
           - add_mandate: 2
 
   - id: rand_estate_natives_01
     title: 土著反抗
     desc: 公司强征徭役，土著头人率众袭扰据点。
     scope: estate
-    estate: custom:natives
+    estate: peasants
     country: VOC
     trigger:
-      estate_loyalty: { custom:natives: { lt: 25 } }
+      estate_loyalty: { peasants: { lt: 25 } }
     mtth: 180
     fire_once: true
     options:
@@ -492,12 +492,12 @@ events:
         ai_chance: 45
         effect:
           - add_treasury: -30000
-          - add_estate_loyalty: { estate: custom:natives, value: 10 }
+          - add_estate_loyalty: { estate: peasants, value: 10 }
       - id: punish
         name: 派兵镇压
         ai_chance: 55
         effect:
-          - add_estate_loyalty: { estate: custom:natives, value: -12 }
+          - add_estate_loyalty: { estate: peasants, value: -12 }
           - add_army_loyalty: 2
           - add_modifier: { unrest_monthly: 0.4 }
 
@@ -510,7 +510,7 @@ events:
     trigger:
       all:
         - treasury: { lt: 50000 }
-        - estate_loyalty: { soldiers: { lt: 30 } }
+        - estate_loyalty: { ruling: { lt: 30 } }
     mtth: 120
     fire_once: true
     options:
@@ -520,14 +520,14 @@ events:
         effect:
           - add_treasury: -60000
           - add_army_loyalty: 8
-          - add_estate_loyalty: { estate: soldiers, value: 8 }
+          - add_estate_loyalty: { estate: ruling, value: 8 }
       - id: hang
         name: 斩首示众
         ai_chance: 60
         effect:
           - add_army_loyalty: -10
           - add_stability: -4
-          - add_estate_loyalty: { estate: soldiers, value: -10 }
+          - add_estate_loyalty: { estate: ruling, value: -10 }
 
   - id: rand_border_01
     title: 边警
@@ -553,7 +553,7 @@ events:
         ai_chance: 30
         effect:
           - add_treasury: -20000
-          - add_estate_loyalty: { estate: nobles, value: 3 }
+          - add_estate_loyalty: { estate: ruling, value: 3 }
       - id: ignore
         name: 严旨斥责
         ai_chance: 20
@@ -567,7 +567,7 @@ events:
     scope: country
     country: any
     trigger:
-      estate_loyalty: { soldiers: { lt: 30 } }
+      estate_loyalty: { ruling: { lt: 30 } }
     mtth: 300
     fire_once: true
     options:
@@ -577,7 +577,7 @@ events:
         effect:
           - add_treasury: -40000
           - add_army_loyalty: 6
-          - add_estate_loyalty: { estate: soldiers, value: 5 }
+          - add_estate_loyalty: { estate: ruling, value: 5 }
       - id: check
         name: 削其兵权
         ai_chance: 40
@@ -837,7 +837,7 @@ events:
         effect:
           - add_treasury: -150000
           - add_stability: 3
-          - add_estate_loyalty: { estate: nobles, value: 5 }
+          - add_estate_loyalty: { estate: ruling, value: 5 }
   # ── 新经济：粮食、腐败与分配 ──────────────────────────
   - id: econ_granary_crisis
     title: 京仓告急
@@ -897,8 +897,8 @@ events:
         ai_chance: 45
         effect:
           - add_corruption: -8
-          - add_estate_loyalty: { estate: officials, value: -4 }
-          - add_estate_loyalty: { estate: gentry, value: -2 }
+          - add_estate_loyalty: { estate: ruling, value: -4 }
+          - add_estate_loyalty: { estate: landlords, value: -2 }
           - add_modifier: { tax_efficiency_pct: 3 }
       - id: cover_up
         name: 留中不发
@@ -907,7 +907,7 @@ events:
         effect:
           - add_corruption: 4
           - add_authority: 2
-          - add_estate_loyalty: { estate: officials, value: 2 }
+          - add_estate_loyalty: { estate: ruling, value: 2 }
       - id: blame_eunuch
         name: 诿过内宦
         tooltip: 皇权集中，士绅不服。
@@ -915,7 +915,7 @@ events:
         effect:
           - add_authority: 5
           - add_corruption: -3
-          - add_estate_loyalty: { estate: gentry, value: -4 }
+          - add_estate_loyalty: { estate: landlords, value: -4 }
 
   - id: econ_allocation_dispute
     title: 分配之争
@@ -936,15 +936,15 @@ events:
         ai_chance: 45
         effect:
           - add_estate_loyalty: { estate: peasants, value: 7 }
-          - add_estate_loyalty: { estate: gentry, value: -4 }
-          - add_estate_loyalty: { estate: officials, value: -2 }
+          - add_estate_loyalty: { estate: landlords, value: -4 }
+          - add_estate_loyalty: { estate: ruling, value: -2 }
           - add_modifier: { tax_efficiency_pct: -2 }
       - id: uphold_gentry
         name: 维持旧例
         tooltip: 士绅支持，农民继续失血。
         ai_chance: 35
         effect:
-          - add_estate_loyalty: { estate: gentry, value: 5 }
+          - add_estate_loyalty: { estate: landlords, value: 5 }
           - add_estate_loyalty: { estate: peasants, value: -6 }
           - add_modifier: { unrest_monthly: 0.2 }
       - id: compromise
@@ -953,5 +953,5 @@ events:
         ai_chance: 20
         effect:
           - add_estate_loyalty: { estate: peasants, value: 3 }
-          - add_estate_loyalty: { estate: gentry, value: -2 }
+          - add_estate_loyalty: { estate: landlords, value: -2 }
           - add_stability: 1

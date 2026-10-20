@@ -1,52 +1,21 @@
 estate_defs:
-  - key: dynasty
-    name: 宗室
+  - key: ruling
+    name: 统治阶级
     name_by_country:
-      MING: 宗藩
-      QING: 宗室
-      SMING: 宗藩
-      JOSEON: 王室
-      JAPAN: 公家
-      MONGOL: 黄金家族
-      TIBET: 法王
-      VOC: 股东
-      RUSSIA: 皇室
-    sensitivity: 1.0
-    income_from: mixed
-    default_privileges: []
-  - key: nobles
-    name: 贵族
-    name_by_country:
-      MING: 勋贵
-      QING: 旗主
-      MONGOL: 台吉
-      JOSEON: 两班
-      JAPAN: 大名
-      TIBET: 贵族
-      RUSSIA: 波雅尔
+      MING: 宗藩·勋贵·官僚·军户
+      QING: 宗室·旗主·汉官·八旗
+      SHUN: 老兄弟·老营
+      XI: 大西诸将·营兵
+      SMING: 宗藩·勋贵·官僚·藩镇
+      ZHENG: 国姓府·营兵
+      MONGOL: 黄金家族·台吉·箭丁
+      JOSEON: 王室·两班·官僚·军兵
+      JAPAN: 公家·大名·幕僚·武士
+      TIBET: 法王·贵族·僧官·藏兵
+      VOC: 股东·公司职员·公司兵
+      RUSSIA: 皇室·波雅尔·哥萨克
+      NEU: 土司·土兵
     sensitivity: 1.2
-    income_from: land
-    default_privileges: []
-  - key: officials
-    name: 官僚
-    name_by_country:
-      QING: 汉官
-      JOSEON: 两班
-      JAPAN: 幕僚
-      VOC: 公司职员
-      RUSSIA: 文官
-    sensitivity: 1.3
-    income_from: stipend
-    default_privileges: []
-  - key: gentry
-    name: 士绅
-    name_by_country:
-      QING: 汉地士绅
-      JOSEON: 乡班
-      JAPAN: 乡土
-      RUSSIA: 地主
-    sensitivity: 1.5
-    income_from: land
     default_privileges: []
   - key: merchants
     name: 商人
@@ -55,35 +24,36 @@ estate_defs:
       VOC: 商人
       JAPAN: 町人
     sensitivity: 1.2
-    income_from: trade
+    default_privileges: []
+  - key: landlords
+    name: 地主
+    name_by_country:
+      MING: 士绅·僧道
+      QING: 汉地士绅·喇嘛
+      SMING: 江南士绅·僧道
+      JOSEON: 乡班·僧侣
+      JAPAN: 乡土·寺社
+      TIBET: 喇嘛
+      RUSSIA: 地主·东正教会
+      NEU: 僧侣
+    sensitivity: 1.5
+    default_privileges: []
+  - key: artisans
+    name: 小生产者
+    name_by_country:
+      MING: 匠户
+      QING: 匠户
+      SHUN: 匠户
+      XI: 匠户
+      SMING: 匠户
+      ZHENG: 匠户
+      JOSEON: 匠户
+      JAPAN: 町人匠户
+      VOC: 工匠
+      RUSSIA: 工商
+    sensitivity: 1.6
     default_privileges: []
   - key: peasants
     name: 农民
     sensitivity: 2.0
-    income_from: land
-    default_privileges: []
-  - key: soldiers
-    name: 军人
-    name_by_country:
-      QING: 八旗兵
-      MING: 军户
-      JAPAN: 武士
-      RUSSIA: 哥萨克
-    sensitivity: 1.8
-    income_from: stipend
-    default_privileges: []
-  - key: clergy
-    name: 宗教
-    name_by_country:
-      TIBET: 喇嘛
-      MONGOL: 喇嘛
-      JAPAN: 寺社
-      RUSSIA: 东正教会
-    sensitivity: 1.0
-    income_from: stipend
-    default_privileges: []
-  - key: custom:natives
-    name: 土著
-    sensitivity: 1.6
-    income_from: land
     default_privileges: []

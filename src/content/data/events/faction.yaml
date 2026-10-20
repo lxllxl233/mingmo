@@ -18,7 +18,7 @@ events:
         effect:
           - add_authority: 5
           - add_stability: -4
-          - add_estate_loyalty: { estate: officials, value: -8 }
+          - add_estate_loyalty: { estate: ruling, value: -8 }
       - id: balance
         name: 调停两党
         tooltip: 朝局稍安，但腐败加深。
@@ -26,7 +26,7 @@ events:
         effect:
           - add_stability: 3
           - add_corruption: 2
-          - add_estate_loyalty: { estate: officials, value: 3 }
+          - add_estate_loyalty: { estate: ruling, value: 3 }
 
   - id: flavor_ming_jiajiang
     title: 辽饷加派
@@ -104,7 +104,7 @@ events:
         effect:
           - add_manpower: 8000
           - add_stability: 4
-          - add_estate_loyalty: { estate: officials, value: 5 }
+          - add_estate_loyalty: { estate: ruling, value: 5 }
           - add_army_loyalty: -2
       - id: old
         name: 仍归旧旗
@@ -132,7 +132,7 @@ events:
         ai_chance: 60
         effect:
           - add_treasury: 90000
-          - add_estate_loyalty: { estate: gentry, value: -12 }
+          - add_estate_loyalty: { estate: landlords, value: -12 }
           - add_stability: -3
       - id: restrain
         name: 约束部将
@@ -141,7 +141,7 @@ events:
         effect:
           - add_army_loyalty: -4
           - add_stability: 4
-          - add_estate_loyalty: { estate: gentry, value: 6 }
+          - add_estate_loyalty: { estate: landlords, value: 6 }
 
   - id: flavor_shun_juntian
     title: 均田免赋
@@ -250,7 +250,7 @@ events:
         effect:
           - add_stability: 4
           - add_authority: -3
-          - add_estate_loyalty: { estate: officials, value: 5 }
+          - add_estate_loyalty: { estate: ruling, value: 5 }
           - set_flag: sming_conciliated
       - id: faction
         name: 倚重马阮
@@ -259,7 +259,7 @@ events:
         effect:
           - add_authority: 4
           - add_stability: -5
-          - add_estate_loyalty: { estate: officials, value: -8 }
+          - add_estate_loyalty: { estate: ruling, value: -8 }
           - set_flag: sming_partisan
 
   # 弘光朝议的长期后果：调停 → 朝局稍安；倚重马阮 → 东林出奔、内耗加剧。
@@ -290,7 +290,7 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: 80000
-          - add_estate_loyalty: { estate: gentry, value: -3 }
+          - add_estate_loyalty: { estate: landlords, value: -3 }
 
   - id: SMING_e_donglin_exile
     title: 东林出奔
@@ -312,7 +312,7 @@ events:
         effect:
           - add_authority: 4
           - add_stability: -5
-          - add_estate_loyalty: { estate: officials, value: -6 }
+          - add_estate_loyalty: { estate: ruling, value: -6 }
       - id: mend
         name: 亡羊补牢
         tooltip: 耗银挽回部分人心。
@@ -320,7 +320,7 @@ events:
         effect:
           - add_treasury: -40000
           - add_stability: 2
-          - add_estate_loyalty: { estate: officials, value: 3 }
+          - add_estate_loyalty: { estate: ruling, value: 3 }
 
   - id: flavor_sming_zheng
     title: 郑氏援师
@@ -545,7 +545,7 @@ events:
         effect:
           - add_stability: 4
           - add_treasury: 30000
-          - add_estate_loyalty: { estate: officials, value: -4 }
+          - add_estate_loyalty: { estate: ruling, value: -4 }
           - set_flag: joseon_pragmatic
       - id: north
         name: 密议北伐
@@ -696,7 +696,7 @@ events:
         ai_chance: 60
         effect:
           - add_stability: 4
-          - add_estate_loyalty: { estate: clergy, value: 5 }
+          - add_estate_loyalty: { estate: landlords, value: 5 }
           - add_treasury: -30000
       - id: domain
         name: 整饬藩政

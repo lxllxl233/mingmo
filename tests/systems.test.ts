@@ -89,11 +89,11 @@ describe('triggers and decisions', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
     const ming = state.countries['MING'];
     if (!ming) throw new Error('missing MING');
-    delete ming.estates['clergy'];
-    expect(evaluateTrigger({ estateLoyalty: { clergy: { gte: 0 } } }, {
+    delete ming.estates['artisans'];
+    expect(evaluateTrigger({ estateLoyalty: { artisans: { gte: 0 } } }, {
       state, content, country: 'MING',
     })).toBe(false);
-    expect(evaluateTrigger({ estateInfluence: { clergy: { gte: 0 } } }, {
+    expect(evaluateTrigger({ estateInfluence: { artisans: { gte: 0 } } }, {
       state, content, country: 'MING',
     })).toBe(false);
   });

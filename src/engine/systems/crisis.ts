@@ -26,6 +26,24 @@ export function crisisCombatPenalty(nation: CountryState): number {
   return -Math.min(30, nation.fiscalCrisisDays * 0.12 + nation.foodCrisisDays * 0.18);
 }
 
+/** 债务对战斗力的削弱：欠饷（拖欠军饷）持续时骤降至接近无战力；其他债务最多 -10%。 */
+export function debtCombatPenalty(nation: CountryState): number {
+  const armyPay = nation.lastReport?.expenseArmy ?? 0;
+  const wageMonths = armyPay > 0 ? nation.wageArrears / armyPay : 0;
+  const otherDebt = Math.max(0, nation.arrears - nation.wageArrears);
+  let penalty = 0;
+  if (wageMonths > 0) {
+    // 欠饷：拖得越久战力越差，约 5 个月军饷后基本无战斗力（-80%）。
+    penalty += Math.min(80, wageMonths * 15);
+  }
+  if (otherDebt > 0) {
+    // 其他债务：轻微削弱，封顶 -10%（约 100 万两其他债务时达到）。
+    penalty += Math.min(10, otherDebt / 100000);
+  }
+  const total = Math.min(90, penalty);
+  return total > 0 ? -total : 0;
+}
+
 const MING_SOUTH = new Set([
   'reg_nanzhili', 'reg_zhejiang', 'reg_jiangxi', 'reg_huguang', 'reg_fujian',
   'reg_guangdong', 'reg_guangxi', 'reg_yunnan', 'reg_guizhou',
@@ -120,9 +138,11 @@ export function advanceCrisis(state: GameState, content: ContentIndex): void {
     const report = nation.lastReport;
     const armyPay = report?.expenseArmy ?? 0;
     const arrearsMonths = armyPay > 0 ? nation.arrears / armyPay : 0;
+    // 本月足额发放军饷（army_paid_in_full）时，即使仍有历史欠饷也不计入财政危机，军队可保持战力。
+    const payingInFull = nation.flags['army_paid_in_full'] !== false;
     const insolvent = nation.treasury <= 0 && (nation.arrears > 0 || (report?.net ?? 0) < 0);
     const chronicDebt = nation.arrears > 0 && arrearsMonths > 6;
-    const fiscal = insolvent || chronicDebt;
+    const fiscal = !payingInFull && (insolvent || chronicDebt);
     const food = nation.flags['food_shortage'] === true;
     nation.fiscalCrisisDays = fiscal ? Math.min(730, nation.fiscalCrisisDays + 1) : Math.max(0, nation.fiscalCrisisDays - 2);
     nation.foodCrisisDays = food ? Math.min(365, nation.foodCrisisDays + 1) : Math.max(0, nation.foodCrisisDays - 2);

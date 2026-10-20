@@ -39,6 +39,16 @@ function summarize(state: GameState, scenario: string, difficulty: string, seed:
     .map(country => ({ tag: country.tag, treasury: Math.round(country.treasury) }))
     .sort((a, b) => b.treasury - a.treasury)
     .slice(0, 3);
+  // 「永久 0 国库无恢复」：活着、国库归零、仍有债务、且当月净收入不为正。
+  const stuck = alive
+    .filter(country => country.treasury <= 0
+      && country.arrears > 0
+      && (country.lastReport?.net ?? 0) <= 0)
+    .map(country => ({
+      tag: country.tag,
+      arrears: Math.round(country.arrears),
+      net: Math.round(country.lastReport?.net ?? 0),
+    }));
   return {
     scenario,
     difficulty,
@@ -64,6 +74,7 @@ function summarize(state: GameState, scenario: string, difficulty: string, seed:
     })),
     top,
     richest,
+    stuck,
   };
 }
 
@@ -90,7 +101,7 @@ for (const scenario of scenarios) {
       rows.push(row);
       console.log(
         `${scenario}/${difficulty}/seed${seed}: alive=${row.alive} wars=${row.wars} `
-        + `zombies=${row.zombies.length} orphans=${row.orphanProvinces} `
+        + `zombies=${row.zombies.length} orphans=${row.orphanProvinces} stuck=${row.stuck.length} `
         + `top=${row.top.map(entry => `${entry.tag}:${entry.provinces}`).join(' ')}`,
       );
     }

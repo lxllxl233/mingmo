@@ -24,8 +24,8 @@ export function confiscationGain(state: GameState, content: ContentIndex, tag: s
     provinces += 1;
     development += content.provinces.get(province.id)?.development ?? 0;
   }
-  const gentry = state.countries[tag]?.estates['gentry']?.loyalty ?? 50;
-  return Math.min(300000, Math.round((50000 + provinces * 1500 + development * 30) * (0.6 + gentry / 150)));
+  const landlords = state.countries[tag]?.estates['landlords']?.loyalty ?? 50;
+  return Math.min(300000, Math.round((50000 + provinces * 1500 + development * 30) * (0.6 + landlords / 150)));
 }
 
 export function extortGentry(state: GameState, content: ContentIndex, tag: string): boolean {
@@ -37,9 +37,9 @@ export function extortGentry(state: GameState, content: ContentIndex, tag: strin
   nation.stability = clamp(nation.stability - 4, 0, 100);
   nation.corruption = clamp(nation.corruption + 2, 0, 100);
   nation.cooldowns[COOLDOWN_KEY] = state.day + 180;
-  setEstateLoyalty(state, tag, 'gentry', -8);
-  setEstateLoyalty(state, tag, 'farmers', 3);
-  setEstateLoyalty(state, tag, 'military', 2);
+  setEstateLoyalty(state, tag, 'landlords', -8);
+  setEstateLoyalty(state, tag, 'peasants', 3);
+  setEstateLoyalty(state, tag, 'ruling', 2);
   for (const province of Object.values(state.provinces)) {
     if (province.controller !== tag) continue;
     province.unrest = clamp(province.unrest + 4, 0, 100);
@@ -64,8 +64,8 @@ export function landReform(state: GameState, tag: string): boolean {
   nation.manpower += 8000;
   nation.stability = clamp(nation.stability + 2, 0, 100);
   nation.cooldowns[COOLDOWN_KEY] = state.day + 180;
-  setEstateLoyalty(state, tag, 'farmers', 8);
-  setEstateLoyalty(state, tag, 'gentry', -6);
+  setEstateLoyalty(state, tag, 'peasants', 8);
+  setEstateLoyalty(state, tag, 'landlords', -6);
   state.log.push({
     day: state.day,
     category: 'politics',
@@ -84,8 +84,8 @@ export function pacifyGentry(state: GameState, tag: string): boolean {
   nation.treasury -= 50000;
   nation.stability = clamp(nation.stability + 4, 0, 100);
   nation.cooldowns[COOLDOWN_KEY] = state.day + 120;
-  setEstateLoyalty(state, tag, 'gentry', 8);
-  setEstateLoyalty(state, tag, 'farmers', -3);
+  setEstateLoyalty(state, tag, 'landlords', 8);
+  setEstateLoyalty(state, tag, 'peasants', -3);
   for (const province of Object.values(state.provinces)) {
     if (province.controller !== tag) continue;
     province.unrest = clamp(province.unrest - 3, 0, 100);

@@ -137,6 +137,7 @@ export function createInitialState(
       manpower: Math.max(0, starting.manpower),
       politicalPower: Math.max(0, starting.politicalPower),
       arrears: 0,
+      wageArrears: 0,
       stability: clamp(starting.stability, 0, 100),
       mandate: clamp(starting.mandate, 0, 100),
       corruption: clamp(starting.corruption, 0, 100),
@@ -163,6 +164,7 @@ export function createInitialState(
       timedModifiers: [],
       cooldowns: {},
       tradePosts: [],
+      grudges: {},
       ai: { target: null, lastWarDay: -999, focusId: null, stance: 'expand' },
       monthlyHistory: [],
       lastReport: null,
@@ -326,6 +328,9 @@ export function createInitialState(
     ended: false,
     victory: null,
   };
+  for (const truce of scenario.initialTruces ?? []) {
+    state.truces[relationKey(truce.a, truce.b)] = startDay + truce.days;
+  }
   for (const nation of Object.values(state.countries)) {
     for (const techId of nation.completedTechs) {
       const tech = content.techs.get(techId);

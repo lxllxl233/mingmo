@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../content/types';
+import type { ContentIndex, EstateKey } from '../content/types';
 import { evaluateTrigger } from './rules/triggers';
 import { applyEffects } from './rules/effects';
 import { areAtWar, declareWar, makePeace } from './rules/war';
@@ -28,7 +28,7 @@ export type Command =
   | { type: 'event.choose'; eventId: string; optionId: string }
   | { type: 'research.start'; techId: string }
   | { type: 'research.cancel'; techId: string }
-  | { type: 'tax.setLaw'; estate: string; lawId: string }
+  | { type: 'tax.setLaw'; estate: EstateKey; lawId: string }
   | { type: 'economy.setAllocation'; estate: string; value: number }
   | { type: 'economy.setFoodPurchasePct'; value: number }
   | { type: 'decision.take'; decisionId: string }

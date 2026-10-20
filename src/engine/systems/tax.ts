@@ -1,4 +1,4 @@
-import type { ContentIndex } from '../../content/types';
+import type { ContentIndex, EstateKey } from '../../content/types';
 import { evaluateTrigger } from '../rules/triggers';
 import type { GameState } from '../state/types';
 
@@ -6,7 +6,7 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-function estateName(content: ContentIndex, tag: string, estateKey: string): string {
+function estateName(content: ContentIndex, tag: string, estateKey: EstateKey): string {
   return content.countryEstates.get(tag)?.find(estate => estate.key === estateKey)?.name
     ?? content.estateDefs.get(estateKey)?.name
     ?? estateKey;
@@ -16,7 +16,7 @@ export function canUseTaxLaw(
   state: GameState,
   content: ContentIndex,
   tag: string,
-  estateKey: string,
+  estateKey: EstateKey,
   lawId: string,
 ): boolean {
   const nation = state.countries[tag];
@@ -35,7 +35,7 @@ export function startTaxReform(
   state: GameState,
   content: ContentIndex,
   tag: string,
-  estateKey: string,
+  estateKey: EstateKey,
   lawId: string,
   cost = 50,
 ): boolean {
@@ -57,7 +57,7 @@ export function startTaxReform(
   return true;
 }
 
-function completeTaxReform(state: GameState, content: ContentIndex, tag: string, estateKey: string, lawId: string): void {
+function completeTaxReform(state: GameState, content: ContentIndex, tag: string, estateKey: EstateKey, lawId: string): void {
   const nation = state.countries[tag];
   const estate = nation?.estates[estateKey];
   const law = content.taxLaws.get(lawId);

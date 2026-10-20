@@ -80,13 +80,13 @@ export function evaluateTrigger(trigger: Trigger, context: TriggerContext): bool
   if ('estateLoyalty' in trigger) {
     return Object.entries(trigger.estateLoyalty).every(([estate, comparison]) => {
       const value = current.estates[estate]?.loyalty;
-      return value !== undefined && cmp(value, comparison);
+      return value !== undefined && comparison !== undefined && cmp(value, comparison);
     });
   }
   if ('estateInfluence' in trigger) {
     return Object.entries(trigger.estateInfluence).every(([estate, comparison]) => {
       const value = current.estates[estate]?.influence;
-      return value !== undefined && cmp(value, comparison);
+      return value !== undefined && comparison !== undefined && cmp(value, comparison);
     });
   }
   if ('taxLaw' in trigger) return current.estates[trigger.taxLaw.estate]?.taxLaw === trigger.taxLaw.is;

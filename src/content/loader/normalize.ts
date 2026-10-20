@@ -54,7 +54,7 @@ export function normalizeProvince(raw: unknown, file: string, index: number): Pr
     population: Number(object['population']),
     landholding: Number(object['landholding']),
     development: Number(object['development']),
-    dominantEstate: String(object['dominant_estate']),
+    dominantEstate: String(object['dominant_estate']) as ProvinceDef['dominantEstate'],
     supplyLimit: Number(object['supply_limit']),
     neighbors,
   };
@@ -83,6 +83,6 @@ export function normalizeRegion(raw: unknown, file: string, index: number): Regi
     landmass: String(object['landmass']),
     populationWeight: Number(object['population_weight']),
     development: Number(object['development']),
-    dominantEstate: String(object['dominant_estate']),
+    dominantEstate: String(object['dominant_estate']) as RegionDef['dominantEstate'],
   };
 }

@@ -315,6 +315,22 @@ input, select {
 
 .country-panel { overflow-y: auto; }
 .country-panel .panel-head { position: sticky; top: 0; background: var(--paper); z-index: 2; padding-bottom: 8px; }
+.country-panel.country-fullscreen {
+  position: fixed; inset: 0; z-index: 150;
+  background: var(--paper);
+  padding: 16px 20px;
+}
+.country-panel .panel-head-actions { display: flex; gap: 6px; }
+.country-buffs { margin: 4px 0 12px; }
+.buff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; }
+.buff-chip {
+  display: flex; justify-content: space-between; align-items: center; gap: 6px;
+  padding: 4px 8px; font-size: 12px;
+  border: 1px solid rgba(31, 28, 24, 0.12); background: rgba(255, 255, 255, 0.25);
+  cursor: help;
+}
+.buff-chip .buff-label { color: var(--ink-soft); }
+.buff-chip b { font-weight: 600; }
 .leader-card {
   display: flex;
   gap: 12px;

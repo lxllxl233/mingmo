@@ -3,7 +3,16 @@ import { estatePopulationShare, minimumAllocationShare, stabilityFactor } from '
 import { canUseTaxLaw } from '../../engine/systems/tax';
 import { useGameStore } from '../state/store';
 
-const ESTATE_COLORS = ['#9e2b25', '#b8892e', '#3f6f9a', '#6f8a5a', '#c46a2b', '#7a5f9a', '#4f8b86', '#8a7a60'];
+const ESTATE_COLORS: Record<string, string> = {
+  ruling: '#9e2b25',
+  merchants: '#c46a2b',
+  landlords: '#6f8a5a',
+  artisans: '#4f8b86',
+  peasants: '#9a7b4f',
+};
+function estateColor(key: string): string {
+  return ESTATE_COLORS[key] ?? '#8a7a60';
+}
 function piePath(start: number, end: number): string {
   const center = 50;
   const radius = 46;
@@ -54,9 +63,8 @@ export function EstatesPanel() {
     population: totalPopulation * (populationWeights[index] ?? 0) / Math.max(0.01, populationWeightTotal),
   }));
   const rawTotal = raw.reduce((sum, config) => sum + config.value, 0);
-  const scale = rawTotal > 100 ? 100 / rawTotal : 1;
+  const scale = rawTotal > 0 ? 100 / rawTotal : 0;
   const shares = raw.map(config => config.value * scale / 100);
-  const unallocated = Math.max(0, 1 - shares.reduce((sum, value) => sum + value, 0));
   const lastAllocation = report?.allocation ?? {};
   const lastTax = report?.taxByEstate ?? {};
   const projectedTax = raw.reduce((sum, config, index) => {
@@ -64,37 +72,33 @@ export function EstatesPanel() {
     const tax = lastTax[config.key] ?? 0;
     return sum + (previous > 0 ? tax * (shares[index] ?? 0) / previous : 0);
   }, 0);
-  const projectedRatio = (report?.income ?? 0) > 0 ? projectedTax / (report?.income ?? 1) : 1;
+  const projectedTrade = (report?.tradePostIncome ?? 0) + (report?.sakokuIncome ?? 0);
+  const projectedIncome = projectedTax + projectedTrade;
+  const projectedRatio = (report?.income ?? 0) > 0 ? projectedIncome / (report?.income ?? 1) : 1;
   const projectedCorruption = (report?.corruptionLoss ?? 0) * projectedRatio;
   const projectedLoyaltyCost = (report?.loyaltyCost ?? 0) * projectedRatio;
-  const projectedArmy = report?.expenseArmy ?? 0;
-  const projectedAvailable = Math.max(0, projectedTax - projectedCorruption - projectedLoyaltyCost - projectedArmy);
-  const projectedFoodSilver = projectedAvailable * country.foodPurchasePct / 100;
+  const projectedPressure = report?.expenseCourt ?? 0;
+  const projectedArmyDue = report?.expenseArmy ?? 0;
+  // 与引擎一致：腐败/维稳先扣收入，维持成本可超支，军饷再吃现金。
+  const projectedAvailable = projectedIncome - projectedCorruption - projectedLoyaltyCost - projectedPressure;
+  const projectedLiquid = Math.max(0, projectedAvailable + country.treasury);
+  const projectedArmy = Math.min(projectedArmyDue, projectedLiquid);
+  const projectedCashAfterArmy = Math.max(0, projectedLiquid - projectedArmy);
+  const projectedFoodTarget = Math.max(0, projectedAvailable) * country.foodPurchasePct / 100;
+  const projectedFoodSilver = Math.min(projectedFoodTarget, projectedCashAfterArmy);
   const projectedFood = projectedFoodSilver / Math.max(0.1, content.balance.economy.grainPrice);
-  const projectedNet = projectedAvailable - projectedFoodSilver;
+  const projectedNet = projectedAvailable - projectedArmy - projectedFoodSilver;
   // 首月结算前 report.foodArmy 尚未产生（为 0/undefined）；此时"温饱 N 个月"无意义，按 null 处理。
   const armyFood = report?.foodArmy ?? 0;
   const foodMonths = armyFood > 0 ? (country.food + projectedFood) / armyFood : null;
-  const pieSlices = [
-    ...raw.map((config, index) => ({
-      label: config.name,
-      share: shares[index] ?? 0,
-      color: ESTATE_COLORS[index % ESTATE_COLORS.length]!,
-      population: config.population,
-      wealth: (report?.economicPie ?? 0) * (shares[index] ?? 0),
-      tax: report?.taxByEstate?.[config.key] ?? 0,
-      unallocated: false,
-    })),
-    {
-      label: '未分配',
-      share: unallocated,
-      color: '#b7aa92',
-      population: 0,
-      wealth: (report?.economicPie ?? 0) * unallocated,
-      tax: 0,
-      unallocated: true,
-    },
-  ].filter(slice => slice.share > 0.0001);
+  const pieSlices = raw.map((config, index) => ({
+    label: config.name,
+    share: shares[index] ?? 0,
+    color: estateColor(config.key),
+    population: config.population,
+    wealth: (report?.economicPie ?? 0) * (shares[index] ?? 0),
+    tax: report?.taxByEstate?.[config.key] ?? 0,
+  })).filter(slice => slice.share > 0.0001);
   let cursor = 0;
   const paths = pieSlices.map((slice, index) => {
     const start = cursor;
@@ -135,7 +139,7 @@ export function EstatesPanel() {
             <div className="allocation-pie-tooltip">
               <b>{hoveredSlice.label}</b>
               <span>{(hoveredSlice.share * 100).toFixed(1)}%</span>
-              {!hoveredSlice.unallocated && <span>人口 {Math.round(hoveredSlice.population).toLocaleString()}</span>}
+              <span>人口 {Math.round(hoveredSlice.population).toLocaleString()}</span>
               <span>财富 {Math.round(hoveredSlice.wealth).toLocaleString()} 两</span>
               <span>税收 {Math.round(hoveredSlice.tax).toLocaleString()} 两</span>
             </div>
@@ -145,15 +149,27 @@ export function EstatesPanel() {
           <div className="row"><span>总人口</span><b>{Math.round(totalPopulation).toLocaleString()}</b></div>
           <div className="row"><span>田地</span><b>{Math.round(totalFields).toLocaleString()} 万亩</b></div>
           <div className="row"><span>经济大盘</span><b>{Math.round(report?.economicPie ?? 0).toLocaleString()} 两 / 月</b></div>
-          <div className="row"><span>未分配</span><b className={unallocated > 0.2 ? 'warn' : ''}>{(unallocated * 100).toFixed(1)}%</b></div>
           <div className="row"><span>稳定系数</span><b>{(stabilityFactor(country.stability) * 100).toFixed(0)}%</b></div>
-          <div className="row"><span>税收总额</span><b>{Math.round(report?.income ?? 0).toLocaleString()}</b></div>
-          <div className="row"><span>军饷</span><b className="danger">-{Math.round(report?.expenseArmy ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>总收入（税 / 贸易站 / 锁国）</span><b>{Math.round(report?.income ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>其中税收</span><b>{Math.round(report?.taxIncome ?? 0).toLocaleString()} · 贸易站 {Math.round(report?.tradePostIncome ?? 0).toLocaleString()} · 锁国 {Math.round(report?.sakokuIncome ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>军饷（实付 / 应付）</span><b className="danger">-{Math.round(report?.expenseArmyPaid ?? report?.expenseArmy ?? 0).toLocaleString()} / {Math.round(report?.expenseArmy ?? 0).toLocaleString()}</b></div>
           <div className="row"><span>购粮</span><b className="danger">-{Math.round(report?.foodPurchaseSilver ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>训练</span><b className="danger">-{Math.round(report?.expenseTraining ?? 0).toLocaleString()}</b></div>
           <div className="row"><span>腐败侵蚀</span><b className="danger">-{Math.round(report?.corruptionLoss ?? 0).toLocaleString()}</b></div>
-          <div className="row"><span>忠诚维稳</span><b className="danger">-{Math.round(report?.loyaltyCost ?? 0).toLocaleString()}</b></div>
-          <div className="row"><span>库藏火耗</span><b className="danger">-{Math.round(report?.expenseHoard ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>基层维稳</span><b className="danger">-{Math.round(report?.loyaltyCost ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>维持成本（行政/军镇）</span><b className="danger">-{Math.round(report?.expenseCourt ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>囤银压力</span><b className={(report?.hoardPressure ?? 0) > 0 ? 'warn' : ''}>{((report?.hoardPressure ?? 0) * 100).toFixed(0)}%</b></div>
           <div className="row"><span>最终净银</span><b className={(report?.net ?? 0) >= 0 ? 'good' : 'danger'}>{Math.round(report?.net ?? 0).toLocaleString()}</b></div>
+          <div className="row"><span>基层忠诚（人口占比）</span><b>{(report?.bottomLoyalty ?? 0).toFixed(0)}%（{((report?.bottomPopShare ?? 0) * 100).toFixed(0)}%）</b></div>
+          {((report?.trainingStalledSilver ?? 0) > 0 || (report?.trainingStalledFood ?? 0) > 0) && (
+            <p className="warn">
+              训练停滞：{report?.trainingStalledSilver ? '缺银' : ''}{report?.trainingStalledSilver && report?.trainingStalledFood ? '、' : ''}{report?.trainingStalledFood ? '缺粮' : ''}
+              （当月累计 {Math.max(report?.trainingStalledSilver ?? 0, report?.trainingStalledFood ?? 0)} 日次，不形成债务）
+            </p>
+          )}
+          {(report?.wageShortfall ?? 0) > 0 && <p className="danger">本月欠饷 {Math.round(report?.wageShortfall ?? 0).toLocaleString()} 两；购粮不足不形成债务。</p>}
+          {(report?.hoardPressure ?? 0) > 0 && <p className="warn">国库超过囤银上限：腐败与通胀会持续上升，建议扩军、买粮或投资。</p>}
+          {country.corruption >= 70 && <p className="danger">腐败正在吞掉约 {Math.round(Math.min(85, country.corruption / 135 * 100))}% 的税收；养廉银或「京察/考成」可降低腐败。</p>}
         </div>
       </div>
       <div className="allocation-preview">
@@ -176,7 +192,7 @@ export function EstatesPanel() {
         return (
           <div className="allocation-card" key={config.key}>
             <div className="allocation-card-head">
-              <span className="allocation-swatch" style={{ background: ESTATE_COLORS[index % ESTATE_COLORS.length] }} />
+              <span className="allocation-swatch" style={{ background: estateColor(config.key) }} />
               <b>{config.name}</b>
               <span className="muted">影响 {estate.influence.toFixed(0)} · 最低 {config.minimum.toFixed(1)}%</span>
               <strong>{(shares[index]! * 100).toFixed(1)}%</strong>
@@ -204,6 +220,7 @@ export function EstatesPanel() {
               <span className={loyaltyPreview < 0 ? 'danger' : 'good'}>分配忠诚影响 {loyaltyPreview >= 0 ? '+' : ''}{loyaltyPreview.toFixed(2)}/月</span>
               <span>本阶级收入 {Math.round(estate.income / 12).toLocaleString()} 两/月</span>
               <span>实际入库 {Math.round(estate.collected).toLocaleString()} 两/月</span>
+              <span className="danger">腐败归属 -{Math.round(report?.corruptionByEstate?.[config.key] ?? 0).toLocaleString()} 两/月</span>
             </div>
             <div className="allocation-controls">
               <label>
@@ -256,7 +273,10 @@ export function EstatesPanel() {
           onChange={event => command({ type: 'economy.setFoodPurchasePct', value: Number(event.target.value) })}
         />
         <small>
-          购粮支出 {Math.round(report?.foodPurchaseSilver ?? 0).toLocaleString()} 两 ·
+          预计每月购粮 <b>{Math.round(projectedFood).toLocaleString()} 石</b>（花 {Math.round(projectedFoodSilver).toLocaleString()} 两银）
+        </small>
+        <small className="muted">
+          上月实际：支出 {Math.round(report?.foodPurchaseSilver ?? 0).toLocaleString()} 两 ·
           购入 {Math.round(report?.foodPurchased ?? 0).toLocaleString()} 石 ·
           粮储 {Math.round(country.food).toLocaleString()} 石
         </small>

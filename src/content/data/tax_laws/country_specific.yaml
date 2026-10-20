@@ -1,7 +1,7 @@
 tax_laws:
   - id: tax_ming_clan_reduction
     country: MING
-    estate: dynasty
+    estate: ruling
     name: 宗禄折色
     desc: 宗室禄米改折银，并减其半。藩府怨望，太仓稍纾。
     rate: 0
@@ -15,7 +15,7 @@ tax_laws:
     ai_weight: 35
   - id: tax_qing_banner_land
     country: QING
-    estate: nobles
+    estate: ruling
     name: 旗地起科
     desc: 旗地按亩纳粮，八旗不满，汉民稍安。
     rate: 0.02
@@ -28,7 +28,7 @@ tax_laws:
     ai_weight: 30
   - id: tax_shun_confiscation
     country: SHUN
-    estate: gentry
+    estate: landlords
     name: 追赃助饷
     desc: 拷掠明官，追其赃银。饷源立至，士绅离心。
     rate: 0.15
@@ -85,7 +85,7 @@ tax_laws:
     ai_weight: 65
   - id: tax_mongol_herds
     country: MONGOL
-    estate: nobles
+    estate: ruling
     name: 牧地贡赋
     desc: 按牧场与牲畜征贡，台吉代收，部众苦之。
     rate: 0.04
@@ -127,7 +127,7 @@ tax_laws:
     ai_weight: 55
   - id: tax_tibet_monastery
     country: TIBET
-    estate: clergy
+    estate: landlords
     name: 寺院庄园
     desc: 寺院庄园自给，不服国役。格鲁派的财富即西藏的财富。
     rate: 0

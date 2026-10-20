@@ -37,7 +37,7 @@ events:
         effect:
           - add_treasury: 20000
           - add_stability: 2
-          - add_estate_loyalty: { estate: officials, value: -3 }
+          - add_estate_loyalty: { estate: ruling, value: -3 }
 
   - id: late_e_coastal_evacuation
     title: 迁界禁海
@@ -86,14 +86,14 @@ events:
         ai_chance: 55
         effect:
           - add_modifier: { research_speed_pct: 4 }
-          - add_estate_loyalty: { estate: officials, value: -4 }
+          - add_estate_loyalty: { estate: ruling, value: -4 }
       - id: old
         name: 恪守旧历
         tooltip: 朝局安稳，学术停滞。
         ai_chance: 45
         effect:
           - add_stability: 2
-          - add_estate_loyalty: { estate: clergy, value: 3 }
+          - add_estate_loyalty: { estate: landlords, value: 3 }
 
   - id: late_e_office_sale
     title: 捐纳开例
@@ -114,7 +114,7 @@ events:
         effect:
           - add_treasury: 120000
           - add_corruption: 5
-          - add_estate_loyalty: { estate: officials, value: -3 }
+          - add_estate_loyalty: { estate: ruling, value: -3 }
       - id: refuse
         name: 拒绝开例
         tooltip: 吏治稍清，财政仍紧。
@@ -142,7 +142,7 @@ events:
         effect:
           - add_manpower: 30000
           - add_treasury: -40000
-          - add_estate_loyalty: { estate: gentry, value: 3 }
+          - add_estate_loyalty: { estate: landlords, value: 3 }
       - id: baojia
         name: 整保甲
         tooltip: 稳定上升，兵员有限。
@@ -170,14 +170,14 @@ events:
         effect:
           - add_treasury: 80000
           - add_corruption: -4
-          - add_estate_loyalty: { estate: gentry, value: -6 }
+          - add_estate_loyalty: { estate: landlords, value: -6 }
       - id: keep
         name: 照旧额
         tooltip: 士绅安稳，财政照旧吃紧。
         ai_chance: 50
         effect:
           - add_stability: 1
-          - add_estate_loyalty: { estate: gentry, value: 3 }
+          - add_estate_loyalty: { estate: landlords, value: 3 }
 
   - id: late_e_granary
     title: 常平仓
@@ -226,7 +226,7 @@ events:
         effect:
           - add_stability: 2
           - add_political_power: 20
-          - add_estate_loyalty: { estate: gentry, value: 4 }
+          - add_estate_loyalty: { estate: landlords, value: 4 }
       - id: suppress
         name: 严禁讲学
         tooltip: 权威上升，士绅离心。
@@ -234,7 +234,7 @@ events:
         effect:
           - add_authority: 3
           - add_corruption: -2
-          - add_estate_loyalty: { estate: gentry, value: -5 }
+          - add_estate_loyalty: { estate: landlords, value: -5 }
 
   - id: late_e_gunpowder_reform
     title: 火器新法
@@ -309,14 +309,14 @@ events:
         ai_chance: 50
         effect:
           - add_authority: 4
-          - add_estate_loyalty: { estate: officials, value: 3 }
+          - add_estate_loyalty: { estate: ruling, value: 3 }
       - id: southern
         name: 采南人礼论
         tooltip: 稳定上升，士林归心。
         ai_chance: 50
         effect:
           - add_stability: 2
-          - add_estate_loyalty: { estate: clergy, value: 3 }
+          - add_estate_loyalty: { estate: landlords, value: 3 }
 
   - id: late_e_genroku
     title: 元禄新风
@@ -370,7 +370,7 @@ events:
         ai_chance: 50
         effect:
           - add_stability: 1
-          - add_estate_loyalty: { estate: clergy, value: 4 }
+          - add_estate_loyalty: { estate: landlords, value: 4 }
 
   - id: late_e_river_works
     title: 河工

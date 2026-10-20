@@ -1,4 +1,4 @@
-import type { Modifier } from '../../content/types';
+import type { EstateKey, Modifier } from '../../content/types';
 
 export interface TimedModifier {
   id: string;
@@ -45,7 +45,7 @@ export interface ProvinceState {
 }
 
 export interface EstateState {
-  key: string;
+  key: EstateKey;
   influence: number;
   loyalty: number;
   income: number;
@@ -105,6 +105,10 @@ export interface PeaceOffer {
 export interface MonthlyReport {
   day: number;
   income: number;
+  /** 各阶级税收入（银），不含贸易站与锁国收入。 */
+  taxIncome?: number;
+  tradePostIncome?: number;
+  sakokuIncome?: number;
   expense: number;
   net: number;
   silverByEstate: Record<string, number>;
@@ -116,15 +120,30 @@ export interface MonthlyReport {
   economicPie?: number;
   unallocated?: number;
   corruptionLoss?: number;
+  corruptionByEstate?: Record<string, number>;
   loyaltyCost?: number;
+  /** 基层（农民/小生产者）忠诚与人口占比；维稳成本只由基层承担。 */
+  bottomLoyalty?: number;
+  bottomPopShare?: number;
   foodPurchaseSilver?: number;
+  /** 玩家设定的购粮目标支出；现金不足时实际购粮更少，不形成债务。 */
+  foodPurchaseTarget?: number;
   foodPurchased?: number;
   expenseArmy: number;
+  /** 本月实际支付的军饷；expenseArmy 为应付军饷。 */
+  expenseArmyPaid?: number;
+  wageShortfall?: number;
   expenseOfficials: number;
   expenseDynasty: number;
   expenseRelief: number;
   expenseHoard?: number;
+  hoardPressure?: number;
   expenseCourt?: number;
+  expenseTraining?: number;
+  foodTraining?: number;
+  /** 当月训练因缺银/缺粮停滞的日次（停滞不形成债务）。 */
+  trainingStalledSilver?: number;
+  trainingStalledFood?: number;
   foodIncome?: number;
   foodArmy?: number;
   foodCivilian?: number;
@@ -140,6 +159,8 @@ export interface CountryState {
   manpower: number;
   politicalPower: number;
   arrears: number;
+  /** 债务中的「欠饷」部分（拖欠的军饷）；欠饷持续会直接重创军队战斗力并禁止募新兵。 */
+  wageArrears: number;
   stability: number;
   mandate: number;
   corruption: number;
@@ -166,9 +187,16 @@ export interface CountryState {
   timedModifiers: TimedModifier[];
   cooldowns: Record<string, number>;
   tradePosts: string[];
+  /** 记仇：被宣战/被背盟后对目标势力累积的怨气（targetTag → 强度），AI 优先报复。 */
+  grudges: Record<string, number>;
   ai: AiState;
   monthlyHistory: MonthlyReport[];
   lastReport: MonthlyReport | null;
+  /** 本月训练累计支出（每日扣款，月报只做对账，不重复扣）。 */
+  trainingSpentSilverMonth?: number;
+  trainingSpentFoodMonth?: number;
+  trainingStalledSilverMonth?: number;
+  trainingStalledFoodMonth?: number;
 }
 
 export type SiegeMode = 'siege' | 'assault' | 'bombard' | 'negotiate';

@@ -1,7 +1,10 @@
-import type { LeaderDef } from '../../content/types';
+import { useState } from 'react';
+import type { EstateKey, LeaderDef } from '../../content/types';
 import { areAtWar } from '../../engine/rules/war';
 import { relationKey } from '../../engine/state/types';
 import { controlledProvinceCount, ownedProvinceCount } from '../../engine/rules/geography';
+import { aggregateCountryModifiers, modifierSources } from '../../engine/rules/modifiers';
+import { modifierDef } from '../../content/modifierRegistry';
 import { useGameStore } from '../state/store';
 import { formatNumber, effectsSummary } from '../format';
 import { LeaderPortrait } from './LeaderPortrait';
@@ -77,6 +80,12 @@ function fallbackLeader(name: string, color: string): LeaderDef {
   };
 }
 
+function formatBuff(value: number, kind: string): string {
+  const suffix = kind === 'pct' ? '%' : kind === 'monthly' ? '/月' : '';
+  const num = Number.isInteger(value) ? String(value) : value.toFixed(1);
+  return `${value > 0 ? '+' : ''}${num}${suffix}`;
+}
+
 export function CountryPanel() {
   const game = useGameStore(state => state.game);
   const content = useGameStore(state => state.content);
@@ -84,6 +93,7 @@ export function CountryPanel() {
   const openCountry = useGameStore(state => state.openCountry);
   const closePanel = useGameStore(state => state.closePanel);
   const command = useGameStore(state => state.command);
+  const [fullscreen, setFullscreen] = useState(false);
   if (!game) return null;
 
   const tag = countryFocus ?? game.playerTag;
@@ -92,6 +102,19 @@ export function CountryPanel() {
   if (!def || !country) {
     return <div className="panel"><p className="muted">势力不存在。</p></div>;
   }
+  // 当前修正（buff/debuff）汇总 + 来源明细。
+  const modifierTotal = aggregateCountryModifiers(game, content, tag);
+  const modifierSourceList = modifierSources(game, content, tag);
+  const buffEntries = Object.entries(modifierTotal)
+    .filter(([key, value]) => value !== 0 && modifierDef(key))
+    .map(([key, total]) => {
+      const def = modifierDef(key)!;
+      const contributions = modifierSourceList
+        .map(source => ({ name: source.name, value: source.modifiers[key] ?? 0 }))
+        .filter(entry => entry.value !== 0);
+      return { key, label: def.label, kind: def.kind, total, contributions };
+    })
+    .sort((a, b) => Math.abs(b.total) - Math.abs(a.total) || a.label.localeCompare(b.label));
   const leader = def.leadersByScenario?.[game.scenarioId] ?? def.leader ?? fallbackLeader(def.name, def.color);
   const controlled = Object.values(game.provinces).filter(province => province.controller === tag);
   const owned = Object.values(game.provinces).filter(province => province.owner === tag);
@@ -128,7 +151,7 @@ export function CountryPanel() {
     .sort((a, b) => Number(b.war) - Number(a.war) || b.relation - a.relation);
 
   return (
-    <div className="panel country-panel">
+    <div className={`panel country-panel${fullscreen ? ' country-fullscreen' : ''}`}>
       <header className="panel-head">
         <div className="country-title">
           <CountryFlag country={def} width={66} />
@@ -137,7 +160,10 @@ export function CountryPanel() {
             <p className="muted">{tag} · {GOVERNMENTS[def.government] ?? def.government} · {RELIGIONS[def.religion] ?? def.religion} · {CULTURES[def.culture] ?? def.culture}</p>
           </div>
         </div>
-        <button onClick={closePanel}>关闭</button>
+        <div className="panel-head-actions">
+          <button onClick={() => setFullscreen(v => !v)}>{fullscreen ? '退出全屏' : '全屏'}</button>
+          <button onClick={closePanel}>关闭</button>
+        </div>
       </header>
       {def.goal && <p className="briefing-goal">战略目标：{def.goal}</p>}
 
@@ -175,11 +201,31 @@ export function CountryPanel() {
         <div className="country-stat"><span>控制</span><strong>{controlledProvinces} / {content.prefectures.size} 省 · {controlled.length} / {content.provinces.size} 地区</strong></div>
         <div className="country-stat"><span>领有</span><strong>{ownedProvinces} 省 · {owned.length} 地区</strong></div>
         <div className="country-stat"><span>人口</span><strong>{formatNumber(population)}</strong></div>
-        <div className="country-stat"><span>国库 / 欠饷</span><strong>{formatNumber(country.treasury)} / {formatNumber(country.arrears)}</strong></div>
+        <div className="country-stat"><span>国库 / 债务</span><strong>{formatNumber(country.treasury)} / {formatNumber(country.arrears)}</strong></div>
         <div className="country-stat"><span>稳定 / 天命</span><strong>{Math.round(country.stability)} / {Math.round(country.mandate)}</strong></div>
         <div className="country-stat"><span>腐败 / 皇权</span><strong>{Math.round(country.corruption)} / {Math.round(country.authority)}</strong></div>
         <div className="country-stat"><span>军心 / 战争疲劳</span><strong>{Math.round(country.armyLoyalty)} / {Math.round(country.warExhaustion)}</strong></div>
         <div className="country-stat"><span>军队 / 兵力</span><strong>{armies.length} 支 / {formatNumber(strength)}</strong></div>
+      </section>
+
+      <section className="country-buffs">
+        <h3 className="section-title">修正（Buff / Debuff）</h3>
+        {buffEntries.length === 0 ? (
+          <p className="muted">当前没有修正。</p>
+        ) : (
+          <div className="buff-grid">
+            {buffEntries.map(entry => (
+              <span
+                key={entry.key}
+                className={`buff-chip ${entry.total > 0 ? 'good' : 'danger'}`}
+                title={entry.contributions.map(c => `${c.name} ${formatBuff(c.value, entry.kind)}`).join('\n')}
+              >
+                <span className="buff-label">{entry.label}</span>
+                <b>{formatBuff(entry.total, entry.kind)}</b>
+              </span>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="country-focus-card">
@@ -232,7 +278,7 @@ export function CountryPanel() {
       <section>
         <h3 className="section-title">阶级</h3>
         {Object.entries(country.estates).map(([id, estate]) => {
-          const estateDef = content.estateDefs.get(id);
+          const estateDef = content.estateDefs.get(id as EstateKey);
           return (
             <div className="estate-mini" key={id}>
               <span>{estateDef?.name ?? id}</span>

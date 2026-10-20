@@ -137,11 +137,10 @@ export const leaderProfileSchema = z.object({
 }).strict();
 
 export const estateDefSchema = z.object({
-  key: z.string().regex(/^(dynasty|nobles|officials|gentry|merchants|peasants|soldiers|clergy|custom:[a-z0-9_]+)$/),
+  key: z.string().regex(/^(ruling|merchants|landlords|artisans|peasants|custom:[a-z0-9_]+)$/),
   name: z.string().min(1).max(12),
   nameByCountry: z.record(z.string(), z.string()).default({}),
   sensitivity: z.number().min(0.5).max(2.5),
-  incomeFrom: z.enum(['land', 'trade', 'stipend', 'mixed']),
   defaultPrivileges: z.array(z.string()).default([]),
 }).strict();
 
@@ -158,7 +157,7 @@ export const countryEstateSchema = z.object({
 
 export const countryEstatesSchema = z.object({
   country: tag,
-  estates: z.array(countryEstateSchema).min(4).max(9),
+  estates: z.array(countryEstateSchema).min(3).max(5),
 }).strict().superRefine((value, ctx) => {
   const sum = value.estates.reduce((total, estate) => total + estate.incomeShare, 0);
   if (Math.abs(sum - 1) > 0.01) {
@@ -360,6 +359,11 @@ export const scenarioSchema = z.object({
     attacker: tag,
     defender: tag,
     goal: z.string().optional(),
+  }).strict()).default([]),
+  initialTruces: z.array(z.object({
+    a: tag,
+    b: tag,
+    days: z.number().int().min(1).max(3650),
   }).strict()).default([]),
   initialEvents: z.array(z.string()).default([]),
 }).strict();

@@ -16,10 +16,10 @@ describe('Shun confiscation', () => {
     const shun = state.countries['SHUN'];
     if (!shun) throw new Error('missing SHUN');
     const before = shun.treasury;
-    const gentryBefore = shun.estates['gentry']?.loyalty ?? 0;
+    const landlordsBefore = shun.estates['landlords']?.loyalty ?? 0;
     expect(extortGentry(state, content, 'SHUN')).toBe(true);
     expect(shun.treasury).toBeGreaterThan(before);
-    expect(shun.estates['gentry']?.loyalty).toBe(gentryBefore - 8);
+    expect(shun.estates['landlords']?.loyalty).toBe(landlordsBefore - 8);
     expect(confiscationCooldown(state, 'SHUN')).toBeGreaterThan(0);
     expect(extortGentry(state, content, 'SHUN')).toBe(false);
   });

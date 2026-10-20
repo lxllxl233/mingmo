@@ -253,7 +253,7 @@ export function GameShell() {
               <div className="objective-stats">
                 <span>银 <b>{Math.round(country?.treasury ?? 0).toLocaleString()}</b></span>
                 <span>粮 <b>{Math.round(country?.food ?? 0).toLocaleString()}</b></span>
-                <span>欠饷 <b>{Math.round(country?.arrears ?? 0).toLocaleString()}</b></span>
+                <span>债务 <b>{Math.round(country?.arrears ?? 0).toLocaleString()}</b></span>
                 <span>稳定 <b>{Math.round(country?.stability ?? 0)}</b></span>
               </div>
               <ol className="objective-list">
@@ -267,7 +267,7 @@ export function GameShell() {
                 </li>
                 <li>
                   <button onClick={() => openPanel('military')}>检视军团与战争</button>
-                  <span>确认前线、欠饷与补给。</span>
+                  <span>确认前线、债务与补给。</span>
                 </li>
               </ol>
               <button className="primary objective-start" onClick={() => setSpeed(1)}>开始推进（空格）</button>

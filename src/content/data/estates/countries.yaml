@@ -1,128 +1,97 @@
 ﻿country_estates:
   - country: MING
     estates:
-      - { key: dynasty, name: 宗藩, influence: 16, loyalty: 65, income_share: 0.026, privileges: [priv_clan_stipend, priv_clan_manor], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 勋贵, influence: 10, loyalty: 60, income_share: 0.017, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 官僚, influence: 34, loyalty: 45, income_share: 0.034, privileges: [priv_official_meltage], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 士绅, influence: 42, loyalty: 55, income_share: 0.215, privileges: [priv_gentry_corvee_exempt, priv_gentry_hidden_land], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 商人, influence: 22, loyalty: 50, income_share: 0.172, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_inland_customs }
-      - { key: peasants, name: 农民, influence: 6, loyalty: 30, income_share: 0.517, privileges: [], tax_law: tax_peasants_single_whip }
-      - { key: soldiers, name: 军户, influence: 10, loyalty: 25, income_share: 0.009, privileges: [priv_soldier_land], tax_law: tax_soldiers_weisuo }
-      - { key: clergy, name: 僧道, influence: 4, loyalty: 60, income_share: 0.010, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
+      - { key: ruling, name: 宗藩·勋贵·官僚·军户, influence: 46, loyalty: 49, income_share: 0.086, privileges: [priv_clan_stipend, priv_clan_manor, priv_noble_manor, priv_official_meltage, priv_soldier_land], tax_law: tax_officials_thin_salary }
+      - { key: landlords, name: 士绅·僧道, influence: 30, loyalty: 55, income_share: 0.225, privileges: [priv_gentry_corvee_exempt, priv_gentry_hidden_land, priv_clergy_exempt], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 商人, influence: 15, loyalty: 50, income_share: 0.152, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_inland_customs }
+      - { key: peasants, name: 农民, influence: 4, loyalty: 30, income_share: 0.477, privileges: [], tax_law: tax_peasants_single_whip }
+      - { key: artisans, name: 匠户, influence: 5, loyalty: 45, income_share: 0.060, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: QING
     estates:
-      - { key: dynasty, name: 宗室, influence: 25, loyalty: 75, income_share: 0.040, privileges: [priv_clan_stipend], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 旗主, influence: 35, loyalty: 80, income_share: 0.090, privileges: [priv_banner_land, priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 汉官, influence: 20, loyalty: 50, income_share: 0.030, privileges: [priv_official_meltage], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 汉地士绅, influence: 25, loyalty: 45, income_share: 0.200, privileges: [priv_gentry_hidden_land], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 商人, influence: 15, loyalty: 55, income_share: 0.150, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_inland_customs }
-      - { key: peasants, name: 农民, influence: 5, loyalty: 35, income_share: 0.440, privileges: [], tax_law: tax_peasants_single_whip }
-      - { key: soldiers, name: 八旗兵, influence: 30, loyalty: 80, income_share: 0.030, privileges: [priv_soldier_land], tax_law: tax_soldiers_mercenary }
-      - { key: clergy, name: 喇嘛僧道, influence: 5, loyalty: 60, income_share: 0.020, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
+      - { key: ruling, name: 宗室·旗主·汉官·八旗, influence: 65, loyalty: 73, income_share: 0.190, privileges: [priv_clan_stipend, priv_banner_land, priv_noble_manor, priv_official_meltage, priv_soldier_land], tax_law: tax_qing_banner_land }
+      - { key: landlords, name: 汉地士绅·喇嘛, influence: 18, loyalty: 48, income_share: 0.220, privileges: [priv_gentry_hidden_land, priv_clergy_exempt], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 商人, influence: 9, loyalty: 55, income_share: 0.130, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_inland_customs }
+      - { key: peasants, name: 农民, influence: 3, loyalty: 35, income_share: 0.400, privileges: [], tax_law: tax_peasants_single_whip }
+      - { key: artisans, name: 匠户, influence: 5, loyalty: 55, income_share: 0.060, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: SHUN
     estates:
-      - { key: nobles, name: 老兄弟, influence: 20, loyalty: 65, income_share: 0.050, privileges: [], tax_law: tax_nobles_manor }
-      - { key: officials, name: 新降文官, influence: 5, loyalty: 35, income_share: 0.020, privileges: [], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 士绅, influence: 10, loyalty: 20, income_share: 0.080, privileges: [], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 商人, influence: 8, loyalty: 35, income_share: 0.100, privileges: [], tax_law: tax_merchants_inland_customs }
-      - { key: peasants, name: 农民, influence: 40, loyalty: 70, income_share: 0.450, privileges: [], tax_law: tax_peasants_light }
-      - { key: soldiers, name: 老营, influence: 35, loyalty: 75, income_share: 0.300, privileges: [], tax_law: tax_soldiers_mercenary }
+      - { key: ruling, name: 老兄弟·老营, influence: 49, loyalty: 68, income_share: 0.370, privileges: [], tax_law: tax_soldiers_mercenary }
+      - { key: landlords, name: 士绅, influence: 8, loyalty: 20, income_share: 0.080, privileges: [], tax_law: tax_shun_confiscation }
+      - { key: merchants, name: 商人, influence: 7, loyalty: 35, income_share: 0.070, privileges: [], tax_law: tax_merchants_inland_customs }
+      - { key: peasants, name: 农民, influence: 32, loyalty: 70, income_share: 0.430, privileges: [], tax_law: tax_peasants_light }
+      - { key: artisans, name: 匠户, influence: 4, loyalty: 45, income_share: 0.050, privileges: [], tax_law: tax_artisans_guild }
 
   - country: XI
     estates:
-      - { key: nobles, name: 大西诸将, influence: 25, loyalty: 65, income_share: 0.050, privileges: [], tax_law: tax_nobles_manor }
-      - { key: officials, name: 降官, influence: 5, loyalty: 25, income_share: 0.020, privileges: [], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 蜀中士绅, influence: 5, loyalty: 15, income_share: 0.050, privileges: [], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 商人, influence: 5, loyalty: 30, income_share: 0.080, privileges: [], tax_law: tax_merchants_inland_customs }
-      - { key: peasants, name: 农民, influence: 30, loyalty: 40, income_share: 0.400, privileges: [], tax_law: tax_peasants_military_colony }
-      - { key: soldiers, name: 营兵, influence: 40, loyalty: 70, income_share: 0.400, privileges: [], tax_law: tax_soldiers_mercenary }
+      - { key: ruling, name: 大西诸将·营兵, influence: 61, loyalty: 65, income_share: 0.470, privileges: [], tax_law: tax_soldiers_mercenary }
+      - { key: landlords, name: 蜀中士绅, influence: 4, loyalty: 15, income_share: 0.050, privileges: [], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 商人, influence: 4, loyalty: 30, income_share: 0.060, privileges: [], tax_law: tax_merchants_inland_customs }
+      - { key: peasants, name: 农民, influence: 27, loyalty: 40, income_share: 0.370, privileges: [], tax_law: tax_xi_terror }
+      - { key: artisans, name: 匠户, influence: 4, loyalty: 40, income_share: 0.050, privileges: [], tax_law: tax_artisans_guild }
 
   - country: SMING
     estates:
-      - { key: dynasty, name: 宗藩, influence: 15, loyalty: 55, income_share: 0.030, privileges: [priv_clan_stipend], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 勋贵, influence: 10, loyalty: 50, income_share: 0.020, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 官僚, influence: 20, loyalty: 45, income_share: 0.040, privileges: [priv_official_meltage], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 江南士绅, influence: 30, loyalty: 55, income_share: 0.200, privileges: [priv_gentry_corvee_exempt], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 海商, influence: 20, loyalty: 60, income_share: 0.150, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_maritime }
-      - { key: peasants, name: 农民, influence: 8, loyalty: 35, income_share: 0.440, privileges: [], tax_law: tax_peasants_single_whip }
-      - { key: soldiers, name: 藩镇兵, influence: 35, loyalty: 40, income_share: 0.100, privileges: [], tax_law: tax_soldiers_mercenary }
-      - { key: clergy, name: 僧道, influence: 5, loyalty: 55, income_share: 0.020, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
+      - { key: ruling, name: 宗藩·勋贵·官僚·藩镇, influence: 53, loyalty: 45, income_share: 0.190, privileges: [priv_clan_stipend, priv_noble_manor, priv_official_meltage], tax_law: tax_officials_thin_salary }
+      - { key: landlords, name: 江南士绅·僧道, influence: 23, loyalty: 55, income_share: 0.220, privileges: [priv_gentry_corvee_exempt, priv_clergy_exempt], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 海商, influence: 13, loyalty: 60, income_share: 0.130, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_maritime }
+      - { key: peasants, name: 农民, influence: 5, loyalty: 35, income_share: 0.400, privileges: [], tax_law: tax_peasants_single_whip }
+      - { key: artisans, name: 匠户, influence: 6, loyalty: 45, income_share: 0.060, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: ZHENG
     estates:
-      - { key: dynasty, name: 国姓府, influence: 5, loyalty: 80, income_share: 0.020, privileges: [], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 将领, influence: 5, loyalty: 70, income_share: 0.020, privileges: [], tax_law: tax_nobles_manor }
-      - { key: officials, name: 文吏, influence: 5, loyalty: 55, income_share: 0.030, privileges: [], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 闽南士绅, influence: 10, loyalty: 50, income_share: 0.100, privileges: [], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 海商, influence: 45, loyalty: 75, income_share: 0.450, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_maritime }
-      - { key: peasants, name: 农民, influence: 10, loyalty: 45, income_share: 0.180, privileges: [], tax_law: tax_peasants_single_whip }
-      - { key: soldiers, name: 水陆营兵, influence: 25, loyalty: 75, income_share: 0.200, privileges: [], tax_law: tax_soldiers_mercenary }
+      - { key: ruling, name: 国姓府·营兵, influence: 35, loyalty: 73, income_share: 0.270, privileges: [], tax_law: tax_soldiers_mercenary }
+      - { key: landlords, name: 闽南士绅, influence: 9, loyalty: 50, income_share: 0.100, privileges: [], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 海商, influence: 39, loyalty: 75, income_share: 0.410, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_maritime }
+      - { key: peasants, name: 农民, influence: 9, loyalty: 45, income_share: 0.150, privileges: [], tax_law: tax_peasants_single_whip }
+      - { key: artisans, name: 匠户, influence: 8, loyalty: 50, income_share: 0.070, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: MONGOL
     estates:
-      - { key: dynasty, name: 黄金家族, influence: 10, loyalty: 70, income_share: 0.050, privileges: [], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 台吉, influence: 40, loyalty: 65, income_share: 0.350, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 笔帖式, influence: 5, loyalty: 50, income_share: 0.030, privileges: [], tax_law: tax_officials_thin_salary }
+      - { key: ruling, name: 黄金家族·台吉·箭丁, influence: 77, loyalty: 66, income_share: 0.730, privileges: [priv_noble_manor], tax_law: tax_mongol_herds }
+      - { key: landlords, name: 喇嘛, influence: 18, loyalty: 80, income_share: 0.200, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
       - { key: merchants, name: 马市商人, influence: 5, loyalty: 55, income_share: 0.070, privileges: [], tax_law: tax_merchants_inland_customs }
-      - { key: soldiers, name: 箭丁, influence: 30, loyalty: 70, income_share: 0.300, privileges: [], tax_law: tax_soldiers_mercenary }
-      - { key: clergy, name: 喇嘛, influence: 20, loyalty: 80, income_share: 0.200, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
 
   - country: JOSEON
     estates:
-      - { key: dynasty, name: 王室, influence: 15, loyalty: 75, income_share: 0.050, privileges: [priv_clan_stipend], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 两班, influence: 40, loyalty: 65, income_share: 0.250, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 官僚, influence: 25, loyalty: 55, income_share: 0.120, privileges: [priv_official_meltage], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 乡班, influence: 25, loyalty: 55, income_share: 0.150, privileges: [priv_gentry_corvee_exempt], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 商人, influence: 8, loyalty: 50, income_share: 0.080, privileges: [], tax_law: tax_merchants_inland_customs }
-      - { key: peasants, name: 农民, influence: 5, loyalty: 35, income_share: 0.250, privileges: [], tax_law: tax_peasants_single_whip }
-      - { key: soldiers, name: 军兵, influence: 10, loyalty: 55, income_share: 0.070, privileges: [], tax_law: tax_soldiers_weisuo }
-      - { key: clergy, name: 僧侣, influence: 5, loyalty: 60, income_share: 0.030, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
+      - { key: ruling, name: 王室·两班·官僚·军兵, influence: 64, loyalty: 63, income_share: 0.490, privileges: [priv_clan_stipend, priv_noble_manor, priv_official_meltage], tax_law: tax_nobles_manor }
+      - { key: landlords, name: 乡班·僧侣, influence: 21, loyalty: 56, income_share: 0.180, privileges: [priv_gentry_corvee_exempt, priv_clergy_exempt], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 商人, influence: 6, loyalty: 50, income_share: 0.060, privileges: [], tax_law: tax_merchants_inland_customs }
+      - { key: peasants, name: 农民, influence: 4, loyalty: 35, income_share: 0.210, privileges: [], tax_law: tax_peasants_single_whip }
+      - { key: artisans, name: 匠户, influence: 5, loyalty: 50, income_share: 0.060, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: JAPAN
     estates:
-      - { key: dynasty, name: 公家, influence: 5, loyalty: 60, income_share: 0.030, privileges: [], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 大名, influence: 45, loyalty: 65, income_share: 0.350, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 幕僚, influence: 10, loyalty: 60, income_share: 0.050, privileges: [], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 乡土, influence: 5, loyalty: 50, income_share: 0.070, privileges: [], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 町人, influence: 15, loyalty: 60, income_share: 0.120, privileges: [], tax_law: tax_merchants_maritime }
-      - { key: peasants, name: 农民, influence: 5, loyalty: 30, income_share: 0.230, privileges: [], tax_law: tax_peasants_head_tax }
-      - { key: soldiers, name: 武士, influence: 35, loyalty: 70, income_share: 0.100, privileges: [priv_soldier_land], tax_law: tax_soldiers_mercenary }
-      - { key: clergy, name: 寺社, influence: 10, loyalty: 60, income_share: 0.050, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
+      - { key: ruling, name: 公家·大名·幕僚·武士, influence: 68, loyalty: 66, income_share: 0.530, privileges: [priv_noble_manor, priv_soldier_land], tax_law: tax_nobles_manor }
+      - { key: landlords, name: 乡土·寺社, influence: 11, loyalty: 57, income_share: 0.120, privileges: [priv_clergy_exempt], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 町人, influence: 11, loyalty: 60, income_share: 0.090, privileges: [], tax_law: tax_merchants_maritime }
+      - { key: peasants, name: 农民, influence: 3, loyalty: 30, income_share: 0.190, privileges: [], tax_law: tax_peasants_head_tax }
+      - { key: artisans, name: 町人匠户, influence: 7, loyalty: 45, income_share: 0.070, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: TIBET
     estates:
-      - { key: dynasty, name: 法王, influence: 10, loyalty: 80, income_share: 0.050, privileges: [], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 贵族, influence: 15, loyalty: 65, income_share: 0.150, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 僧官, influence: 5, loyalty: 60, income_share: 0.030, privileges: [], tax_law: tax_officials_thin_salary }
+      - { key: ruling, name: 法王·贵族·僧官·藏兵, influence: 45, loyalty: 66, income_share: 0.350, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
+      - { key: landlords, name: 喇嘛, influence: 50, loyalty: 85, income_share: 0.600, privileges: [priv_clergy_exempt], tax_law: tax_tibet_monastery }
       - { key: merchants, name: 茶马商, influence: 5, loyalty: 55, income_share: 0.050, privileges: [], tax_law: tax_merchants_inland_customs }
-      - { key: soldiers, name: 藏兵, influence: 15, loyalty: 60, income_share: 0.120, privileges: [], tax_law: tax_soldiers_mercenary }
-      - { key: clergy, name: 喇嘛, influence: 50, loyalty: 85, income_share: 0.600, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
 
   - country: VOC
     estates:
-      - { key: dynasty, name: 股东, influence: 30, loyalty: 70, income_share: 0.200, privileges: [], tax_law: tax_dynasty_stipend }
-      - { key: officials, name: 公司职员, influence: 15, loyalty: 65, income_share: 0.080, privileges: [], tax_law: tax_officials_thin_salary }
-      - { key: merchants, name: 商人, influence: 40, loyalty: 70, income_share: 0.370, privileges: [priv_merchant_salt_license], tax_law: tax_merchants_maritime }
-      - { key: soldiers, name: 公司兵, influence: 20, loyalty: 65, income_share: 0.150, privileges: [], tax_law: tax_soldiers_mercenary }
-      - { key: custom:natives, name: 土著, influence: 25, loyalty: 35, income_share: 0.200, privileges: [priv_native_tribute], tax_law: tax_natives_tribute, custom: true }
+      - { key: ruling, name: 股东·公司职员·公司兵, influence: 46, loyalty: 67, income_share: 0.430, privileges: [], tax_law: tax_officials_meltage }
+      - { key: merchants, name: 商人, influence: 29, loyalty: 70, income_share: 0.330, privileges: [priv_merchant_salt_license], tax_law: tax_voc_dividend }
+      - { key: peasants, name: 土著, influence: 18, loyalty: 35, income_share: 0.170, privileges: [priv_native_tribute], tax_law: tax_natives_tribute }
+      - { key: artisans, name: 工匠, influence: 7, loyalty: 55, income_share: 0.070, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: RUSSIA
     estates:
-      - { key: dynasty, name: 皇室, influence: 15, loyalty: 75, income_share: 0.080, privileges: [], tax_law: tax_dynasty_stipend }
-      - { key: nobles, name: 波雅尔, influence: 30, loyalty: 65, income_share: 0.250, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: officials, name: 文官, influence: 10, loyalty: 55, income_share: 0.070, privileges: [], tax_law: tax_officials_thin_salary }
-      - { key: gentry, name: 地主, influence: 5, loyalty: 55, income_share: 0.050, privileges: [], tax_law: tax_gentry_exemption }
-      - { key: merchants, name: 商人, influence: 15, loyalty: 55, income_share: 0.120, privileges: [], tax_law: tax_merchants_inland_customs }
-      - { key: peasants, name: 农奴, influence: 25, loyalty: 30, income_share: 0.250, privileges: [], tax_law: tax_peasants_head_tax }
-      - { key: soldiers, name: 哥萨克, influence: 25, loyalty: 65, income_share: 0.130, privileges: [], tax_law: tax_soldiers_mercenary }
-      - { key: clergy, name: 东正教会, influence: 10, loyalty: 70, income_share: 0.050, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
+      - { key: ruling, name: 皇室·波雅尔·哥萨克, influence: 55, loyalty: 66, income_share: 0.530, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
+      - { key: landlords, name: 地主·东正教会, influence: 10, loyalty: 65, income_share: 0.100, privileges: [priv_clergy_exempt], tax_law: tax_gentry_exemption }
+      - { key: merchants, name: 商人, influence: 11, loyalty: 55, income_share: 0.090, privileges: [], tax_law: tax_merchants_inland_customs }
+      - { key: peasants, name: 农奴, influence: 17, loyalty: 30, income_share: 0.210, privileges: [], tax_law: tax_russia_fur }
+      - { key: artisans, name: 工商, influence: 7, loyalty: 50, income_share: 0.070, privileges: [priv_artisan_guild], tax_law: tax_artisans_guild }
 
   - country: NEU
     estates:
-      - { key: nobles, name: 土司, influence: 30, loyalty: 60, income_share: 0.300, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
-      - { key: peasants, name: 农民, influence: 15, loyalty: 40, income_share: 0.500, privileges: [], tax_law: tax_peasants_single_whip }
-      - { key: soldiers, name: 土兵, influence: 10, loyalty: 55, income_share: 0.100, privileges: [], tax_law: tax_soldiers_weisuo }
-      - { key: clergy, name: 僧侣, influence: 10, loyalty: 65, income_share: 0.100, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
-
+      - { key: ruling, name: 土司·土兵, influence: 62, loyalty: 59, income_share: 0.400, privileges: [priv_noble_manor], tax_law: tax_nobles_manor }
+      - { key: landlords, name: 僧侣, influence: 15, loyalty: 65, income_share: 0.100, privileges: [priv_clergy_exempt], tax_law: tax_clergy_exempt }
+      - { key: peasants, name: 农民, influence: 23, loyalty: 40, income_share: 0.500, privileges: [], tax_law: tax_peasants_single_whip }

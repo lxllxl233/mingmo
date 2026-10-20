@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
-import { advanceCrisis } from '../src/engine/systems/crisis';
+import { advanceCrisis, debtCombatPenalty } from '../src/engine/systems/crisis';
 import { maybeFoundSouthernMing } from '../src/engine/systems/southernMing';
 import { parseDay } from '../src/engine/core/clock';
+import type { MonthlyReport } from '../src/engine/state/types';
 
 const SOUTHERN_REGIONS = new Set([
   'reg_nanzhili', 'reg_zhejiang', 'reg_jiangxi', 'reg_huguang', 'reg_fujian',
@@ -20,6 +21,7 @@ describe('fiscal collapse', () => {
     ming.fiscalCrisisDays = 730;
     ming.treasury = 0;
     ming.arrears = 1000000;
+    ming.flags['army_paid_in_full'] = false;
     advanceCrisis(state, content);
     expect(ming.alive).toBe(false);
     expect(state.countries['SMING']?.alive).toBe(false);
@@ -35,6 +37,7 @@ describe('fiscal collapse', () => {
     ming.fiscalCrisisDays = 730;
     ming.treasury = 0;
     ming.arrears = 1000000;
+    ming.flags['army_paid_in_full'] = false;
     advanceCrisis(state, content);
     expect(ming.alive).toBe(false);
     const sming = state.countries['SMING'];
@@ -70,5 +73,22 @@ describe('fiscal collapse', () => {
     expect(inherited.controller).toBe('SMING');
     expect(occupied.owner).toBe('MING');
     expect(occupied.controller).toBe('SHUN');
+  });
+
+  it('debt combat penalty: wage arrears cripple, other debt caps at -10%', () => {
+    const state = createInitialState(content, '1627', 42, 'MING');
+    const ming = state.countries['MING'];
+    if (!ming) throw new Error('missing MING');
+    ming.lastReport = { expenseArmy: 100000 } as MonthlyReport;
+    // 无债务：无削弱
+    expect(debtCombatPenalty(ming)).toBe(0);
+    // 其他债务 100 万：-10%（封顶）
+    ming.arrears = 1000000;
+    ming.wageArrears = 0;
+    expect(debtCombatPenalty(ming)).toBe(-10);
+    // 欠饷 6 个月军饷：-80%（接近无战力）
+    ming.arrears = 600000;
+    ming.wageArrears = 600000;
+    expect(debtCombatPenalty(ming)).toBe(-80);
   });
 });

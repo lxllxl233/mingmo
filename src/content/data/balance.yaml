@@ -9,7 +9,6 @@ balance:
     official_salary_per_province_month: 200
     dynasty_stipend_base_month: 100000
     disaster_relief_cost: 50000
-    food_per_person_month: 0.0003
     manpower_regen_rate: 0.00005
     customary_tax_rate: 0.035
     corruption_drift: 0.02

@@ -79,6 +79,8 @@ export function enqueueTraining(
   const province = state.provinces[provinceId];
   if (!nation || !template || !province) return false;
   if (province.controller !== tag || size <= 0) return false;
+  // 有欠饷（拖欠军饷）时无法募新兵：先补发旧军饷，再谈扩充。
+  if (nation.wageArrears > 0) return false;
   const costSilver = size * SILVER_PER_SIZE * TRAINING_RATIO;
   const costFood = size * FOOD_PER_SIZE * TRAINING_RATIO;
   const manpower = size * MANPOWER_PER_SIZE;
@@ -140,9 +142,19 @@ export function advanceTraining(state: GameState, content: ContentIndex): void {
     }
     const silverDue = item.costSilver / item.totalDays;
     const foodDue = item.costFood / item.totalDays;
-    if (nation.treasury < silverDue || nation.food < foodDue) continue;
+    if (nation.treasury < silverDue || nation.food < foodDue) {
+      if (nation.treasury < silverDue) {
+        nation.trainingStalledSilverMonth = (nation.trainingStalledSilverMonth ?? 0) + 1;
+      }
+      if (nation.food < foodDue) {
+        nation.trainingStalledFoodMonth = (nation.trainingStalledFoodMonth ?? 0) + 1;
+      }
+      continue;
+    }
     nation.treasury -= silverDue;
     nation.food -= foodDue;
+    nation.trainingSpentSilverMonth = (nation.trainingSpentSilverMonth ?? 0) + silverDue;
+    nation.trainingSpentFoodMonth = (nation.trainingSpentFoodMonth ?? 0) + foodDue;
     item.paidSilver += silverDue;
     item.paidFood += foodDue;
     item.daysLeft -= 1;

@@ -93,7 +93,7 @@ country_overrides:
   MING: { stability: 35, treasury: 600000, food: 600000, manpower: 180000, mandate: 55, corruption: 90, authority: 40, army_loyalty: 45 }
   QING: { stability: 60, treasury: 250000, food: 150000, manpower: 80000, mandate: 40, corruption: 30, authority: 70, army_loyalty: 80 }
   SHUN: { stability: 60, treasury: 120000, food: 120000, manpower: 60000, mandate: 35, corruption: 45, authority: 50, army_loyalty: 65 }
-  XI: { stability: 50, treasury: 100000, food: 80000, manpower: 40000, mandate: 25, corruption: 50, authority: 45, army_loyalty: 60 }
+  XI: { stability: 50, treasury: 100000, food: 250000, manpower: 40000, mandate: 25, corruption: 50, authority: 45, army_loyalty: 60 }
   SMING: { stability: 35, treasury: 150000, food: 100000, manpower: 60000, mandate: 55, corruption: 60, authority: 40, army_loyalty: 45 }
   ZHENG: { stability: 60, treasury: 80000, food: 60000, manpower: 40000, mandate: 25, corruption: 35, authority: 55, army_loyalty: 65 }
   MONGOL: { stability: 50, treasury: 80000, food: 100000, manpower: 40000, mandate: 20, corruption: 40, authority: 50, army_loyalty: 60 }
@@ -150,8 +150,11 @@ armies:
   - { tag: NEU, template: neutrals_tribal, province: hue, size: 1 }
 initial_wars:
   - { attacker: QING, defender: MING, goal: 辽东 }
-  - { attacker: SHUN, defender: MING, goal: 陕西民变 }
-  - { attacker: XI, defender: MING, goal: 四川割据 }
+# 流民初起，明廷未暇兼顾：大顺/大西开局不与大明开战，以休战换取数年喘息，
+# 靠「饥民来投」壮大后再举（见 manageRebelGrowth 的流寇成长逻辑）。
+initial_truces:
+  - { a: MING, b: SHUN, days: 365 }
+  - { a: MING, b: XI, days: 365 }
 initial_events: []
 
 

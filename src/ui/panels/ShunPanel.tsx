@@ -18,8 +18,8 @@ export function ShunPanel() {
   }
   const cooldown = confiscationCooldown(game, 'SHUN');
   const gain = confiscationGain(game, content, 'SHUN');
-  const gentry = nation.estates['gentry']?.loyalty ?? 50;
-  const farmers = nation.estates['farmers']?.loyalty ?? 50;
+  const landlords = nation.estates['landlords']?.loyalty ?? 50;
+  const peasants = nation.estates['peasants']?.loyalty ?? 50;
   return (
     <div className="panel shun-panel">
       <h2>追赃助饷</h2>
@@ -30,8 +30,8 @@ export function ShunPanel() {
       <div className="court-summary">
         <span>国库 <b>{Math.round(nation.treasury).toLocaleString()}</b></span>
         <span>稳定 <b>{Math.round(nation.stability)}</b></span>
-        <span>士绅忠诚 <b>{Math.round(gentry)}</b></span>
-        <span>农民忠诚 <b>{Math.round(farmers)}</b></span>
+        <span>士绅忠诚 <b>{Math.round(landlords)}</b></span>
+        <span>农民忠诚 <b>{Math.round(peasants)}</b></span>
         <span>冷却 <b>{cooldown > 0 ? `${cooldown} 日` : '可用'}</b></span>
         <span>预计追赃 <b>{gain.toLocaleString()}</b></span>
       </div>

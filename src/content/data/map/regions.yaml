@@ -71,7 +71,7 @@ regions:
     landmass: mainland
     population_weight: 2
     development: 30
-    dominant_estate: soldiers
+    dominant_estate: ruling
     terrain: [desert, desert, steppe, mountains]
   - id: reg_xuanda
     name: 宣大
@@ -83,7 +83,7 @@ regions:
     landmass: mainland
     population_weight: 1
     development: 32
-    dominant_estate: soldiers
+    dominant_estate: ruling
     terrain: [mountains, hills, steppe]
   - id: reg_liaodong
     name: 辽东
@@ -95,7 +95,7 @@ regions:
     landmass: mainland
     population_weight: 4
     development: 38
-    dominant_estate: soldiers
+    dominant_estate: ruling
     terrain: [hills, plains, wetland, mountains]
   - id: reg_nanzhili
     name: 南直隶
@@ -107,7 +107,7 @@ regions:
     landmass: mainland
     population_weight: 18
     development: 68
-    dominant_estate: gentry
+    dominant_estate: landlords
     terrain: [plains, wetland, hills, urban]
   - id: reg_zhejiang
     name: 浙江
@@ -119,7 +119,7 @@ regions:
     landmass: mainland
     population_weight: 10
     development: 66
-    dominant_estate: gentry
+    dominant_estate: landlords
     terrain: [hills, plains, wetland]
   - id: reg_jiangxi
     name: 江西
@@ -203,7 +203,7 @@ regions:
     landmass: mainland
     population_weight: 2
     development: 32
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [mountains, hills, jungle]
   - id: reg_guizhou
     name: 贵州
@@ -215,7 +215,7 @@ regions:
     landmass: mainland
     population_weight: 1.5
     development: 28
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [mountains, hills, jungle]
   - id: reg_mengnan
     name: 漠南蒙古
@@ -227,7 +227,7 @@ regions:
     landmass: mainland
     population_weight: 2.5
     development: 18
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [steppe, steppe, desert, hills]
   - id: reg_mobei
     name: 漠北喀尔喀
@@ -239,7 +239,7 @@ regions:
     landmass: mainland
     population_weight: 1.2
     development: 12
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [steppe, steppe, desert]
   - id: reg_weilate
     name: 卫拉特与青海
@@ -251,7 +251,7 @@ regions:
     landmass: mainland
     population_weight: 1.5
     development: 12
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [desert, steppe, mountains]
   - id: reg_nvzhen
     name: 野人女真
@@ -263,7 +263,7 @@ regions:
     landmass: mainland
     population_weight: 2.5
     development: 14
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [wetland, hills, mountains]
   - id: reg_xizang
     name: 西藏
@@ -275,7 +275,7 @@ regions:
     landmass: mainland
     population_weight: 1.2
     development: 10
-    dominant_estate: clergy
+    dominant_estate: landlords
     terrain: [mountains, mountains, steppe]
   - id: reg_joseon
     name: 朝鲜
@@ -287,7 +287,7 @@ regions:
     landmass: mainland
     population_weight: 4
     development: 40
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [mountains, hills, plains]
   - id: reg_annam
     name: 安南
@@ -311,7 +311,7 @@ regions:
     landmass: mainland
     population_weight: 2
     development: 24
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [jungle, hills, mountains]
   - id: reg_japan_west
     name: 日本西国
@@ -323,7 +323,7 @@ regions:
     landmass: japan
     population_weight: 6
     development: 45
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [hills, mountains, coastal]
   - id: reg_japan_east
     name: 日本东国
@@ -335,7 +335,7 @@ regions:
     landmass: japan
     population_weight: 7
     development: 42
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [hills, plains, mountains]
   - id: reg_taiwan
     name: 台湾与澎湖
@@ -359,5 +359,5 @@ regions:
     landmass: mainland
     population_weight: 0.1
     development: 8
-    dominant_estate: nobles
+    dominant_estate: ruling
     terrain: [wetland, mountains, steppe]

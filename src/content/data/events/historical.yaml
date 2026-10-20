@@ -131,7 +131,7 @@ events:
         effect:
           - add_treasury: 100000
           - add_stability: -6
-          - add_estate_loyalty: { estate: gentry, value: -10 }
+          - add_estate_loyalty: { estate: landlords, value: -10 }
       - id: restrain
         name: 约束军纪
         tooltip: 放弃部分战利品，稳定与士绅忠诚上升。
@@ -139,7 +139,7 @@ events:
         effect:
           - add_treasury: -50000
           - add_stability: 5
-          - add_estate_loyalty: { estate: gentry, value: 6 }
+          - add_estate_loyalty: { estate: landlords, value: 6 }
 
   - id: hist_guilin_1652
     title: 桂林大捷

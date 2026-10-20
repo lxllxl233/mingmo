@@ -1,11 +1,12 @@
 import type { ContentIndex } from '../types';
+import { ESTATE_KEYS } from '../types';
 import { ContentError } from './errors';
 
 function check(condition: unknown, path: string, message: string): asserts condition {
   if (!condition) throw new ContentError('content', path, message);
 }
 
-const FIXED_ESTATES = ['dynasty', 'nobles', 'officials', 'gentry', 'merchants', 'peasants', 'soldiers', 'clergy'];
+const FIXED_ESTATES = [...ESTATE_KEYS];
 const TERRAINS = ['plains', 'hills', 'mountains', 'wetland', 'desert', 'steppe', 'jungle', 'urban'];
 
 function detectCycle(graph: Map<string, string[]>, label: string): void {
@@ -55,7 +56,7 @@ function checkEstates(content: ContentIndex): void {
     const configs = content.countryEstates.get(country.tag);
     check(configs !== undefined, `country_estates.${country.tag}`, 'missing estate config');
     if (!configs) continue;
-    check(configs.length >= 4 && configs.length <= 9, `country_estates.${country.tag}`, `expected 4-9 estates, got ${configs.length}`);
+    check(configs.length >= 3 && configs.length <= 5, `country_estates.${country.tag}`, `expected 3-5 estates, got ${configs.length}`);
     const sum = configs.reduce((total, estate) => total + estate.incomeShare, 0);
     check(Math.abs(sum - 1) <= 0.01, `country_estates.${country.tag}`, `income_share sum ${sum}`);
     check(new Set(configs.map(estate => estate.key)).size === configs.length, `country_estates.${country.tag}`, 'duplicate estate');
@@ -75,7 +76,7 @@ function checkEstates(content: ContentIndex): void {
     }
   }
   for (const [estateKey, laws] of content.taxLawsByEstate) {
-    if (FIXED_ESTATES.includes(estateKey)) {
+    if ((FIXED_ESTATES as readonly string[]).includes(estateKey)) {
       check(laws.length >= 3, `tax_laws.${estateKey}`, `expected >= 3 laws, got ${laws.length}`);
     }
   }
@@ -205,6 +206,10 @@ function checkScenarios(content: ContentIndex): void {
       check(content.countries.has(war.attacker), `scenario.${scenario.id}`, `unknown attacker ${war.attacker}`);
       check(content.countries.has(war.defender), `scenario.${scenario.id}`, `unknown defender ${war.defender}`);
     }
+    for (const truce of scenario.initialTruces) {
+      check(content.countries.has(truce.a), `scenario.${scenario.id}`, `unknown truce country ${truce.a}`);
+      check(content.countries.has(truce.b), `scenario.${scenario.id}`, `unknown truce country ${truce.b}`);
+    }
   }
 }
 
@@ -212,7 +217,7 @@ function checkBalance(content: ContentIndex): void {
   const required = [
     'landValuePerWan', 'populationValuePerPerson', 'grainPrice', 'adminCapacityBase',
     'armyUpkeepPerManMonth', 'officialSalaryPerProvinceMonth', 'dynastyStipendBaseMonth',
-    'disasterReliefCost', 'foodPerPersonMonth', 'manpowerRegenRate', 'customaryTaxRate',
+    'disasterReliefCost', 'manpowerRegenRate', 'customaryTaxRate',
     'corruptionDrift', 'stabilityDrift', 'unrestDecay', 'unrestFromTax', 'rebelUnrestThreshold',
   ];
   const economy = content.balance.economy as Record<string, number>;

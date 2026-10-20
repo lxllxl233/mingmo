@@ -89,6 +89,60 @@ describe('save format', () => {
     expect(loaded.mapRevision).toBe(0);
   });
 
+  it('migrates version 6 eight-class estates into the five-class model', () => {
+    const state = createInitialState(content, '1627', 42, 'MING');
+    const ming = state.countries['MING'];
+    if (!ming) throw new Error('missing MING');
+    const oldEstate = (key: string, influence: number, loyalty: number, taxLaw = 'tax_peasants_single_whip') => ({
+      key: key as unknown as (typeof ming.estates)[string]['key'],
+      influence,
+      loyalty,
+      income: 1200,
+      taxLaw,
+      privileges: key === 'gentry' ? ['priv_gentry_hidden_land'] : [],
+      reform: null,
+      cooldownDays: 0,
+      collected: 100,
+      effectiveRate: 0.05,
+      customaryRate: 0.05,
+    });
+    ming.estates = {
+      dynasty: oldEstate('dynasty', 5, 50),
+      nobles: oldEstate('nobles', 5, 60),
+      officials: oldEstate('officials', 10, 70),
+      soldiers: oldEstate('soldiers', 40, 40, 'tax_soldiers_weisuo'),
+      gentry: oldEstate('gentry', 20, 55, 'tax_gentry_exemption'),
+      clergy: oldEstate('clergy', 5, 65, 'tax_clergy_exempt'),
+      merchants: oldEstate('merchants', 10, 60, 'tax_merchants_inland_customs'),
+      peasants: oldEstate('peasants', 5, 30, 'tax_peasants_single_whip'),
+    };
+    ming.allocation = {
+      dynasty: 5, nobles: 5, officials: 5, soldiers: 5,
+      gentry: 10, clergy: 10, merchants: 20, peasants: 40,
+    };
+    const army = Object.values(state.armies).find(entry => entry.tag === 'MING');
+    if (!army) throw new Error('missing MING army');
+    army.sourceEstate = 'soldiers';
+
+    const parsed = JSON.parse(encodeSave(state)) as { version: number; state: typeof state; checksum: string };
+    parsed.version = 6;
+    parsed.checksum = hashState(parsed.state);
+    const loaded = decodeSave(JSON.stringify(parsed));
+    const migrated = loaded.countries['MING'];
+    if (!migrated) throw new Error('missing migrated MING');
+
+    expect(Object.keys(migrated.estates).sort()).toEqual(['artisans', 'landlords', 'merchants', 'peasants', 'ruling']);
+    expect(migrated.estates['ruling']?.influence).toBeCloseTo(60 * 100 / 105, 6);
+    expect(migrated.estates['ruling']?.loyalty).toBeCloseTo((5 * 50 + 5 * 60 + 10 * 70 + 40 * 40) / 60, 6);
+    expect(migrated.estates['ruling']?.taxLaw).toBe('tax_officials_thin_salary');
+    expect(migrated.estates['landlords']?.privileges).toContain('priv_gentry_hidden_land');
+    expect(migrated.estates['artisans']?.influence).toBeCloseTo(5 * 100 / 105, 6);
+    expect(Object.values(migrated.allocation).reduce((sum, value) => sum + value, 0)).toBeCloseTo(100, 6);
+    expect(Object.values(loaded.armies).find(entry => entry.id === army.id)?.sourceEstate).toBe('ruling');
+    expect(migrated.lastReport).toBeNull();
+    expect(Object.keys(loaded.countries['MONGOL']?.estates ?? {})).toHaveLength(3);
+  });
+
   it('clamps impossible old casualty totals', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
     const war = state.wars[0];

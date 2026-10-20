@@ -25,13 +25,14 @@ describe('initial state', () => {
   it('gives every country its estates and armies', () => {
     expect(Object.keys(state.countries)).toHaveLength(13);
     for (const country of Object.values(state.countries)) {
-      expect(Object.keys(country.estates).length, country.tag).toBeGreaterThanOrEqual(4);
+      expect(Object.keys(country.estates).length, country.tag).toBeGreaterThanOrEqual(3);
       expect(Number.isFinite(country.treasury), country.tag).toBe(true);
       expect(Number.isFinite(country.stability), country.tag).toBe(true);
     }
     expect(Object.keys(state.armies).length).toBeGreaterThan(20);
-    expect(state.wars.length).toBe(3);
-    expect(state.wars.map(war => war.attacker)).toEqual(expect.arrayContaining(['QING', 'SHUN', 'XI']));
+    // 1627 开局只有清对明开战；大顺/大西以休战开局（见 scenarios/1627.yaml initial_truces）。
+    expect(state.wars.length).toBe(1);
+    expect(state.wars.map(war => war.attacker)).toEqual(['QING']);
   });
 
   it('keeps the Ming state above water at the start', () => {

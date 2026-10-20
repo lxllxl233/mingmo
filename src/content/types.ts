@@ -10,7 +10,8 @@ export type TechId = string;
 export type DecisionId = string;
 export type TaxLawId = string;
 export type PrivilegeId = string;
-export type EstateKey = string;
+export const ESTATE_KEYS = ['ruling', 'merchants', 'landlords', 'artisans', 'peasants'] as const;
+export type EstateKey = (typeof ESTATE_KEYS)[number] | `custom:${string}`;
 export type ArmyTemplateId = string;
 export type GeneralId = string;
 export type NamedModifierId = string;
@@ -51,8 +52,8 @@ export type Trigger =
   | { hasAdvisor: string }
   | { controlsCapital: boolean }
   | { isAtWar: boolean }
-  | { estateLoyalty: Record<EstateKey, NumCmp> }
-  | { estateInfluence: Record<EstateKey, NumCmp> }
+  | { estateLoyalty: Partial<Record<EstateKey, NumCmp>> }
+  | { estateInfluence: Partial<Record<EstateKey, NumCmp>> }
   | { taxLaw: { estate: EstateKey; is: TaxLawId } }
   | { hasPrivilege: PrivilegeId };
 
@@ -223,7 +224,6 @@ export interface EstateDef {
   name: string;
   nameByCountry: Record<string, string>;
   sensitivity: number;
-  incomeFrom: 'land' | 'trade' | 'stipend' | 'mixed';
   defaultPrivileges: PrivilegeId[];
 }
 
@@ -422,6 +422,7 @@ export interface ScenarioDef {
   countryOverrides: Record<CountryTag, Partial<CountryStarting>>;
   armies: Array<{ tag: CountryTag; template: ArmyTemplateId; province: ProvinceId; size: number }>;
   initialWars: Array<{ attacker: CountryTag; defender: CountryTag; goal?: string }>;
+  initialTruces: Array<{ a: CountryTag; b: CountryTag; days: number }>;
   initialEvents: EventId[];
 }
 
@@ -436,7 +437,6 @@ export interface Balance {
     officialSalaryPerProvinceMonth: number;
     dynastyStipendBaseMonth: number;
     disasterReliefCost: number;
-    foodPerPersonMonth: number;
     manpowerRegenRate: number;
     customaryTaxRate: number;
     corruptionDrift: number;

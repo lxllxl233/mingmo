@@ -69,7 +69,7 @@ tax_laws:
 
   # ── 士绅 ──────────────────────────────────────────────
   - id: tax_gentry_exemption
-    estate: gentry
+    estate: landlords
     name: 优免
     desc: 有功名者免差徭，田亩多诡寄其名下。国用不足，而绅衿不可犯。
     rate: 0.005
@@ -82,7 +82,7 @@ tax_laws:
       - add_modifier: { stability_monthly: 0.05, tax_efficiency_pct: -6 }
     ai_weight: 40
   - id: tax_gentry_land_survey
-    estate: gentry
+    estate: landlords
     name: 清丈限田
     desc: 丈量隐田，按实亩起科。豪右大恨，而小民稍苏。
     rate: 0.05
@@ -98,7 +98,7 @@ tax_laws:
         - authority: { gte: 55 }
     ai_weight: 25
   - id: tax_gentry_equal_service
-    estate: gentry
+    estate: landlords
     name: 绅衿一体当差
     desc: 绅衿与民一体当差纳粮。前朝所无，江南大哗。
     rate: 0.04
@@ -175,7 +175,7 @@ tax_laws:
 
   # ── 宗室 ──────────────────────────────────────────────
   - id: tax_dynasty_stipend
-    estate: dynasty
+    estate: ruling
     name: 宗禄
     desc: 宗室岁支禄米，世袭罔替。藩府富可敌国，太仓为之一空。
     rate: 0
@@ -187,48 +187,8 @@ tax_laws:
     effects:
       - add_modifier: { tax_efficiency_pct: -8 }
     ai_weight: 20
-  - id: tax_dynasty_reduced
-    estate: dynasty
-    name: 宗禄折色减半
-    desc: 禄米改折银，且减其半。宗藩哗然，然国用稍纾。
-    rate: 0
-    efficiency: 0
-    evasion_base: 0
-    silver_share: 0
-    loyalty_drift: -1.5
-    influence_shift: -10
-    effects:
-      - add_modifier: { tax_efficiency_pct: 4 }
-    ai_weight: 30
-  - id: tax_dynasty_manor
-    estate: dynasty
-    name: 宗藩庄田起科
-    desc: 藩府庄田按亩纳粮。宗室大恨，而田赋稍增。
-    rate: 0.02
-    efficiency: 0.55
-    evasion_base: 0.3
-    silver_share: 0.7
-    loyalty_drift: -1.0
-    influence_shift: -6
-    incidence: { estate: peasants, factor: 0.2 }
-    ai_weight: 20
-
-  # ── 贵族 ──────────────────────────────────────────────
-  - id: tax_nobles_full_stipend
-    estate: nobles
-    name: 全禄
-    desc: 勋贵禄米如故，岁支数百万石。太仓为之一空。
-    rate: 0
-    efficiency: 0
-    evasion_base: 0
-    silver_share: 0
-    loyalty_drift: 0.8
-    influence_shift: 5
-    effects:
-      - add_modifier: { tax_efficiency_pct: -10 }
-    ai_weight: 20
   - id: tax_nobles_reduced_stipend
-    estate: nobles
+    estate: ruling
     name: 折色减禄
     desc: 禄米改折银，且减其半。勋贵哗然，然国用稍纾。
     rate: 0
@@ -241,7 +201,7 @@ tax_laws:
       - add_modifier: { tax_efficiency_pct: 6 }
     ai_weight: 30
   - id: tax_nobles_manor
-    estate: nobles
+    estate: ruling
     name: 庄田起科
     desc: 勋贵庄田亦按亩纳粮。豪强隐匿，胥吏不敢问。
     rate: 0.03
@@ -255,7 +215,7 @@ tax_laws:
 
   # ── 军人 ──────────────────────────────────────────────
   - id: tax_soldiers_weisuo
-    estate: soldiers
+    estate: peasants
     name: 卫所屯田
     desc: 军户世袭，屯田自给。兵额册上百万，实存不足半。
     rate: 0.02
@@ -268,7 +228,7 @@ tax_laws:
       - add_modifier: { army_upkeep_pct: -40, discipline_pct: -10 }
     ai_weight: 30
   - id: tax_soldiers_mercenary
-    estate: soldiers
+    estate: ruling
     name: 募兵厚饷
     desc: 以银募兵，厚给月饷。兵精而费重，欠饷则哗。
     rate: 0.06
@@ -281,7 +241,7 @@ tax_laws:
       - add_modifier: { discipline_pct: 10, army_upkeep_pct: 30 }
     ai_weight: 55
   - id: tax_soldiers_retinue
-    estate: soldiers
+    estate: ruling
     name: 家丁私兵
     desc: 将领自募家丁，饷出于私囊。兵为将有，朝廷不能制。
     rate: 0.03
@@ -296,7 +256,7 @@ tax_laws:
 
   # ── 官僚 ──────────────────────────────────────────────
   - id: tax_officials_thin_salary
-    estate: officials
+    estate: ruling
     name: 薄俸
     desc: 洪武祖制，俸薄不足以养廉。胥吏因缘为奸，火耗羡余尽入私囊。
     rate: 0.01
@@ -309,7 +269,7 @@ tax_laws:
       - add_modifier: { corruption_monthly: 0.3 }
     ai_weight: 30
   - id: tax_officials_honesty_silver
-    estate: officials
+    estate: ruling
     name: 养廉银
     desc: 加给养廉，以俸养廉。吏治稍清，而库帑益绌。
     rate: 0.02
@@ -322,7 +282,7 @@ tax_laws:
       - add_modifier: { corruption_monthly: -0.25, tax_efficiency_pct: 6 }
     ai_weight: 45
   - id: tax_officials_meltage
-    estate: officials
+    estate: ruling
     name: 火耗归公
     desc: 州县火耗，尽数归公，另给养廉。官吏失其利，怨言四起。
     rate: 0.03
@@ -337,7 +297,7 @@ tax_laws:
 
   # ── 宗教 ──────────────────────────────────────────────
   - id: tax_clergy_exempt
-    estate: clergy
+    estate: landlords
     name: 寺产免税
     desc: 寺观田产不纳粮、不当差。香火日盛，而国课日削。
     rate: 0
@@ -350,7 +310,7 @@ tax_laws:
       - add_modifier: { stability_monthly: 0.05, tax_efficiency_pct: -3 }
     ai_weight: 25
   - id: tax_clergy_license
-    estate: clergy
+    estate: landlords
     name: 度牒收费
     desc: 出家给牒，纳银乃许。僧道日多，度牒之费亦成利薮。
     rate: 0.02
@@ -361,7 +321,7 @@ tax_laws:
     influence_shift: 0
     ai_weight: 20
   - id: tax_clergy_estate
-    estate: clergy
+    estate: landlords
     name: 寺产起科
     desc: 寺观田产按亩纳粮。僧道大哗，而国课稍增。
     rate: 0.03
@@ -374,7 +334,8 @@ tax_laws:
 
   # ── 土著（VOC 专属） ─────────────────────────────────
   - id: tax_natives_tribute
-    estate: custom:natives
+    estate: peasants
+    country: VOC
     name: 土贡
     desc: 以贡赋代田税，头人代收，公司但取其成。
     rate: 0.03
@@ -385,7 +346,8 @@ tax_laws:
     influence_shift: 0
     ai_weight: 40
   - id: tax_natives_corvee
-    estate: custom:natives
+    estate: peasants
+    country: VOC
     name: 徭役征发
     desc: 征土著修城、运粮、筑路。不见银，而见尸。
     rate: 0.01
@@ -398,7 +360,8 @@ tax_laws:
       - add_modifier: { manpower_monthly: 200 }
     ai_weight: 20
   - id: tax_natives_trade
-    estate: custom:natives
+    estate: merchants
+    country: VOC
     name: 土著贸易专营
     desc: 公司垄断香料与蔗糖，土著只许按官价出售。
     rate: 0.05
@@ -410,3 +373,44 @@ tax_laws:
     effects:
       - add_modifier: { trade_efficiency_pct: 8 }
     ai_weight: 50
+
+  # ── 小生产者 ──────────────────────────────────────────
+  - id: tax_artisans_guild
+    estate: artisans
+    name: 行会包税
+    desc: 行会代收市税，匠户按行当摊派。征收省事，而中饱亦多。
+    rate: 0.04
+    efficiency: 0.7
+    evasion_base: 0.2
+    silver_share: 0.9
+    loyalty_drift: 0
+    influence_shift: 0
+    effects:
+      - add_modifier: { trade_efficiency_pct: 3 }
+    ai_weight: 45
+  - id: tax_artisans_corvee
+    estate: artisans
+    name: 匠户轮班
+    desc: 匠户轮班应役，以力代银。官营作坊得人，市肆渐衰。
+    rate: 0.02
+    efficiency: 0.6
+    evasion_base: 0.25
+    silver_share: 0.4
+    loyalty_drift: -1.0
+    influence_shift: 0
+    effects:
+      - add_modifier: { manpower_monthly: 200 }
+    ai_weight: 25
+  - id: tax_artisans_market
+    estate: artisans
+    name: 市肆抽分
+    desc: 市肆按营业额抽分，商贩裹足，而岁入稍增。
+    rate: 0.06
+    efficiency: 0.8
+    evasion_base: 0.15
+    silver_share: 1.0
+    loyalty_drift: -0.8
+    influence_shift: -3
+    effects:
+      - add_modifier: { trade_efficiency_pct: 6 }
+    ai_weight: 55

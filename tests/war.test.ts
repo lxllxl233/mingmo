@@ -156,4 +156,13 @@ describe('war resolution', () => {
     expect(Object.values(state.provinces).filter(province => province.owner === 'VOC')).toHaveLength(0);
     expect(Object.values(state.armies).filter(army => army.tag === 'VOC')).toHaveLength(0);
   });
+
+  it('records a grudge against the aggressor when declared upon', () => {
+    const content = loadContentFromDirectory();
+    const state = createInitialState(content, '1627', 42, 'ZHENG');
+    declareWar(state, 'ZHENG', 'VOC', 'test', content);
+    expect(state.countries['VOC']?.grudges['ZHENG']).toBeGreaterThan(0);
+    // 侵略者本人不应对自己记仇。
+    expect(state.countries['ZHENG']?.grudges['VOC'] ?? 0).toBe(0);
+  });
 });

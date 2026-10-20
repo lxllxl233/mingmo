@@ -10,16 +10,11 @@ export function formatNumber(value: number, digits = 0): string {
 }
 
 const ESTATE_LABELS: Record<string, string> = {
-  nobles: '宗室贵族',
-  officials: '官僚',
-  gentry: '士绅',
+  ruling: '统治阶级',
   merchants: '商人',
+  landlords: '地主',
+  artisans: '小生产者',
   peasants: '农民',
-  soldiers: '军人',
-  clergy: '僧道',
-  scholars: '士人',
-  natives: '土司',
-  dynasty: '皇室',
 };
 
 export function effectSummary(effect: Effect): string {

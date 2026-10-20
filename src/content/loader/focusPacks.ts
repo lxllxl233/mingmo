@@ -193,7 +193,7 @@ function effectsFor(
         { addStability: -scale },
         { addPoliticalPower: 2 + scale },
         { addModifier: { tax_efficiency_pct: 3 * scale, corruption_monthly: -0.01 * scale } },
-        { addEstateLoyalty: { estate: 'gentry', value: -2 * scale } },
+        { addEstateLoyalty: { estate: 'landlords', value: -2 * scale } },
       ];
       break;
     case 'navy':
@@ -237,7 +237,7 @@ function decisionEffects(kind: FocusKind, decisionId: string, modifier: Modifier
     case 'diplomacy':
       return [...common, { addModifier: { trade_efficiency_pct: 5, stability_monthly: 0.02 } }, { addEstateLoyalty: { estate: 'merchants', value: 2 } }];
     case 'reform':
-      return [...common, { addModifier: { tax_efficiency_pct: 5, corruption_monthly: -0.02 } }, { addStability: -1 }, { addEstateLoyalty: { estate: 'gentry', value: -3 } }];
+      return [...common, { addModifier: { tax_efficiency_pct: 5, corruption_monthly: -0.02 } }, { addStability: -1 }, { addEstateLoyalty: { estate: 'landlords', value: -3 } }];
     case 'navy':
       return [...common, { addModifier: { naval_attack_pct: 4, trade_efficiency_pct: 3, food_output_pct: 2 } }];
     case 'unique':
@@ -321,6 +321,22 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
       });
     });
   }
+  // 大明自救路径：京察/考成。一次性整肃官僚，代价是统治阶级忠诚。
+  decisions.push({
+    id: 'ming_dec_jingcha',
+    country: 'MING',
+    name: '京察/考成',
+    desc: '六年一度的京察与考成法：清查贪墨、淘汰冗官。腐败大降，但官僚集团人人自危。',
+    visible: { corruption: { gte: 50 } },
+    // MING 开局权威 40；若门槛设 50，京察在正常流程里 15 年以上都用不出来。
+    available: { authority: { gte: 40 } },
+    cost: { politicalPower: 100 },
+    cooldownDays: 1825,
+    effect: [
+      { addCorruption: -8 },
+      { addEstateLoyalty: { estate: 'ruling', value: -10 } },
+    ],
+  });
   return { focuses, decisions };
 }
 

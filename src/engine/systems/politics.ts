@@ -110,13 +110,13 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
     }
 
     if (nation.tag === 'SHUN') {
-      const gentry = nation.estates['gentry']?.loyalty ?? 50;
-      const farmers = nation.estates['farmers']?.loyalty ?? 50;
-      if (gentry < 30) {
+      const landlords = nation.estates['landlords']?.loyalty ?? 50;
+      const peasants = nation.estates['peasants']?.loyalty ?? 50;
+      if (landlords < 30) {
         nation.stability = clamp(nation.stability - 0.05, 0, 100);
         nation.corruption = clamp(nation.corruption + 0.02, 0, 100);
       }
-      if (farmers > 70) nation.manpower += 300;
+      if (peasants > 70) nation.manpower += 300;
     }
 
     if (nation.tag === 'SMING') {

@@ -32,6 +32,7 @@ import type {
   CountryEstateConfig,
   Decision,
   EstateDef,
+  EstateKey,
   EventChain,
   EventDef,
   Focus,
@@ -385,7 +386,7 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
     provinces: byId(provinces, 'provinces'),
     countries: byTag(countries),
     buildings: byId(buildings, 'buildings'),
-    estateDefs: byKey(estateDefs, 'estate_defs'),
+    estateDefs: byKey(estateDefs, 'estate_defs') as Map<EstateKey, EstateDef>,
     countryEstates: countryEstatesByTag,
     taxLaws: byId(taxLaws, 'tax_laws'),
     privileges: byId(privileges, 'privileges'),
@@ -432,7 +433,7 @@ export function parseContent(files: RawContentFile[], geo: MapGeo): ContentIndex
     regionList.push(province);
     provincesByRegion.set(province.regionId, regionList);
   }
-  const taxLawsByEstate = new Map<string, TaxLaw[]>();
+  const taxLawsByEstate = new Map<TaxLaw['estate'], TaxLaw[]>();
   for (const law of taxLaws) {
     const list = taxLawsByEstate.get(law.estate) ?? [];
     list.push(law);

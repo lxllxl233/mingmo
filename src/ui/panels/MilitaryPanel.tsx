@@ -54,7 +54,7 @@ export function MilitaryPanel() {
   return (
     <div className="panel">
       <h2>军事</h2>
-      <p className="muted">军队按地区移动，逐日结算战斗与围城。欠饷会先打募兵，再打家丁。</p>
+      <p className="muted">军队按地区移动，逐日结算战斗与围城。拖欠军饷会先打募兵，再打家丁。</p>
       <div className="military-summary">
         <span>陆军 <b>{landArmies.length}</b> 支</span>
         <span>水军 <b>{navyArmies.length}</b> 支</span>

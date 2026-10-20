@@ -12,15 +12,11 @@ type SelectBattleHandler = (battleId: string) => void;
 export type MapMode = 'normal' | 'estates' | 'finance' | 'military' | 'diplomacy' | 'core';
 
 const ESTATE_COLORS: Record<string, number> = {
-  nobles: 0xb8892e,
-  officials: 0x3f6f9a,
-  gentry: 0x5f7d4a,
+  ruling: 0x9e2b25,
   merchants: 0xc46a2b,
+  landlords: 0x6f8a5a,
+  artisans: 0x4f8b86,
   peasants: 0x9a7b4f,
-  soldiers: 0xa33a32,
-  clergy: 0x6b4a86,
-  scholars: 0x3f7f7a,
-  natives: 0x6f7a6a,
 };
 
 function lerpColor(a: number, b: number, t: number): number {
@@ -1750,6 +1746,15 @@ export class MapRenderer {
       list.push(army);
       groups.set(key, list);
     }
+    // 同一省份若同时驻扎多个势力的军队，兵牌完全重叠会看不清；按势力序号横向错开排布。
+    const provinceOrder = new Map<string, string[]>();
+    for (const key of groups.keys()) {
+      const provinceId = key.slice(0, key.indexOf(':'));
+      const list = provinceOrder.get(provinceId) ?? [];
+      list.push(key);
+      provinceOrder.set(provinceId, list);
+    }
+    for (const list of provinceOrder.values()) list.sort();
     const alive = new Set<string>(groups.keys());
     for (const [key, armies] of groups) {
       const centroid = this.centroids.get(armies[0]?.province ?? '');
@@ -1774,12 +1779,18 @@ export class MapRenderer {
       this.drawArmyBars(marker, organizationPct, strengthPct);
       marker.armyId = representative.id;
       marker.armyIds = ordered.map(army => army.id);
+      // 多势力同省：按本势力在该省的序号横向错开（间隔约 0.85 世界单位，居中）。
+      const keysHere = provinceOrder.get(armies[0]?.province ?? '') ?? [key];
+      const tagIndex = keysHere.indexOf(key);
+      const spreadX = keysHere.length > 1
+        ? (tagIndex - (keysHere.length - 1) / 2) * 0.85
+        : 0;
       const nextId = representative.movePath[0];
       const nextCentroid = nextId ? this.centroids.get(nextId) : null;
       const travel = ordered.length === 1 && nextCentroid
         ? Math.min(0.82, Math.max(0, representative.moveProgress))
         : 0;
-      marker.targetX = centroid.x + (nextCentroid ? (nextCentroid.x - centroid.x) * travel : 0);
+      marker.targetX = centroid.x + spreadX + (nextCentroid ? (nextCentroid.x - centroid.x) * travel : 0);
       marker.targetY = centroid.y + (nextCentroid ? (nextCentroid.y - centroid.y) * travel : 0);
       if (!marker.positioned) {
         marker.container.position.set(marker.targetX, marker.targetY);

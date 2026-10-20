@@ -37,6 +37,17 @@ function previewLines(effects: Effect[], country: CountryState): PreviewLine[] {
     });
 }
 
+/** 选项可负担性：扣粮/扣兵源的效果若会让对应资源变负，则不可选。
+ *  扣银（addTreasury 负值）不在此列——银不足会转成欠饷（债务），仍可选，预览已标红提醒，
+ *  否则国库为 0 时所有「扣银」选项都会被锁死、事件弹窗无法关闭。 */
+function affordability(effects: Effect[], country: CountryState): { ok: boolean; reason: string } {
+  const food = country.food + sumEffect(effects, effect => ('addFood' in effect ? effect.addFood : undefined));
+  if (food < 0) return { ok: false, reason: '粮食不足' };
+  const manpower = country.manpower + sumEffect(effects, effect => ('addManpower' in effect ? effect.addManpower : undefined));
+  if (manpower < 0) return { ok: false, reason: '兵源不足' };
+  return { ok: true, reason: '' };
+}
+
 export function EventModal() {
   const game = useGameStore(state => state.game);
   const content = useGameStore(state => state.content);
@@ -74,13 +85,15 @@ export function EventModal() {
                 country: pending.country,
                 ...(pending.province === undefined ? {} : { province: pending.province }),
               });
+              const cost = country ? affordability(option.effect, country) : { ok: true, reason: '' };
               const preview = country ? previewLines(option.effect, country) : [];
               return (
                 <button
                   key={option.id}
                   className="option"
-                  disabled={!available}
-                  title={available ? undefined : '当前条件不满足，无法选择该选项'}
+                  disabled={!available || !cost.ok}
+                  title={!available ? '当前条件不满足，无法选择该选项'
+                    : !cost.ok ? `${cost.reason}，无法选择该选项` : undefined}
                   onClick={() => {
                     sound.play('choice');
                     command({ type: 'event.choose', eventId: event.id, optionId: option.id });
