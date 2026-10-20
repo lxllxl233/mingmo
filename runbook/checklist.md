@@ -67,11 +67,11 @@
 
 ## Phase 5 — 诚实验收 + 移交
 
-- [~] 全量回归：五门禁 ✅、`invariant-probe` ✅（8975 万次）、45 局矩阵 ✅（0 僵尸/孤儿）、67 年长局未跑
+- [x] 全量回归：五门禁 ✅、`invariant-probe` ✅（8975 万次）、45 局矩阵 ✅（0 僵尸/孤儿）、67 年长局 ✅（3 剧本跑满到 1683，0 僵尸）
 - [x] 诚实打分表（`quality-bar.md` §5 已改写）
 - [x] 最终报告（`runbook/final-report.md`）
 - [x] 移交清单（`docs/handoff.md`，最终报告 §7 已列）
-- [ ] `progress.md` 收尾 + 最终 commit
+- [x] `progress.md` 收尾 + 最终 commit
 
 ---
 
