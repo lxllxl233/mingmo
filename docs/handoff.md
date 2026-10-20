@@ -111,13 +111,13 @@ pnpm preview         # 或 pnpm dev
 | 生产构建无 `__MINGMO_STORE__` | DEV-only 调试钩子 |
 | pixi chunk 559KB | 依赖体积例外，已记录 |
 | 后期国库可达数百万两 | 已知平衡观察项，不影响进程 |
-| 8h soak 尚未完成 | 已跑 2.73h 后被环境内存限制终止；需批准重跑，非程序问题 |
+| 8h soak 为 2.73h 部分证据 | 用户已接受为例外；非程序问题，发布前可选择补足 |
 
 ---
 
 ## 8. 移交后的建议顺序
 
-0. **重跑 8h soak**（需用户批准后再启动后台任务）：托管 `out/soak-final` 或 `dist`，`SOAK_MINUTES=480 SOAK_SPEED=32x node scripts/soak-ui.mjs`；完成后回填 `docs/final-report.md §7` 与 `docs/qa-checklist.md §4`。
+0. **（可选）补足 8h soak**：当前 2.73h 部分证据已被接受；若发布前需要完整 8h，托管 `out/soak-final` 或 `dist`，`SOAK_MINUTES=480 SOAK_SPEED=32x node scripts/soak-ui.mjs`，完成后回填 `docs/final-report.md §7` 与 `docs/qa-checklist.md §4`。
 1. 10 人首启外测（1–2 天）→ 修高频困惑点。
 2. 史实审读（1 周，按 ID 反馈）→ 修数据。
 3. 30h 真人试玩（1–2 周）→ 判断核心循环。

@@ -72,15 +72,15 @@
 - **存档**：v6 + 迁移 + decodeSave hash 校验；自动存档每年 `auto` 槽。
 - **历史模式**：无传送（Q1 已删 applyHistoricalTimeline）；历史靠条件事件 + AI 目标权重。
 
-## 6. 当前状态（2026-10-20 · 条件通过）
+## 6. 当前状态（2026-10-20 · 通过）
 
-Q0–Q6 完成，Phase 1–5 条件通过：除 8h soak 完整时长外全部达标。最终证据见 `docs/final-report.md`、`docs/qa-checklist.md`，真人移交见 `docs/handoff.md`。
+Q0–Q6 完成，Phase 1–5 通过：AI 可验证维度全部达标，8h soak 以 2.73h 部分证据经用户接受为例外。最终证据见 `docs/final-report.md`、`docs/qa-checklist.md`，真人移交见 `docs/handoff.md`。
 
 - ✅ 系统可信：audit 0/0；不变量探针 8965 万次检查全绿
 - ✅ 内容：214 事件 / 504 独特国策 / 480 真实地名 / 8 势力机制 / 3 剧本
 - ✅ 平衡：45/45 无僵尸/孤儿；1627 最大 39.2%、1644 35.2%、1650 66.7%（剧本例外）；战争 0 场 >5 年
 - ✅ UI：Chrome/Edge/Firefox 矩阵、8 势力 E2E、打磨清单清零
-- ⚠️ 性能：tick 1.18–1.33ms/日、加载 297.9ms、地图 rAF 125fps；8h soak 仅 2.73h（环境内存终止，待重跑）
+- ✅ 性能：tick 1.18–1.33ms/日、加载 297.9ms、地图 rAF 125fps；8h soak 2.73h 部分证据经用户接受为例外
 - ✅ 测试：154（目标 150+）
 - ⚠️ 移交真人：10 人外测、30h 试玩、史实审读、美术/音频评审、发行决策
 
