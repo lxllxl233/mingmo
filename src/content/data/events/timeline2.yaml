@@ -220,20 +220,84 @@ events:
     options:
       - id: fight
         name: 决战山海关
-        tooltip: 军心上升，兵力与稳定重创。
+        tooltip: 孤注一掷，军心上升，但败则弃京西走。
         ai_chance: 55
         effect:
           - add_manpower: -5000
           - add_stability: -4
           - add_army_loyalty: 3
+          - set_flag: shun_fought_shanhaiguan
       - id: retreat
         name: 退守北京
-        tooltip: 保存兵力，天命与稳定受损。
+        tooltip: 保存兵力，天命受损，却可保实力转进。
         ai_chance: 45
         effect:
           - add_mandate: -5
           - add_stability: -2
           - add_manpower: -1000
+          - set_flag: shun_retreated_shanhaiguan
+
+  # 山海关的长期后果：决战若败 → 弃京西走（更惨）；退守 → 保存实力（转进陕甘）。
+  - id: SHUN_e_leave_beijing
+    title: 弃守北京
+    desc: 山海关大败，清吴联军长驱直入，大顺被迫退出北京，一路西走。
+    historical_context: 1644 年山海关战败后，李自成匆匆在北京称帝即弃城西走。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1644-07-01, before: 1646-12-31 }
+        - has_flag: shun_fought_shanhaiguan
+    mtth: 120
+    fire_once: true
+    options:
+      - id: flee_west
+        name: 弃京西走
+        tooltip: 都城失守，天命与军心大损。
+        ai_chance: 60
+        effect:
+          - add_stability: -4
+          - add_mandate: -6
+          - add_manpower: -8000
+          - add_treasury: -60000
+      - id: hold_city
+        name: 死守京师
+        tooltip: 与城共存亡，损失更重。
+        ai_chance: 40
+        effect:
+          - add_manpower: -12000
+          - add_stability: -6
+          - add_army_loyalty: 3
+
+  - id: SHUN_e_preserve_army
+    title: 保存实力
+    desc: 大顺主动退出北京，保住了主力，转进陕甘，尚有再战之力。
+    historical_context: 若李自成不战而退，大顺军主力尚存，或可在陕甘与清军周旋更久。
+    scope: country
+    country: SHUN
+    trigger:
+      all:
+        - date: { after: 1644-07-01, before: 1646-12-31 }
+        - has_flag: shun_retreated_shanhaiguan
+    mtth: 120
+    fire_once: true
+    options:
+      - id: westward
+        name: 转进陕甘
+        tooltip: 保存兵力，天命受损但元气未失。
+        ai_chance: 60
+        effect:
+          - add_manpower: 5000
+          - add_army_loyalty: 2
+          - add_mandate: -3
+      - id: retake
+        name: 回师再战
+        tooltip: 冒险反扑，胜负难料。
+        ai_chance: 40
+        effect:
+          - add_manpower: -3000
+          - add_stability: -2
+          - add_army_loyalty: 4
 
   - id: SHUN_e_ming_alliance
     title: 联明抗清
