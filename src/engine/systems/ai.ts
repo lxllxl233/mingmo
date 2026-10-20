@@ -494,13 +494,15 @@ interface FrontTarget {
   score: number;
 }
 
-function frontTargets(
-  state: GameState,
-  content: ContentIndex,
-  tag: string,
-  army: ArmyState,
-): FrontTarget[] {
-  const targets: FrontTarget[] = [];
+interface FrontCandidate {
+  id: string;
+  support: number;
+  development: number;
+}
+
+/** 同一势力的所有军团面对的是同一批敌方目标，按势力扫描一次即可。 */
+function frontCandidates(state: GameState, content: ContentIndex, tag: string): FrontCandidate[] {
+  const candidates: FrontCandidate[] = [];
   for (const province of Object.values(state.provinces)) {
     if (province.controller === tag) continue;
     if (!areAtWar(state, tag, province.controller)) continue;
@@ -512,13 +514,56 @@ function frontTargets(
         && neighbor.controller === tag;
     }).length;
     if (support === 0) continue;
-    const path = findPathToProvince(state, content, tag, army.province, province.id);
+    candidates.push({ id: province.id, support, development: def.development });
+  }
+  return candidates;
+}
+
+/**
+ * 单次 BFS 求出源省到所有可达省的最短路径。
+ * 与逐个目标跑 BFS 的结果完全一致（邻居顺序、深度上限 30 都相同），
+ * 但 N 个目标只付一次队列与集合分配。
+ */
+function reachablePaths(
+  state: GameState,
+  content: ContentIndex,
+  tag: string,
+  from: string,
+): Map<string, string[]> {
+  const paths = new Map<string, string[]>([[from, []]]);
+  const queue: string[] = [from];
+  for (let index = 0; index < queue.length; index += 1) {
+    const id = queue[index];
+    if (id === undefined) continue;
+    const def = content.provinces.get(id);
+    if (!def) continue;
+    const base = paths.get(id) ?? [];
+    for (const neighborId of def.neighbors) {
+      if (paths.has(neighborId) || !canMarchThrough(state, tag, neighborId)) continue;
+      const path = [...base, neighborId];
+      paths.set(neighborId, path);
+      if (path.length < 30) queue.push(neighborId);
+    }
+  }
+  return paths;
+}
+
+function frontTargets(
+  state: GameState,
+  content: ContentIndex,
+  tag: string,
+  army: ArmyState,
+  candidates: FrontCandidate[],
+): FrontTarget[] {
+  const paths = reachablePaths(state, content, tag, army.province);
+  const targets: FrontTarget[] = [];
+  for (const candidate of candidates) {
+    const path = paths.get(candidate.id);
     if (!path || path.length === 0) continue;
-    const development = content.provinces.get(province.id)?.development ?? 0;
     targets.push({
-      id: province.id,
+      id: candidate.id,
       path,
-      score: support * 10 - path.length * 1.5 + development * 0.08,
+      score: candidate.support * 10 - path.length * 1.5 + candidate.development * 0.08,
     });
   }
   targets.sort((a, b) => b.score - a.score);
@@ -556,8 +601,9 @@ function manageMovement(state: GameState, content: ContentIndex, tag: string): v
     .filter(army => army.movePath.length === 0)
     .sort((a, b) => armyStrength(b) - armyStrength(a))
     .slice(0, Math.max(2, aiProfile(state).attackers));
+  const candidates = frontArmies.length > 0 ? frontCandidates(state, content, tag) : [];
   for (const army of frontArmies) {
-    const targets = frontTargets(state, content, tag, army);
+    const targets = frontTargets(state, content, tag, army, candidates);
     const target = targets.find(entry => !assigned.has(entry.id)) ?? targets[0];
     if (target) {
       assigned.add(target.id);

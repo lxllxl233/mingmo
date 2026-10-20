@@ -23,9 +23,10 @@ export function buildingModifiers(state: GameState, content: ContentIndex, tag: 
   }
   const cached = cachedModifiers.get(tag);
   if (cached) return cached;
-  const total: Modifier = {};
+  // 一次扫描构建全部势力的建筑修正，避免每个势力各扫一遍 480 省。
   for (const province of Object.values(state.provinces)) {
-    if (province.controller !== tag) continue;
+    const total: Modifier = cachedModifiers.get(province.controller) ?? {};
+    cachedModifiers.set(province.controller, total);
     for (const id of province.buildings) {
       const def = content.buildings.get(id);
       if (!def) continue;
@@ -34,6 +35,7 @@ export function buildingModifiers(state: GameState, content: ContentIndex, tag: 
       }
     }
   }
+  const total = cachedModifiers.get(tag) ?? {};
   cachedModifiers.set(tag, total);
   return total;
 }

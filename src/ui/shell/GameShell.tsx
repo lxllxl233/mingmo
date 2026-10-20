@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { Profiler, useEffect, useRef } from 'react';
 import { formatDate } from '../../engine/core/clock';
+import { onReactRender } from '../perf';
 import { sound } from '../../app/audio/sound';
 import { musicForFaction } from '../../app/audio/music';
 import { useGameStore, type PanelKey } from '../state/store';
@@ -195,8 +196,11 @@ export function GameShell() {
         }
       }}
     >
-      <TopBar />
+      <Profiler id="topbar" onRender={onReactRender}>
+        <TopBar />
+      </Profiler>
       <div className="game-main">
+        <Profiler id="sidebar" onRender={onReactRender}>
         <nav className="sidebar">
           {playerDef && (
             <button className="sidebar-country" onClick={() => openCountry(game.playerTag)} title="查看本国详情">
@@ -216,7 +220,11 @@ export function GameShell() {
             </button>
           ))}
         </nav>
-        <MapViewport />
+        </Profiler>
+        <Profiler id="map" onRender={onReactRender}>
+          <MapViewport />
+        </Profiler>
+        <Profiler id="aside" onRender={onReactRender}>
         <aside className="right-panel">
           <WarDock />
           {panel === 'province' && <ProvincePanel />}
@@ -268,7 +276,9 @@ export function GameShell() {
             </div>
           )}
         </aside>
+        </Profiler>
       </div>
+      <Profiler id="footer" onRender={onReactRender}>
       <footer className="bottombar">
         <div className="speed">
           {([0, 1, 2, 4, 8, 16, 32] as const).map(value => (
@@ -294,6 +304,7 @@ export function GameShell() {
         {message && <span className="message">{message}</span>}
         <span className="muted">事件 {pending.length} · 军队 {Object.values(game.armies).filter(army => army.tag === game.playerTag).length}</span>
       </footer>
+      </Profiler>
       {(panel === 'focus' || panel === 'research') && (
         <div className="focus-overlay">
           <div className="focus-head">

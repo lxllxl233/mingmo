@@ -82,14 +82,20 @@ export function toDayIndex(year: number, month: number, day: number): number {
   return daysFromCivil(year, month, day) - START_ABSOLUTE_DAY;
 }
 
-/** "1644-01-01" → day index。 */
+const parsedDays = new Map<string, number>();
+
+/** "1644-01-01" → day index。内容中的日期字符串固定，缓存解析结果。 */
 export function parseDay(isoDate: string): number {
+  const cached = parsedDays.get(isoDate);
+  if (cached !== undefined) return cached;
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoDate);
   if (!match) throw new Error(`expected YYYY-MM-DD, got: ${isoDate}`);
   const year = Number(match[1]);
   const month = Number(match[2]);
   const day = Number(match[3]);
-  return toDayIndex(year, month, day);
+  const index = toDayIndex(year, month, day);
+  parsedDays.set(isoDate, index);
+  return index;
 }
 
 /** day index → GameDate。允许负数与超出终局，调用方自行裁剪。 */

@@ -139,6 +139,14 @@ export class MapRenderer {
   private landLayer = new Graphics();
   private shadowLayer = new Graphics();
   private fillLayer = new Graphics();
+  private provinceFills = new Map<string, Graphics>();
+  private provinceOccupants = new Map<string, string>();
+  private shadowsDrawn = false;
+  private lastDirtyCount = 0;
+  private provinceLabelTexts = new Map<string, Text>();
+  private provinceLabelColors = new Map<string, number>();
+  private localLabelTexts = new Map<string, Text>();
+  private localLabelColors = new Map<string, number>();
   private occupiedLayer = new Graphics();
   private terrainLayer = new Graphics();
   private terrainSymbolLayer = new Container();
@@ -719,7 +727,11 @@ export class MapRenderer {
     for (const label of this.portLabels) {
       label.visible = scale >= 13.5 && scale < 60;
     }
-    if (scale >= 120) this.ensureLocalLabels();
+    if (scale >= 120) {
+      const hadLocal = this.localLabelsDrawn;
+      this.ensureLocalLabels();
+      if (!hadLocal && this.localLabelsDrawn) this.reportMapPerf(-1);
+    }
     this.updateProvinceLabelScales();
     this.portLayer.visible = scale < 60;
     this.cityLayer.visible = scale < 80;
@@ -729,6 +741,10 @@ export class MapRenderer {
     this.otherLayer.visible = scale < 60;
     this.otherLabelLayer.visible = scale < 60;
     this.seaLabelLayer.visible = scale < 50;
+    if (import.meta.env.DEV) {
+      const perf = (globalThis as { __MINGMO_MAP_PERF__?: { scale?: number } }).__MINGMO_MAP_PERF__;
+      if (perf) perf.scale = Math.round(scale * 10) / 10;
+    }
   }
 
   private bindPointer(): void {
@@ -968,8 +984,9 @@ export class MapRenderer {
     this.selectedProvince = selectedProvince;
     this.selectedArmy = selectedArmy;
     if (state.mapRevision !== this.ownerRevision || !this.hasDrawn) {
+      const dirty = this.hasDrawn ? this.diffProvinces(state) : null;
       this.ownerRevision = state.mapRevision;
-      this.redrawMap();
+      this.redrawMap(dirty);
     } else {
       this.drawSelection();
       this.updateArmies();
@@ -980,28 +997,38 @@ export class MapRenderer {
     }
   }
 
-  private redrawMap(): void {
-    if (!this.state || this.projected.size === 0) return;
-    this.shadowLayer.clear();
-    this.fillLayer.clear();
-    this.occupiedLayer.clear();
-    for (const [id, points] of this.projected) {
-      const province = this.state.provinces[id];
-      const color = this.fillColor(province?.controller ?? 'NEU', id);
-      this.shadowLayer.poly(points.map((value, index) => value + (index % 2 === 0 ? 0.12 : 0.18)))
-        .fill({ color: 0x2a241c, alpha: 0.13 });
-      this.fillLayer.poly(points)
-        .fill({ color, alpha: 0.92 });
-      if (province && province.owner !== province.controller) {
-        const centroid = this.centroids.get(id);
-        if (centroid) {
-          const width = Math.max(0.16, 0.55 / Math.max(1, this.world.scale.x));
-          this.occupiedLayer.moveTo(centroid.x - width, centroid.y + 0.18)
-            .lineTo(centroid.x + width, centroid.y + 0.18)
-            .stroke({ width: Math.max(0.02, 2.2 / Math.max(1, this.world.scale.x)), color, alpha: 0.95 });
-        }
-      }
+  private provinceSignature(province: GameState['provinces'][string]): string {
+    const core = this.mapMode === 'core' && this.state
+      ? (province.cores.includes(this.state.playerTag) ? 1 : 0)
+      : 0;
+    return `${province.controller}|${province.owner}|${core}`;
+  }
+
+  /** 返回底色/占领线发生变化的省份；无法安全差量时返回 null（全量重绘）。 */
+  private diffProvinces(state: GameState): Set<string> | null {
+    const ids = Object.keys(state.provinces);
+    if (this.provinceOccupants.size !== ids.length) return null;
+    const dirty = new Set<string>();
+    for (const province of Object.values(state.provinces)) {
+      const signature = this.provinceSignature(province);
+      if (this.provinceOccupants.get(province.id) !== signature) dirty.add(province.id);
     }
+    return dirty;
+  }
+
+  private redrawMap(dirty: Set<string> | null = null): void {
+    if (!this.state || this.projected.size === 0) return;
+    const started = performance.now();
+    this.lastDirtyCount = dirty?.size ?? this.projected.size;
+    if (!this.shadowsDrawn) {
+      this.shadowLayer.clear();
+      for (const points of this.projected.values()) {
+        this.shadowLayer.poly(points.map((value, index) => value + (index % 2 === 0 ? 0.12 : 0.18)))
+          .fill({ color: 0x2a241c, alpha: 0.13 });
+      }
+      this.shadowsDrawn = true;
+    }
+    this.redrawProvinceFills(dirty);
 
     this.provinceBorderLayer.clear();
     this.countryBorderLayer.clear();
@@ -1009,8 +1036,9 @@ export class MapRenderer {
 
     this.drawCities();
     this.drawDeploymentTargets();
-    this.drawProvinceLabels();
-    this.drawCountryLabels();
+    this.updateProvinceLabels();
+    this.updateCountryLabels();
+    this.updateLocalLabelColors(dirty);
     this.hasDrawn = true;
     this.drawSelection();
     this.drawHover();
@@ -1019,6 +1047,78 @@ export class MapRenderer {
     this.updateBattles();
     this.updateOccupationBubbles();
     this.updateZoomScales();
+    this.reportMapPerf(started);
+  }
+
+  private redrawProvinceFills(dirty: Set<string> | null): void {
+    if (!this.state) return;
+    const ids = dirty ?? new Set(this.projected.keys());
+    for (const id of ids) {
+      const points = this.projected.get(id);
+      if (!points) continue;
+      const province = this.state.provinces[id];
+      let fill = this.provinceFills.get(id);
+      if (!fill) {
+        fill = new Graphics();
+        this.fillLayer.addChild(fill);
+        this.provinceFills.set(id, fill);
+      }
+      fill.clear().poly(points).fill({ color: this.fillColor(province?.controller ?? 'NEU', id), alpha: 0.92 });
+      if (province) this.provinceOccupants.set(id, this.provinceSignature(province));
+    }
+    this.occupiedLayer.clear();
+    for (const [id] of this.projected) {
+      const province = this.state.provinces[id];
+      if (!province || province.owner === province.controller) continue;
+      const centroid = this.centroids.get(id);
+      if (!centroid) continue;
+      const width = Math.max(0.16, 0.55 / Math.max(1, this.world.scale.x));
+      this.occupiedLayer.moveTo(centroid.x - width, centroid.y + 0.18)
+        .lineTo(centroid.x + width, centroid.y + 0.18)
+        .stroke({
+          width: Math.max(0.02, 2.2 / Math.max(1, this.world.scale.x)),
+          color: this.fillColor(province.controller, id),
+          alpha: 0.95,
+        });
+    }
+  }
+
+  private reportMapPerf(started: number): void {
+    if (!import.meta.env.DEV || !this.app) return;
+    const seen = new Set<unknown>();
+    let bytes = 0;
+    // CanvasTextureSystem 没有该访问器；WebGL/WebGPU 下才有。
+    const system = this.app.renderer.texture as unknown as {
+      managedTextures?: readonly { pixelWidth: number; pixelHeight: number }[];
+    };
+    for (const source of system.managedTextures ?? []) {
+      if (!source || seen.has(source)) continue;
+      seen.add(source);
+      bytes += (source.pixelWidth ?? 0) * (source.pixelHeight ?? 0) * 4;
+    }
+    const perf = globalThis as {
+      __MINGMO_MAP_PERF__?: {
+        lastRedrawMs?: number;
+        dirty?: number;
+        scale?: number;
+        labels?: { countries: number; prefectures: number; local: number };
+        textures?: number;
+        textureMB?: number;
+      };
+    };
+    const previous = perf.__MINGMO_MAP_PERF__;
+    perf.__MINGMO_MAP_PERF__ = {
+      lastRedrawMs: started >= 0 ? performance.now() - started : previous?.lastRedrawMs ?? 0,
+      dirty: this.lastDirtyCount,
+      scale: Math.round(this.world.scale.x * 10) / 10,
+      labels: {
+        countries: this.countryLabels.size,
+        prefectures: this.provinceLabelTexts.size,
+        local: this.localLabelTexts.size,
+      },
+      textures: seen.size,
+      textureMB: Math.round((bytes / 1048576) * 10) / 10,
+    };
   }
 
   private drawSelection(): void {
@@ -1091,17 +1191,20 @@ export class MapRenderer {
     this.cityLayer.poly(points).fill({ color: PAPER, alpha: 1 }).stroke({ width: 0.07, color: INK, alpha: 0.9 });
   }
 
-  private drawCountryLabels(): void {
+  private updateCountryLabels(): void {
     if (!this.state) return;
-    for (const label of this.countryLabels.values()) label.destroy();
-    this.countryLabels.clear();
+    const controlledBy = new Map<string, string[]>();
+    for (const province of Object.values(this.state.provinces)) {
+      const list = controlledBy.get(province.controller);
+      if (list) list.push(province.id);
+      else controlledBy.set(province.controller, [province.id]);
+    }
     this.smallLabels.clear();
-    this.labelBaseScale.clear();
-    this.countryLabelLayer.removeChildren();
+    const seen = new Set<string>();
 
     for (const country of Object.values(this.state.countries)) {
       if (!country.alive) continue;
-      const controlled = Object.values(this.state.provinces).filter(province => province.controller === country.tag);
+      const controlled = controlledBy.get(country.tag) ?? [];
       if (controlled.length === 0) continue;
       let x = 0;
       let y = 0;
@@ -1111,16 +1214,16 @@ export class MapRenderer {
         x = capital.x;
         y = capital.y;
       } else {
-        for (const province of controlled) {
-          const centroid = this.centroids.get(province.id);
+        for (const id of controlled) {
+          const centroid = this.centroids.get(id);
           if (!centroid) continue;
           x += centroid.x;
           y += centroid.y;
         }
         x /= controlled.length;
         y /= controlled.length;
-        const inTerritory = controlled.some(province => {
-          const polygon = this.projected.get(province.id);
+        const inTerritory = controlled.some(id => {
+          const polygon = this.projected.get(id);
           return polygon !== undefined && pointInPolygon(x, y, polygon);
         });
         if (!inTerritory) {
@@ -1132,54 +1235,57 @@ export class MapRenderer {
         }
       }
       const def = this.content.countries.get(country.tag);
-      const color = hexToNumber(def?.color ?? '#7a7468');
-      const lightText = colorLuma(color) < 0.52;
       const small = controlled.length <= 14;
       const fontSize = small
         ? 0.7
         : Math.max(1.25, Math.min(2.8, 1.15 + Math.sqrt(controlled.length) * 0.11));
       const baseSize = 64;
-      const text = new Text({
-        text: def?.name ?? country.tag,
-        style: new TextStyle({
-          fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
-          fontSize: baseSize,
-          fontWeight: '600',
-          fill: lightText ? PAPER : INK,
-          letterSpacing: 3,
-          dropShadow: {
-            color: 0x1f1c18,
-            alpha: lightText ? 0.38 : 0.2,
-            blur: 2.5,
-            distance: 1.2,
-            angle: Math.PI / 2,
-          },
-        }),
-      });
-      text.anchor.set(0.5);
+      let text = this.countryLabels.get(country.tag);
+      if (!text) {
+        const color = hexToNumber(def?.color ?? '#7a7468');
+        const lightText = colorLuma(color) < 0.52;
+        text = new Text({
+          text: def?.name ?? country.tag,
+          style: new TextStyle({
+            fontFamily: '"Noto Serif SC", "Source Han Serif SC", "Songti SC", serif',
+            fontSize: baseSize,
+            fontWeight: '600',
+            fill: lightText ? PAPER : INK,
+            letterSpacing: 3,
+            dropShadow: {
+              color: 0x1f1c18,
+              alpha: lightText ? 0.38 : 0.2,
+              blur: 2.5,
+              distance: 1.2,
+              angle: Math.PI / 2,
+            },
+          }),
+        });
+        text.anchor.set(0.5);
+        text.eventMode = 'none';
+        this.countryLabelLayer.addChild(text);
+        this.countryLabels.set(country.tag, text);
+      }
       text.scale.set(fontSize / baseSize);
       this.labelBaseScale.set(text, fontSize / baseSize);
       text.position.set(x, y - 0.15);
       text.alpha = small ? 0.82 : 0.94;
       text.visible = !small || this.world.scale.x >= 13.5;
-      text.eventMode = 'none';
-      this.countryLabelLayer.addChild(text);
-      this.countryLabels.set(country.tag, text);
       if (small) this.smallLabels.add(text);
+      seen.add(country.tag);
+    }
+    for (const [tag, label] of this.countryLabels) {
+      if (!seen.has(tag)) label.visible = false;
     }
   }
 
-  private drawProvinceLabels(): void {
-    for (const label of this.provinceLabels.keys()) label.destroy();
-    for (const label of this.localLabels.keys()) label.destroy();
-    this.provinceLabels.clear();
-    this.localLabels.clear();
-    this.provinceLabelArea.clear();
-    this.localLabelArea.clear();
-    this.provinceLabelLayer.removeChildren();
-    this.localLabelLayer.removeChildren();
-    this.localLabelsDrawn = false;
+  private labelFill(controller: string): number {
+    return colorLuma(this.colorOf(controller)) > 0.55 ? INK : PAPER;
+  }
+
+  private updateProvinceLabels(): void {
     if (!this.state) return;
+    this.provinceLabelArea.clear();
     const groups = new Map<string, { x: number; y: number; area: number; count: number; controller: string }>();
     for (const def of this.content.provinces.values()) {
       const centroid = this.centroids.get(def.id);
@@ -1192,32 +1298,50 @@ export class MapRenderer {
       if (group.count === 1) group.controller = this.state.provinces[def.id]?.controller ?? 'NEU';
       groups.set(def.prefectureId, group);
     }
+    const active = new Set<string>();
     for (const [id, group] of groups) {
       const name = this.content.prefectures.get(id)?.name;
       if (!name) continue;
-      const text = new Text({
-        text: name,
-        style: new TextStyle({
-          fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
-          fontSize: 38,
-          fontWeight: '600',
-          fill: colorLuma(this.colorOf(group.controller)) > 0.55 ? INK : PAPER,
-          letterSpacing: 1.2,
-          dropShadow: {
-            color: 0x1f1c18,
-            alpha: 0.36,
-            blur: 2,
-            distance: 1,
-            angle: Math.PI / 2,
-          },
-        }),
-      });
-      text.anchor.set(0.5);
-      text.resolution = 4;
-      text.position.set(group.x / Math.max(1, group.count), group.y / Math.max(1, group.count));
+      active.add(id);
+      const fill = this.labelFill(group.controller);
+      let text = this.provinceLabelTexts.get(id);
+      if (!text) {
+        text = new Text({
+          text: name,
+          style: new TextStyle({
+            fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
+            fontSize: 38,
+            fontWeight: '600',
+            fill,
+            letterSpacing: 1.2,
+            dropShadow: {
+              color: 0x1f1c18,
+              alpha: 0.36,
+              blur: 2,
+              distance: 1,
+              angle: Math.PI / 2,
+            },
+          }),
+        });
+        text.anchor.set(0.5);
+        text.resolution = 2;
+        text.position.set(group.x / Math.max(1, group.count), group.y / Math.max(1, group.count));
+        this.provinceLabelLayer.addChild(text);
+        this.provinceLabelTexts.set(id, text);
+      } else if (this.provinceLabelColors.get(id) !== fill) {
+        text.style.fill = fill;
+      }
+      this.provinceLabelColors.set(id, fill);
       this.provinceLabels.set(text, 20);
       this.provinceLabelArea.set(text, group.area);
-      this.provinceLabelLayer.addChild(text);
+    }
+    for (const [id, text] of this.provinceLabelTexts) {
+      if (active.has(id)) continue;
+      text.visible = false;
+      this.provinceLabels.delete(text);
+      this.provinceLabelArea.delete(text);
+      this.provinceLabelTexts.delete(id);
+      this.provinceLabelColors.delete(id);
     }
     this.updateProvinceLabelScales();
   }
@@ -1229,13 +1353,15 @@ export class MapRenderer {
       const points = this.projected.get(def.id);
       const centroid = this.centroids.get(def.id);
       if (!points || !centroid || !def.name) continue;
+      const controller = this.state.provinces[def.id]?.controller ?? 'NEU';
+      const fill = this.labelFill(controller);
       const text = new Text({
         text: def.name,
         style: new TextStyle({
           fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif',
           fontSize: 32,
           fontWeight: '600',
-          fill: colorLuma(this.colorOf(this.state.provinces[def.id]?.controller ?? 'NEU')) > 0.55 ? INK : PAPER,
+          fill,
           letterSpacing: 0.8,
           dropShadow: {
             color: 0x1f1c18,
@@ -1247,13 +1373,28 @@ export class MapRenderer {
         }),
       });
       text.anchor.set(0.5);
-      text.resolution = 4;
+      text.resolution = 2;
       text.position.set(centroid.x, centroid.y);
       this.localLabels.set(text, 20);
       this.localLabelArea.set(text, labelArea(points));
+      this.localLabelTexts.set(def.id, text);
+      this.localLabelColors.set(def.id, fill);
       this.localLabelLayer.addChild(text);
     }
     this.updateProvinceLabelScales();
+  }
+
+  private updateLocalLabelColors(dirty: Set<string> | null): void {
+    if (!this.localLabelsDrawn || !this.state) return;
+    const ids = dirty ?? new Set(this.localLabelTexts.keys());
+    for (const id of ids) {
+      const text = this.localLabelTexts.get(id);
+      if (!text) continue;
+      const fill = this.labelFill(this.state.provinces[id]?.controller ?? 'NEU');
+      if (this.localLabelColors.get(id) === fill) continue;
+      this.localLabelColors.set(id, fill);
+      text.style.fill = fill;
+    }
   }
 
   private updateProvinceLabelScales(): void {

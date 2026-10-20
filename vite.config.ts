@@ -15,6 +15,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // 内容数据按体积拆分，避免单个 chunk 超过 500KB（pixi 除外）。
+          if (id.includes('/src/content/data/')) {
+            if (id.includes('/src/content/data/map/provinces.geo.json')) return 'map-geo';
+            if (id.includes('/src/content/data/events/')) return 'content-events';
+            if (id.includes('/src/content/data/map/')) return 'content-map';
+            return 'content-data';
+          }
           if (id.includes('/src/content/')) return 'content';
           if (id.includes('node_modules/pixi.js')) return 'pixi';
           if (id.includes('node_modules/react')) return 'react';
@@ -28,7 +35,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     watch: {
-      ignored: ['**/*.tmpdir/**', '**/.*.tmpdir/**', '**/.esbuild-tmp/**', '**/dist/**', '**/*.v8.log', '**/isolate-*.log'],
+      ignored: ['**/*.tmpdir/**', '**/.*.tmpdir/**', '**/.esbuild-tmp/**', '**/dist/**', '**/out/**', '**/*.v8.log', '**/isolate-*.log'],
     },
   },
   test: {

@@ -3,7 +3,9 @@ import type { CountryState, GameState } from '../state/types';
 import { buildingModifiers } from '../systems/buildings';
 
 export function addModifierInto(target: Modifier, source: Modifier): void {
-  for (const [key, value] of Object.entries(source)) {
+  for (const key in source) {
+    const value = source[key];
+    if (value === undefined) continue;
     target[key] = (target[key] ?? 0) + value;
   }
 }
@@ -15,6 +17,18 @@ function addEffectModifiers(target: Modifier, effects: readonly Effect[] | undef
   }
 }
 
+/** 特权/税法的效果数组是静态内容，按对象缓存其修正，避免每次聚合重放效果。 */
+const effectModifierCache = new WeakMap<object, Modifier>();
+
+function effectModifier(source: { effects?: readonly Effect[] | undefined }): Modifier {
+  const cached = effectModifierCache.get(source);
+  if (cached) return cached;
+  const total: Modifier = {};
+  addEffectModifiers(total, source.effects);
+  effectModifierCache.set(source, total);
+  return total;
+}
+
 /** 永久 + 临时 + 特权 + 当前税法的修正总和。 */
 export function aggregateModifiers(country: CountryState, content: ContentIndex): Modifier {
   const total: Modifier = {};
@@ -23,10 +37,10 @@ export function aggregateModifiers(country: CountryState, content: ContentIndex)
   for (const estate of Object.values(country.estates)) {
     for (const privilegeId of estate.privileges) {
       const privilege = content.privileges.get(privilegeId);
-      if (privilege) addEffectModifiers(total, privilege.effects);
+      if (privilege) addModifierInto(total, effectModifier(privilege));
     }
     const law = content.taxLaws.get(estate.taxLaw);
-    if (law) addEffectModifiers(total, law.effects);
+    if (law) addModifierInto(total, effectModifier(law));
   }
   return total;
 }

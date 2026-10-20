@@ -29,6 +29,10 @@ import {
   type Poly,
 } from './map-geometry';
 
+function roundCoordinate(_key: string, value: unknown): unknown {
+  return typeof value === 'number' && !Number.isInteger(value) ? Number(value.toFixed(5)) : value;
+}
+
 function closeRing(poly: Poly): Array<[number, number]> {
   const ring: Array<[number, number]> = poly.map(([x, y]) => [x, y]);
   const first = ring[0];
@@ -381,7 +385,8 @@ function main(): void {
   };
 
   writeFileSync(join(MAP_DIR, 'provinces.yaml'), `${stringifyYaml({ provinces: rows }, { lineWidth: 0 })}\n`, 'utf8');
-  writeFileSync(join(MAP_DIR, 'provinces.geo.json'), `${JSON.stringify(geo)}\n`, 'utf8');
+  // 坐标保留 5 位（约 1 米）即可；原始浮点有 15 位，全部打进 bundle 会多出数百 KB。
+  writeFileSync(join(MAP_DIR, 'provinces.geo.json'), `${JSON.stringify(geo, roundCoordinate)}\n`, 'utf8');
   const totalNeighbors = rows.reduce((sum, row) => sum + row.neighbors.length, 0) / 2;
   console.log(`regions=${regions.length} prefectures=${prefs.length} provinces=${rows.length} edges=${totalNeighbors}`);
   console.log(`clipped=${rows.length} population=${rows.reduce((sum, row) => sum + row.population, 0)}`);

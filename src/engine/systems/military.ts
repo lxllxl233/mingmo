@@ -354,48 +354,70 @@ function captureProvince(state: GameState, content: ContentIndex, army: ArmyStat
   }
 }
 
+interface SupplyIndex {
+  day: number;
+  revision: number;
+  owned: Map<string, string[]>;
+  supplied: Map<string, Set<string>>;
+}
+
+let supplyState: GameState | null = null;
+let supplyIndex: SupplyIndex | null = null;
+
+/**
+ * 每个势力当日可补给省份 = 首都/核心省连通分量（外加任意控制港口）。
+ * 按 day + mapRevision 缓存；一次扫描建立「势力 → 控制省」索引，供所有势力复用。
+ */
+function suppliedProvinces(state: GameState, content: ContentIndex, tag: string): Set<string> {
+  if (supplyState !== state || supplyIndex === null
+    || supplyIndex.day !== state.day || supplyIndex.revision !== state.mapRevision) {
+    const owned = new Map<string, string[]>();
+    for (const province of Object.values(state.provinces)) {
+      const list = owned.get(province.controller);
+      if (list) list.push(province.id);
+      else owned.set(province.controller, [province.id]);
+    }
+    supplyState = state;
+    supplyIndex = { day: state.day, revision: state.mapRevision, owned, supplied: new Map() };
+  }
+  const cached = supplyIndex.supplied.get(tag);
+  if (cached) return cached;
+  const provinces = supplyIndex.owned.get(tag) ?? [];
+  const ownedSet = new Set(provinces);
+  const capital = state.countries[tag]?.capital;
+  const sources: string[] = [];
+  for (const id of provinces) {
+    if (id === capital || state.provinces[id]?.cores.includes(tag)) sources.push(id);
+  }
+  const supplied = new Set(sources);
+  for (let index = 0; index < sources.length; index += 1) {
+    const id = sources[index];
+    if (id === undefined) continue;
+    const def = content.provinces.get(id);
+    if (!def) continue;
+    for (const neighbor of def.neighbors) {
+      if (supplied.has(neighbor) || !ownedSet.has(neighbor)) continue;
+      supplied.add(neighbor);
+      sources.push(neighbor);
+    }
+  }
+  supplyIndex.supplied.set(tag, supplied);
+  return supplied;
+}
+
 function isSupplied(state: GameState, content: ContentIndex, army: ArmyState): boolean {
   const current = state.provinces[army.province];
   const def = content.provinces.get(army.province);
   if (!current || !def) return false;
-  const friendly = (id: string): boolean => {
-    const province = state.provinces[id];
-    return province !== undefined && province.controller === army.tag;
-  };
-  if (!friendly(army.province)) {
+  if (current.controller !== army.tag) {
     if (!def.isCoastal) return false;
-    const seaSupplied = def.neighbors.some(neighbor => {
+    return def.neighbors.some(neighbor => {
       const neighborDef = content.provinces.get(neighbor);
-      return neighborDef?.isPort === true && friendly(neighbor);
+      return neighborDef?.isPort === true && state.provinces[neighbor]?.controller === army.tag;
     });
-    if (!seaSupplied) return false;
-    return true;
-  } else if (def.isPort) {
-    return true;
   }
-  const capital = state.countries[army.tag]?.capital;
-  const sources = new Set<string>();
-  if (capital && friendly(capital)) sources.add(capital);
-  for (const province of Object.values(state.provinces)) {
-    if (friendly(province.id) && province.cores.includes(army.tag)) sources.add(province.id);
-  }
-  if (sources.has(army.province)) return true;
-  const queue = [army.province];
-  const seen = new Set(queue);
-  while (queue.length > 0) {
-    const id = queue.shift();
-    if (!id) continue;
-    const provinceDef = content.provinces.get(id);
-    if (!provinceDef) continue;
-    for (const neighbor of provinceDef.neighbors) {
-      if (seen.has(neighbor)) continue;
-      if (!friendly(neighbor)) continue;
-      if (sources.has(neighbor)) return true;
-      seen.add(neighbor);
-      queue.push(neighbor);
-    }
-  }
-  return false;
+  if (def.isPort) return true;
+  return suppliedProvinces(state, content, army.tag).has(army.province);
 }
 
 function hasFriendlyRefuge(state: GameState, content: ContentIndex, army: ArmyState): boolean {

@@ -15,22 +15,30 @@ import { runMonthlyPolitics } from './systems/politics';
 import { runMonthlyAi } from './systems/ai';
 import { evaluateVictory } from './victory';
 import { cleanupDefeatedNations, resolveCapitalCapitulation, resolveFinishedWars } from './rules/war';
-import type { GameState } from './state/types';
+import type { GameState, TimedModifier } from './state/types';
+
+function ageModifiers(modifiers: TimedModifier[], day: number): void {
+  let write = 0;
+  for (let read = 0; read < modifiers.length; read += 1) {
+    const modifier = modifiers[read];
+    if (!modifier) continue;
+    if (modifier.addedDay !== day) {
+      modifier.daysLeft -= 1;
+      if (modifier.daysLeft <= 0) continue;
+    }
+    modifiers[write] = modifier;
+    write += 1;
+  }
+  modifiers.length = write;
+}
 
 function updateTimedModifiers(state: GameState): void {
   for (const nation of Object.values(state.countries)) {
-    nation.timedModifiers = nation.timedModifiers.filter(modifier => {
-      if (modifier.addedDay === state.day) return true;
-      modifier.daysLeft -= 1;
-      return modifier.daysLeft > 0;
-    });
+    ageModifiers(nation.timedModifiers, state.day);
   }
   for (const province of Object.values(state.provinces)) {
-    province.modifiers = province.modifiers.filter(modifier => {
-      if (modifier.addedDay === state.day) return true;
-      modifier.daysLeft -= 1;
-      return modifier.daysLeft > 0;
-    });
+    if (province.modifiers.length === 0) continue;
+    ageModifiers(province.modifiers, state.day);
   }
 }
 
