@@ -1,5 +1,13 @@
 import { mkdirSync } from 'node:fs';
+import { constants, setPriority } from 'node:os';
 import { chromium } from 'playwright-core';
+
+// Windows 会对长时间后台运行启用省电节流；soak 需要按真实速度推进。
+try {
+  setPriority(process.pid, constants.priority.PRIORITY_HIGH);
+} catch {
+  // 无权限时保持默认优先级。
+}
 
 const chrome = process.env.UI_BROWSER ?? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const baseUrl = process.env.JIASHEN_URL ?? 'http://127.0.0.1:5173';
@@ -29,8 +37,14 @@ while (Date.now() - started < minutes * 60_000) {
   await page.waitForTimeout(30_000);
   const sample = await page.evaluate(() => {
     const memory = performance.memory;
+    // 看海模式使用 SpectatorShell，日期不在 .topbar 内；生产构建也没有 store 钩子。
+    // 从顶栏可见文本中取含年份的那一段，同时保留整段用于人工核对。
+    const top = document.querySelector('.spectator-top');
+    const texts = top ? [...top.querySelectorAll('span')].map(node => node.textContent ?? '') : [];
+    const date = texts.find(text => /\d{4}/.test(text)) ?? '';
     return {
-      date: document.querySelector('.topbar .date')?.textContent ?? '',
+      date,
+      label: top ? (top.textContent ?? '').trim().slice(0, 80) : '',
       heap: memory ? Math.round(memory.usedJSHeapSize / 1024 / 1024) : null,
       event: document.querySelector('.event-modal h2')?.textContent ?? null,
     };

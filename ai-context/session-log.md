@@ -163,3 +163,40 @@
 ### 4.4 测试补强
 - 测试数 **113 → 154**（31 文件），新增 `clock/vassals/southernMing/victory`，扩展 `diplomacy/trade/tribute/league/sakoku/save`。
 - `pnpm test` / `pnpm typecheck` 全绿。
+
+---
+
+## 2026-10-20 · 会话 2（续）：Phase 5 最终验收与移交
+
+**目标**：全量回归（五门禁 + 45 局矩阵 + 3×67 年长局 + 8h soak）→ 更新 quality-bar/qa-checklist/progress → 最终报告与移交清单 → 最终 commit（不 push）。
+
+### 5.1 全量回归
+- 五门禁：typecheck 0；test **31 文件 / 154 用例**；validate ok；audit **0 errors / 0 warnings**；build 6.25s（index 343k，pixi 559k 例外）。
+- 不变量探针复跑最终引擎（Phase 3 改过 war/crisis）：**89,557,552 次检查全绿**，154.8s（`out/invariant-phase5-final.log`）。
+- 45 局矩阵（`out/matrix-phase5-final.log` / `out/qa-matrix-20y-1792456921026.json`，545.7s）：**45/45 无僵尸、0 孤儿**；1627 最大 188（39.2%）、1644 169（35.2%）、1650 320（66.7%）。
+  - 9 个剧本×难度格：7 格 ≥2 种领先者；1650 easy/normal 仅清（开局 60.6% 的剧本例外）。
+  - 5 局终局 ≥50%，全部是 1650。
+- 战争时长（18 局 × 20 年）：552 场结束，中位 608 天、P90 1126、最长 1339（<5 年），0 场超 5 年。
+- 67 年看海（3 剧本 seed42）：1627 存活 6 / 1644 存活 8 / 1650 存活 5，全部到 1683，0 僵尸/0 孤儿，77.0s。
+- 8h soak：最终树 `out/soak-final` + 32x 看海，日期采样已修复（生产构建无 store 钩子，改从 `.spectator-top` 的 span 文本取年份）。
+  - **未完成**：运行 **2.73h / 9813s / 327 次采样**，推进到 1683-12-31，heap 39–128MB（末次 39MB），采样无错误行；随后被 Claude Code 后台监管以「系统内存不足」强制终止（连同静态服务器）。非程序崩溃，但未生成最终 `errors=` 汇总，不能宣称 0 error。**待用户批准重跑 8h。**
+
+### 5.2 测量修正（重要）
+- Windows EcoQoS 会把持续占 CPU 的后台进程降速约 8 倍；perf/qa-matrix/war-duration/section-perf/soak 均显式 `setPriority(HIGH)`。矩阵 45 局从 26.8 分钟降到 9.1 分钟即为例证。
+
+### 5.3 文档
+- `docs/quality-bar.md`：§2 九条「当前」列与 §5 打分表按最终证据更新；明确「AI 可验证 5 项全达标 + 上手/核心循环 AI 部分 + 美术/音频移交真人」。
+- `docs/qa-checklist.md`：重写为最终证据（门禁/浏览器/45 局/战争时长/长局/存档/soak）。
+- `docs/final-report.md`：9 维验收、方法学、遗留例外、性能终值、bug 统计、复现命令、完成判据。
+- `docs/handoff.md`：10 人外测协议 + 30h 模板、史实审读重点、美术/音频评审材料、发行决策边界、测试者已知项。
+- `docs/decisions-log.md`：新增「≥50% 规则与 1650 例外」决策。
+- `docs/progress.md`：Phase 5 小节 + 最终指标（tick 1.33/1.21/1.18，load 297.9ms）。
+
+### 5.4 遗留
+- **8h soak 待重跑**（本次 2.73h 后被环境内存限制终止；需用户明确批准后再启动后台任务）。
+- 1650 easy/normal 单极（剧本设计例外，未达标 2 格，符合 ≤2 上限）。
+- 后期囤银最高 894 万两（已知观察项）。
+- 逐战争伤亡归属（统计精度）、剧本首月不跑月结（已知行为）。
+- 真人验证项全部在 handoff。
+
+**下一阶段入口**：任务条件通过；后续会话先读 `docs/final-report.md` 与 `docs/handoff.md`。若用户批准重跑 soak，重新启动静态服务器 + `SOAK_MINUTES=480`，完成后回填 `docs/final-report.md §7` 与 `docs/qa-checklist.md §4` 并补一次 commit。若用户反馈外测/审读结果，按 ID 修数据或内容，不改引擎基线。

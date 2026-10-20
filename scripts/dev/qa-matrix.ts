@@ -6,6 +6,7 @@
  *   pnpm exec tsx scripts/dev/qa-matrix.ts --years 20 --seeds 42 --difficulties normal
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { constants, setPriority } from 'node:os';
 import { join } from 'node:path';
 import { loadContentFromDirectory } from '../../src/content/loader/node';
 import { createInitialState } from '../../src/engine/state/initial';
@@ -64,6 +65,13 @@ function summarize(state: GameState, scenario: string, difficulty: string, seed:
     top,
     richest,
   };
+}
+
+// 避免 Windows EcoQoS 对长时间后台矩阵进程节流（详见 scripts/dev/perf.ts）。
+try {
+  setPriority(process.pid, constants.priority.PRIORITY_HIGH);
+} catch {
+  // 无权限时保持默认优先级。
 }
 
 const content = loadContentFromDirectory();
