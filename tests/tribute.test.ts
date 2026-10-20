@@ -41,4 +41,36 @@ describe('Joseon tribute policy', () => {
     const state = createInitialState(content, '1627', 42, 'MING');
     expect(submitToQing(state, 'MING')).toBe(false);
   });
+
+  it('blocks all tribute actions during the shared cooldown', () => {
+    const state = createInitialState(content, '1627', 42, 'JOSEON');
+    const joseon = state.countries['JOSEON'];
+    if (!joseon) throw new Error('missing JOSEON');
+    joseon.politicalPower = 100;
+    joseon.treasury = 200000;
+    joseon.food = 200000;
+    expect(submitToQing(state, 'JOSEON')).toBe(true);
+    expect(submitToQing(state, 'JOSEON')).toBe(false);
+    expect(northernExpedition(state, 'JOSEON')).toBe(false);
+    expect(sendTribute(state, 'JOSEON')).toBe(false);
+    joseon.cooldowns['joseon_tribute'] = 0;
+    expect(sendTribute(state, 'JOSEON')).toBe(true);
+    expect(sendTribute(state, 'JOSEON')).toBe(false);
+  });
+
+  it('checks political power and treasury thresholds', () => {
+    const state = createInitialState(content, '1627', 42, 'JOSEON');
+    const joseon = state.countries['JOSEON'];
+    if (!joseon) throw new Error('missing JOSEON');
+    joseon.politicalPower = 4;
+    expect(submitToQing(state, 'JOSEON')).toBe(false);
+    joseon.politicalPower = 9;
+    expect(northernExpedition(state, 'JOSEON')).toBe(false);
+    joseon.politicalPower = 100;
+    joseon.treasury = 10000;
+    expect(sendTribute(state, 'JOSEON')).toBe(false);
+    joseon.treasury = 200000;
+    joseon.food = 10000;
+    expect(sendTribute(state, 'JOSEON')).toBe(false);
+  });
 });

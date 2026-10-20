@@ -37,18 +37,21 @@ export function BannerPanel() {
       <div className="banner-actions">
         <button
           disabled={nation.treasury < 50000 || nation.manpower < 10000}
+          title={nation.treasury < 50000 ? '国库不足 5 万两' : nation.manpower < 10000 ? '兵源不足 1 万' : undefined}
           onClick={() => command({ type: 'banner.expand' })}
         >
           扩编八旗（银 5 万 / 兵源 1 万）
         </button>
         <button
           disabled={nation.politicalPower < 15}
+          title={nation.politicalPower < 15 ? '政治点不足 15' : undefined}
           onClick={() => command({ type: 'banner.raise' })}
         >
           抬旗（政治 15）
         </button>
         <button
           disabled={nation.politicalPower < 20}
+          title={nation.politicalPower < 20 ? '政治点不足 20' : undefined}
           onClick={() => command({ type: 'banner.reform' })}
         >
           整饬旗务（政治 20）

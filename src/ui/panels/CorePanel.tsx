@@ -43,6 +43,7 @@ export function CorePanel() {
                 </div>
                 <button
                   disabled={Boolean(work)}
+                  title={work ? `收买人心进行中（${percent}%）` : `花费 ${formatNumber(CORE_INTEGRATION_SILVER)} 两与 ${formatNumber(CORE_INTEGRATION_FOOD)} 石，${CORE_INTEGRATION_DAYS} 日后纳入核心`}
                   onClick={() => command({ type: 'province.integrateCore', provinceId: province.id })}
                 >
                   {work ? '收买中' : '收买人心'}

@@ -34,24 +34,30 @@ export function LeaguePanel() {
       <div className="confiscation-actions">
         <button
           disabled={cooldown > 0 || nation.politicalPower < 10}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.politicalPower < 10 ? '政治点不足 10' : undefined}
           onClick={() => command({ type: 'league.kurultai' })}
         >
           召开会盟（政治 10；汗权 +6、稳定 +3、贵族 +6、喇嘛 +4）
         </button>
         <button
           disabled={cooldown > 0 || nation.treasury < 30000}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.treasury < 30000 ? '国库不足 3 万两' : undefined}
           onClick={() => command({ type: 'league.organize' })}
         >
           编立盟旗（银 3 万；兵源 +8 千、军心 +4、武将 +8、贵族 -3）
         </button>
         <button
           disabled={cooldown > 0}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : undefined}
           onClick={() => command({ type: 'league.raid' })}
         >
           掠边（得银/粮；稳定 -3，明/清关系 -15）
         </button>
         <button
           disabled={cooldown > 0 || nation.politicalPower < 10 || nation.treasury < 20000}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日`
+            : nation.politicalPower < 10 ? '政治点不足 10'
+              : nation.treasury < 20000 ? '国库不足 2 万两' : undefined}
           onClick={() => command({ type: 'league.marriage' })}
         >
           联姻（政治 10 / 银 2 万；与清或明关系 +20、停战 365 日）

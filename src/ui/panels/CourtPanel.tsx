@@ -47,12 +47,14 @@ export function CourtPanel() {
             <div className="court-actions">
               <button
                 disabled={nation.politicalPower < 5}
+                title={nation.politicalPower < 5 ? '政治点不足 5' : '消耗 5 政治点，提高该派系影响'}
                 onClick={() => command({ type: 'court.favor', faction })}
               >
                 扶植（5）
               </button>
               <button
                 disabled={nation.politicalPower < 10}
+                title={nation.politicalPower < 10 ? '政治点不足 10' : '消耗 10 政治点，降低该派系影响但稳定 -2'}
                 onClick={() => command({ type: 'court.suppress', faction })}
               >
                 打压（10，稳定 -2）

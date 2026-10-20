@@ -211,6 +211,7 @@ for (const faction of FACTIONS) {
     if (await page.locator('.event-modal').count() === 0) {
       fail(faction, 'event', 'event modal not shown');
     } else {
+      await page.screenshot({ path: shot('event-open') });
       const before = await page.evaluate(() => window.__MINGMO_STORE__.getState().game.pendingEvents.length);
       for (let attempt = 0; attempt < 10; attempt += 1) {
         if (await page.locator('.event-modal').count() === 0) break;

@@ -1,0 +1,409 @@
+# 后期内容补强（1650–1683）
+#
+# 补强理由：player-bot 8 局长局审计显示，存活到 1683 的 4 局在 1650 年后人均只触发
+# 3.3 次事件，末期可用事件池仅 1–5 个，构成内容干旱。本文件只补通用/势力后期事件，
+# 时间窗全部止于 1683，不改变 1627–1650 的平衡基线。
+# 通用事件加 provinceCount < 200 的追赶门槛：避免唯一的大国（如 1650 开局即 291 省的清）
+# 继续吃后期奖励，把 1650 剧本锁死成单一胜者；小国获得内容与追赶机会。
+events:
+  - id: late_e_silver_drought
+    title: 银荒
+    desc: 海外白银流入骤减，市面银贵钱贱，州县征解短少。开矿能救急，却养肥了矿监。
+    historical_context: 17 世纪中叶全球白银贸易波动，直接影响明清银本位财政。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1660-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: open_mines
+        name: 开矿征银
+        tooltip: 国库进银，腐败与民怨上升。
+        ai_chance: 50
+        effect:
+          - add_treasury: 60000
+          - add_corruption: 3
+          - add_estate_loyalty: { estate: peasants, value: -3 }
+      - id: austerity
+        name: 厉行节约
+        tooltip: 省出银两，官僚不满。
+        ai_chance: 50
+        effect:
+          - add_treasury: 20000
+          - add_stability: 2
+          - add_estate_loyalty: { estate: officials, value: -3 }
+
+  - id: late_e_coastal_evacuation
+    title: 迁界禁海
+    desc: 海疆未靖，朝廷议迁沿海之民入内地，寸板不许下海。禁能绝接济，也会饿死渔盐。
+    historical_context: 清初为断绝郑氏接济推行迁界禁海，沿海民生代价极大。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1656-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: evacuate
+        name: 迁界禁海
+        tooltip: 海防稳固，粮产与民心受损。
+        ai_chance: 45
+        effect:
+          - add_treasury: 40000
+          - add_food: -60000
+          - add_stability: -3
+      - id: relax
+        name: 弛禁通商
+        tooltip: 商民得利，海防压力上升。
+        ai_chance: 55
+        effect:
+          - add_treasury: -30000
+          - add_food: 80000
+          - add_estate_loyalty: { estate: merchants, value: 4 }
+
+  - id: late_e_calendar_dispute
+    title: 历法之争
+    desc: 西洋历法与旧历推算不合，钦天监各执一词。用新法更准，却触动华夷之辨。
+    historical_context: 康熙历狱后西洋历法逐渐取代大统历，引发持续争论。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1665-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 320
+    fire_once: true
+    options:
+      - id: western
+        name: 采用西法
+        tooltip: 科研加速，保守官僚不满。
+        ai_chance: 55
+        effect:
+          - add_modifier: { research_speed_pct: 4 }
+          - add_estate_loyalty: { estate: officials, value: -4 }
+      - id: old
+        name: 恪守旧历
+        tooltip: 朝局安稳，学术停滞。
+        ai_chance: 45
+        effect:
+          - add_stability: 2
+          - add_estate_loyalty: { estate: clergy, value: 3 }
+
+  - id: late_e_office_sale
+    title: 捐纳开例
+    desc: 库帑不足，部议开捐纳之例：纳银者得官。银子来得快，吏治坏得也快。
+    historical_context: 清初以降捐纳成为重要临时财源，亦加剧吏治腐败。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 260
+    fire_once: true
+    options:
+      - id: sell
+        name: 开捐纳
+        tooltip: 骤得银两，腐败上升。
+        ai_chance: 55
+        effect:
+          - add_treasury: 120000
+          - add_corruption: 5
+          - add_estate_loyalty: { estate: officials, value: -3 }
+      - id: refuse
+        name: 拒绝开例
+        tooltip: 吏治稍清，财政仍紧。
+        ai_chance: 45
+        effect:
+          - add_stability: 2
+          - add_treasury: -10000
+
+  - id: late_e_local_militia
+    title: 团练乡勇
+    desc: 官兵不足，地方请办团练。乡勇能补兵力，也可能尾大不掉。
+    historical_context: 明清易代之际地方团练、乡勇广泛出现，成为基层军事力量。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 280
+    fire_once: true
+    options:
+      - id: militia
+        name: 办团练
+        tooltip: 得兵员，耗银，士绅势力上升。
+        ai_chance: 55
+        effect:
+          - add_manpower: 30000
+          - add_treasury: -40000
+          - add_estate_loyalty: { estate: gentry, value: 3 }
+      - id: baojia
+        name: 整保甲
+        tooltip: 稳定上升，兵员有限。
+        ai_chance: 45
+        effect:
+          - add_stability: 2
+          - add_manpower: 10000
+
+  - id: late_e_land_survey
+    title: 清丈田亩
+    desc: 版籍多年未改，豪强隐田，州县赔累。清丈能增税，也会激起士绅反对。
+    historical_context: 清初多次清丈田亩以整顿赋役，均遭遇地方阻力。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1660-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 340
+    fire_once: true
+    options:
+      - id: survey
+        name: 彻底清丈
+        tooltip: 税收增加，士绅不满。
+        ai_chance: 50
+        effect:
+          - add_treasury: 80000
+          - add_corruption: -4
+          - add_estate_loyalty: { estate: gentry, value: -6 }
+      - id: keep
+        name: 照旧额
+        tooltip: 士绅安稳，财政照旧吃紧。
+        ai_chance: 50
+        effect:
+          - add_stability: 1
+          - add_estate_loyalty: { estate: gentry, value: 3 }
+
+  - id: late_e_granary
+    title: 常平仓
+    desc: 丰年收籴、荒年平粜，常平仓是荒政根本。建仓要银，不建要赌天时。
+    historical_context: 常平仓制度在清代前期逐步恢复，成为地方储粮体系。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1655-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: build
+        name: 广建常平
+        tooltip: 粮储与稳定上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -60000
+          - add_food: 150000
+          - add_stability: 2
+      - id: skip
+        name: 缓建
+        tooltip: 省银，粮储吃紧。
+        ai_chance: 45
+        effect:
+          - add_treasury: 10000
+          - add_food: -30000
+
+  - id: late_e_academies
+    title: 书院讲学
+    desc: 书院复盛，士子议政。支持可收士心，严禁可固权威。
+    historical_context: 清初对书院时禁时弛，士人讲学与朝廷权威长期张力。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 300
+    fire_once: true
+    options:
+      - id: support
+        name: 支持书院
+        tooltip: 士绅归心，政治力上升。
+        ai_chance: 55
+        effect:
+          - add_stability: 2
+          - add_political_power: 20
+          - add_estate_loyalty: { estate: gentry, value: 4 }
+      - id: suppress
+        name: 严禁讲学
+        tooltip: 权威上升，士绅离心。
+        ai_chance: 45
+        effect:
+          - add_authority: 3
+          - add_corruption: -2
+          - add_estate_loyalty: { estate: gentry, value: -5 }
+
+  - id: late_e_gunpowder_reform
+    title: 火器新法
+    desc: 西洋铳炮传入，军中请设火器营。改制要银，守旧省钱。
+    historical_context: 17 世纪东亚火器技术交流频繁，清军与郑氏均重视铳炮。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1655-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 320
+    fire_once: true
+    options:
+      - id: reform
+        name: 设火器营
+        tooltip: 战力提升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -80000
+          - add_modifier: { army_attack_pct: 3 }
+      - id: tradition
+        name: 仍循旧制
+        tooltip: 省银，兵员稍增。
+        ai_chance: 45
+        effect:
+          - add_manpower: 15000
+          - add_stability: 1
+
+  - id: late_e_loyalist_remnant
+    title: 遗民起事
+    desc: 山中有遗民结寨，奉故国正朔。招抚可安地方，进剿可绝后患。
+    historical_context: 清初各地遗民、山寨抗清活动持续数十年。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 360
+    fire_once: true
+    options:
+      - id: pacify
+        name: 招抚
+        tooltip: 稳定上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_stability: 3
+          - add_treasury: -30000
+      - id: crush
+        name: 进剿
+        tooltip: 军心得补，民怨上升。
+        ai_chance: 45
+        effect:
+          - add_manpower: 15000
+          - add_army_loyalty: 2
+          - add_stability: -2
+
+  - id: late_e_yesong
+    title: 礼讼
+    desc: 国丧服制之争，西人与南人各引经义。礼制之争，实为朝局之争。
+    historical_context: 朝鲜显宗朝礼讼是西人、南人党争的高潮。
+    scope: country
+    country: JOSEON
+    trigger:
+      all:
+        - date: { after: 1659-01-01, before: 1683-12-31 }
+    mtth: 200
+    fire_once: true
+    options:
+      - id: western
+        name: 采西人礼论
+        tooltip: 权威上升，官僚支持。
+        ai_chance: 50
+        effect:
+          - add_authority: 4
+          - add_estate_loyalty: { estate: officials, value: 3 }
+      - id: southern
+        name: 采南人礼论
+        tooltip: 稳定上升，士林归心。
+        ai_chance: 50
+        effect:
+          - add_stability: 2
+          - add_estate_loyalty: { estate: clergy, value: 3 }
+
+  - id: late_e_genroku
+    title: 元禄新风
+    desc: 承平日久，江户市井奢靡，商贾拥资而武士困穷。禁奢可正风俗，纵之可活市面。
+    historical_context: 元禄年间町人文化繁荣，幕府财政与武士阶层却日益窘迫。
+    scope: country
+    country: JAPAN
+    trigger:
+      all:
+        - date: { after: 1680-01-01, before: 1683-12-31 }
+    mtth: 120
+    fire_once: true
+    options:
+      - id: luxury
+        name: 纵其繁华
+        tooltip: 商税增加，腐败上升。
+        ai_chance: 50
+        effect:
+          - add_treasury: 60000
+          - add_corruption: 4
+      - id: frugal
+        name: 厉行俭约
+        tooltip: 稳定上升，商人不满。
+        ai_chance: 50
+        effect:
+          - add_stability: 2
+          - add_estate_loyalty: { estate: merchants, value: -3 }
+
+  - id: late_e_dalai_visit
+    title: 达赖朝觐
+    desc: 雪域政教领袖是否入朝，关乎朝廷对藏地的名分与蒙古诸部的向背。
+    historical_context: 1652 年五世达赖入京朝觐，清廷以此确立对藏关系。
+    scope: country
+    country: TIBET
+    trigger:
+      all:
+        - date: { after: 1652-01-01, before: 1683-12-31 }
+    mtth: 240
+    fire_once: true
+    options:
+      - id: visit
+        name: 入朝觐见
+        tooltip: 权威与银两增加，教权稍抑。
+        ai_chance: 50
+        effect:
+          - add_authority: 3
+          - add_treasury: 30000
+      - id: stay
+        name: 闭关修行
+        tooltip: 教众归心，稳定上升。
+        ai_chance: 50
+        effect:
+          - add_stability: 1
+          - add_estate_loyalty: { estate: clergy, value: 4 }
+
+  - id: late_e_river_works
+    title: 河工
+    desc: 黄河屡决，漕运梗阻。岁修河工是无底洞，却关系半个中国的粮道。
+    historical_context: 康熙朝以靳辅治河，河工成为长期财政项目。
+    scope: country
+    country: any
+    trigger:
+      all:
+        - date: { after: 1650-01-01, before: 1683-12-31 }
+        - provinceCount: { lt: 200 }
+    mtth: 400
+    repeatable: true
+    cooldown_days: 1825
+    options:
+      - id: repair
+        name: 拨款修河
+        tooltip: 粮产与稳定上升，耗银。
+        ai_chance: 55
+        effect:
+          - add_treasury: -50000
+          - add_food: 60000
+          - add_stability: 2
+      - id: defer
+        name: 缓修
+        tooltip: 省银，粮食受损。
+        ai_chance: 45
+        effect:
+          - add_food: -20000
+          - add_stability: -1

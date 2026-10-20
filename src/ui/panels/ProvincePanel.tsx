@@ -107,7 +107,7 @@ export function ProvincePanel() {
                     key={building.id}
                     className="building-option"
                     disabled={!affordable}
-                    title={building.desc}
+                    title={`${building.desc}${affordable ? '' : `（需要银 ${building.costSilver.toLocaleString()} / 粮 ${building.costFood.toLocaleString()}）`}`}
                     onClick={() => command({ type: 'province.build', provinceId: selected, buildingId: building.id })}
                   >
                     <b>{building.name}</b>

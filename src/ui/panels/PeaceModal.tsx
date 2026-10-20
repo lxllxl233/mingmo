@@ -116,6 +116,7 @@ export function PeaceModal() {
               <button
                 className="primary"
                 disabled={myScore <= enemyScore}
+                title={myScore <= enemyScore ? '战争分不高于对方，无法强制索地' : '按战争分索取已勾选的占领地区'}
                 onClick={() => accept('demand')}
               >
                 强制议和（可索地）

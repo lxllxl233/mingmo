@@ -84,7 +84,7 @@ export function MilitaryPanel() {
         );
       })}
       <h3>军团</h3>
-      {armies.length === 0 && <p className="muted">无</p>}
+      {armies.length === 0 && <p className="muted">当前没有军团。训练完成后会自动成军，也可在地区面板中招募。</p>}
       {armies.map(entry => {
         const strength = entry.composition.infantry + entry.composition.firearm + entry.composition.cavalry
           + entry.composition.artillery + entry.composition.naval;
@@ -123,6 +123,7 @@ export function MilitaryPanel() {
             <button
               className="primary"
               disabled={!selectedProvince}
+              title={selectedProvince ? '沿可通行路线行军到地图上选中的地区' : '先在地图上选择一个目标地区'}
               onClick={() => {
                 if (!selectedProvince) return;
                 const path = findPath(content, game, army.province, selectedProvince, army.tag);

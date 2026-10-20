@@ -33,6 +33,11 @@ export function DecisionPanel() {
         const affordable = (decision.cost.treasury ?? 0) <= country.treasury
           && (decision.cost.politicalPower ?? 0) <= country.politicalPower
           && (decision.cost.food ?? 0) <= country.food;
+        const missing = [
+          (decision.cost.treasury ?? 0) > country.treasury ? '国库' : '',
+          (decision.cost.politicalPower ?? 0) > country.politicalPower ? '政治点' : '',
+          (decision.cost.food ?? 0) > country.food ? '粮食' : '',
+        ].filter(Boolean).join('、');
         if (!visible) return null;
         return (
           <div className="estate-card decision-card" key={decision.id}>
@@ -48,6 +53,9 @@ export function DecisionPanel() {
             <button
               className="primary"
               disabled={cooldown > 0 || !available || !affordable}
+              title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日`
+                : !available ? '触发条件不满足'
+                  : !affordable ? `${missing}不足` : undefined}
               onClick={() => command({ type: 'decision.take', decisionId: decision.id })}
             >
               {available ? (affordable ? '执行' : '资源不足') : '条件不满足'}

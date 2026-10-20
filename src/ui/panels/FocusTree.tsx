@@ -14,6 +14,17 @@ const LANE_GAP = 108;
 const LEFT_GUTTER = 92;
 const TOP_GUTTER = 32;
 
+function unavailableReason(country: GameState['countries'][string], focus: Focus): string | undefined {
+  if (country.completedFocuses.includes(focus.id)) return '已完成';
+  if (country.focus?.id === focus.id) return '正在进行';
+  if (country.focus) return '已有进行中的国策';
+  if (focus.prerequisites.some(id => !country.completedFocuses.includes(id))) return '前置国策未完成';
+  if (focus.prerequisitesAny.length > 0
+    && !focus.prerequisitesAny.some(id => country.completedFocuses.includes(id))) return '任一前置国策未完成';
+  if (focus.mutuallyExclusive.some(id => country.completedFocuses.includes(id))) return '与已完成国策互斥';
+  return '当前条件不满足';
+}
+
 function positionOf(focus: Focus, branchIndex: number): { x: number; y: number } {
   return {
     x: LEFT_GUTTER + focus.y * COLUMN_GAP,
@@ -178,6 +189,8 @@ export function FocusTree({ game, content, focuses, country }: {
               <button
                 className="primary"
                 disabled={!isFocusAvailable(game, content, country.tag, selected)}
+                title={isFocusAvailable(game, content, country.tag, selected)
+                  ? undefined : unavailableReason(country, selected)}
                 onClick={() => command({ type: 'focus.start', focusId: selected.id })}
               >
                 开始国策

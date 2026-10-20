@@ -35,18 +35,21 @@ export function SakokuPanel() {
       <div className="confiscation-actions">
         <button
           disabled={cooldown > 0 || nation.politicalPower < 10}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.politicalPower < 10 ? '政治点不足 10' : undefined}
           onClick={() => command({ type: 'sakoku.toggle' })}
         >
           {open ? '重申锁国（政治 10；稳定 +2、商人 -6、寺社 +4）' : '解除锁国（政治 10；稳定 -2、商人 +6、寺社 -4）'}
         </button>
         <button
           disabled={cooldown > 0}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : undefined}
           onClick={() => command({ type: 'sakoku.nagasaki' })}
         >
           长崎贸易（得银；开国全额，锁国减半；商人 +3、寺社 -2）
         </button>
         <button
           disabled={cooldown > 0 || nation.politicalPower < 10}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.politicalPower < 10 ? '政治点不足 10' : undefined}
           onClick={() => command({ type: 'sakoku.persecute' })}
         >
           禁教（政治 10；寺社 +6、商人 -5、稳定 +2、民怨 +2）

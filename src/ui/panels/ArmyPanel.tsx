@@ -215,6 +215,7 @@ export function ArmyPanel() {
                 <button
                   className="primary"
                   disabled={!fleetPresent || !navalTarget}
+                  title={!fleetPresent ? '本港没有舰队，需先建造战船' : !navalTarget ? '请选择目标港口' : '消耗舰队运力，把军团运往目标港口'}
                   onClick={() => command({ type: 'army.navalMove', armyId: army.id, portId: navalTarget })}
                 >
                   登船海运
@@ -247,9 +248,15 @@ export function ArmyPanel() {
           </button>
         )}
         {!readOnly && (
-          <button className="danger" onClick={() => {
-            if (command({ type: 'army.disband', armyId: army.id })) selectArmy(null);
-          }}>解散军团</button>
+          <button
+            className="danger"
+            title="永久解散该军团，兵员不会返还"
+            onClick={() => {
+              if (window.confirm(`解散 ${army.name}？该军团将永久消失，兵员不会返还。`)) {
+                if (command({ type: 'army.disband', armyId: army.id })) selectArmy(null);
+              }
+            }}
+          >解散军团</button>
         )}
         <button className="ghost" onClick={() => { if (readOnly) closePanel(); else selectArmy(null); }}>
           {readOnly ? '返回地图' : '取消选择'}

@@ -20,6 +20,7 @@ export function LogPanel() {
     <div className="panel">
       <h2>事件日志</h2>
       <p className="muted">按时间倒序。财政、军事、外交、阶级、灾荒与宫廷事件都会留痕。</p>
+      {entries.length === 0 && <p className="muted">暂无日志。推进时间后，财政、军事与外交事件会记录在这里。</p>}
       {entries.map((entry, index) => (
         <div className={`log-line ${entry.severity}`} key={`${entry.day}-${index}`}>
           <span className="day">{formatDate(entry.day)}</span>

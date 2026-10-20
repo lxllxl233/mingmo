@@ -6,6 +6,7 @@ import {
   nagasakiTrade,
   persecuteChristians,
   sakokuCooldown,
+  sakokuMonthlyIncome,
   toggleSakoku,
 } from '../src/engine/systems/sakoku';
 
@@ -40,5 +41,35 @@ describe('Japan sakoku', () => {
     expect(persecuteChristians(state, 'JAPAN')).toBe(true);
     expect(japan.factions['clergy']).toBe(clergy + 6);
     expect(toggleSakoku(state, 'MING')).toBe(false);
+  });
+
+  it('blocks every action during the sakoku cooldown', () => {
+    const state = createInitialState(content, '1627', 42, 'JAPAN');
+    const japan = state.countries['JAPAN'];
+    if (!japan) throw new Error('missing JAPAN');
+    japan.politicalPower = 100;
+    expect(nagasakiTrade(state, content, 'JAPAN')).toBe(true);
+    expect(sakokuCooldown(state, 'JAPAN')).toBe(180);
+    expect(nagasakiTrade(state, content, 'JAPAN')).toBe(false);
+    expect(persecuteChristians(state, 'JAPAN')).toBe(false);
+    expect(toggleSakoku(state, 'JAPAN')).toBe(false);
+  });
+
+  it('halves Nagasaki trade while the country is closed', () => {
+    const state = createInitialState(content, '1627', 42, 'JAPAN');
+    const japan = state.countries['JAPAN'];
+    if (!japan) throw new Error('missing JAPAN');
+    japan.politicalPower = 100;
+    japan.treasury = 0;
+    expect(sakokuMonthlyIncome(state, content, 'JAPAN')).toBe(0);
+    expect(nagasakiTrade(state, content, 'JAPAN')).toBe(true);
+    const closed = japan.treasury;
+    japan.treasury = 0;
+    japan.cooldowns['japan_sakoku'] = 0;
+    japan.flags['japan_open'] = true;
+    expect(nagasakiTrade(state, content, 'JAPAN')).toBe(true);
+    const open = japan.treasury;
+    expect(open).toBeGreaterThan(closed);
+    expect(sakokuMonthlyIncome(state, content, 'JAPAN')).toBeGreaterThan(0);
   });
 });

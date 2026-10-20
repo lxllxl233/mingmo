@@ -16,6 +16,11 @@ export function LegitimacyPanel() {
     );
   }
   const cooldown = legitimacyCooldown(game, 'SMING');
+  const reason = (power: number, treasury = 0) => cooldown > 0
+    ? `冷却中，还需 ${cooldown} 日`
+    : nation.politicalPower < power ? `政治点不足 ${power}`
+      : treasury > 0 && nation.treasury < treasury ? `国库不足 ${treasury / 10000} 万两`
+        : undefined;
   return (
     <div className="panel legitimacy-panel">
       <h2>正统</h2>
@@ -34,24 +39,28 @@ export function LegitimacyPanel() {
       <div className="confiscation-actions">
         <button
           disabled={cooldown > 0 || nation.politicalPower < 20 || nation.treasury < 60000}
+          title={reason(20, 60000)}
           onClick={() => command({ type: 'legitimacy.proclaim' })}
         >
           拥立新帝（政治 20 / 银 6 万；正统 +8、稳定 +4、宗室 +8、东林 -4）
         </button>
         <button
           disabled={cooldown > 0 || nation.politicalPower < 5}
+          title={reason(5)}
           onClick={() => command({ type: 'legitimacy.compromise' })}
         >
           廷议妥协（政治 5；正统 +2、稳定 +2、东林 +5、士绅 +3、宗室 -3）
         </button>
         <button
           disabled={cooldown > 0 || nation.politicalPower < 10}
+          title={reason(10)}
           onClick={() => command({ type: 'legitimacy.mobilize' })}
         >
           号召勤王（政治 10；兵源 +1 万、军心 +5、武将 +8、东林 -5）
         </button>
         <button
           disabled={cooldown > 0 || nation.politicalPower < 20 || nation.treasury < 50000}
+          title={reason(20, 50000)}
           onClick={() => command({ type: 'legitimacy.unite' })}
         >
           联合抗清（政治 20 / 银 5 万；与郑氏或大西结盟，正统 +3）

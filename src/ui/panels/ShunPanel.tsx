@@ -38,18 +38,21 @@ export function ShunPanel() {
       <div className="confiscation-actions">
         <button
           disabled={cooldown > 0}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : undefined}
           onClick={() => command({ type: 'confiscation.extort' })}
         >
           追赃助饷（立即得银，士绅 -8 / 稳定 -4 / 民怨 +4）
         </button>
         <button
           disabled={cooldown > 0 || nation.politicalPower < 20}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.politicalPower < 20 ? '政治点不足 20' : undefined}
           onClick={() => command({ type: 'confiscation.land' })}
         >
           均田免赋（政治 20，粮 8 万 / 兵源 8 千，农民 +8 / 士绅 -6）
         </button>
         <button
           disabled={cooldown > 0 || nation.treasury < 50000}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.treasury < 50000 ? '国库不足 5 万两' : undefined}
           onClick={() => command({ type: 'confiscation.relief' })}
         >
           安民（银 5 万，士绅 +8 / 稳定 +4 / 民怨 -3）

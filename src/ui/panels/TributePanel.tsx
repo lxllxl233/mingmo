@@ -35,18 +35,23 @@ export function TributePanel() {
       <div className="confiscation-actions">
         <button
           disabled={cooldown > 0 || nation.politicalPower < 5}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.politicalPower < 5 ? '政治点不足 5' : undefined}
           onClick={() => command({ type: 'joseon.submit' })}
         >
           事大（政治 5；对清关系 +15、稳定 +2、两班 +5、武臣 -5）
         </button>
         <button
           disabled={cooldown > 0 || nation.politicalPower < 10}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日` : nation.politicalPower < 10 ? '政治点不足 10' : undefined}
           onClick={() => command({ type: 'joseon.north' })}
         >
           北伐（政治 10；兵源 +5 千、武臣 +8、两班 -5、对清关系 -20）
         </button>
         <button
           disabled={cooldown > 0 || nation.treasury < 20000 || nation.food < 20000}
+          title={cooldown > 0 ? `冷却中，还需 ${cooldown} 日`
+            : nation.treasury < 20000 ? '国库不足 2 万两'
+              : nation.food < 20000 ? '粮食不足 2 万石' : undefined}
           onClick={() => command({ type: 'joseon.tribute' })}
         >
           朝贡（银 2 万 / 粮 2 万石；对清关系 +15、正统 +3、文臣 +3）

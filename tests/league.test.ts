@@ -47,4 +47,30 @@ describe('Mongol banner league', () => {
     expect(state.truces[relationKey('MONGOL', 'QING')]).toBeGreaterThan(state.day);
     expect(holdKurultai(state, 'MING')).toBe(false);
   });
+
+  it('shares one cooldown across all league actions', () => {
+    const state = createInitialState(content, '1627', 42, 'MONGOL');
+    const mongol = state.countries['MONGOL'];
+    if (!mongol) throw new Error('missing MONGOL');
+    mongol.politicalPower = 100;
+    mongol.treasury = 200000;
+    expect(holdKurultai(state, 'MONGOL')).toBe(true);
+    expect(organizeBanners(state, 'MONGOL')).toBe(false);
+    expect(raidBorder(state, content, 'MONGOL')).toBe(false);
+    expect(marriagePact(state, 'MONGOL')).toBe(false);
+    expect(leagueCooldown(state, 'MONGOL')).toBe(180);
+  });
+
+  it('checks political power and treasury thresholds', () => {
+    const state = createInitialState(content, '1627', 42, 'MONGOL');
+    const mongol = state.countries['MONGOL'];
+    if (!mongol) throw new Error('missing MONGOL');
+    mongol.politicalPower = 9;
+    expect(holdKurultai(state, 'MONGOL')).toBe(false);
+    mongol.treasury = 0;
+    expect(organizeBanners(state, 'MONGOL')).toBe(false);
+    expect(marriagePact(state, 'MONGOL')).toBe(false);
+    mongol.politicalPower = 100;
+    expect(marriagePact(state, 'MONGOL')).toBe(false);
+  });
 });

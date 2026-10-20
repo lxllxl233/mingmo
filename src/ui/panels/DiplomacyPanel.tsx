@@ -26,6 +26,12 @@ export function DiplomacyPanel() {
     (war.attacker === player && war.defender === effectiveTarget)
     || (war.defender === player && war.attacker === effectiveTarget));
   const targetTruce = truceDays(game, player, effectiveTarget);
+  const confirmWar = (targetTag: string) => {
+    const name = content.countries.get(targetTag)?.name ?? targetTag;
+    if (window.confirm(`向 ${name} 宣战（${warGoal}）？战争会持续到议和或一方崩溃。`)) {
+      command({ type: 'diplomacy.declareWar', target: targetTag, cb: warGoal });
+    }
+  };
 
   return (
     <div className="panel">
@@ -50,6 +56,7 @@ export function DiplomacyPanel() {
             <span className="muted">可索上供 {amount.toLocaleString()} 两（20%）</span>
             <button
               disabled={!ready || amount <= 0}
+              title={!ready ? '本年已索贡，需间隔 365 日' : amount <= 0 ? '藩属国库为空，无贡可索' : '索要藩属国库的 20%'}
               onClick={() => command({ type: 'diplomacy.demandTribute', vassal: tag })}
             >
               {ready ? '要求上供' : `今年已索（${365 - (game.day - last)} 日）`}
@@ -104,6 +111,7 @@ export function DiplomacyPanel() {
         );
       })}
       <h3>关系</h3>
+      {others.length === 0 && <p className="muted">没有可交涉的势力。</p>}
       <table className="table">
         <thead><tr><th>势力</th><th>关系</th><th>状态</th><th></th></tr></thead>
         <tbody>
@@ -135,20 +143,44 @@ export function DiplomacyPanel() {
                     }}>议和</button>
                   ) : (
                     <>
-                      <button disabled={relation >= 100} onClick={() => command({ type: 'diplomacy.gift', target: country.tag, amount: 10000 })}>赠礼</button>
+                      <button
+                        disabled={relation >= 100}
+                        title={relation >= 100 ? '关系已达上限 100' : '花费 1 万两，关系 +10'}
+                        onClick={() => command({ type: 'diplomacy.gift', target: country.tag, amount: 10000 })}
+                      >赠礼</button>
                       {allied ? (
-                        <button onClick={() => command({ type: 'diplomacy.breakAlliance', target: country.tag })}>断盟</button>
+                        <button
+                          title="解除同盟；同盟提供的军通同时失效"
+                          onClick={() => {
+                            if (window.confirm(`与 ${country.name} 断盟？同盟提供的军通会同时失效。`)) {
+                              command({ type: 'diplomacy.breakAlliance', target: country.tag });
+                            }
+                          }}
+                        >断盟</button>
                       ) : (
-                        <button disabled={relation < 50 || truce > 0} onClick={() => command({ type: 'diplomacy.alliance', target: country.tag })}>结盟</button>
+                        <button
+                          disabled={relation < 50 || truce > 0}
+                          title={relation < 50 ? `关系需 ≥50（当前 ${relation}）` : truce > 0 ? `停战期还剩 ${truce} 日` : '结盟后自动互通军通'}
+                          onClick={() => command({ type: 'diplomacy.alliance', target: country.tag })}
+                        >结盟</button>
                       )}
                       {access ? (
                         <button onClick={() => command({ type: 'diplomacy.revokeAccess', target: country.tag })}>撤通</button>
                       ) : (
-                        <button disabled={relation < 20} onClick={() => command({ type: 'diplomacy.grantAccess', target: country.tag })}>军通</button>
+                        <button
+                          disabled={relation < 20}
+                          title={relation < 20 ? `关系需 ≥20（当前 ${relation}）` : '允许对方军队通过本国领土'}
+                          onClick={() => command({ type: 'diplomacy.grantAccess', target: country.tag })}
+                        >军通</button>
                       )}
                       <button
                         disabled={truce > 0 || isVassal || isOverlord || allied}
-                        onClick={() => command({ type: 'diplomacy.declareWar', target: country.tag, cb: warGoal })}
+                        title={truce > 0 ? `停战期还剩 ${truce} 日`
+                          : isVassal ? '不能向自己的藩属宣战'
+                            : isOverlord ? '不能向宗主宣战'
+                              : allied ? '需先断盟才能宣战'
+                                : `以“${warGoal}”为战争目标宣战`}
+                        onClick={() => confirmWar(country.tag)}
                       >
                         {isVassal ? '藩属' : isOverlord ? '宗主' : '宣战'}
                       </button>
@@ -173,7 +205,8 @@ export function DiplomacyPanel() {
         </select>
         <button
           disabled={Boolean(targetWar) || targetTruce > 0}
-          onClick={() => command({ type: 'diplomacy.declareWar', target: effectiveTarget, cb: warGoal })}
+          title={targetWar ? '已与该势力交战' : targetTruce > 0 ? `停战期还剩 ${targetTruce} 日` : '宣战会立即破坏关系并可能把对方盟友卷入'}
+          onClick={() => confirmWar(effectiveTarget)}
         >
           {targetWar ? '正在交战' : targetTruce > 0 ? `停战 ${targetTruce} 日` : '宣战'}
         </button>

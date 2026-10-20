@@ -2,8 +2,40 @@ import { useEffect } from 'react';
 import { evaluateTrigger } from '../../engine/rules/triggers';
 import { sound } from '../../app/audio/sound';
 import { useGameStore } from '../state/store';
-import { effectsSummary } from '../format';
+import { effectsSummary, formatNumber } from '../format';
 import { EventArt } from './EventArt';
+import type { Effect } from '../../content/types';
+import type { CountryState } from '../../engine/state/types';
+
+function sumEffect(effects: Effect[], pick: (effect: Effect) => number | undefined): number {
+  return effects.reduce((sum, effect) => sum + (pick(effect) ?? 0), 0);
+}
+
+interface PreviewLine {
+  label: string;
+  text: string;
+  danger: boolean;
+}
+
+/** 选项代价预览：把效果叠加到当前数值上，避免玩家只看到“+6 万”却不知道余额够不够。 */
+function previewLines(effects: Effect[], country: CountryState): PreviewLine[] {
+  const rows: Array<[string, number, number]> = [
+    ['国库', country.treasury, sumEffect(effects, effect => ('addTreasury' in effect ? effect.addTreasury : undefined))],
+    ['粮储', country.food, sumEffect(effects, effect => ('addFood' in effect ? effect.addFood : undefined))],
+    ['兵源', country.manpower, sumEffect(effects, effect => ('addManpower' in effect ? effect.addManpower : undefined))],
+    ['稳定', country.stability, sumEffect(effects, effect => ('addStability' in effect ? effect.addStability : undefined))],
+  ];
+  return rows
+    .filter(([, , delta]) => delta !== 0)
+    .map(([label, current, delta]) => {
+      const projected = current + delta;
+      return {
+        label,
+        text: `${label} ${formatNumber(current)} → ${formatNumber(projected)}（${delta > 0 ? '+' : ''}${formatNumber(delta)}）`,
+        danger: projected < 0,
+      };
+    });
+}
 
 export function EventModal() {
   const game = useGameStore(state => state.game);
@@ -22,6 +54,7 @@ export function EventModal() {
 
   if (!game || !pending || !event) return null;
   const accent = content.countries.get(pending.country)?.color ?? '#9e2b25';
+  const country = game.countries[pending.country];
 
   return (
     <div className="overlay">
@@ -41,11 +74,13 @@ export function EventModal() {
                 country: pending.country,
                 ...(pending.province === undefined ? {} : { province: pending.province }),
               });
+              const preview = country ? previewLines(option.effect, country) : [];
               return (
                 <button
                   key={option.id}
                   className="option"
                   disabled={!available}
+                  title={available ? undefined : '当前条件不满足，无法选择该选项'}
                   onClick={() => {
                     sound.play('choice');
                     command({ type: 'event.choose', eventId: event.id, optionId: option.id });
@@ -54,6 +89,13 @@ export function EventModal() {
                   <div className="opt-name">{option.name}</div>
                   {option.tooltip && <div className="opt-tip">{option.tooltip}</div>}
                   <div className="opt-tip">{effectsSummary(option.effect)}</div>
+                  {preview.length > 0 && (
+                    <div className="opt-deltas">
+                      {preview.map(line => (
+                        <span key={line.label} className={line.danger ? 'danger' : ''}>{line.text}</span>
+                      ))}
+                    </div>
+                  )}
                 </button>
               );
             })}
