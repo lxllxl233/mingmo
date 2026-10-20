@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadContentFromDirectory } from '../src/content/loader/node';
 import { createInitialState } from '../src/engine/state/initial';
-import { cleanupDefeatedNations, declareWar, makePeace, resolveCapitalCapitulation, resolveFinishedWars } from '../src/engine/rules/war';
+import { cleanupDefeatedNations, declareWar, makePeace, resolveCapitalCapitulation, resolveFinishedWars, surrenderTendency } from '../src/engine/rules/war';
 
 describe('war resolution', () => {
   it('ends a war when one side has no controlled province left', () => {
@@ -113,6 +113,31 @@ describe('war resolution', () => {
     army.province = 'beijing';
     expect(makePeace(state, war.id, content, 'white')).toBe(true);
     expect(state.provinces[army.province]?.controller).toBe('VOC');
+  });
+
+  it('gives a low surrender tendency for a fresh healthy war', () => {
+    const content = loadContentFromDirectory();
+    const state = createInitialState(content, '1627', 42, 'MING');
+    const war = state.wars.find(entry => entry.attacker === 'QING' && entry.defender === 'MING');
+    expect(war).toBeDefined();
+    if (!war) return;
+    // 刚开战、未失一地、满员军队：投降倾向应很低，而非接近一半。
+    expect(surrenderTendency(state, war, 'MING')).toBeLessThan(20);
+    expect(surrenderTendency(state, war, 'QING')).toBeLessThan(20);
+  });
+
+  it('raises surrender tendency when the capital falls', () => {
+    const content = loadContentFromDirectory();
+    const state = createInitialState(content, '1627', 42, 'MING');
+    const war = state.wars.find(entry => entry.attacker === 'QING' && entry.defender === 'MING');
+    expect(war).toBeDefined();
+    if (!war) return;
+    const base = surrenderTendency(state, war, 'MING');
+    const capital = state.provinces[state.countries['MING']?.capital ?? ''];
+    expect(capital).toBeDefined();
+    if (!capital) return;
+    capital.controller = 'QING';
+    expect(surrenderTendency(state, war, 'MING')).toBeGreaterThan(base);
   });
 
   it('capitulates a country whose capital fell and has no armies', () => {

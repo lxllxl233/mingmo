@@ -72,7 +72,9 @@ export function EstatesPanel() {
   const projectedFoodSilver = projectedAvailable * country.foodPurchasePct / 100;
   const projectedFood = projectedFoodSilver / Math.max(0.1, content.balance.economy.grainPrice);
   const projectedNet = projectedAvailable - projectedFoodSilver;
-  const foodMonths = (country.food + projectedFood) / Math.max(1, report?.foodArmy ?? 1);
+  // 首月结算前 report.foodArmy 尚未产生（为 0/undefined）；此时"温饱 N 个月"无意义，按 null 处理。
+  const armyFood = report?.foodArmy ?? 0;
+  const foodMonths = armyFood > 0 ? (country.food + projectedFood) / armyFood : null;
   const pieSlices = [
     ...raw.map((config, index) => ({
       label: config.name,
@@ -106,6 +108,9 @@ export function EstatesPanel() {
       <p className="muted">
         全国人口与田地先形成经济大盘，再按阶级分配。影响力决定每个阶级的最低分配份额；份额越高，可征的税越多，但也要承担更多维稳成本。
       </p>
+      {!report && (
+        <p className="muted">尚未进行首次月度结算，下方经济数字会在首月结算后更新。</p>
+      )}
       <div className="allocation-top">
         <div className="allocation-pie-wrap">
           <svg className="allocation-pie-svg" viewBox="0 0 100 100" role="img" aria-label="财富大盘分配饼图">
@@ -152,7 +157,7 @@ export function EstatesPanel() {
         </div>
       </div>
       <div className="allocation-preview">
-        <span>当前分配预计温饱 <b className={foodMonths < 1 ? 'danger' : 'good'}>{foodMonths.toFixed(1)} 个月</b></span>
+        <span>当前分配预计温饱 <b className={foodMonths !== null && foodMonths < 1 ? 'danger' : 'good'}>{foodMonths === null ? '—（首月结算后显示）' : `${foodMonths.toFixed(1)} 个月`}</b></span>
         <span>预计月净银（不含火耗） <b className={projectedNet < 0 ? 'danger' : ''}>{Math.round(projectedNet).toLocaleString()} 两</b></span>
         <span>预计购粮 <b>{Math.round(projectedFood).toLocaleString()} 石</b></span>
       </div>

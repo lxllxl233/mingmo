@@ -58,6 +58,7 @@ function TopBarStats() {
     const country = game.countries[playerTag];
     const report = country?.lastReport;
     let controlledCount = 0;
+    const controlledPrefectures = new Set<string>();
     let totalPopulation = 0;
     let corePopulation = 0;
     let disloyalPopulation = 0;
@@ -65,6 +66,8 @@ function TopBarStats() {
     for (const province of Object.values(game.provinces)) {
       if (province.controller !== playerTag) continue;
       controlledCount += 1;
+      const prefectureId = state.content.provinces.get(province.id)?.prefectureId;
+      if (prefectureId) controlledPrefectures.add(prefectureId);
       totalPopulation += province.population;
       if (province.cores.includes(playerTag)) corePopulation += province.population;
       if (province.unrest >= 20) {
@@ -112,6 +115,7 @@ function TopBarStats() {
       foodPurchased: report?.foodPurchased ?? 0,
       foodArmy: report?.foodArmy ?? 0,
       controlledCount,
+      controlledPrefectures: controlledPrefectures.size,
       totalPopulation,
       corePopulation,
       disloyalPopulation,
@@ -165,7 +169,7 @@ function TopBarStats() {
             <span>购粮支出 {number(data.foodPurchaseSilver)} 两</span>
             <span>训练日耗 {number(data.trainingFoodDay)} 石</span>
             <span>粮价系数 {content.balance.economy.grainPrice.toFixed(2)}</span>
-            <span>控制省份 {data.controlledCount} / {content.prefectures.size} · 地区 {data.controlledCount} / {content.provinces.size}</span>
+            <span>控制省份 {data.controlledPrefectures} / {content.prefectures.size} · 地区 {data.controlledCount} / {content.provinces.size}</span>
             <small>军队规模越大，每月军饷和口粮越高；粮储过低会降低稳定。</small>
           </>
         )}

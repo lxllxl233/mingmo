@@ -305,7 +305,9 @@ export function surrenderTendency(state: GameState, war: WarState, tag: string):
   const capital = state.provinces[country.capital];
   const capitalLost = capital ? capital.controller !== tag : false;
   const armies = Object.values(state.armies).filter(army => army.tag === tag).length;
-  const raw = 42 - (mine - enemy) * 7 + exhaustion * 0.45 + (capitalLost ? 28 : 0) + (armies <= 1 ? 10 : 0);
+  // 基值为刚开战、双方尚未失地的健康国家的投降倾向：应当很低，而非 42%。
+  // 失地差（每省 7%）、战争疲劳（0.45/点）、失首都（+28）、几乎无军（+10）再把它推高。
+  const raw = 10 - (mine - enemy) * 7 + exhaustion * 0.45 + (capitalLost ? 28 : 0) + (armies <= 1 ? 10 : 0);
   return Math.max(0, Math.min(100, Math.round(raw)));
 }
 
