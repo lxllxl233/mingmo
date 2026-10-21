@@ -18,13 +18,12 @@ const ESTATE_LABELS: Record<string, string> = {
 };
 
 export function effectSummary(effect: Effect): string {
-  if ('addStability' in effect) return `稳定 ${effect.addStability > 0 ? '+' : ''}${effect.addStability}`;
-  if ('addMandate' in effect) return `天命 ${effect.addMandate > 0 ? '+' : ''}${effect.addMandate}`;
+  if ('addAllEstateLoyalty' in effect) {
+    return `各阶级忠诚 ${effect.addAllEstateLoyalty > 0 ? '+' : ''}${effect.addAllEstateLoyalty}`;
+  }
   if ('addTreasury' in effect) return `银 ${formatNumber(effect.addTreasury)}`;
   if ('addFood' in effect) return `粮 ${formatNumber(effect.addFood)}`;
   if ('addManpower' in effect) return `兵源 ${formatNumber(effect.addManpower)}`;
-  if ('addCorruption' in effect) return `腐败 ${effect.addCorruption > 0 ? '+' : ''}${effect.addCorruption}`;
-  if ('addAuthority' in effect) return `皇权 ${effect.addAuthority > 0 ? '+' : ''}${effect.addAuthority}`;
   if ('addArmyLoyalty' in effect) return `军心 ${effect.addArmyLoyalty > 0 ? '+' : ''}${effect.addArmyLoyalty}`;
   if ('addEstateLoyalty' in effect) {
     return `${ESTATE_LABELS[effect.addEstateLoyalty.estate] ?? effect.addEstateLoyalty.estate} 忠诚 ${effect.addEstateLoyalty.value > 0 ? '+' : ''}${effect.addEstateLoyalty.value}`;

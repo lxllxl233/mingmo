@@ -60,10 +60,7 @@ export type Trigger =
 export type Modifier = Record<string, number>;
 
 export type Effect =
-  | { addStability: number }
-  | { addMandate: number }
-  | { addCorruption: number }
-  | { addAuthority: number }
+  | { addAllEstateLoyalty: number }
   | { addPoliticalPower: number }
   | { addTreasury: number }
   | { addFood: number }
@@ -193,8 +190,7 @@ export interface LeaderProfile {
 export interface StructuralPressure {
   silverPerMonth: number;
   silverPerProvince: number;
-  stabilityMonthly: number;
-  corruptionMonthly: number;
+  estateLoyaltyMonthly: number;
   unrestMonthly: number;
 }
 
@@ -209,6 +205,7 @@ export interface CountryDef {
   playable: boolean;
   aiPersonality: 'aggressive' | 'defensive' | 'opportunistic' | 'mercantile' | 'bureaucratic';
   factions: string[];
+  factionInfluence: Record<string, number>;
   uniqueMechanic: string;
   goal: string;
   background: string;
@@ -232,7 +229,10 @@ export interface CountryEstateConfig {
   name: string;
   influence: number;
   loyalty: number;
+  /** 该阶级在全国财富大盘中的份额（合计 1）；先按此分财富，再对各自财富征税。 */
   incomeShare: number;
+  /** 该阶级占全国人口比例（同一国家内合计 1）；缺省时回落到全局估算。 */
+  populationShare?: number;
   privileges: PrivilegeId[];
   taxLaw: TaxLawId;
   custom?: boolean;
@@ -331,9 +331,13 @@ export interface EventDef {
   historicalContext?: string;
   scope: 'country' | 'province' | 'estate';
   country?: CountryTag | 'any';
+  /** country: any 时的显式受益势力；省略则按文化默认（中原政权）。 */
+  tags?: CountryTag[];
   estate?: EstateKey;
   trigger: Trigger;
   mtth?: number;
+  /** 同名事件族（默认取标题）：同一势力在 GROUP_COOLDOWN_DAYS 内只弹一次。 */
+  group?: string;
   fireOnce: boolean;
   repeatable?: boolean;
   cooldownDays?: number;
@@ -420,6 +424,8 @@ export interface ScenarioDef {
   startingTechs?: Partial<Record<CountryTag, string[]>>;
   provinceOverrides: Record<ProvinceId, CountryTag>;
   countryOverrides: Record<CountryTag, Partial<CountryStarting>>;
+  estateOverrides: Record<CountryTag, Record<string, { influence?: number; loyalty?: number }>>;
+  factionOverrides: Record<CountryTag, Record<string, number>>;
   armies: Array<{ tag: CountryTag; template: ArmyTemplateId; province: ProvinceId; size: number }>;
   initialWars: Array<{ attacker: CountryTag; defender: CountryTag; goal?: string }>;
   initialTruces: Array<{ a: CountryTag; b: CountryTag; days: number }>;

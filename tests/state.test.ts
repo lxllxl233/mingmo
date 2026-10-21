@@ -39,7 +39,8 @@ describe('initial state', () => {
     const ming = state.countries['MING'];
     expect(ming).toBeDefined();
     expect(ming?.treasury).toBe(600000);
-    expect(ming?.estates['peasants']?.loyalty).toBe(30);
+    // 崇祯元年农民忠诚史实基线下调为 25；开局国策「钦定逆案」再给 +2.5。
+    expect(ming?.estates['peasants']?.loyalty).toBe(27.5);
     const owned = Object.values(state.provinces).filter(province => province.owner === 'MING');
     expect(owned.length).toBeGreaterThan(200);
   });

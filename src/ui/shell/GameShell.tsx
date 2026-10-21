@@ -199,7 +199,7 @@ export function GameShell() {
       <Profiler id="topbar" onRender={onReactRender}>
         <TopBar />
       </Profiler>
-      <div className="game-main">
+      <div className={panel === 'estates' ? 'game-main estates-open' : 'game-main'}>
         <Profiler id="sidebar" onRender={onReactRender}>
         <nav className="sidebar">
           {playerDef && (

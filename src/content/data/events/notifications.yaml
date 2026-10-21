@@ -14,13 +14,13 @@ events:
         tooltip: 记录国策成果，继续处理朝政。
         ai_chance: 60
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
       - id: quiet
         name: 低调收尾
         tooltip: 不事张扬，避免朝议反复。
         ai_chance: 40
         effect:
-          - add_stability: 0
+          - add_all_estate_loyalty: 0
 
   - id: research_completed
     title: 新学告成
@@ -37,10 +37,10 @@ events:
         tooltip: 记录研究成果，继续处理朝政。
         ai_chance: 60
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
       - id: archive
         name: 封存新法
         tooltip: 暂不推广，留待后用。
         ai_chance: 40
         effect:
-          - add_stability: 0
+          - add_all_estate_loyalty: 0

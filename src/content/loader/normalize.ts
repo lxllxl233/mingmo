@@ -7,8 +7,9 @@ import { ContentError, asArray, asRecord, isRecord } from './errors';
  * 只转换结构字段。以下键的值是数据字典，必须保持原样：
  * - addModifier / modifiers：修正键是白名单 snake_case
  * - factionInfluence / estateLoyalty / estateInfluence：键是派系/阶级 id
+ * - factionOverrides / estateOverrides：两层键都是派系/阶级 id
  */
-const OPAQUE_KEYS = new Set(['addModifier', 'modifiers', 'modifier', 'factionInfluence', 'addFactionInfluence', 'estateLoyalty', 'estateInfluence']);
+const OPAQUE_KEYS = new Set(['addModifier', 'modifiers', 'modifier', 'factionInfluence', 'addFactionInfluence', 'estateLoyalty', 'estateInfluence', 'factionOverrides', 'estateOverrides']);
 
 /** 键是 ID/标签的映射：保留键，只规范化值。 */
 const KEYED_MAPS = new Set(['regionOwners', 'provinceOverrides', 'countryOverrides', 'nameByCountry']);

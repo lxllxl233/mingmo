@@ -110,25 +110,26 @@ const COUNTRY_FLAVOR: Record<string, { faction: string; effect: EffectBuilder }>
   MING: { faction: 'donglin', effect: scale => ({ addPoliticalPower: scale }) },
   QING: { faction: 'banners', effect: scale => ({ addManpower: 500 * scale }) },
   SHUN: { faction: 'farmers', effect: scale => ({ addFood: 5000 * scale }) },
-  SMING: { faction: 'royal_clan', effect: scale => ({ addMandate: Math.max(1, Math.round(scale / 2)) }) },
+  SMING: { faction: 'royal_clan', effect: scale => ({ addAllEstateLoyalty: Math.max(0.25, Math.round(scale / 2) * 0.25) }) },
   ZHENG: { faction: 'merchants', effect: scale => ({ addTreasury: 4000 * scale }) },
   MONGOL: { faction: 'nobles', effect: scale => ({ addManpower: 400 * scale }) },
   JAPAN: { faction: 'merchants', effect: scale => ({ addTreasury: 3000 * scale }) },
-  JOSEON: { faction: 'officials', effect: scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }) },
+  JOSEON: { faction: 'officials', effect: scale => ({ addAllEstateLoyalty: Math.max(1, Math.round(scale / 2)) }) },
   XI: { faction: 'farmers', effect: scale => ({ addManpower: 600 * scale }) },
-  TIBET: { faction: 'clergy', effect: scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }) },
+  TIBET: { faction: 'clergy', effect: scale => ({ addAllEstateLoyalty: Math.max(1, Math.round(scale / 2)) }) },
   VOC: { faction: 'merchants', effect: scale => ({ addTreasury: 3000 * scale }) },
   RUSSIA: { faction: 'military', effect: scale => ({ addTreasury: 2000 * scale }) },
 };
 
 /** 六条分支各有一项额外倾向，避免同势力内各分支只按 kind 复制。 */
 const BRANCH_ACCENTS: EffectBuilder[] = [
-  scale => ({ addAuthority: Math.max(1, Math.round(scale / 2)) }),
+  // 皇权/腐败按 0.5 折算，天命按 0.25；稳定仍 1:1。
+  scale => ({ addAllEstateLoyalty: Math.max(0.5, Math.round(scale / 2) * 0.5) }),
   scale => ({ addManpower: 300 * scale }),
   scale => ({ addTreasury: 3000 * scale }),
-  scale => ({ addStability: Math.max(1, Math.round(scale / 2)) }),
-  scale => ({ addCorruption: -Math.max(1, Math.round(scale / 2)) }),
-  scale => ({ addMandate: Math.max(1, Math.round(scale / 2)) }),
+  scale => ({ addAllEstateLoyalty: Math.max(1, Math.round(scale / 2)) }),
+  scale => ({ addAllEstateLoyalty: Math.max(0.5, Math.round(scale / 2) * 0.5) }),
+  scale => ({ addAllEstateLoyalty: Math.max(0.25, Math.round(scale / 2) * 0.25) }),
 ];
 
 function countryFlavorEffects(country: string, tier: number, branchIndex: number): Effect[] {
@@ -160,11 +161,11 @@ function effectsFor(
   switch (kind) {
     case 'court':
       base = [
-        { addStability: 2 * scale },
-        { addCorruption: -scale },
-        { addAuthority: scale },
+        // 原 +2×scale 稳定、+1×scale 皇权、-1×scale 腐败；后两者按 0.5 折算，
+        // 合计 3×scale 各阶级忠诚，由月结再传导到稳定。
+        { addAllEstateLoyalty: 3 * scale },
         { addPoliticalPower: 3 + scale * 2 },
-        { addModifier: { corruption_monthly: -0.01 * scale } },
+        { addModifier: { estate_loyalty_monthly: 0.005 * scale } },
       ];
       break;
     case 'economy':
@@ -182,17 +183,17 @@ function effectsFor(
       break;
     case 'diplomacy':
       base = [
-        { addAuthority: scale },
+        { addAllEstateLoyalty: 0.5 * scale },
         { addPoliticalPower: 1 + scale },
-        { addModifier: { trade_efficiency_pct: 2 * scale, stability_monthly: 0.01 * scale } },
+        { addModifier: { trade_efficiency_pct: 2 * scale, estate_loyalty_monthly: 0.01 * scale } },
         { addEstateLoyalty: { estate: 'merchants', value: scale } },
       ];
       break;
     case 'reform':
       base = [
-        { addStability: -scale },
+        { addAllEstateLoyalty: -scale },
         { addPoliticalPower: 2 + scale },
-        { addModifier: { tax_efficiency_pct: 3 * scale, corruption_monthly: -0.01 * scale } },
+        { addModifier: { tax_efficiency_pct: 3 * scale, estate_loyalty_monthly: 0.005 * scale } },
         { addEstateLoyalty: { estate: 'landlords', value: -2 * scale } },
       ];
       break;
@@ -203,7 +204,7 @@ function effectsFor(
       break;
     case 'unique':
       base = [
-        { addModifier: modifier ?? { stability_monthly: 0.02 * scale } },
+        { addModifier: modifier ?? { estate_loyalty_monthly: 0.02 * scale } },
         { addFactionInfluence: { imperial: scale } },
         { addPoliticalPower: scale },
       ];
@@ -229,19 +230,19 @@ function decisionEffects(kind: FocusKind, decisionId: string, modifier: Modifier
   const common: Effect[] = [{ setFlag: decisionId }];
   switch (kind) {
     case 'court':
-      return [...common, { addStability: 4 }, { addCorruption: -3 }, { addAuthority: 1 }, { addModifier: { corruption_monthly: -0.015 } }];
+      return [...common, { addAllEstateLoyalty: 6 }, { addModifier: { estate_loyalty_monthly: 0.0075 } }];
     case 'economy':
       return [...common, { addModifier: { tax_efficiency_pct: 4, food_output_pct: 4 } }, { addEstateLoyalty: { estate: 'peasants', value: -2 } }];
     case 'military':
       return [...common, { addManpower: 5000 }, { addArmyLoyalty: 4 }, { addModifier: { army_attack_pct: 3, discipline_pct: 2, army_upkeep_pct: -2 } }];
     case 'diplomacy':
-      return [...common, { addModifier: { trade_efficiency_pct: 5, stability_monthly: 0.02 } }, { addEstateLoyalty: { estate: 'merchants', value: 2 } }];
+      return [...common, { addModifier: { trade_efficiency_pct: 5, estate_loyalty_monthly: 0.02 } }, { addEstateLoyalty: { estate: 'merchants', value: 2 } }];
     case 'reform':
-      return [...common, { addModifier: { tax_efficiency_pct: 5, corruption_monthly: -0.02 } }, { addStability: -1 }, { addEstateLoyalty: { estate: 'landlords', value: -3 } }];
+      return [...common, { addModifier: { tax_efficiency_pct: 5, estate_loyalty_monthly: 0.01 } }, { addAllEstateLoyalty: -1 }, { addEstateLoyalty: { estate: 'landlords', value: -3 } }];
     case 'navy':
       return [...common, { addModifier: { naval_attack_pct: 4, trade_efficiency_pct: 3, food_output_pct: 2 } }];
     case 'unique':
-      return [...common, { addModifier: modifier ?? { stability_monthly: 0.02 } }];
+      return [...common, { addModifier: modifier ?? { estate_loyalty_monthly: 0.02 } }];
     default:
       return common;
   }
@@ -333,7 +334,7 @@ export function expandFocusPacks(packs: FocusPack[], countryTags: Set<string>): 
     cost: { politicalPower: 100 },
     cooldownDays: 1825,
     effect: [
-      { addCorruption: -8 },
+      { addAllEstateLoyalty: 4 },
       { addEstateLoyalty: { estate: 'ruling', value: -10 } },
     ],
   });

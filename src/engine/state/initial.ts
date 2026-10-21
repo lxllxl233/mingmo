@@ -41,6 +41,7 @@ function buildEstate(
     taxLaw: config.taxLaw,
     privileges: [...config.privileges],
     reform: null,
+    allocationUnlocked: false,
     cooldownDays: 0,
     collected: 0,
     effectiveRate: law.rate,
@@ -100,19 +101,27 @@ export function createInitialState(
   for (const def of content.countries.values()) {
     const starting = mergeStarting(def.starting, scenario.countryOverrides[def.tag]);
     const configs = content.countryEstates.get(def.tag) ?? [];
+    const estateOverrides = scenario.estateOverrides[def.tag] ?? {};
     const estates: Record<string, EstateState> = {};
     const allocation: Record<string, number> = {};
     for (const config of configs) {
-      estates[config.key] = buildEstate(content, config.key, config);
+      const override = estateOverrides[config.key];
+      const effective = override
+        ? {
+            ...config,
+            influence: override.influence ?? config.influence,
+            loyalty: override.loyalty ?? config.loyalty,
+          }
+        : config;
+      estates[config.key] = buildEstate(content, config.key, effective);
     }
-    const minimums = configs.map(config => Math.min(45, 2 + Math.max(0, estates[config.key]?.influence ?? 0) * 0.13));
-    const minimumTotal = minimums.reduce((sum, value) => sum + value, 0);
-    const incomeShareTotal = configs.reduce((sum, config) => sum + config.incomeShare, 0) || 1;
-    const remaining = Math.max(0, 100 - minimumTotal);
+    // 开局分配以史实「实际留存份额」为主（租税已从农民份额中抽走），只保留一个较低的影响力下限；
+    // 旧公式先用影响力吃掉一大块再按收入份额分剩余，既不史实，也会让农民留存忽高忽低。
+    const minimums = configs.map(config => Math.min(20, 0.5 + Math.max(0, estates[config.key]?.influence ?? 0) * 0.04));
+    const targets = configs.map((config, index) => Math.max(minimums[index]!, config.incomeShare * 100));
+    const targetTotal = targets.reduce((sum, value) => sum + value, 0) || 1;
     configs.forEach((config, index) => {
-      const base = minimumTotal >= 100
-        ? (minimums[index]! / minimumTotal) * 100
-        : minimums[index]! + remaining * (config.incomeShare / incomeShareTotal);
+      const base = (targets[index]! / targetTotal) * 100;
       allocation[config.key] = Math.round(base * 10) / 10;
     });
     const owned = Object.entries(owners).filter(([, owner]) => owner === def.tag);
@@ -124,9 +133,10 @@ export function createInitialState(
         .sort((a, b) => b.development - a.development)[0];
       capital = best?.id ?? def.capital;
     }
+    const factionOverrides = scenario.factionOverrides[def.tag] ?? {};
     const factions: Record<string, number> = {};
-    def.factions.forEach((faction, index) => {
-      factions[faction] = 10 + (index % 4) * 5;
+    def.factions.forEach(faction => {
+      factions[faction] = factionOverrides[faction] ?? def.factionInfluence[faction] ?? 10;
     });
     countries[def.tag] = {
       tag: def.tag,

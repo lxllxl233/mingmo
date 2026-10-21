@@ -9,6 +9,7 @@ countries:
     playable: true
     ai_personality: bureaucratic
     factions: [donglin, eunuch, imperial, military, royal_clan, gentry, merchants, farmers]
+    faction_influence: { donglin: 24, eunuch: 12, imperial: 26, military: 20, royal_clan: 2, gentry: 8, merchants: 6, farmers: 2 }
     unique_mechanic: party_strife
     goal: 守辽东、平流寇、续国祚
     background: 崇祯即位时明朝仍控制关内大部，但辽东战事、陕西旱灾、党争与欠饷同时发作，太仓和边军都被拖入长期失血。
@@ -29,8 +30,7 @@ countries:
     pressure:
       silver_per_month: 15000
       silver_per_province: 20
-      stability_monthly: -0.02
-      corruption_monthly: 0.01
+      estate_loyalty_monthly: -0.025
       unrest_monthly: 0.04
 
   - tag: QING
@@ -43,6 +43,7 @@ countries:
     playable: true
     ai_personality: aggressive
     factions: [manchu, han_official, green_standard, imperial, banners]
+    faction_influence: { manchu: 26, han_official: 14, green_standard: 10, imperial: 18, banners: 32 }
     unique_mechanic: banner_system
     goal: 入关定鼎，混一华夷
     background: 建州女真在努尔哈赤、皇太极两代完成八旗与盟旗整合，先统一辽东，再寻找越过长城的机会。
@@ -71,6 +72,7 @@ countries:
     playable: true
     ai_personality: opportunistic
     factions: [farmers, military, gentry, merchants]
+    faction_influence: { farmers: 34, military: 36, gentry: 8, merchants: 12 }
     unique_mechanic: confiscation
     goal: 均田免赋，取代明朝
     background: 李自成从驿卒起兵，靠流民与追赃助饷扩张，先后破洛阳、襄阳、西安，建立大顺政权。
@@ -99,6 +101,7 @@ countries:
     playable: true
     ai_personality: aggressive
     factions: [military, farmers, nobles]
+    faction_influence: { military: 50, farmers: 28, nobles: 6 }
     unique_mechanic: terror
     goal: 据蜀称帝，割据西南
     background: 张献忠率大西军入川，在成都建立政权，试图以四川的粮仓与山川为割据根基。
@@ -127,6 +130,7 @@ countries:
     playable: true
     ai_personality: defensive
     factions: [donglin, military, royal_clan, merchants, gentry]
+    faction_influence: { donglin: 18, military: 30, royal_clan: 24, merchants: 16, gentry: 12 }
     unique_mechanic: legitimacy_contest
     goal: 恢复南京，延续明统
     background: 1644 年北京陷落后，明廷在南京拥立福王，试图以江南财赋和长江天险延续明统。
@@ -155,6 +159,7 @@ countries:
     playable: true
     ai_personality: mercantile
     factions: [merchants, military, royal_clan, gentry]
+    faction_influence: { merchants: 44, military: 32, royal_clan: 10, gentry: 8 }
     unique_mechanic: maritime_network
     goal: 保海疆，取台湾，通东西洋
     background: 郑芝龙以海商武装控制福建沿海，郑成功继承其舰队与贸易网络，在明清之间选择抗清。
@@ -183,6 +188,7 @@ countries:
     playable: true
     ai_personality: opportunistic
     factions: [nobles, clergy, military, merchants]
+    faction_influence: { nobles: 52, clergy: 32, military: 10, merchants: 6 }
     unique_mechanic: banner_league
     goal: 统一蒙古，重现汗权
     background: 林丹汗试图重振察哈尔汗权，但蒙古诸部各自为政，后金又不断联姻、征讨与招降。
@@ -211,6 +217,7 @@ countries:
     playable: true
     ai_personality: defensive
     factions: [nobles, officials, royal_clan, military, clergy]
+    faction_influence: { nobles: 34, officials: 28, royal_clan: 12, military: 14, clergy: 12 }
     unique_mechanic: tribute
     goal: 保境安民，北伐雪耻
     background: 朝鲜在明清之间奉行事大外交，丙子之役后被迫臣服清朝，但内部仍保留尊明与北伐情绪。
@@ -239,6 +246,7 @@ countries:
     playable: true
     ai_personality: mercantile
     factions: [nobles, military, merchants, clergy, imperial]
+    faction_influence: { nobles: 24, military: 38, merchants: 18, clergy: 12, imperial: 8 }
     unique_mechanic: sakoku
     goal: 锁国自守，窥伺大陆
     background: 德川幕府完成统一后推行锁国与禁教，只保留长崎等窗口，对大陆局势保持警惕与有限接触。
@@ -267,6 +275,7 @@ countries:
     playable: true
     ai_personality: defensive
     factions: [clergy, nobles, military, merchants]
+    faction_influence: { clergy: 48, nobles: 30, military: 14, merchants: 8 }
     unique_mechanic: theocracy
     goal: 护法安藏，控制高原
     background: 和硕特部固始汗入藏，与格鲁派结盟，建立以拉萨为中心的政教秩序。
@@ -295,6 +304,7 @@ countries:
     playable: true
     ai_personality: mercantile
     factions: [shareholders, merchants, military, officials]
+    faction_influence: { shareholders: 34, merchants: 30, military: 20, officials: 16 }
     unique_mechanic: company_dividend
     goal: 垄断海贸，据守台湾
     background: 荷兰东印度公司以巴达维亚为总部，占据台湾南部，把台湾纳入东亚海上贸易网络。
@@ -323,6 +333,7 @@ countries:
     playable: true
     ai_personality: aggressive
     factions: [nobles, military, merchants, clergy, officials]
+    faction_influence: { nobles: 32, military: 24, merchants: 14, clergy: 16, officials: 14 }
     unique_mechanic: cossack_host
     goal: 东进黑龙江，取得毛皮
     background: 沙俄哥萨克越过乌拉尔山，沿黑龙江流域筑城、征毛皮，与清朝和当地部族发生冲突。
@@ -351,6 +362,7 @@ countries:
     playable: false
     ai_personality: defensive
     factions: [nobles, clergy]
+    faction_influence: { nobles: 45, clergy: 30 }
     unique_mechanic: tributary
     goal: 保境中立，周旋大国
     background: 中南半岛诸邦在明清、暹罗、缅甸与西洋势力之间求存，名义朝贡，实际保持高度自治。

@@ -39,7 +39,7 @@ tax_laws:
     influence_shift: -15
     incidence: { estate: peasants, factor: 0.3 }
     effects:
-      - add_modifier: { corruption_monthly: 0.2 }
+      - add_modifier: { estate_loyalty_monthly: -0.1, }
     ai_weight: 70
   - id: tax_xi_terror
     country: XI
@@ -53,7 +53,7 @@ tax_laws:
     loyalty_drift: -3.5
     influence_shift: -12
     effects:
-      - add_modifier: { unrest_monthly: 0.6, stability_monthly: -0.06 }
+      - add_modifier: { estate_loyalty_monthly: -0.06, unrest_monthly: 0.6 }
     ai_weight: 60
   - id: tax_sming_donation
     country: SMING
@@ -97,6 +97,20 @@ tax_laws:
     effects:
       - add_modifier: { manpower_monthly: 300 }
     ai_weight: 35
+  - id: tax_mongol_alba
+    country: MONGOL
+    estate: peasants
+    name: 阿勒巴贡赋
+    desc: 属民按户承担贡赋、驿役与兵役，台吉与寺院各取其成。
+    rate: 0.06
+    efficiency: 0.45
+    evasion_base: 0.25
+    silver_share: 0.2
+    loyalty_drift: -1.2
+    influence_shift: -3
+    effects:
+      - add_modifier: { manpower_monthly: 200 }
+    ai_weight: 35
   - id: tax_joseon_tribute
     country: JOSEON
     estate: peasants
@@ -137,8 +151,22 @@ tax_laws:
     loyalty_drift: 1.2
     influence_shift: 8
     effects:
-      - add_modifier: { stability_monthly: 0.06 }
+      - add_modifier: { estate_loyalty_monthly: 0.06, }
     ai_weight: 45
+  - id: tax_tibet_serf
+    country: TIBET
+    estate: peasants
+    name: 差乌拉
+    desc: 差巴支应差役，堆穷依附庄园。劳役重于赋银，寺院与贵族各享其成。
+    rate: 0.08
+    efficiency: 0.5
+    evasion_base: 0.2
+    silver_share: 0.1
+    loyalty_drift: -1.5
+    influence_shift: -4
+    effects:
+      - add_modifier: { food_output_pct: -3 }
+    ai_weight: 35
   - id: tax_voc_dividend
     country: VOC
     estate: merchants

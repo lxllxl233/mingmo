@@ -46,6 +46,8 @@ export function startTaxReform(
   if (!canUseTaxLaw(state, content, tag, estateKey, lawId)) return false;
   nation.politicalPower -= cost;
   estate.reform = { law: lawId, daysLeft: 90, totalDays: 90 };
+  // 改革启动即视为对既得利益动手：分配锁定解除，允许把份额调到惯例以下。
+  estate.allocationUnlocked = true;
   const law = content.taxLaws.get(lawId);
   state.log.push({
     day: state.day,

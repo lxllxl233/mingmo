@@ -19,7 +19,7 @@ events:
         effect:
           - add_treasury: -40000
           - add_food: -80000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_faction_influence: { donglin: 3 }
       - id: tax
         name: 加派辽饷
@@ -27,8 +27,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 60000
-          - add_stability: -4
-          - add_corruption: 2
+          - add_all_estate_loyalty: -5
 
   - id: MING_e_yuan_case
     title: 袁崇焕案
@@ -47,7 +46,7 @@ events:
         tooltip: 皇权与厂卫支持上升，军心受损。
         ai_chance: 55
         effect:
-          - add_authority: 3
+          - add_all_estate_loyalty: 1.5
           - add_army_loyalty: -4
           - add_faction_influence: { eunuch: 4, military: -4 }
       - id: pardon
@@ -56,7 +55,7 @@ events:
         ai_chance: 45
         effect:
           - add_army_loyalty: 4
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { military: 5, eunuch: -3 }
 
   - id: MING_e_kaifeng
@@ -78,14 +77,13 @@ events:
         effect:
           - add_treasury: -60000
           - add_manpower: -4000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: abandon
         name: 放弃开封
         tooltip: 保存兵力，天命与稳定受损。
         ai_chance: 50
         effect:
-          - add_stability: -3
-          - add_mandate: -4
+          - add_all_estate_loyalty: -4
           - add_army_loyalty: 2
 
   # ── 大清 ───────────────────────────────────────────────────────
@@ -114,7 +112,7 @@ events:
         tooltip: 稳定上升，兵源较少。
         ai_chance: 45
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_manpower: 1000
           - add_faction_influence: { imperial: 3 }
 
@@ -135,8 +133,7 @@ events:
         tooltip: 正统与皇权上升，八旗贵胄不满。
         ai_chance: 60
         effect:
-          - add_mandate: 5
-          - add_authority: 3
+          - add_all_estate_loyalty: 2.75
           - add_faction_influence: { imperial: 4, banners: -3 }
       - id: stay
         name: 留守盛京
@@ -144,8 +141,7 @@ events:
         ai_chance: 40
         effect:
           - add_faction_influence: { banners: 5 }
-          - add_mandate: -4
-          - add_stability: 1
+          - add_all_estate_loyalty: 0
 
   - id: QING_e_three_feudatories
     title: 三藩之乱
@@ -164,8 +160,7 @@ events:
         tooltip: 皇权与八旗支持上升，稳定与国库受损。
         ai_chance: 60
         effect:
-          - add_authority: 4
-          - add_stability: -3
+          - add_all_estate_loyalty: -1
           - add_treasury: -80000
           - add_faction_influence: { banners: 4, green_standard: -3 }
       - id: appease
@@ -173,9 +168,9 @@ events:
         tooltip: 稳定上升，皇权受损。
         ai_chance: 40
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_treasury: -30000
-          - add_authority: -3
+          - add_all_estate_loyalty: -1.5
 
   # ── 大顺 ───────────────────────────────────────────────────────
   - id: SHUN_e_henan_famine
@@ -196,7 +191,7 @@ events:
         ai_chance: 55
         effect:
           - add_food: -60000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_faction_influence: { farmers: 5 }
       - id: feed_army
         name: 先保军粮
@@ -224,7 +219,7 @@ events:
         ai_chance: 55
         effect:
           - add_manpower: -5000
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
           - add_army_loyalty: 3
           - set_flag: shun_fought_shanhaiguan
       - id: retreat
@@ -232,8 +227,7 @@ events:
         tooltip: 保存兵力，天命受损，却可保实力转进。
         ai_chance: 45
         effect:
-          - add_mandate: -5
-          - add_stability: -2
+          - add_all_estate_loyalty: -3.25
           - add_manpower: -1000
           - set_flag: shun_retreated_shanhaiguan
 
@@ -256,8 +250,7 @@ events:
         tooltip: 都城失守，天命与军心大损。
         ai_chance: 60
         effect:
-          - add_stability: -4
-          - add_mandate: -6
+          - add_all_estate_loyalty: -5.5
           - add_manpower: -8000
           - add_treasury: -60000
       - id: hold_city
@@ -266,7 +259,7 @@ events:
         ai_chance: 40
         effect:
           - add_manpower: -12000
-          - add_stability: -6
+          - add_all_estate_loyalty: -6
           - add_army_loyalty: 3
 
   - id: SHUN_e_preserve_army
@@ -289,14 +282,14 @@ events:
         effect:
           - add_manpower: 5000
           - add_army_loyalty: 2
-          - add_mandate: -3
+          - add_all_estate_loyalty: -0.75
       - id: retake
         name: 回师再战
         tooltip: 冒险反扑，胜负难料。
         ai_chance: 40
         effect:
           - add_manpower: -3000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_army_loyalty: 4
 
   - id: SHUN_e_ming_alliance
@@ -317,7 +310,7 @@ events:
         ai_chance: 55
         effect:
           - add_relation: { target: SMING, value: 20 }
-          - add_mandate: 2
+          - add_all_estate_loyalty: 0.5
           - add_army_loyalty: 2
           - add_faction_influence: { military: 3 }
       - id: alone
@@ -325,7 +318,7 @@ events:
         tooltip: 稳定上升，外交孤立。
         ai_chance: 45
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_relation: { target: SMING, value: -10 }
           - add_faction_influence: { farmers: 2 }
 
@@ -348,7 +341,7 @@ events:
         ai_chance: 50
         effect:
           - add_manpower: -3000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { military: -4 }
       - id: appease
         name: 下诏安抚
@@ -356,8 +349,7 @@ events:
         ai_chance: 50
         effect:
           - add_faction_influence: { military: 4 }
-          - add_stability: -2
-          - add_corruption: 1
+          - add_all_estate_loyalty: -2.5
 
   - id: SMING_e_yangzhou
     title: 扬州十日
@@ -376,8 +368,7 @@ events:
         tooltip: 正统与稳定上升，兵力重创。
         ai_chance: 55
         effect:
-          - add_mandate: 4
-          - add_stability: 2
+          - add_all_estate_loyalty: 3
           - add_manpower: -5000
           - add_army_loyalty: 3
       - id: evacuate
@@ -386,8 +377,7 @@ events:
         ai_chance: 45
         effect:
           - add_manpower: -1000
-          - add_mandate: -4
-          - add_stability: -1
+          - add_all_estate_loyalty: -2
 
   - id: SMING_e_curse_water
     title: 咒水之难
@@ -406,15 +396,14 @@ events:
         tooltip: 正统受损，外交关系变化。
         ai_chance: 50
         effect:
-          - add_mandate: -3
-          - add_stability: -2
+          - add_all_estate_loyalty: -2.75
           - add_relation: { target: QING, value: -5 }
       - id: refuse
         name: 拒绝赴约
         tooltip: 稳定上升，外援断绝。
         ai_chance: 50
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_treasury: -20000
           - add_faction_influence: { military: 2 }
 
@@ -436,7 +425,7 @@ events:
         tooltip: 稳定与商人支持上升。
         ai_chance: 55
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { merchants: 4 }
           - add_treasury: 20000
       - id: relocate
@@ -444,7 +433,7 @@ events:
         tooltip: 保存实力，稳定受损。
         ai_chance: 45
         effect:
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
           - add_manpower: 2000
           - add_treasury: -30000
 
@@ -466,7 +455,7 @@ events:
         ai_chance: 50
         effect:
           - add_faction_influence: { merchants: 5 }
-          - add_mandate: 2
+          - add_all_estate_loyalty: 0.5
           - add_manpower: -2000
           - add_treasury: -30000
       - id: ignore
@@ -496,13 +485,13 @@ events:
         effect:
           - add_army_loyalty: 3
           - add_manpower: -4000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
       - id: withdraw
         name: 退守台湾
         tooltip: 保存舰队，稳定受损。
         ai_chance: 45
         effect:
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
           - add_manpower: -1000
           - add_faction_influence: { military: -3 }
 
@@ -525,14 +514,14 @@ events:
         ai_chance: 50
         effect:
           - add_manpower: 2000
-          - add_mandate: 3
+          - add_all_estate_loyalty: 0.75
           - add_treasury: -20000
       - id: independent
         name: 保持独立
         tooltip: 稳定上升，兵源较少。
         ai_chance: 50
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { nobles: 2 }
 
   - id: MONGOL_e_monastery
@@ -553,7 +542,7 @@ events:
         ai_chance: 50
         effect:
           - add_faction_influence: { clergy: 6 }
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_treasury: -20000
       - id: limit
         name: 限制寺院
@@ -581,14 +570,14 @@ events:
         ai_chance: 45
         effect:
           - add_manpower: 2000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_relation: { target: QING, value: -10 }
       - id: move_north
         name: 北守故地
         tooltip: 稳定上升，兵源较少。
         ai_chance: 55
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { nobles: 2 }
 
   # ── 日本 ───────────────────────────────────────────────────────
@@ -611,14 +600,14 @@ events:
         effect:
           - add_treasury: 60000
           - add_inflation: 1
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
       - id: austerity
         name: 紧缩财政
         tooltip: 稳定上升，国库支出。
         ai_chance: 50
         effect:
           - add_treasury: -20000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { merchants: -2 }
 
   - id: JAPAN_e_ming_refugees
@@ -646,7 +635,7 @@ events:
         tooltip: 稳定上升，商人失望。
         ai_chance: 50
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { merchants: -3 }
 
   - id: JAPAN_e_dutch_trade
@@ -673,7 +662,7 @@ events:
         tooltip: 稳定与寺社支持上升。
         ai_chance: 50
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { clergy: 3, merchants: -2 }
 
   # ── 朝鲜 ───────────────────────────────────────────────────────
@@ -694,7 +683,7 @@ events:
         tooltip: 稳定与贵族支持上升，士林不满。
         ai_chance: 50
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { nobles: 4, officials: -2 }
       - id: worthy
         name: 立贤
@@ -702,7 +691,7 @@ events:
         ai_chance: 50
         effect:
           - add_faction_influence: { officials: 5, nobles: -3 }
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
 
   - id: JOSEON_e_japan_mission
     title: 日本通信使
@@ -723,7 +712,7 @@ events:
         effect:
           - add_treasury: -20000
           - add_faction_influence: { merchants: 3, officials: 2 }
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
       - id: guard
         name: 加强海防
         tooltip: 军心上升，贸易受损。
@@ -751,7 +740,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 30000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { nobles: -4, officials: 3 }
       - id: maintain
         name: 维持旧制
@@ -781,14 +770,14 @@ events:
         effect:
           - add_treasury: -20000
           - add_food: -30000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
       - id: pray
         name: 设坛祭祀
         tooltip: 稳定上升，粮食损失大。
         ai_chance: 45
         effect:
           - add_food: -80000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { clergy: 3 }
 
   - id: shared_e_flood
@@ -809,14 +798,14 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: -50000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: release
         name: 泄洪保城
         tooltip: 省钱，粮食与稳定受损。
         ai_chance: 45
         effect:
           - add_food: -60000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_treasury: -10000
 
   - id: shared_e_earthquake
@@ -837,13 +826,13 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: -30000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: save
         name: 节省开支
         tooltip: 省钱，稳定下降。
         ai_chance: 45
         effect:
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_treasury: 10000
 
   - id: shared_e_salt
@@ -864,7 +853,7 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: 40000
-          - add_corruption: -1
+          - add_all_estate_loyalty: 0.5
           - add_faction_influence: { merchants: -4 }
       - id: tolerate
         name: 维持旧例
@@ -872,7 +861,7 @@ events:
         ai_chance: 45
         effect:
           - add_faction_influence: { merchants: 4 }
-          - add_corruption: 1
+          - add_all_estate_loyalty: -0.5
 
   - id: shared_e_horse_trade
     title: 马市
@@ -899,7 +888,7 @@ events:
         tooltip: 稳定上升，兵源较少。
         ai_chance: 45
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { military: -2 }
 
   - id: shared_e_rumor
@@ -919,8 +908,7 @@ events:
         tooltip: 稳定上升，腐败与士绅不满。
         ai_chance: 50
         effect:
-          - add_stability: 2
-          - add_corruption: 1
+          - add_all_estate_loyalty: 1.5
           - add_faction_influence: { gentry: -2 }
       - id: reassure
         name: 张榜安抚
@@ -928,7 +916,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: -10000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { gentry: 2 }
 
   - id: shared_e_famine_winter
@@ -949,12 +937,12 @@ events:
         ai_chance: 55
         effect:
           - add_food: -40000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_faction_influence: { farmers: 2 }
       - id: close
         name: 闭城自保
         tooltip: 省粮，稳定下降。
         ai_chance: 45
         effect:
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_faction_influence: { military: 2 }

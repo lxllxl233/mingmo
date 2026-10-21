@@ -104,6 +104,7 @@ country_overrides:
   RUSSIA: { stability: 60, treasury: 80000, food: 100000, manpower: 30000, mandate: 10, corruption: 30, authority: 60, army_loyalty: 65 }
 armies:
   - { tag: MING, template: ming_guard, province: beijing, size: 4 }
+  - { tag: MING, template: ming_artillery, province: beijing, size: 1 }
   - { tag: MING, template: guanning_army, province: shanhaiguan, size: 3 }
   - { tag: MING, template: ming_guard, province: xian, size: 2 }
   - { tag: MING, template: ming_guard, province: suzhou, size: 2 }

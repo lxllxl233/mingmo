@@ -20,7 +20,7 @@ events:
         effect:
           - add_treasury: -50000
           - add_food: -100000
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - add_estate_loyalty: { estate: peasants, value: 6 }
       - id: tax_cut
         name: 缓征逋赋
@@ -56,7 +56,7 @@ events:
         effect:
           - add_treasury: -60000
           - add_manpower: -5000
-          - add_stability: 4
+          - add_all_estate_loyalty: 4
           - add_modifier: { famine_resistance: 0.05 }
       - id: relocate
         name: 迁民就食
@@ -69,7 +69,7 @@ events:
         name: 无力顾及
         ai_chance: 20
         effect:
-          - add_stability: -6
+          - add_all_estate_loyalty: -6
           - add_estate_loyalty: { estate: peasants, value: -8 }
 
   - id: rand_locust_01
@@ -88,19 +88,18 @@ events:
         effect:
           - add_treasury: -40000
           - add_food: 60000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
       - id: pray
         name: 设坛祈禳
         ai_chance: 25
         effect:
-          - add_stability: 2
-          - add_mandate: 2
+          - add_all_estate_loyalty: 2.5
           - add_treasury: -10000
       - id: ignore
         name: 听天由命
         ai_chance: 25
         effect:
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
           - add_estate_loyalty: { estate: peasants, value: -6 }
 
   - id: rand_plague_01
@@ -121,20 +120,20 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: -70000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_modifier: { pop_growth_pct: -2 }
       - id: temple
         name: 设醮祈福
         ai_chance: 30
         effect:
           - add_treasury: -20000
-          - add_mandate: 3
+          - add_all_estate_loyalty: 0.75
           - add_estate_loyalty: { estate: landlords, value: 4 }
       - id: ignore
         name: 无力救治
         ai_chance: 30
         effect:
-          - add_stability: -8
+          - add_all_estate_loyalty: -8
           - add_manpower: -10000
           - add_modifier: { pop_growth_pct: -4 }
 
@@ -152,21 +151,18 @@ events:
         name: 下诏罪己
         ai_chance: 50
         effect:
-          - add_stability: 4
-          - add_mandate: 4
-          - add_corruption: -3
+          - add_all_estate_loyalty: 6.5
       - id: repair
         name: 修葺宫庙
         ai_chance: 30
         effect:
           - add_treasury: -50000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: ignore
         name: 不以为意
         ai_chance: 20
         effect:
-          - add_mandate: -4
-          - add_stability: -3
+          - add_all_estate_loyalty: -4
 
   # ── 财政与阶级 ───────────────────────────────────────
   - id: rand_corruption_01
@@ -185,22 +181,19 @@ events:
         name: 严查到底
         ai_chance: 40
         effect:
-          - add_corruption: -8
-          - add_stability: -3
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { officials: -8, imperial: 5 }
       - id: shelve
         name: 留中不发
         ai_chance: 40
         effect:
-          - add_corruption: 3
-          - add_stability: 1
+          - add_all_estate_loyalty: -0.5
           - add_faction_influence: { officials: 5 }
       - id: purge
         name: 借机清洗
         ai_chance: 20
         effect:
-          - add_corruption: -4
-          - add_stability: -5
+          - add_all_estate_loyalty: -3
           - add_faction_influence: { officials: -15, imperial: 10 }
 
   - id: rand_silver_01
@@ -219,7 +212,7 @@ events:
         ai_chance: 40
         effect:
           - add_modifier: { inflation_monthly: 0.3, tax_efficiency_pct: 2 }
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
       - id: tax_in_kind
         name: 许以粮折银
         ai_chance: 40
@@ -284,13 +277,13 @@ events:
         effect:
           - add_treasury: -40000
           - add_estate_loyalty: { estate: peasants, value: 10 }
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: crack_down
         name: 派兵弹压
         ai_chance: 55
         effect:
           - add_estate_loyalty: { estate: peasants, value: -12 }
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_modifier: { unrest_monthly: 0.4 }
 
   - id: rand_estate_gentry_01
@@ -316,7 +309,7 @@ events:
         ai_chance: 60
         effect:
           - add_estate_loyalty: { estate: landlords, value: -15 }
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
           - add_modifier: { tax_efficiency_pct: 5 }
 
   - id: rand_estate_merchants_01
@@ -341,7 +334,7 @@ events:
         ai_chance: 55
         effect:
           - add_estate_loyalty: { estate: merchants, value: -12 }
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
 
   - id: rand_estate_soldiers_01
     title: 兵变
@@ -368,7 +361,7 @@ events:
         effect:
           - add_estate_loyalty: { estate: ruling, value: -15 }
           - add_army_loyalty: -8
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
 
   - id: rand_estate_officials_01
     title: 官员怠政
@@ -386,7 +379,7 @@ events:
         effect:
           - add_treasury: -50000
           - add_estate_loyalty: { estate: ruling, value: 10 }
-          - add_modifier: { corruption_monthly: -0.1 }
+          - add_modifier: { estate_loyalty_monthly: 0.05, }
       - id: punish
         name: 严考成
         ai_chance: 55
@@ -415,7 +408,7 @@ events:
         ai_chance: 60
         effect:
           - add_estate_loyalty: { estate: ruling, value: -12 }
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
 
   - id: rand_estate_nobles_01
     title: 勋贵圈地
@@ -462,7 +455,7 @@ events:
         effect:
           - add_treasury: 60000
           - add_estate_loyalty: { estate: landlords, value: -20 }
-          - add_mandate: -3
+          - add_all_estate_loyalty: -0.75
       - id: compromise
         name: 限田留寺
         ai_chance: 40
@@ -474,7 +467,7 @@ events:
         ai_chance: 20
         effect:
           - add_estate_loyalty: { estate: landlords, value: 8 }
-          - add_mandate: 2
+          - add_all_estate_loyalty: 0.5
 
   - id: rand_estate_natives_01
     title: 土著反抗
@@ -526,7 +519,7 @@ events:
         ai_chance: 60
         effect:
           - add_army_loyalty: -10
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
           - add_estate_loyalty: { estate: ruling, value: -10 }
 
   - id: rand_border_01
@@ -558,7 +551,7 @@ events:
         name: 严旨斥责
         ai_chance: 20
         effect:
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - add_modifier: { devastation_monthly: 1 }
 
   - id: rand_army_01
@@ -583,7 +576,7 @@ events:
         ai_chance: 40
         effect:
           - add_army_loyalty: -8
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
           - add_modifier: { army_attack_pct: -2 }
 
   - id: rand_harvest_01
@@ -603,7 +596,7 @@ events:
         ai_chance: 50
         effect:
           - add_food: 150000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_estate_loyalty: { estate: peasants, value: 3 }
       - id: tax
         name: 趁机加征
@@ -628,14 +621,13 @@ events:
         name: 重考
         ai_chance: 45
         effect:
-          - add_stability: 3
-          - add_corruption: -2
+          - add_all_estate_loyalty: 4
           - add_faction_influence: { officials: -3 }
       - id: suppress
         name: 弹压
         ai_chance: 55
         effect:
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
           - add_faction_influence: { officials: 3 }
 
   - id: rand_eunuch_01
@@ -654,15 +646,13 @@ events:
         name: 倚为耳目
         ai_chance: 40
         effect:
-          - add_authority: 5
-          - add_corruption: 5
+          - add_all_estate_loyalty: 0
           - add_faction_influence: { eunuch: 10, donglin: -8 }
       - id: curb
         name: 裁抑中官
         ai_chance: 60
         effect:
-          - add_corruption: -5
-          - add_stability: 2
+          - add_all_estate_loyalty: 4.5
           - add_faction_influence: { eunuch: -10, donglin: 6 }
 
   - id: rand_trade_01
@@ -710,15 +700,12 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: -20000
-          - add_stability: 4
-          - add_mandate: 3
+          - add_all_estate_loyalty: 4.75
       - id: decline
         name: 却而不受
         ai_chance: 50
         effect:
-          - add_mandate: 2
-          - add_corruption: -2
-          - add_stability: 1
+          - add_all_estate_loyalty: 2.5
 
   - id: hist_small_ice_age
     title: 小冰期
@@ -741,14 +728,13 @@ events:
         name: 祈禳
         ai_chance: 30
         effect:
-          - add_mandate: -3
-          - add_stability: -2
+          - add_all_estate_loyalty: -2.75
       - id: ignore
         name: 听天由命
         ai_chance: 25
         effect:
           - add_modifier: { food_output_pct: -8, unrest_monthly: 0.3 }
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
 
   - id: hist_silver_crisis
     title: 白银流入骤减
@@ -805,7 +791,7 @@ events:
         name: 收缩防线
         ai_chance: 35
         effect:
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_modifier: { army_defense_pct: 4 }
       - id: negotiate
         name: 遣使议和
@@ -829,14 +815,14 @@ events:
         ai_chance: 60
         effect:
           - add_treasury: -300000
-          - add_stability: -10
+          - add_all_estate_loyalty: -10
           - add_manpower: 50000
       - id: negotiate
         name: 招抚三藩
         ai_chance: 40
         effect:
           - add_treasury: -150000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_estate_loyalty: { estate: ruling, value: 5 }
   # ── 新经济：粮食、腐败与分配 ──────────────────────────
   - id: econ_granary_crisis
@@ -875,7 +861,7 @@ events:
         ai_chance: 20
         effect:
           - add_army_loyalty: -5
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - add_modifier: { army_attack_pct: -2 }
 
   - id: econ_corruption_scandal
@@ -896,7 +882,7 @@ events:
         tooltip: 腐败下降，官僚与士绅不满。
         ai_chance: 45
         effect:
-          - add_corruption: -8
+          - add_all_estate_loyalty: 4
           - add_estate_loyalty: { estate: ruling, value: -4 }
           - add_estate_loyalty: { estate: landlords, value: -2 }
           - add_modifier: { tax_efficiency_pct: 3 }
@@ -905,16 +891,14 @@ events:
         tooltip: 保住朝局颜面，但腐败继续扩散。
         ai_chance: 35
         effect:
-          - add_corruption: 4
-          - add_authority: 2
+          - add_all_estate_loyalty: -1
           - add_estate_loyalty: { estate: ruling, value: 2 }
       - id: blame_eunuch
         name: 诿过内宦
         tooltip: 皇权集中，士绅不服。
         ai_chance: 20
         effect:
-          - add_authority: 5
-          - add_corruption: -3
+          - add_all_estate_loyalty: 4
           - add_estate_loyalty: { estate: landlords, value: -4 }
 
   - id: econ_allocation_dispute
@@ -954,4 +938,4 @@ events:
         effect:
           - add_estate_loyalty: { estate: peasants, value: 3 }
           - add_estate_loyalty: { estate: landlords, value: -2 }
-          - add_stability: 1
+          - add_all_estate_loyalty: 1

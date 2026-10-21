@@ -82,6 +82,7 @@ function mergeEstateGroup(
       taxLaw,
       privileges: [...new Set(members.flatMap(estate => estate.privileges))],
       reform,
+      allocationUnlocked: members.some(estate => estate.allocationUnlocked === true),
       cooldownDays: Math.max(...members.map(estate => estate.cooldownDays)),
       collected: members.reduce((sum, estate) => sum + estate.collected, 0),
       effectiveRate: weighted(estate => estate.effectiveRate),
@@ -119,6 +120,7 @@ function migrateEstatesV7(state: GameState): void {
         taxLaw: FALLBACK_TAX_LAW.artisans,
         privileges: ['priv_artisan_guild'],
         reform: null,
+        allocationUnlocked: false,
         cooldownDays: 0,
         collected: 0,
         effectiveRate: 0.04,
@@ -217,6 +219,10 @@ export function decodeSave(text: string): GameState {
     if (!Array.isArray(nation.tradePosts)) nation.tradePosts = [];
     if (!nation.grudges || typeof nation.grudges !== 'object' || Array.isArray(nation.grudges)) nation.grudges = {};
     if (typeof nation.wageArrears !== 'number') nation.wageArrears = 0;
+    for (const estate of Object.values(nation.estates)) {
+      // v7 之前的存档没有该字段：默认仍受既得利益锁定。
+      if (typeof estate.allocationUnlocked !== 'boolean') estate.allocationUnlocked = false;
+    }
   }
   if (!Array.isArray(parsed.state.warAlerts)) parsed.state.warAlerts = [];
   if (!Array.isArray(parsed.state.battles)) parsed.state.battles = [];

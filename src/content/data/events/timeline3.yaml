@@ -17,7 +17,7 @@ events:
         ai_chance: 55
         effect:
           - add_food: -50000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { farmers: 3 }
       - id: hoard
         name: 囤粮保军
@@ -25,7 +25,7 @@ events:
         ai_chance: 45
         effect:
           - add_army_loyalty: 2
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
 
   - id: shared_e_autumn_flood
     title: 秋汛
@@ -45,14 +45,14 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: -40000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: reroute
         name: 改道保城
         tooltip: 省钱，粮食受损。
         ai_chance: 45
         effect:
           - add_food: -50000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_treasury: -10000
 
   - id: shared_e_rice_price
@@ -73,7 +73,7 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: -20000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { merchants: -3 }
       - id: free_market
         name: 放任市价
@@ -81,7 +81,7 @@ events:
         ai_chance: 45
         effect:
           - add_treasury: 20000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_faction_influence: { merchants: 3 }
 
   - id: shared_e_craftsmen
@@ -103,13 +103,13 @@ events:
         effect:
           - add_army_loyalty: 2
           - add_manpower: 1000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
       - id: exempt
         name: 宽免匠户
         tooltip: 稳定上升，军备受损。
         ai_chance: 50
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_army_loyalty: -1
 
   - id: shared_e_artillery
@@ -158,7 +158,7 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: -20000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_army_loyalty: 1
       - id: cut
         name: 裁撤驿站
@@ -166,7 +166,7 @@ events:
         ai_chance: 45
         effect:
           - add_treasury: 20000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
 
   - id: shared_e_grand_canal
     title: 漕运梗阻
@@ -187,7 +187,7 @@ events:
         effect:
           - add_treasury: -40000
           - add_food: 40000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
       - id: sea_route
         name: 改行海运
         tooltip: 省钱，风险较高。
@@ -195,7 +195,7 @@ events:
         effect:
           - add_treasury: -10000
           - add_food: 20000
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
 
   - id: shared_e_salt_smugglers
     title: 盐枭
@@ -215,7 +215,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 30000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_manpower: -1000
       - id: coopt
         name: 招安盐枭
@@ -223,8 +223,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 10000
-          - add_corruption: 2
-          - add_stability: -1
+          - add_all_estate_loyalty: -2
 
   - id: shared_e_mining_tax
     title: 矿税之争
@@ -244,14 +243,14 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 50000
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - add_faction_influence: { gentry: -4 }
       - id: stop
         name: 停征矿税
         tooltip: 稳定与士绅支持上升，国库下降。
         ai_chance: 50
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { gentry: 4 }
           - add_treasury: -10000
 
@@ -273,14 +272,14 @@ events:
         ai_chance: 50
         effect:
           - add_faction_influence: { gentry: 4, officials: 2 }
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_treasury: -10000
       - id: restrict
         name: 限制书院
         tooltip: 皇权上升，士绅不满。
         ai_chance: 50
         effect:
-          - add_authority: 2
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { gentry: -4, officials: -2 }
 
   - id: shared_e_monks
@@ -308,7 +307,7 @@ events:
         ai_chance: 50
         effect:
           - add_manpower: 1000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_faction_influence: { clergy: -3 }
 
   - id: shared_e_bandits
@@ -330,14 +329,14 @@ events:
         effect:
           - add_treasury: -30000
           - add_manpower: -2000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: pacify
         name: 招抚流寇
         tooltip: 兵源上升，稳定下降。
         ai_chance: 50
         effect:
           - add_manpower: 2000
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
           - add_army_loyalty: -1
 
   - id: shared_e_pirates
@@ -359,14 +358,14 @@ events:
         effect:
           - add_treasury: -30000
           - add_faction_influence: { merchants: 3 }
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
       - id: coopt
         name: 招抚海盗
         tooltip: 省钱，稳定下降。
         ai_chance: 50
         effect:
           - add_treasury: 10000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_faction_influence: { merchants: -2 }
 
   - id: shared_e_border_trade
@@ -386,7 +385,7 @@ events:
         tooltip: 稳定上升，马匹与商人受损。
         ai_chance: 50
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_manpower: -1000
           - add_faction_influence: { merchants: -3 }
       - id: open
@@ -396,7 +395,7 @@ events:
         effect:
           - add_manpower: 2000
           - add_faction_influence: { merchants: 3 }
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
 
   - id: shared_e_horse_plague
     title: 马疫
@@ -423,7 +422,7 @@ events:
         ai_chance: 50
         effect:
           - add_manpower: 2000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_faction_influence: { farmers: -2 }
 
   - id: shared_e_armory_theft
@@ -443,16 +442,16 @@ events:
         tooltip: 腐败下降，军心与稳定受损。
         ai_chance: 50
         effect:
-          - add_corruption: -2
+          - add_all_estate_loyalty: 1
           - add_army_loyalty: -2
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
       - id: cover
         name: 内部消化
         tooltip: 军心稳定，腐败上升。
         ai_chance: 50
         effect:
           - add_army_loyalty: 1
-          - add_corruption: 2
+          - add_all_estate_loyalty: -1
 
   - id: shared_e_official_review
     title: 官吏考成
@@ -472,7 +471,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 30000
-          - add_corruption: -1
+          - add_all_estate_loyalty: 0.5
           - add_faction_influence: { officials: -4 }
       - id: relax
         name: 放宽考成
@@ -500,7 +499,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 40000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_faction_influence: { royal_clan: -4 }
       - id: maintain
         name: 维持旧额
@@ -527,16 +526,15 @@ events:
         tooltip: 腐败下降，工期延误。
         ai_chance: 50
         effect:
-          - add_corruption: -2
+          - add_all_estate_loyalty: 1
           - add_treasury: -10000
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
       - id: cover
         name: 先保工期
         tooltip: 稳定上升，腐败上升。
         ai_chance: 50
         effect:
-          - add_stability: 1
-          - add_corruption: 2
+          - add_all_estate_loyalty: 0
 
   - id: shared_e_sell_children
     title: 卖儿鬻女
@@ -556,14 +554,14 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: -30000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_faction_influence: { farmers: 3 }
       - id: ban
         name: 禁止人口买卖
         tooltip: 省钱，稳定下降。
         ai_chance: 50
         effect:
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_faction_influence: { gentry: -2 }
 
   - id: shared_e_rumor_case
@@ -583,13 +581,11 @@ events:
         tooltip: 皇权上升，稳定与士绅受损。
         ai_chance: 50
         effect:
-          - add_authority: 2
-          - add_stability: -2
+          - add_all_estate_loyalty: -1
           - add_faction_influence: { gentry: -3 }
       - id: pardon
         name: 宽宥不问
         tooltip: 稳定上升，皇权受损。
         ai_chance: 50
         effect:
-          - add_stability: 2
-          - add_authority: -1
+          - add_all_estate_loyalty: 1.5

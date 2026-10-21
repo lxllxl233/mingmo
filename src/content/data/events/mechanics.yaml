@@ -17,8 +17,7 @@ events:
         ai_chance: 45
         effect:
           - add_faction_influence: { donglin: 6, eunuch: -4 }
-          - add_stability: 2
-          - add_corruption: -2
+          - add_all_estate_loyalty: 3
           - add_political_power: 2
       - id: rely_on_eunuch
         name: 倚重厂卫
@@ -26,14 +25,13 @@ events:
         ai_chance: 35
         effect:
           - add_faction_influence: { eunuch: 6, donglin: -4 }
-          - add_authority: 3
-          - add_corruption: 2
+          - add_all_estate_loyalty: 0.5
       - id: shelve
         name: 留中不发
         tooltip: 不表态，等边情自行明朗；士气与效率受损。
         ai_chance: 20
         effect:
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
           - add_political_power: 3
 
   - id: QING_e_banner_review
@@ -63,8 +61,7 @@ events:
         ai_chance: 50
         effect:
           - add_faction_influence: { han_official: 5, banners: -3 }
-          - add_corruption: -2
-          - add_stability: 1
+          - add_all_estate_loyalty: 2
           - add_political_power: 2
 
   - id: SHUN_e_confiscation_debate
@@ -86,8 +83,7 @@ events:
         effect:
           - add_treasury: 80000
           - add_faction_influence: { military: 5, gentry: -5 }
-          - add_stability: -3
-          - add_corruption: 2
+          - add_all_estate_loyalty: -4
       - id: pacify
         name: 先安民心
         tooltip: 发银赈济，争取士绅，但军费更紧。
@@ -95,7 +91,7 @@ events:
         effect:
           - add_treasury: -30000
           - add_faction_influence: { gentry: 6, farmers: -2 }
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
 
   - id: SMING_e_legitimacy_dispute
     title: 拥立之争
@@ -114,8 +110,7 @@ events:
         tooltip: 正统与宗室支持上升，但耗银且东林不满。
         ai_chance: 50
         effect:
-          - add_mandate: 4
-          - add_stability: 2
+          - add_all_estate_loyalty: 3
           - add_treasury: -50000
           - add_faction_influence: { royal_clan: 5, donglin: -3 }
       - id: compromise
@@ -123,8 +118,7 @@ events:
         tooltip: 安抚东林与士绅，正统提升较慢。
         ai_chance: 50
         effect:
-          - add_mandate: 2
-          - add_stability: 1
+          - add_all_estate_loyalty: 1.5
           - add_faction_influence: { donglin: 5, gentry: 3, royal_clan: -2 }
 
   - id: ZHENG_e_sea_route
@@ -146,13 +140,13 @@ events:
         effect:
           - add_treasury: 60000
           - add_faction_influence: { merchants: 6, military: -2 }
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
       - id: guard_coast
         name: 禁海自守
         tooltip: 集中海防，稳定上升，但商人失望。
         ai_chance: 40
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { merchants: -5, military: 3 }
 
   - id: MONGOL_e_kurultai
@@ -172,8 +166,7 @@ events:
         tooltip: 汗权与贵族支持上升，但耗费政治资源。
         ai_chance: 55
         effect:
-          - add_mandate: 4
-          - add_stability: 2
+          - add_all_estate_loyalty: 3
           - add_faction_influence: { nobles: 5, clergy: 3 }
           - add_political_power: -5
       - id: raid
@@ -183,7 +176,7 @@ events:
         effect:
           - add_treasury: 50000
           - add_food: 100000
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - add_faction_influence: { military: 5, nobles: -2 }
           - add_relation: { target: MING, value: -10 }
           - add_relation: { target: QING, value: -10 }
@@ -207,15 +200,15 @@ events:
         effect:
           - add_treasury: 50000
           - add_faction_influence: { merchants: 5, clergy: -4 }
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
       - id: persecute
         name: 禁教锁国
         tooltip: 寺社支持、稳定上升，但商人失望。
         ai_chance: 55
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { clergy: 5, merchants: -4 }
-          - add_mandate: 1
+          - add_all_estate_loyalty: 0.25
 
   - id: JOSEON_e_tribute_or_north
     title: 事大与北伐
@@ -235,7 +228,7 @@ events:
         ai_chance: 55
         effect:
           - add_relation: { target: QING, value: 10 }
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { nobles: 4, military: -3 }
       - id: north
         name: 北伐雪耻
@@ -245,4 +238,4 @@ events:
           - add_manpower: 4000
           - add_faction_influence: { military: 5, nobles: -3 }
           - add_relation: { target: QING, value: -15 }
-          - add_stability: -1
+          - add_all_estate_loyalty: -1

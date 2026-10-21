@@ -12,7 +12,7 @@ const TRIGGER_KEYS = new Set([
 const CMP_KEYS = new Set(['lt', 'lte', 'gt', 'gte', 'eq']);
 
 const NUMERIC_EFFECTS = new Set([
-  'addStability', 'addMandate', 'addCorruption', 'addAuthority',
+  'addAllEstateLoyalty',
   'addPoliticalPower', 'addTreasury', 'addFood', 'addManpower',
   'addArmyLoyalty', 'addInflation',
 ]);

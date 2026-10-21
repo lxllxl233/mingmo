@@ -83,8 +83,8 @@ province_overrides:
 country_overrides:
   MING: { stability: 20, treasury: 200000, food: 300000, manpower: 80000, mandate: 35, corruption: 85, authority: 30, army_loyalty: 30 }
   QING: { stability: 65, treasury: 900000, food: 600000, manpower: 200000, mandate: 50, corruption: 30, authority: 75, army_loyalty: 85 }
-  SHUN: { stability: 60, treasury: 350000, food: 300000, manpower: 120000, mandate: 45, corruption: 55, authority: 60, army_loyalty: 55 }
-  XI: { stability: 40, treasury: 120000, food: 150000, manpower: 50000, mandate: 25, corruption: 55, authority: 50, army_loyalty: 50 }
+  SHUN: { stability: 48, treasury: 350000, food: 300000, manpower: 120000, mandate: 42, corruption: 55, authority: 60, army_loyalty: 58 }
+  XI: { stability: 32, treasury: 120000, food: 150000, manpower: 50000, mandate: 20, corruption: 55, authority: 50, army_loyalty: 45 }
   SMING: { stability: 40, treasury: 150000, food: 200000, manpower: 40000, mandate: 60, corruption: 60, authority: 40, army_loyalty: 45 }
   ZHENG: { stability: 65, treasury: 100000, food: 120000, manpower: 40000, mandate: 30, corruption: 30, authority: 60, army_loyalty: 70 }
   MONGOL: { stability: 45, treasury: 70000, food: 100000, manpower: 30000, mandate: 20, corruption: 40, authority: 45, army_loyalty: 55 }
@@ -93,21 +93,39 @@ country_overrides:
   TIBET: { stability: 55, treasury: 50000, food: 80000, manpower: 30000, mandate: 25, corruption: 35, authority: 60, army_loyalty: 65 }
   VOC: { stability: 65, treasury: 120000, food: 100000, manpower: 10000, mandate: 0, corruption: 20, authority: 70, army_loyalty: 75 }
   RUSSIA: { stability: 60, treasury: 80000, food: 100000, manpower: 30000, mandate: 10, corruption: 30, authority: 60, army_loyalty: 65 }
+estate_overrides:
+  MING: { ruling: { influence: 42, loyalty: 22 }, landlords: { influence: 33, loyalty: 30 }, merchants: { influence: 15, loyalty: 38 }, peasants: { influence: 5, loyalty: 8 }, artisans: { influence: 5, loyalty: 30 } }
+  QING: { ruling: { influence: 62, loyalty: 74 }, landlords: { influence: 22, loyalty: 46 }, merchants: { influence: 8, loyalty: 58 }, peasants: { influence: 4, loyalty: 30 }, artisans: { influence: 4, loyalty: 60 } }
+  SHUN: { ruling: { influence: 44, loyalty: 66 }, landlords: { influence: 10, loyalty: 10 }, merchants: { influence: 8, loyalty: 30 }, peasants: { influence: 34, loyalty: 72 }, artisans: { influence: 4, loyalty: 40 } }
+  XI: { ruling: { influence: 62, loyalty: 64 }, landlords: { influence: 6, loyalty: 6 }, merchants: { influence: 4, loyalty: 24 }, peasants: { influence: 24, loyalty: 26 }, artisans: { influence: 4, loyalty: 32 } }
+  ZHENG: { ruling: { influence: 32, loyalty: 76 }, landlords: { influence: 8, loyalty: 50 }, merchants: { influence: 44, loyalty: 80 }, peasants: { influence: 8, loyalty: 44 }, artisans: { influence: 8, loyalty: 54 } }
+  MONGOL: { ruling: { influence: 70, loyalty: 58 }, landlords: { influence: 24, loyalty: 78 }, merchants: { influence: 6, loyalty: 52 } }
+  JOSEON: { ruling: { influence: 61, loyalty: 58 }, landlords: { influence: 23, loyalty: 58 }, merchants: { influence: 6, loyalty: 54 }, peasants: { influence: 5, loyalty: 28 }, artisans: { influence: 5, loyalty: 52 } }
+  TIBET: { ruling: { influence: 45, loyalty: 65 }, landlords: { influence: 50, loyalty: 85 }, merchants: { influence: 5, loyalty: 60 } }
+  VOC: { ruling: { influence: 41, loyalty: 70 }, merchants: { influence: 34, loyalty: 74 }, peasants: { influence: 18, loyalty: 30 }, artisans: { influence: 7, loyalty: 58 } }
+faction_overrides:
+  MING: { donglin: 10, eunuch: 14, imperial: 18, military: 30, royal_clan: 4, gentry: 12, merchants: 8, farmers: 4 }
+  QING: { manchu: 22, han_official: 18, green_standard: 16, imperial: 14, banners: 30 }
+  SHUN: { farmers: 32, military: 40, gentry: 6, merchants: 10 }
+  XI: { military: 56, farmers: 22, nobles: 4 }
+  ZHENG: { merchants: 46, military: 30, royal_clan: 8, gentry: 6 }
+  JOSEON: { nobles: 34, officials: 30, royal_clan: 12, military: 12, clergy: 12 }
+  TIBET: { clergy: 50, nobles: 28, military: 14, merchants: 8 }
 armies:
   - { tag: QING, template: qing_banner, province: shenyang, size: 6 }
   - { tag: QING, template: qing_banner, province: liaoyang, size: 3 }
   - { tag: QING, template: qing_banner, province: jinzhou, size: 3 }
   - { tag: QING, template: qing_banner, province: guangning, size: 3 }
   - { tag: QING, template: qing_green, province: shenyang, size: 2 }
-  - { tag: SHUN, template: shun_rebel, province: taiyuan, size: 4 }
+  - { tag: SHUN, template: shun_rebel, province: taiyuan, size: 5 }
   - { tag: SHUN, template: shun_cavalry, province: xian, size: 3 }
-  - { tag: SHUN, template: shun_rebel, province: kaifeng, size: 2 }
-  - { tag: MING, template: ming_guard, province: beijing, size: 3 }
+  - { tag: SHUN, template: shun_rebel, province: kaifeng, size: 3 }
+  - { tag: MING, template: ming_guard, province: beijing, size: 2 }
   - { tag: MING, template: ming_guard, province: hangzhou, size: 2 }
   - { tag: MING, template: ming_guard, province: wuchang, size: 2 }
   - { tag: MING, template: ming_guard, province: guangzhou, size: 1 }
   - { tag: MING, template: ming_guard, province: nanjing, size: 1 }
-  - { tag: MING, template: guanning_army, province: shanhaiguan, size: 2 }
+  - { tag: MING, template: guanning_army, province: shanhaiguan, size: 3 }
   - { tag: XI, template: xi_army, province: chengdu, size: 3 }
   - { tag: XI, template: xi_army, province: chongqing, size: 2 }
   - { tag: ZHENG, template: zheng_navy, province: penghu, size: 2 }

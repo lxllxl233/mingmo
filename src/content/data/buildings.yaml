@@ -55,5 +55,5 @@ buildings:
     cost_silver: 20000
     cost_food: 2000
     days: 90
-    modifiers: { stability_monthly: 0.02, unrest_monthly: -0.1 }
+    modifiers: { estate_loyalty_monthly: 0.02, unrest_monthly: -0.1 }
     ai_weight: 40

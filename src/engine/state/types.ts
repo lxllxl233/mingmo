@@ -52,6 +52,8 @@ export interface EstateState {
   taxLaw: string;
   privileges: string[];
   reform: { law: string; daysLeft: number; totalDays: number } | null;
+  /** 是否已通过税制改革打破该阶级的分配锁定（影响力越大，可下调幅度越小）。 */
+  allocationUnlocked: boolean;
   cooldownDays: number;
   collected: number;
   effectiveRate: number;

@@ -622,7 +622,9 @@ input, select {
 .difficulty-picker button.active { background: var(--red); color: var(--paper); border-color: var(--red); }
 .difficulty-picker p { margin: 6px 0 0; font-size: 11px; line-height: 1.55; }
 
-.war-alert-modal { max-width: 520px; border-top: 5px solid var(--red); }
+.war-alert-modal { width: min(520px, 94vw); max-width: 520px; border-top: 5px solid var(--red); }
+.war-alert-modal h2 { margin: 6px 0 10px; line-height: 1.45; }
+.war-alert-modal .muted { margin: 10px 0 0; font-size: 13px; line-height: 1.75; }
 .war-alert-goal { color: var(--red); font-weight: 600; }
 .war-alert-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 
@@ -805,6 +807,16 @@ button:active { transform: translateY(1px); }
 .war-dock.collapsed { padding-bottom: 0; }
 .war-dock.collapsed .war-dock-head { border-bottom: 0; }
 
+/* 分配面板信息密度高，单独给更宽的右栏，避免每行被挤成两三个词。 */
+.game-main.estates-open { grid-template-columns: 68px minmax(0, 1fr) minmax(440px, 560px); }
+.game-main.estates-open .allocation-top { grid-template-columns: 170px 1fr; }
+.game-main.estates-open .allocation-pie-wrap,
+.game-main.estates-open .allocation-pie-svg { width: 170px; height: 170px; }
+.game-main.estates-open .allocation-pie-tooltip { left: 174px; width: 180px; }
+.game-main.estates-open .allocation-pie-hole { inset: 34px; }
+.game-main.estates-open .allocation-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 10px; }
+/* 分配页要让吸顶预览条压在战争视窗之上；战争视窗本身改为随内容滚动。 */
+.game-main.estates-open .war-dock { position: static; }
 .allocation-top { display: grid; grid-template-columns: 150px 1fr; gap: 14px; align-items: center; margin: 10px 0 14px; }
 .allocation-pie-wrap { width: 150px; height: 150px; position: relative; }
 .allocation-pie-svg { width: 150px; height: 150px; overflow: visible; }
@@ -819,7 +831,7 @@ button:active { transform: translateY(1px); }
 .allocation-overview { display: flex; flex-direction: column; gap: 2px; }
 .allocation-overview .row { margin: 0; padding: 3px 0; border-bottom: 1px dashed var(--line); }
 .allocation-card { border: 1px solid var(--line); background: rgba(255,252,244,.45); padding: 8px 10px; margin: 7px 0; }
-.allocation-card-head { display: flex; align-items: center; gap: 7px; }
+.allocation-card-head { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 7px; }
 .allocation-card-head strong { margin-left: auto; color: var(--red); font-size: 16px; }
 .allocation-swatch { width: 9px; height: 18px; border-radius: 2px; }
 .allocation-range { width: 100%; accent-color: var(--red); margin: 7px 0 3px; }
@@ -832,7 +844,8 @@ button:active { transform: translateY(1px); }
 
 
 
-.allocation-preview { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 7px 8px; margin: 4px 0 8px; border: 1px dashed #b89a6a; background: rgba(184,137,46,.08); font-size: 11px; }
+/* 拖动下方阶级滑块时，预览条保持可见。 */
+.allocation-preview { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 7px 8px; margin: 4px 0 8px; border: 1px dashed #b89a6a; background: #f3e9d5; font-size: 11px; position: sticky; top: 0; z-index: 6; box-shadow: 0 3px 6px rgba(50,38,22,.08); }
 .allocation-preview b { color: var(--red); }
 
 
@@ -934,6 +947,7 @@ button:active { transform: translateY(1px); }
 /* 1280–1439：右栏收窄，字号略降但信息保留 */
 @media (max-width: 1439px) {
   .game-main { grid-template-columns: 58px 1fr minmax(300px, 340px); }
+  .game-main.estates-open { grid-template-columns: 58px minmax(0, 1fr) minmax(400px, 480px); }
   .topbar { gap: 10px; padding: 0 10px; font-size: 12px; }
   .topbar button { padding: 2px 5px; }
   .panel { padding: 10px 12px 20px; }
@@ -943,6 +957,7 @@ button:active { transform: translateY(1px); }
 /* 1280 以下：右栏变抽屉式覆盖，地图尽量大 */
 @media (max-width: 1279px) {
   .game-main { grid-template-columns: 54px 1fr minmax(280px, 320px); }
+  .game-main.estates-open { grid-template-columns: 54px minmax(0, 1fr) minmax(360px, 430px); }
   .topbar { gap: 8px; font-size: 11px; }
   .topbar .stat { font-size: 11px; }
   .right-panel { font-size: 12px; }

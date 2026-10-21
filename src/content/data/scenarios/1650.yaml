@@ -82,9 +82,9 @@ province_overrides:
   chengdu: XI
   chongqing: XI
 country_overrides:
-  QING: { stability: 65, treasury: 800000, food: 700000, manpower: 220000, mandate: 75, corruption: 45, authority: 75, army_loyalty: 75 }
+  QING: { stability: 62, treasury: 800000, food: 700000, manpower: 220000, mandate: 75, corruption: 50, authority: 75, army_loyalty: 75 }
   SMING: { stability: 35, treasury: 80000, food: 150000, manpower: 30000, mandate: 50, corruption: 60, authority: 35, army_loyalty: 45 }
-  XI: { stability: 30, treasury: 60000, food: 80000, manpower: 20000, mandate: 15, corruption: 55, authority: 40, army_loyalty: 45 }
+  XI: { stability: 35, treasury: 60000, food: 80000, manpower: 20000, mandate: 15, corruption: 55, authority: 40, army_loyalty: 45 }
   ZHENG: { stability: 65, treasury: 100000, food: 150000, manpower: 40000, mandate: 30, corruption: 30, authority: 60, army_loyalty: 70 }
   MONGOL: { stability: 40, treasury: 60000, food: 80000, manpower: 25000, mandate: 15, corruption: 40, authority: 45, army_loyalty: 50 }
   JOSEON: { stability: 50, treasury: 150000, food: 200000, manpower: 60000, mandate: 25, corruption: 35, authority: 55, army_loyalty: 55 }
@@ -92,6 +92,28 @@ country_overrides:
   TIBET: { stability: 60, treasury: 50000, food: 80000, manpower: 30000, mandate: 25, corruption: 30, authority: 60, army_loyalty: 70 }
   VOC: { stability: 60, treasury: 120000, food: 100000, manpower: 10000, mandate: 0, corruption: 20, authority: 70, army_loyalty: 75 }
   RUSSIA: { stability: 60, treasury: 100000, food: 100000, manpower: 35000, mandate: 10, corruption: 30, authority: 60, army_loyalty: 65 }
+estate_overrides:
+  QING: { ruling: { influence: 58, loyalty: 70 }, landlords: { influence: 25, loyalty: 50 }, merchants: { influence: 9, loyalty: 58 }, peasants: { influence: 4, loyalty: 34 }, artisans: { influence: 4, loyalty: 58 } }
+  SMING: { ruling: { influence: 45, loyalty: 38 }, landlords: { influence: 18, loyalty: 44 }, merchants: { influence: 10, loyalty: 50 }, peasants: { influence: 21, loyalty: 34 }, artisans: { influence: 6, loyalty: 38 } }
+  XI: { ruling: { influence: 55, loyalty: 58 }, landlords: { influence: 8, loyalty: 22 }, merchants: { influence: 4, loyalty: 34 }, peasants: { influence: 30, loyalty: 46 }, artisans: { influence: 3, loyalty: 40 } }
+  ZHENG: { ruling: { influence: 40, loyalty: 74 }, landlords: { influence: 8, loyalty: 52 }, merchants: { influence: 38, loyalty: 78 }, peasants: { influence: 6, loyalty: 44 }, artisans: { influence: 8, loyalty: 56 } }
+  MONGOL: { ruling: { influence: 62, loyalty: 52 }, landlords: { influence: 29, loyalty: 74 }, merchants: { influence: 9, loyalty: 56 } }
+  JOSEON: { ruling: { influence: 61, loyalty: 56 }, landlords: { influence: 23, loyalty: 58 }, merchants: { influence: 6, loyalty: 56 }, peasants: { influence: 5, loyalty: 32 }, artisans: { influence: 5, loyalty: 54 } }
+  JAPAN: { ruling: { influence: 65, loyalty: 64 }, landlords: { influence: 10, loyalty: 56 }, merchants: { influence: 13, loyalty: 68 }, peasants: { influence: 5, loyalty: 32 }, artisans: { influence: 7, loyalty: 50 } }
+  TIBET: { ruling: { influence: 46, loyalty: 62 }, landlords: { influence: 49, loyalty: 82 }, merchants: { influence: 5, loyalty: 58 } }
+  VOC: { ruling: { influence: 40, loyalty: 68 }, merchants: { influence: 35, loyalty: 75 }, peasants: { influence: 18, loyalty: 28 }, artisans: { influence: 7, loyalty: 58 } }
+  RUSSIA: { ruling: { influence: 53, loyalty: 64 }, landlords: { influence: 10, loyalty: 62 }, merchants: { influence: 11, loyalty: 58 }, peasants: { influence: 18, loyalty: 25 }, artisans: { influence: 8, loyalty: 50 } }
+faction_overrides:
+  QING: { manchu: 20, han_official: 20, green_standard: 20, imperial: 12, banners: 28 }
+  SMING: { donglin: 14, military: 34, royal_clan: 22, merchants: 16, gentry: 14 }
+  XI: { military: 48, farmers: 34, nobles: 6 }
+  ZHENG: { merchants: 46, military: 30, royal_clan: 8, gentry: 6 }
+  MONGOL: { nobles: 50, clergy: 36, military: 8, merchants: 6 }
+  JOSEON: { nobles: 34, officials: 30, royal_clan: 12, military: 12, clergy: 12 }
+  JAPAN: { nobles: 24, military: 36, merchants: 20, clergy: 10, imperial: 10 }
+  TIBET: { clergy: 50, nobles: 28, military: 14, merchants: 8 }
+  VOC: { shareholders: 32, merchants: 34, military: 18, officials: 16 }
+  RUSSIA: { nobles: 32, military: 26, merchants: 14, clergy: 14, officials: 14 }
 armies:
   - { tag: QING, template: qing_banner, province: beijing, size: 5 }
   - { tag: QING, template: qing_green, province: nanjing, size: 3 }

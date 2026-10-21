@@ -9,7 +9,7 @@ privileges:
       cost: { political_power: 100 }
       effects:
         - add_estate_loyalty: { estate: ruling, value: -25 }
-        - add_stability: -6
+        - add_all_estate_loyalty: -6
         - add_modifier: { tax_efficiency_pct: 6 }
     ai_keep: 70
   - id: priv_clan_manor
@@ -46,7 +46,7 @@ privileges:
       cost: { political_power: 60 }
       effects:
         - add_estate_loyalty: { estate: ruling, value: -15 }
-        - add_modifier: { corruption_monthly: -0.02 }
+        - add_modifier: { estate_loyalty_monthly: 0.01, }
     ai_keep: 55
   - id: priv_gentry_corvee_exempt
     estate: landlords
@@ -58,7 +58,7 @@ privileges:
       cost: { political_power: 80 }
       effects:
         - add_estate_loyalty: { estate: landlords, value: -20 }
-        - add_stability: -5
+        - add_all_estate_loyalty: -5
         - add_modifier: { tax_efficiency_pct: 4 }
     ai_keep: 60
   - id: priv_gentry_hidden_land
@@ -120,7 +120,7 @@ privileges:
       cost: { political_power: 70 }
       effects:
         - add_estate_loyalty: { estate: landlords, value: -25 }
-        - add_mandate: -5
+        - add_all_estate_loyalty: -1.25
         - add_modifier: { tax_efficiency_pct: 3 }
     ai_keep: 45
   - id: priv_native_tribute

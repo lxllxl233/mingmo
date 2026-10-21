@@ -37,7 +37,7 @@ tax_laws:
     loyalty_drift: 1.0
     influence_shift: 0
     effects:
-      - add_modifier: { stability_monthly: 0.1 }
+      - add_modifier: { estate_loyalty_monthly: 0.1, }
     ai_weight: 25
   - id: tax_peasants_surtax
     estate: peasants
@@ -79,7 +79,7 @@ tax_laws:
     loyalty_drift: 0.4
     influence_shift: 0
     effects:
-      - add_modifier: { stability_monthly: 0.05, tax_efficiency_pct: -6 }
+      - add_modifier: { estate_loyalty_monthly: 0.05, tax_efficiency_pct: -6 }
     ai_weight: 40
   - id: tax_gentry_land_survey
     estate: landlords
@@ -266,7 +266,7 @@ tax_laws:
     loyalty_drift: -0.8
     influence_shift: 0
     effects:
-      - add_modifier: { corruption_monthly: 0.3 }
+      - add_modifier: { estate_loyalty_monthly: -0.15, }
     ai_weight: 30
   - id: tax_officials_honesty_silver
     estate: ruling
@@ -279,7 +279,7 @@ tax_laws:
     loyalty_drift: 1.0
     influence_shift: 5
     effects:
-      - add_modifier: { corruption_monthly: -0.25, tax_efficiency_pct: 6 }
+      - add_modifier: { estate_loyalty_monthly: 0.125, tax_efficiency_pct: 6 }
     ai_weight: 45
   - id: tax_officials_meltage
     estate: ruling
@@ -307,7 +307,7 @@ tax_laws:
     loyalty_drift: 1.0
     influence_shift: 5
     effects:
-      - add_modifier: { stability_monthly: 0.05, tax_efficiency_pct: -3 }
+      - add_modifier: { estate_loyalty_monthly: 0.05, tax_efficiency_pct: -3 }
     ai_weight: 25
   - id: tax_clergy_license
     estate: landlords

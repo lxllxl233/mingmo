@@ -22,6 +22,26 @@ function mingState() {
 }
 
 describe('monthly economy', () => {
+  it('does not inflate maintenance by reallocating wealth to the bottom', () => {
+    const baseline = mingState();
+    runMonthlyEconomy(baseline.state, content);
+    const baseReport = baseline.ming.lastReport;
+    if (!baseReport) throw new Error('missing baseline report');
+
+    const shifted = mingState();
+    // 这种幅度的再分配只有改革后才能做到；本用例只验证维稳基数不随份额放大。
+    for (const estate of Object.values(shifted.ming.estates)) estate.allocationUnlocked = true;
+    // 把绝大部分财富分给农民/匠户；他们税率高于士绅，实际税收会明显上升。
+    shifted.ming.allocation = { ruling: 1.1, landlords: 0.9, merchants: 0.5, peasants: 48.7, artisans: 48.7 };
+    runMonthlyEconomy(shifted.state, content);
+    const shiftedReport = shifted.ming.lastReport;
+    if (!shiftedReport) throw new Error('missing shifted report');
+
+    expect(shiftedReport.income).toBeGreaterThan(baseReport.income * 1.5);
+    // 维稳基数按惯例份额推算，不随这次重分配翻倍。
+    expect((shiftedReport.loyaltyCost ?? 0) / (baseReport.loyaltyCost ?? 1)).toBeCloseTo(1, 2);
+  });
+
   it('splits each estate tax between silver and grain; only silver is monetized', () => {
     const { state, ming } = mingState();
     const peasants = ming.estates['peasants'];

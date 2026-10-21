@@ -316,18 +316,15 @@ function dominantTag(state: GameState): { tag: string; share: number } | null {
   return { tag: bestTag, share: bestCount / Math.max(1, Object.keys(state.provinces).length) };
 }
 
-function historicalWarTarget(state: GameState, tag: string): string | null {
+interface ScriptedWarTarget {
+  target: string;
+  /** 由「头号威胁」触发的合纵目标，而不是剧本历史目标。 */
+  dominant: boolean;
+}
+
+function historicalTarget(state: GameState, tag: string): string | null {
   const alive = (target: string) => Boolean(state.countries[target]?.alive) && target !== tag;
   const year = fromDayIndex(state.day).year;
-  // 反雪球：任一势力版图占比 ≥38% 时，其余势力视其为头号威胁优先合纵攻之。
-  // 这是「威胁制衡」的简化实现，而非真·合纵机制；Phase 3.2 曾尝试用门控合纵替换，
-  // 但矩阵实测（1650 清统一、1627/1644 南明单极）证明门控版无法抑制结构性雪球，故保留此机制。
-  const dominant = dominantTag(state);
-  if (dominant && dominant.tag !== tag && dominant.share >= 0.38
-    && tag !== 'JAPAN' && tag !== 'JOSEON'
-    && !areAllied(state, tag, dominant.tag)) {
-    return dominant.tag;
-  }
   if (state.scenarioId === '1627') {
     if (tag === 'QING') {
       if (year >= 1644 && alive('SHUN')) return 'SHUN';
@@ -387,6 +384,109 @@ function historicalWarTarget(state: GameState, tag: string): string | null {
   }
   return null;
 }
+
+/**
+ * 反雪球合纵的参战资格：锁国/事大的日本、朝鲜不参与大陆合纵。
+ * 其余势力是否够格，交给 canStartScriptedWar 按「接壤 + 历史恩怨/体量」逐案判定，
+ * 避免荷兰、沙俄这类跨海/越境势力把大明当成头号威胁。
+ */
+function canJoinCoalition(tag: string): boolean {
+  return tag !== 'JAPAN' && tag !== 'JOSEON';
+}
+
+/**
+ * 剧本战争目标优先；若某势力版图占比 ≥38%，其余非锁国势力把它当头号威胁。
+ * 这是「威胁制衡」的简化实现（Phase 3.2 实测：完全移除会让 1650 清单极雪球），
+ * 但真正宣战前还要通过 canStartScriptedWar 的接壤/海运与兵力可行性检查。
+ */
+export function historicalWarTarget(state: GameState, tag: string): ScriptedWarTarget | null {
+  const dominant = dominantTag(state);
+  if (dominant && dominant.tag !== tag && dominant.share >= 0.38
+    && !areAllied(state, tag, dominant.tag)
+    && canJoinCoalition(tag)) {
+    return { target: dominant.tag, dominant: true };
+  }
+  const target = historicalTarget(state, tag);
+  return target ? { target, dominant: false } : null;
+}
+
+function sharesBorder(state: GameState, content: ContentIndex, a: string, b: string): boolean {
+  for (const province of Object.values(state.provinces)) {
+    if (province.controller !== a) continue;
+    const def = content.provinces.get(province.id);
+    if (!def) continue;
+    for (const neighborId of def.neighbors) {
+      if (state.provinces[neighborId]?.controller === b) return true;
+    }
+  }
+  return false;
+}
+
+function hasSeaReach(state: GameState, content: ContentIndex, a: string, b: string): boolean {
+  let aPort = false;
+  let bPort = false;
+  for (const province of Object.values(state.provinces)) {
+    if (province.controller !== a && province.controller !== b) continue;
+    if (!content.provinces.get(province.id)?.isPort) continue;
+    if (province.controller === a) aPort = true;
+    else bPort = true;
+    if (aPort && bPort) return true;
+  }
+  return false;
+}
+
+/**
+ * 剧本宣战的可行性门槛：必须能打到（接壤或双方有港口），且不是以卵击石。
+ * 流寇（大顺/大西）允许以弱击强；合纵成员门槛更低，以保留反雪球压力；
+ * 其他势力需要至少 35% 的兵力比，避免一省小国向大明宣战。
+ */
+export function canStartScriptedWar(
+  state: GameState,
+  content: ContentIndex,
+  tag: string,
+  scripted: ScriptedWarTarget,
+): boolean {
+  const def = content.countries.get(tag);
+  const nation = state.countries[tag];
+  const targetState = state.countries[scripted.target];
+  const targetDef = content.countries.get(scripted.target);
+  if (!def || !nation?.alive || !targetState?.alive || !targetDef) return false;
+  if (scripted.target === tag) return false;
+  if (areAllied(state, tag, scripted.target) || truceDays(state, tag, scripted.target) > 0) return false;
+  const touches = sharesBorder(state, content, tag, scripted.target);
+  if (!touches && !hasSeaReach(state, content, tag, scripted.target)) return false;
+  // 合纵只接受陆地邻国；荷兰、沙俄这类只能海运够到的势力不跟风围攻霸主。
+  if (scripted.dominant && !touches) return false;
+  const own = Math.max(1, armyStrengthOf(state, tag));
+  const enemy = Math.max(1, armyStrengthOf(state, scripted.target));
+  const minRatio = def.government === 'rebel' ? 0.12 : scripted.dominant ? 0.2 : 0.35;
+  if (own / enemy < minRatio) return false;
+  if (def.government !== 'rebel') {
+    const profile = aiProfile(state);
+    if (nation.treasury < profile.minTreasury * 0.4) return false;
+    if (nation.stability < profile.minStability * 0.5) return false;
+  }
+  return true;
+}
+
+/**
+ * 实际可执行的剧本战争目标：合纵目标打不到/打不过时，回落到该势力自己的历史目标。
+ * 否则「霸主太远」会让边缘势力永远不宣战，反而放大了霸主的雪球。
+ */
+export function manageableWarTarget(
+  state: GameState,
+  content: ContentIndex,
+  tag: string,
+): ScriptedWarTarget | null {
+  const scripted = historicalWarTarget(state, tag);
+  if (scripted && canStartScriptedWar(state, content, tag, scripted)) return scripted;
+  if (!scripted?.dominant) return null;
+  const fallback = historicalTarget(state, tag);
+  if (!fallback || fallback === scripted.target) return null;
+  const candidate: ScriptedWarTarget = { target: fallback, dominant: false };
+  return canStartScriptedWar(state, content, tag, candidate) ? candidate : null;
+}
+
 const HISTORICAL_TARGETS: Record<string, Record<string, string[]>> = {
   '1627': {
     MING: ['QING', 'SHUN', 'XI'], QING: ['MING', 'SHUN', 'MONGOL'], SHUN: ['MING', 'QING'], XI: ['MING', 'SHUN'],
@@ -400,7 +500,7 @@ const HISTORICAL_TARGETS: Record<string, Record<string, string[]>> = {
   },
   '1650': {
     QING: ['SMING', 'ZHENG', 'XI'], SMING: ['QING', 'XI'], ZHENG: ['QING', 'VOC'],
-    MONGOL: ['QING'], TIBET: ['QING', 'MONGOL'], VOC: ['ZHENG'], RUSSIA: ['MONGOL'],
+    MONGOL: ['QING'], TIBET: ['QING', 'MONGOL'], VOC: ['ZHENG'], RUSSIA: ['MONGOL', 'QING'],
     JAPAN: [], JOSEON: [],
   },
 };
@@ -468,12 +568,13 @@ function manageWar(state: GameState, content: ContentIndex, tag: string): void {
     }
     return;
   }
-  const scripted = historicalWarTarget(state, tag);
-  if (scripted && !areAtWar(state, tag, scripted) && state.day - nation.ai.lastWarDay >= 90) {
-    const war = declareWar(state, tag, scripted, '历史疆界', content);
+  const scripted = manageableWarTarget(state, content, tag);
+  if (scripted && !areAtWar(state, tag, scripted.target)
+    && state.day - nation.ai.lastWarDay >= 90) {
+    const war = declareWar(state, tag, scripted.target, scripted.dominant ? '天下共讨' : '历史疆界', content);
     if (war) {
       nation.ai.lastWarDay = state.day;
-      nation.ai.target = scripted;
+      nation.ai.target = scripted.target;
       return;
     }
   }

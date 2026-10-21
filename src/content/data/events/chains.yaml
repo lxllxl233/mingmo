@@ -20,7 +20,7 @@ events:
         effect:
           - set_flag: jiashen_started
           - add_treasury: -200000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - spawn_army: { province: beijing, template: guanning_army, size: 3 }
           - trigger_event: { id: MING_e_jiashen_2, delay_days: 10 }
       - id: move_south
@@ -29,8 +29,7 @@ events:
         ai_chance: 20
         effect:
           - set_flag: jiashen_started
-          - add_stability: -15
-          - add_mandate: -20
+          - add_all_estate_loyalty: -20
           - change_capital: nanjing
           - trigger_event: { id: MING_e_jiashen_2, delay_days: 20 }
       - id: hold
@@ -39,8 +38,7 @@ events:
         ai_chance: 40
         effect:
           - set_flag: jiashen_started
-          - add_stability: 10
-          - add_mandate: 5
+          - add_all_estate_loyalty: 11.25
           - trigger_event: { id: MING_e_jiashen_2, delay_days: 20 }
 
   - id: MING_e_jiashen_2
@@ -59,8 +57,7 @@ events:
         name: 许吴三桂开关
         ai_chance: 45
         effect:
-          - add_stability: -10
-          - add_mandate: -10
+          - add_all_estate_loyalty: -12.5
           - change_owner: { province: shanhaiguan, to: QING }
           - trigger_event: { id: MING_e_jiashen_3, delay_days: 15 }
       - id: order_hold
@@ -87,16 +84,14 @@ events:
         name: 死社稷
         ai_chance: 50
         effect:
-          - add_stability: -20
-          - add_mandate: -30
+          - add_all_estate_loyalty: -27.5
           - change_owner: { province: beijing, to: SHUN }
           - add_treasury: -300000
       - id: flee
         name: 南渡
         ai_chance: 50
         effect:
-          - add_stability: -8
-          - add_mandate: -15
+          - add_all_estate_loyalty: -11.75
           - change_capital: nanjing
           - change_owner: { province: beijing, to: SHUN }
 
@@ -119,16 +114,14 @@ events:
         ai_chance: 65
         effect:
           - set_flag: qing_succession
-          - add_stability: 5
-          - add_authority: 5
+          - add_all_estate_loyalty: 7.5
           - trigger_event: { id: QING_e_entry_2, delay_days: 30 }
       - id: haoge
         name: 豪格争位
         ai_chance: 35
         effect:
           - set_flag: qing_succession
-          - add_stability: -8
-          - add_authority: -5
+          - add_all_estate_loyalty: -10.5
           - trigger_event: { id: QING_e_entry_2, delay_days: 30 }
 
   - id: QING_e_entry_2
@@ -156,7 +149,7 @@ events:
         ai_chance: 30
         effect:
           - set_flag: qing_waited
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - trigger_event: { id: QING_e_entry_3, delay_days: 60 }
 
   - id: QING_e_entry_3
@@ -175,14 +168,13 @@ events:
         name: 为崇祯复仇
         ai_chance: 55
         effect:
-          - add_mandate: 10
-          - add_stability: 5
+          - add_all_estate_loyalty: 7.5
           - change_owner: { province: beijing, to: QING }
       - id: conquer
         name: 直接南下
         ai_chance: 45
         effect:
-          - add_mandate: 3
+          - add_all_estate_loyalty: 0.75
           - add_modifier: { unrest_monthly: 0.5 }
           - change_owner: { province: beijing, to: QING }
           - add_treasury: -100000
@@ -206,15 +198,14 @@ events:
         ai_chance: 70
         effect:
           - set_flag: shun_emperor
-          - add_stability: 5
-          - add_mandate: 10
+          - add_all_estate_loyalty: 7.5
           - trigger_event: { id: SHUN_e_east_2, delay_days: 15 }
       - id: consolidate
         name: 先固关中
         ai_chance: 30
         effect:
           - set_flag: shun_emperor
-          - add_stability: 8
+          - add_all_estate_loyalty: 8
           - add_treasury: 100000
           - trigger_event: { id: SHUN_e_east_2, delay_days: 60 }
 
@@ -236,7 +227,7 @@ events:
         effect:
           - set_flag: shun_speed
           - add_treasury: -50000
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - trigger_event: { id: SHUN_e_east_3, delay_days: 10 }
       - id: slow
         name: 稳扎稳打
@@ -244,7 +235,7 @@ events:
         effect:
           - set_flag: shun_slow
           - add_treasury: -100000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - trigger_event: { id: SHUN_e_east_3, delay_days: 30 }
 
   - id: SHUN_e_east_3
@@ -263,14 +254,14 @@ events:
         name: 遣使招降
         ai_chance: 35
         effect:
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_treasury: -30000
           - change_owner: { province: beijing, to: SHUN }
       - id: assault
         name: 强攻北京
         ai_chance: 65
         effect:
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_treasury: -50000
           - change_owner: { province: beijing, to: SHUN }
           - add_modifier: { unrest_monthly: 0.4 }
@@ -293,7 +284,7 @@ events:
         ai_chance: 60
         effect:
           - set_flag: xi_chengdu
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_treasury: 100000
           - trigger_event: { id: XI_e_sichuan_2, delay_days: 20 }
       - id: appease
@@ -301,7 +292,7 @@ events:
         ai_chance: 40
         effect:
           - set_flag: xi_chengdu
-          - add_stability: 8
+          - add_all_estate_loyalty: 8
           - add_estate_loyalty: { estate: landlords, value: 5 }
           - trigger_event: { id: XI_e_sichuan_2, delay_days: 30 }
 
@@ -322,7 +313,7 @@ events:
         ai_chance: 40
         effect:
           - set_flag: xi_emperor
-          - add_stability: 6
+          - add_all_estate_loyalty: 6
           - add_estate_loyalty: { estate: landlords, value: 8 }
           - trigger_event: { id: XI_e_sichuan_3, delay_days: 30 }
       - id: terror
@@ -330,7 +321,7 @@ events:
         ai_chance: 60
         effect:
           - set_flag: xi_emperor
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_estate_loyalty: { estate: landlords, value: -15 }
           - add_modifier: { unrest_monthly: 0.6 }
           - trigger_event: { id: XI_e_sichuan_3, delay_days: 20 }
@@ -353,13 +344,13 @@ events:
         effect:
           - add_relation: { target: SMING, value: 30 }
           - add_treasury: -50000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
       - id: fight
         name: 独立支撑
         ai_chance: 55
         effect:
           - add_manpower: 10000
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_modifier: { army_attack_pct: 3 }
 
   # ══ 南明 · 继统 ══════════════════════════════════════
@@ -381,7 +372,7 @@ events:
         ai_chance: 55
         effect:
           - set_flag: sming_founded
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - add_faction_influence: { donglin: -5, military: 5 }
           - trigger_event: { id: SMING_e_legit_2, delay_days: 20 }
       - id: luwang
@@ -389,7 +380,7 @@ events:
         ai_chance: 45
         effect:
           - set_flag: sming_founded
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_faction_influence: { donglin: 8, military: -5 }
           - trigger_event: { id: SMING_e_legit_2, delay_days: 20 }
 
@@ -409,14 +400,14 @@ events:
         name: 倚重史可法
         ai_chance: 50
         effect:
-          - add_stability: 6
+          - add_all_estate_loyalty: 6
           - add_estate_loyalty: { estate: landlords, value: 5 }
           - trigger_event: { id: SMING_e_legit_3, delay_days: 30 }
       - id: back_ma
         name: 倚重马士英
         ai_chance: 50
         effect:
-          - add_corruption: 5
+          - add_all_estate_loyalty: -2.5
           - add_faction_influence: { military: 8, donglin: -8 }
           - trigger_event: { id: SMING_e_legit_3, delay_days: 30 }
 
@@ -443,7 +434,7 @@ events:
         name: 裁抑藩镇
         ai_chance: 45
         effect:
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_army_loyalty: -8
           - add_modifier: { army_defense_pct: 3 }
 
@@ -467,14 +458,14 @@ events:
         effect:
           - set_flag: zheng_taiwan_plan
           - add_treasury: -100000
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - trigger_event: { id: ZHENG_e_taiwan_2, delay_days: 30 }
       - id: stay
         name: 固守金厦
         ai_chance: 35
         effect:
           - set_flag: zheng_taiwan_plan
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_modifier: { naval_attack_pct: 5 }
           - trigger_event: { id: ZHENG_e_taiwan_2, delay_days: 60 }
 
@@ -523,7 +514,7 @@ events:
         name: 允其体面撤走
         ai_chance: 50
         effect:
-          - add_stability: 8
+          - add_all_estate_loyalty: 8
           - add_treasury: 50000
           - change_owner: { province: anping, to: ZHENG }
       - id: harsh
@@ -531,7 +522,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 150000
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - change_owner: { province: anping, to: ZHENG }
 
   # ══ 蒙古 · 林丹汗 ════════════════════════════════════
@@ -554,7 +545,7 @@ events:
         effect:
           - set_flag: mongol_westward
           - add_treasury: -50000
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - trigger_event: { id: MONGOL_e_lin_2, delay_days: 60 }
       - id: fight
         name: 回头决战
@@ -562,7 +553,7 @@ events:
         effect:
           - set_flag: mongol_westward
           - add_manpower: 10000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - trigger_event: { id: MONGOL_e_lin_2, delay_days: 30 }
 
   - id: MONGOL_e_lin_2
@@ -583,7 +574,7 @@ events:
         ai_chance: 55
         effect:
           - set_flag: mongol_submit
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - add_relation: { target: QING, value: 30 }
           - add_treasury: 50000
           - trigger_event: { id: MONGOL_e_lin_3, delay_days: 30 }
@@ -592,7 +583,7 @@ events:
         ai_chance: 45
         effect:
           - set_flag: mongol_resist
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_manpower: 15000
           - trigger_event: { id: MONGOL_e_lin_3, delay_days: 30 }
 
@@ -620,7 +611,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: -50000
-          - add_modifier: { cavalry_attack_pct: 8, stability_monthly: -0.05 }
+          - add_modifier: { estate_loyalty_monthly: -0.05, cavalry_attack_pct: 8 }
 
   # ══ 朝鲜 · 丙子 ══════════════════════════════════════
   - id: JOSEON_e_bingzi_1
@@ -641,7 +632,7 @@ events:
         ai_chance: 55
         effect:
           - set_flag: joseon_bingzi
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - add_manpower: 10000
           - trigger_event: { id: JOSEON_e_bingzi_2, delay_days: 15 }
       - id: negotiate
@@ -649,7 +640,7 @@ events:
         ai_chance: 45
         effect:
           - set_flag: joseon_bingzi
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_treasury: -50000
           - trigger_event: { id: JOSEON_e_bingzi_2, delay_days: 15 }
 
@@ -670,7 +661,7 @@ events:
         ai_chance: 60
         effect:
           - set_flag: joseon_submit
-          - add_stability: -10
+          - add_all_estate_loyalty: -10
           - add_treasury: -100000
           - add_relation: { target: QING, value: 20 }
           - trigger_event: { id: JOSEON_e_bingzi_3, delay_days: 15 }
@@ -679,7 +670,7 @@ events:
         ai_chance: 40
         effect:
           - set_flag: joseon_hold
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_manpower: -10000
           - trigger_event: { id: JOSEON_e_bingzi_3, delay_days: 15 }
 
@@ -699,14 +690,14 @@ events:
         name: 忍辱事清
         ai_chance: 65
         effect:
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - add_treasury: -100000
           - add_relation: { target: QING, value: 30 }
       - id: secret
         name: 阴结明朝
         ai_chance: 35
         effect:
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_relation: { target: MING, value: 30 }
           - add_relation: { target: QING, value: -20 }
 
@@ -730,7 +721,7 @@ events:
         effect:
           - set_flag: japan_shimabara
           - add_treasury: -80000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - trigger_event: { id: JAPAN_e_sakoku_2, delay_days: 30 }
       - id: concede
         name: 减免年贡
@@ -738,7 +729,7 @@ events:
         effect:
           - set_flag: japan_shimabara
           - add_treasury: -50000
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - add_estate_loyalty: { estate: peasants, value: 8 }
           - trigger_event: { id: JAPAN_e_sakoku_2, delay_days: 30 }
 
@@ -759,8 +750,8 @@ events:
         ai_chance: 60
         effect:
           - set_flag: japan_closed
-          - add_stability: 8
-          - add_modifier: { trade_efficiency_pct: -8, corruption_monthly: -0.02 }
+          - add_all_estate_loyalty: 8
+          - add_modifier: { estate_loyalty_monthly: 0.01, trade_efficiency_pct: -8 }
           - trigger_event: { id: JAPAN_e_sakoku_3, delay_days: 60 }
       - id: limited
         name: 有限通商
@@ -794,7 +785,7 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: 100000
-          - add_modifier: { trade_efficiency_pct: 8, stability_monthly: -0.03 }
+          - add_modifier: { estate_loyalty_monthly: -0.03, trade_efficiency_pct: 8 }
 
   # ══ 西藏 · 固始汗 ════════════════════════════════════
   - id: TIBET_e_gushi_1
@@ -815,15 +806,14 @@ events:
         ai_chance: 60
         effect:
           - set_flag: tibet_gushi
-          - add_stability: 8
-          - add_mandate: 5
+          - add_all_estate_loyalty: 9.25
           - trigger_event: { id: TIBET_e_gushi_2, delay_days: 30 }
       - id: negotiate
         name: 与藏巴汗议和
         ai_chance: 40
         effect:
           - set_flag: tibet_gushi
-          - add_stability: 4
+          - add_all_estate_loyalty: 4
           - add_treasury: -30000
           - trigger_event: { id: TIBET_e_gushi_2, delay_days: 30 }
 
@@ -844,7 +834,7 @@ events:
         ai_chance: 55
         effect:
           - set_flag: tibet_theocracy
-          - add_stability: 6
+          - add_all_estate_loyalty: 6
           - add_estate_loyalty: { estate: landlords, value: 10 }
           - add_treasury: -50000
           - trigger_event: { id: TIBET_e_gushi_3, delay_days: 30 }
@@ -853,7 +843,7 @@ events:
         ai_chance: 45
         effect:
           - set_flag: tibet_balance
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_estate_loyalty: { estate: ruling, value: 8 }
           - trigger_event: { id: TIBET_e_gushi_3, delay_days: 30 }
 
@@ -875,7 +865,7 @@ events:
         effect:
           - add_treasury: 50000
           - add_relation: { target: QING, value: 30 }
-          - add_mandate: 5
+          - add_all_estate_loyalty: 1.25
       - id: mongol
         name: 依靠和硕特
         ai_chance: 45
@@ -938,7 +928,7 @@ events:
         effect:
           - set_flag: voc_surrender
           - add_treasury: -100000
-          - add_stability: -5
+          - add_all_estate_loyalty: -5
           - trigger_event: { id: VOC_e_zeelandia_3, delay_days: 20 }
 
   - id: VOC_e_zeelandia_3
@@ -1024,7 +1014,7 @@ events:
         ai_chance: 45
         effect:
           - set_flag: russia_withdraw
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - add_treasury: -30000
           - trigger_event: { id: RUSSIA_e_albazin_3, delay_days: 30 }
 
@@ -1052,7 +1042,7 @@ events:
         ai_chance: 45
         effect:
           - add_manpower: 10000
-          - add_modifier: { army_attack_pct: 4, stability_monthly: -0.05 }
+          - add_modifier: { estate_loyalty_monthly: -0.05, army_attack_pct: 4 }
 
 event_chains:
   - { id: MING_chain_jiashen, name: 甲申, stages: [MING_e_jiashen_1, MING_e_jiashen_2, MING_e_jiashen_3], on_complete: [] }

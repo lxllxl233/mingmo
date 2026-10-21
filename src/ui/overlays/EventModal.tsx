@@ -23,7 +23,6 @@ function previewLines(effects: Effect[], country: CountryState): PreviewLine[] {
     ['国库', country.treasury, sumEffect(effects, effect => ('addTreasury' in effect ? effect.addTreasury : undefined))],
     ['粮储', country.food, sumEffect(effects, effect => ('addFood' in effect ? effect.addFood : undefined))],
     ['兵源', country.manpower, sumEffect(effects, effect => ('addManpower' in effect ? effect.addManpower : undefined))],
-    ['稳定', country.stability, sumEffect(effects, effect => ('addStability' in effect ? effect.addStability : undefined))],
   ];
   return rows
     .filter(([, , delta]) => delta !== 0)

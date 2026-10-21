@@ -144,33 +144,12 @@ export const MODIFIER_DEFS = {
     consumer: 'focus',
     description: '提高国策进度。',
   },
-  stability_monthly: {
-    label: '稳定/月',
+  estate_loyalty_monthly: {
+    label: '各阶级忠诚/月',
     scope: 'country',
     kind: 'monthly',
     consumer: 'economy',
-    description: '每月稳定变化。',
-  },
-  mandate_monthly: {
-    label: '天命/月',
-    scope: 'country',
-    kind: 'monthly',
-    consumer: 'economy',
-    description: '每月天命变化。',
-  },
-  corruption_monthly: {
-    label: '腐败/月',
-    scope: 'country',
-    kind: 'monthly',
-    consumer: 'economy',
-    description: '每月腐败变化。',
-  },
-  authority_monthly: {
-    label: '皇权/月',
-    scope: 'country',
-    kind: 'monthly',
-    consumer: 'politics',
-    description: '每月皇权变化。',
+    description: '每月同时改变所有阶级的忠诚；稳定与天命由月结折算。',
   },
   unrest_monthly: {
     label: '动乱/月',

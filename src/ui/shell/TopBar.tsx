@@ -1,4 +1,4 @@
-import { memo, useState, type ReactNode } from 'react';
+import { memo, useEffect, useState, type ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { formatDate } from '../../engine/core/clock';
 import { sound } from '../../app/audio/sound';
@@ -297,6 +297,35 @@ function TopBarStats() {
   );
 }
 
+/** 全屏游玩：浏览器支持 Fullscreen API 时可用，失败时静默保持窗口模式。 */
+function FullscreenButton() {
+  const [fullscreen, setFullscreen] = useState(false);
+  const [supported, setSupported] = useState(true);
+  useEffect(() => {
+    const sync = () => setFullscreen(Boolean(document.fullscreenElement));
+    setSupported(Boolean(document.fullscreenEnabled));
+    sync();
+    document.addEventListener('fullscreenchange', sync);
+    return () => document.removeEventListener('fullscreenchange', sync);
+  }, []);
+  const toggle = () => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => {});
+    } else {
+      void document.documentElement.requestFullscreen().catch(() => {});
+    }
+  };
+  return (
+    <button
+      title={supported ? (fullscreen ? '退出全屏' : '全屏游玩') : '当前浏览器不支持全屏'}
+      disabled={!supported}
+      onClick={toggle}
+    >
+      {fullscreen ? '退出全屏' : '全屏'}
+    </button>
+  );
+}
+
 export const TopBar = memo(function TopBar() {
   const save = useGameStore(state => state.save);
   const load = useGameStore(state => state.load);
@@ -308,6 +337,7 @@ export const TopBar = memo(function TopBar() {
       <TopBarStats />
       <span className="spacer" />
       <MusicControl />
+      <FullscreenButton />
       <button
         title={muted ? '打开音效' : '关闭音效'}
         onClick={() => {

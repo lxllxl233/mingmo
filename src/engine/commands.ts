@@ -9,6 +9,7 @@ import { cancelFocus, startFocus } from './systems/focus';
 import { cancelResearch, startResearch } from './systems/research';
 import { startTaxReform } from './systems/tax';
 import { chooseEventOption } from './systems/events';
+import { distributeAllocation, estateAllocationFloor } from './systems/economy';
 import { setArmyPath } from './systems/military';
 import { enqueueTraining } from './systems/training';
 import { startCoreIntegration } from './systems/core';
@@ -145,7 +146,31 @@ export function dispatch(state: GameState, command: Command, content: ContentInd
     case 'economy.setAllocation': {
       const nation = state.countries[tag];
       if (!nation || !nation.estates[command.estate]) throw new CommandError('estate not found');
-      nation.allocation[command.estate] = Math.max(0, Math.min(100, command.value));
+      if (!Number.isFinite(command.value)) throw new CommandError('invalid allocation');
+      const configs = content.countryEstates.get(tag) ?? [];
+      const keys = configs.length > 0 ? configs.map(config => config.key) : Object.keys(nation.estates);
+      const values: Record<string, number> = {};
+      const floors: Record<string, number> = {};
+      for (const key of keys) {
+        const estate = nation.estates[key];
+        if (!estate) continue;
+        values[key] = key === command.estate
+          ? command.value
+          : (nation.allocation[key] ?? 100 / Math.max(1, keys.length));
+        floors[key] = estateAllocationFloor(
+          content,
+          tag,
+          key,
+          estate.influence,
+          estate.allocationUnlocked,
+        );
+      }
+      // 立即按「既得利益下限」归一化并写回，避免靠抬高其他阶级稀释锁定的份额；
+      // 被拖动的阶级优先满足目标值，其余阶级吸收差额。
+      const normalized = distributeAllocation(values, floors, command.estate);
+      for (const [key, percent] of Object.entries(normalized)) {
+        nation.allocation[key] = Math.round(percent * 10) / 10;
+      }
       break;
     }
     case 'economy.setFoodPurchasePct': {

@@ -101,6 +101,7 @@ describe('save format', () => {
       taxLaw,
       privileges: key === 'gentry' ? ['priv_gentry_hidden_land'] : [],
       reform: null,
+      allocationUnlocked: false,
       cooldownDays: 0,
       collected: 100,
       effectiveRate: 0.05,
@@ -140,7 +141,7 @@ describe('save format', () => {
     expect(Object.values(migrated.allocation).reduce((sum, value) => sum + value, 0)).toBeCloseTo(100, 6);
     expect(Object.values(loaded.armies).find(entry => entry.id === army.id)?.sourceEstate).toBe('ruling');
     expect(migrated.lastReport).toBeNull();
-    expect(Object.keys(loaded.countries['MONGOL']?.estates ?? {})).toHaveLength(3);
+    expect(Object.keys(loaded.countries['MONGOL']?.estates ?? {})).toHaveLength(4);
   });
 
   it('clamps impossible old casualty totals', () => {

@@ -105,25 +105,158 @@ function lawOf(content: ContentIndex, nation: CountryState, estateKey: string): 
   return estate ? content.taxLaws.get(estate.taxLaw) : undefined;
 }
 
+/** 没有写 population_share 时的全局兜底（按传统农业社会估算）。 */
 const POPULATION_WEIGHTS: Record<string, number> = {
-  ruling: 0.12,
-  merchants: 0.06,
-  landlords: 0.14,
-  artisans: 0.10,
-  peasants: 0.58,
+  ruling: 0.04,
+  merchants: 0.03,
+  landlords: 0.05,
+  artisans: 0.07,
+  peasants: 0.81,
 };
 
 export function estatePopulationShare(content: ContentIndex, tag: string, estateKey: string): number {
   const configs = content.countryEstates.get(tag) ?? [];
-  const total = configs.reduce((sum, config) => sum + (POPULATION_WEIGHTS[config.key] ?? 0.05), 0);
+  const config = configs.find(entry => entry.key === estateKey);
+  if (config?.populationShare !== undefined) return config.populationShare;
+  const total = configs.reduce((sum, entry) => sum + (POPULATION_WEIGHTS[entry.key] ?? 0.05), 0);
   return total > 0 ? (POPULATION_WEIGHTS[estateKey] ?? 0.05) / total : 0;
+}
+
+/**
+ * 该阶级的史实惯例分配（content 里的开局份额）。
+ * 阶级对分配的不满以「惯例」为基准：封建财富结构里农民人口多、财富少是常态，
+ * 不能拿人口占比当应得份额，否则开局就永久扣忠诚。玩家把份额调离惯例才会引发不满。
+ */
+export function customaryAllocationShare(content: ContentIndex, tag: string, estateKey: string): number {
+  const configs = content.countryEstates.get(tag) ?? [];
+  const config = configs.find(entry => entry.key === estateKey);
+  if (config) return config.incomeShare;
+  return 1 / Math.max(1, configs.length);
 }
 export function stabilityFactor(stability: number): number {
   return 0.38 + Math.max(0, Math.min(100, stability)) / 220;
 }
 
 export function minimumAllocationShare(influence: number): number {
-  return Math.min(45, 2 + Math.max(0, influence) * 0.13);
+  // 影响力只保留一个较低的“政治底线”，不再用高门槛把农民份额挤给精英。
+  return Math.min(20, 0.5 + Math.max(0, influence) * 0.04);
+}
+
+/** 影响力为 0 时，一个阶级最多可比惯例份额低多少个百分点。 */
+export const ALLOCATION_BAND_BASE = 16;
+/** 影响力每高 1 点，可下调幅度收窄多少个百分点。 */
+export const ALLOCATION_BAND_PER_INFLUENCE = 0.25;
+/** 无论影响力多高，都保留的最小可动幅度（百分点）。 */
+export const ALLOCATION_BAND_MIN = 2;
+
+/**
+ * 既得利益的“可动幅度”：影响力越高，越难把财富从该阶级手里拿走。
+ * 明朝末年的士绅/宗藩不是玩家拖一下滑块就能清零的——必须先改革税制。
+ */
+export function allocationMovementBand(influence: number): number {
+  return Math.max(
+    ALLOCATION_BAND_MIN,
+    ALLOCATION_BAND_BASE - Math.max(0, influence) * ALLOCATION_BAND_PER_INFLUENCE,
+  );
+}
+
+/**
+ * 该阶级分配份额的可动下限（百分点）。
+ * 未改革时以史实惯例份额为锚，只能下调一个很小的幅度；改革后只剩政治底线。
+ */
+export function estateAllocationFloor(
+  content: ContentIndex,
+  tag: string,
+  estateKey: string,
+  influence: number,
+  unlocked: boolean,
+): number {
+  const minimum = minimumAllocationShare(influence);
+  if (unlocked) return minimum;
+  const configs = content.countryEstates.get(tag) ?? [];
+  const config = configs.find(entry => entry.key === estateKey);
+  if (!config) return minimum;
+  return Math.max(minimum, config.incomeShare * 100 - allocationMovementBand(influence));
+}
+
+/**
+ * 带下限的归一化：先把每个阶级抬到下限，再把剩余份额按「超出下限的部分」比例分配。
+ * 这样无论玩家怎么拖，任何阶级都不会被压到其可动下限以下，且总和恒为 100。
+ *
+ * `priorityKey` 用于玩家直接拖动的那个阶级：它的目标值优先满足（仍受上下限约束），
+ * 其余阶级再按超出下限的比例吸收差额。否则玩家拖到最右端时，份额会被其他阶级
+ * 的“高于下限部分”按比例摊薄，看起来像拖不动。
+ */
+export function distributeAllocation(
+  values: Record<string, number>,
+  floors: Record<string, number>,
+  priorityKey?: string,
+): Record<string, number> {
+  const keys = Object.keys(values);
+  if (keys.length === 0) return {};
+  const effectiveFloor: Record<string, number> = {};
+  let floorTotal = 0;
+  for (const key of keys) {
+    effectiveFloor[key] = clamp(floors[key] ?? 0, 0, 100);
+    floorTotal += effectiveFloor[key]!;
+  }
+  // 内容配置异常时（下限之和超过 100），按比例压缩下限，至少保证可以分配。
+  if (floorTotal > 100) {
+    const scale = 100 / floorTotal;
+    for (const key of keys) effectiveFloor[key]! *= scale;
+    floorTotal = 100;
+  }
+  const valueOf = (key: string): number =>
+    Number.isFinite(values[key]) ? Math.max(0, values[key]!) : 0;
+  const aboveFloor: Record<string, number> = {};
+  let extraTotal = 0;
+  for (const key of keys) {
+    aboveFloor[key] = Math.max(0, valueOf(key) - effectiveFloor[key]!);
+    extraTotal += aboveFloor[key]!;
+  }
+  const available = Math.max(0, 100 - floorTotal);
+  const result: Record<string, number> = {};
+
+  const priorityFloor = priorityKey !== undefined ? effectiveFloor[priorityKey] : undefined;
+  if (priorityKey !== undefined && priorityFloor !== undefined) {
+    const otherFloorTotal = floorTotal - priorityFloor;
+    const target = clamp(
+      valueOf(priorityKey),
+      priorityFloor,
+      Math.max(priorityFloor, 100 - otherFloorTotal),
+    );
+    const otherAvailable = Math.max(0, 100 - target);
+    let otherExtraTotal = 0;
+    for (const key of keys) {
+      if (key === priorityKey) continue;
+      otherExtraTotal += aboveFloor[key]!;
+    }
+    const freeForOthers = Math.max(0, otherAvailable - otherFloorTotal);
+    result[priorityKey] = target;
+    for (const key of keys) {
+      if (key === priorityKey) continue;
+      const base = effectiveFloor[key]!;
+      if (otherExtraTotal > 0) {
+        result[key] = base + freeForOthers * aboveFloor[key]! / otherExtraTotal;
+      } else if (otherFloorTotal > 0) {
+        result[key] = base + freeForOthers * base / otherFloorTotal;
+      } else {
+        result[key] = freeForOthers / Math.max(1, keys.length - 1);
+      }
+    }
+    return result;
+  }
+
+  for (const key of keys) {
+    if (extraTotal > 0) {
+      result[key] = effectiveFloor[key]! + available * aboveFloor[key]! / extraTotal;
+    } else if (floorTotal > 0) {
+      result[key] = effectiveFloor[key]! + available * effectiveFloor[key]! / floorTotal;
+    } else {
+      result[key] = 100 / keys.length;
+    }
+  }
+  return result;
 }
 
 function normalizedAllocation(
@@ -132,24 +265,44 @@ function normalizedAllocation(
 ): { shares: Record<string, number>; minimums: Record<string, number>; unallocated: number } {
   const configs = content.countryEstates.get(nation.tag) ?? [];
   const keys = configs.length > 0 ? configs.map(config => config.key) : Object.keys(nation.estates);
-  const raw: Record<string, number> = {};
+  const values: Record<string, number> = {};
+  const floors: Record<string, number> = {};
   const minimums: Record<string, number> = {};
   for (const key of keys) {
     const estate = nation.estates[key];
     if (!estate) continue;
     minimums[key] = minimumAllocationShare(estate.influence);
-    raw[key] = Math.max(minimums[key], nation.allocation[key] ?? 100 / Math.max(1, keys.length));
+    floors[key] = estateAllocationFloor(
+      content,
+      nation.tag,
+      key,
+      estate.influence,
+      estate.allocationUnlocked,
+    );
+    values[key] = nation.allocation[key] ?? 100 / Math.max(1, keys.length);
   }
   // 未分配自动归一化：所有份额始终缩放到 100%，不再保留「未分配」黑洞。
-  const total = Object.values(raw).reduce((sum, value) => sum + value, 0);
-  const scale = total > 0 ? 100 / total : 0;
+  const normalized = distributeAllocation(values, floors);
   const shares: Record<string, number> = {};
-  for (const key of Object.keys(raw)) {
-    const percent = raw[key]! * scale;
+  for (const key of Object.keys(normalized)) {
+    const percent = normalized[key]!;
     shares[key] = percent / 100;
     nation.allocation[key] = Math.round(percent * 10) / 10;
   }
   return { shares, minimums, unallocated: 0 };
+}
+
+/**
+ * 基层维稳支出：只针对农民/匠户，按其人口占比与不满程度计费。
+ *
+ * `referenceIncome` 是「按史实惯例分配推算的参考税收」，不是当前分配下的实际税收。
+ * 若直接用实际税收，玩家把财富分给税率更高的农民会抬高税基，维稳费反而上涨，
+ * 与「让基层过得更好 → 维稳更便宜」的直觉相反；惯例分配下的参考值则不受调份额影响，
+ * 只随税制、吏治与忠诚缓慢变化。
+ */
+export function bottomMaintenanceCost(referenceIncome: number, popShare: number, loyalty: number): number {
+  return Math.max(0, referenceIncome) * clamp(popShare, 0, 1)
+    * (1 - clamp(loyalty, 0, 100) / 100) * 0.55;
 }
 
 export function bottomClassState(
@@ -207,6 +360,8 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const { shares, unallocated } = normalizedAllocation(content, nation);
     const grainPrice = Math.max(0.1, content.balance.economy.grainPrice * (1 + nation.inflation / 200));
     let totalTax = 0;
+    // 同一套税制/吏治下，按史实惯例份额能收上来的银税；只用于基层维稳基数。
+    let customaryTax = 0;
     let foodIncome = 0;
     const silverByEstate: Record<string, number> = {};
     const foodByEstate: Record<string, number> = {};
@@ -239,6 +394,10 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       const silverTax = tax * silverShare * monetization;
       const foodTax = (tax - tax * silverShare) / grainPrice;
       totalTax += silverTax;
+      // silverTax 与分配份额成正比（其余因子相同），按惯例份额等比换算即可。
+      if (share > 0) {
+        customaryTax += silverTax * customaryAllocationShare(content, nation.tag, estate.key) / share;
+      }
       foodIncome += foodTax;
       silverByEstate[estate.key] = silverTax;
       foodByEstate[estate.key] = foodTax;
@@ -246,18 +405,19 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     }
 
     const blockade = blockadePenalty(state, content, nation.tag);
-    if (blockade > 0) totalTax *= 1 - blockade;
-    const overextension = Math.min(0.25, Math.max(0, (provinces.length - 120) / 480) * 0.4);
-    if (overextension > 0) totalTax *= 1 - overextension;
+    const conquestFactor = (1 - (blockade > 0 ? blockade : 0))
+      * (1 - (Math.min(0.25, Math.max(0, (provinces.length - 120) / 480) * 0.4)));
+    totalTax *= conquestFactor;
     const tradePostIncome = tradePostMonthlyIncome(state, content, nation.tag);
     const sakokuIncome = sakokuMonthlyIncome(state, content, nation.tag);
     const totalIncome = totalTax + tradePostIncome + sakokuIncome;
+    const referenceIncome = customaryTax * conquestFactor + tradePostIncome + sakokuIncome;
     const averageLoyalty = Object.values(nation.estates).reduce((sum, estate) => sum + estate.loyalty, 0)
       / Math.max(1, Object.values(nation.estates).length);
     const corruptionLoss = totalIncome * clamp(nation.corruption / 135, 0, 0.85);
     // 维稳成本只由基层（农民/小生产者）承担；精英忠诚通过稳定与天命影响国家。
     const bottom = bottomClassState(content, nation);
-    const loyaltyCost = totalIncome * bottom.popShare * (1 - bottom.loyalty / 100) * 0.55;
+    const loyaltyCost = bottomMaintenanceCost(referenceIncome, bottom.popShare, bottom.loyalty);
     // 腐败按各阶级税基与影响力归属，Σ corruptionByEstate = corruptionLoss。
     const corruptionByEstate: Record<string, number> = {};
     const corruptionWeights: Record<string, number> = {};
@@ -273,9 +433,9 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
     const armyPay = monthlyArmyPay(state, content, nation.tag);
     const armyFood = armyStrengthOf(state, nation.tag) * content.balance.economy.armyFoodPerManMonth
       * (content.countries.get(nation.tag)?.government === 'rebel' ? 0.7 : 1);
-    const pressure = content.countries.get(nation.tag)?.pressure;
-    const pressureCost = pressure
-      ? pressure.silverPerMonth + provinces.length * pressure.silverPerProvince
+    const structuralPressure = content.countries.get(nation.tag)?.pressure;
+    const pressureCost = structuralPressure
+      ? structuralPressure.silverPerMonth + provinces.length * structuralPressure.silverPerProvince
       : 0;
     // 现金瀑布：先军饷，再购粮；购粮不足不形成债务，只有军饷缺口计入欠饷。
     let priorDebt = 0;
@@ -393,16 +553,21 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       const law = lawOf(content, nation, estate.key);
       if (!law) continue;
       const sensitivity = content.estateDefs.get(estate.key)?.sensitivity ?? 1;
-      const fairness = ((shares[estate.key] ?? 0) - estatePopulationShare(content, nation.tag, estate.key)) * 3;
+      const fairness = ((shares[estate.key] ?? 0) - customaryAllocationShare(content, nation.tag, estate.key)) * 3;
       const pressure = (estate.customaryRate - law.rate) * sensitivity * 4;
-      estate.loyalty = clamp(estate.loyalty + fairness + pressure + law.loyaltyDrift * 0.3, 0, 100);
+      estate.loyalty = clamp(
+        estate.loyalty + fairness + pressure + law.loyaltyDrift * 0.3
+        + (modifiers['estate_loyalty_monthly'] ?? 0)
+        + (structuralPressure?.estateLoyaltyMonthly ?? 0),
+        0,
+        100,
+      );
       estate.customaryRate += (law.rate - estate.customaryRate) * 0.02;
       estate.effectiveRate = law.rate;
     }
 
     nation.corruption = clamp(
       nation.corruption + content.balance.economy.corruptionDrift
-      + (modifiers['corruption_monthly'] ?? 0)
       + hoardPressure * 0.6
       + ((rulers?.loyalty ?? 50) < 30 ? 0.12 : 0)
       - nation.authority / 1000,
@@ -419,7 +584,6 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       nation.stability
       + (stabilityTarget - nation.stability) * 0.12
       + content.balance.economy.stabilityDrift * 0.4
-      + (modifiers['stability_monthly'] ?? 0)
       + (nation.treasury > 0 ? 0.02 : -0.08)
       + (foodShortage ? -0.25 : 0.01)
       - nation.warExhaustion / 1000,
@@ -430,8 +594,7 @@ export function runMonthlyEconomy(state: GameState, content: ContentIndex): void
       nation.mandate
       + (averageLoyalty - 50) / 600
       + (nation.stability - 50) / 1000
-      - nation.corruption / 1200
-      + (modifiers['mandate_monthly'] ?? 0),
+      - nation.corruption / 1200,
       0,
       100,
     );

@@ -17,7 +17,7 @@ export function WarAlertModal() {
   const defender = content.countries.get(alert.defender);
   return (
     <div className="event-overlay">
-      <div className="event-modal war-alert-modal">
+      <div className="modal war-alert-modal">
         <p className="eyebrow">急报 · 宣战</p>
         <h2>{attacker?.name ?? alert.attacker} 向 {defender?.name ?? alert.defender} 宣战</h2>
         <p className="war-alert-goal">战争目标：{alert.goal || '边境争端'}</p>

@@ -1,5 +1,12 @@
 import { useRef, useState } from 'react';
-import { estatePopulationShare, minimumAllocationShare, stabilityFactor } from '../../engine/systems/economy';
+import {
+  distributeAllocation,
+  estateAllocationFloor,
+  estatePopulationShare,
+  minimumAllocationShare,
+  stabilityFactor,
+} from '../../engine/systems/economy';
+import { previewAllocationImpact } from './allocationImpact';
 import { canUseTaxLaw } from '../../engine/systems/tax';
 import { useGameStore } from '../state/store';
 
@@ -53,20 +60,33 @@ export function EstatesPanel() {
     sum + (content.provinces.get(province.id)?.landholding ?? 0), 0);
   const populationWeights = configs.map(config => estatePopulationShare(content, country.tag, config.key));
   const populationWeightTotal = populationWeights.reduce((sum, value) => sum + value, 0);
-  const raw = configs.map((config, index) => ({
-    ...config,
-    minimum: minimumAllocationShare(country.estates[config.key]?.influence ?? 0),
-    value: Math.max(
-      minimumAllocationShare(country.estates[config.key]?.influence ?? 0),
-      country.allocation[config.key] ?? config.incomeShare * 100,
-    ),
-    population: totalPopulation * (populationWeights[index] ?? 0) / Math.max(0.01, populationWeightTotal),
-  }));
-  const rawTotal = raw.reduce((sum, config) => sum + config.value, 0);
-  const scale = rawTotal > 0 ? 100 / rawTotal : 0;
-  const shares = raw.map(config => config.value * scale / 100);
+  const raw = configs.map((config, index) => {
+    const estate = country.estates[config.key];
+    const influence = estate?.influence ?? 0;
+    const minimum = minimumAllocationShare(influence);
+    const floor = estate
+      ? estateAllocationFloor(content, country.tag, config.key, influence, estate.allocationUnlocked)
+      : minimum;
+    return {
+      ...config,
+      minimum,
+      floor,
+      unlocked: estate?.allocationUnlocked === true,
+      value: Math.max(floor, country.allocation[config.key] ?? config.incomeShare * 100),
+      population: totalPopulation * (populationWeights[index] ?? 0) / Math.max(0.01, populationWeightTotal),
+    };
+  });
+  // 与引擎同一套「带下限归一化」：预览份额不会绕过既得利益锁定。
+  const sharesMap = distributeAllocation(
+    Object.fromEntries(raw.map(config => [config.key, config.value])),
+    Object.fromEntries(raw.map(config => [config.key, config.floor])),
+  );
+  const shares = raw.map(config => (sharesMap[config.key] ?? 0) / 100);
+  const floorTotal = raw.reduce((sum, config) => sum + config.floor, 0);
   const lastAllocation = report?.allocation ?? {};
-  const lastTax = report?.taxByEstate ?? {};
+  // 用入银部分（silverByEstate）而不是含粮折的总税，否则预计收入与月报的「总收入」不可比，
+  // 会把基层维稳等按收入估计的支出一起抬高。
+  const lastTax = report?.silverByEstate ?? {};
   const projectedTax = raw.reduce((sum, config, index) => {
     const previous = lastAllocation[config.key] ?? shares[index] ?? 0;
     const tax = lastTax[config.key] ?? 0;
@@ -76,11 +96,25 @@ export function EstatesPanel() {
   const projectedIncome = projectedTax + projectedTrade;
   const projectedRatio = (report?.income ?? 0) > 0 ? projectedIncome / (report?.income ?? 1) : 1;
   const projectedCorruption = (report?.corruptionLoss ?? 0) * projectedRatio;
-  const projectedLoyaltyCost = (report?.loyaltyCost ?? 0) * projectedRatio;
+  // 与引擎一致：维稳基数按史实惯例份额推算，不随玩家拖动分配而变化。
+  const referenceTax = raw.reduce((sum, config) => {
+    // report.allocation 存的是 0–1 的份额，与 config.incomeShare 同量纲。
+    const previous = lastAllocation[config.key] ?? 0;
+    const tax = lastTax[config.key] ?? 0;
+    return sum + (previous > 0 ? tax * config.incomeShare / previous : 0);
+  }, 0);
+  // silverByEstate 是封锁/过度扩张折扣前的值；用月报实际银税把这个折扣补回来。
+  const lastSilverTotal = Object.values(lastTax).reduce((sum, value) => sum + value, 0);
+  const taxedIncome = Math.max(0, (report?.income ?? 0) - projectedTrade);
+  const referenceIncome = lastSilverTotal > 0
+    ? taxedIncome * referenceTax / lastSilverTotal + projectedTrade
+    : projectedTrade;
+  // 与月结同构的下月预览：份额 → 各阶级忠诚 → 稳定目标；基层人口/忠诚 → 基层维稳。
+  const impact = previewAllocationImpact(content, country, configs, shares, referenceIncome);
   const projectedPressure = report?.expenseCourt ?? 0;
   const projectedArmyDue = report?.expenseArmy ?? 0;
   // 与引擎一致：腐败/维稳先扣收入，维持成本可超支，军饷再吃现金。
-  const projectedAvailable = projectedIncome - projectedCorruption - projectedLoyaltyCost - projectedPressure;
+  const projectedAvailable = projectedIncome - projectedCorruption - impact.maintenanceCost - projectedPressure;
   const projectedLiquid = Math.max(0, projectedAvailable + country.treasury);
   const projectedArmy = Math.min(projectedArmyDue, projectedLiquid);
   const projectedCashAfterArmy = Math.max(0, projectedLiquid - projectedArmy);
@@ -110,11 +144,26 @@ export function EstatesPanel() {
     <div className="panel allocation-panel">
       <h2>分配</h2>
       <p className="muted">
-        全国人口与田地先形成经济大盘，再按阶级分配。影响力决定每个阶级的最低分配份额；份额越高，可征的税越多，但也要承担更多维稳成本。
+        全国人口与田地先形成经济大盘，再按阶级分配。份额高于惯例会让该阶级的影响力缓慢上升（反之下降），
+        影响力再决定下月的最低分配份额。影响力越大，越难把财富从该阶级手里拿走：未改革时只能在惯例份额附近小幅下调，
+        完成该阶级的税制改革后锁定才会解除。只有农民与匠户是维稳对象，其低忠诚才会产生基层维稳成本。
       </p>
       {!report && (
         <p className="muted">尚未进行首次月度结算，下方经济数字会在首月结算后更新。</p>
       )}
+      <div className="allocation-preview">
+        <span>当前分配预计温饱 <b className={foodMonths !== null && foodMonths < 1 ? 'danger' : 'good'}>{foodMonths === null ? '—（首月结算后显示）' : `${foodMonths.toFixed(1)} 个月`}</b></span>
+        <span>预计月净银（不含火耗） <b className={projectedNet < 0 ? 'danger' : ''}>{Math.round(projectedNet).toLocaleString()} 两</b></span>
+        <span>预计购粮 <b>{Math.round(projectedFood).toLocaleString()} 石</b></span>
+        <span>
+          预计稳定（下月） <b className={impact.stabilityDelta >= 0 ? 'good' : 'danger'}>{impact.stability.toFixed(1)}</b>
+          <small className="muted">（{impact.stabilityDelta >= 0 ? '+' : ''}{impact.stabilityDelta.toFixed(2)}/月，目标 {impact.stabilityTarget.toFixed(0)}）</small>
+        </span>
+        <span>
+          预计基层维稳（下月） <b className="danger">-{Math.round(impact.maintenanceCost).toLocaleString()} 两/月</b>
+          <small className="muted">（农民+匠户占人口 {(impact.bottomPopShare * 100).toFixed(0)}%，基层忠诚 {impact.bottomLoyalty.toFixed(1)}）</small>
+        </span>
+      </div>
       <div className="allocation-top">
         <div className="allocation-pie-wrap">
           <svg className="allocation-pie-svg" viewBox="0 0 100 100" role="img" aria-label="财富大盘分配饼图">
@@ -172,11 +221,6 @@ export function EstatesPanel() {
           {country.corruption >= 70 && <p className="danger">腐败正在吞掉约 {Math.round(Math.min(85, country.corruption / 135 * 100))}% 的税收；养廉银或「京察/考成」可降低腐败。</p>}
         </div>
       </div>
-      <div className="allocation-preview">
-        <span>当前分配预计温饱 <b className={foodMonths !== null && foodMonths < 1 ? 'danger' : 'good'}>{foodMonths === null ? '—（首月结算后显示）' : `${foodMonths.toFixed(1)} 个月`}</b></span>
-        <span>预计月净银（不含火耗） <b className={projectedNet < 0 ? 'danger' : ''}>{Math.round(projectedNet).toLocaleString()} 两</b></span>
-        <span>预计购粮 <b>{Math.round(projectedFood).toLocaleString()} 石</b></span>
-      </div>
 
       <h3>阶级分配</h3>
       {raw.length === 0 && <p className="muted">本国没有可分配阶级。</p>}
@@ -187,22 +231,33 @@ export function EstatesPanel() {
           .filter(law => law.country === undefined || law.country === country.tag)
           .sort((a, b) => a.rate - b.rate);
         const currentLaw = content.taxLaws.get(estate.taxLaw);
-        const populationShare = totalPopulation > 0 ? config.population / totalPopulation : 0;
-        const loyaltyPreview = (shares[index]! - populationShare) * 3;
+        // 与引擎一致：忠诚漂移以史实惯例份额为基准，而不是人口占比。
+        const loyaltyPreview = (shares[index]! - config.incomeShare) * 3;
+        const projectedInfluence = impact.influences[index] ?? estate.influence;
+        const projectedMinimum = impact.minimums[index] ?? config.minimum;
+        const minimumWillBind = projectedMinimum > shares[index]! * 100 + 0.05;
+        // 该阶级最多能拿到的份额：其余阶级的可动下限之和之外的部分。
+        const maxShare = Math.round(
+          Math.max(config.floor, 100 - Math.max(0, floorTotal - config.floor)) * 100,
+        ) / 100;
+        const atFloor = !config.unlocked && config.value <= config.floor + 0.05;
         return (
           <div className="allocation-card" key={config.key}>
             <div className="allocation-card-head">
               <span className="allocation-swatch" style={{ background: estateColor(config.key) }} />
               <b>{config.name}</b>
-              <span className="muted">影响 {estate.influence.toFixed(0)} · 最低 {config.minimum.toFixed(1)}%</span>
+              <span className="muted">
+                影响 {estate.influence.toFixed(1)} → {impact.influences[index]!.toFixed(1)}
+                {' '}· 政治底线 {config.minimum.toFixed(2)}% → {impact.minimums[index]!.toFixed(2)}%
+              </span>
               <strong>{(shares[index]! * 100).toFixed(1)}%</strong>
             </div>
             <input
               className="allocation-range"
               type="range"
-              min={config.minimum}
-              max={100}
-              step={0.5}
+              min={config.floor}
+              max={maxShare}
+              step="any"
               value={config.value}
               onPointerDown={pauseForDrag}
               onPointerUp={resumeAfterDrag}
@@ -214,12 +269,27 @@ export function EstatesPanel() {
                 value: Number(event.target.value),
               })}
             />
+            {!config.unlocked && config.floor > config.minimum + 0.05 && (
+              <p className={atFloor ? 'warn' : 'muted'}>
+                分配锁定：可动下限 {config.floor.toFixed(1)}%。
+                {atFloor ? ' 已触底，启动该阶级的税制改革才能继续下调。' : ''}
+              </p>
+            )}
             <div className="allocation-metrics">
               <span>人口 {Math.round(config.population).toLocaleString()}（{totalPopulation > 0 ? (config.population / totalPopulation * 100).toFixed(1) : '0.0'}%）</span>
+              <span className={config.unlocked ? 'good' : 'muted'}>
+                可动下限 {config.floor.toFixed(1)}%{config.unlocked ? '（已改革解锁）' : ''}
+              </span>
               <span>忠诚 {estate.loyalty.toFixed(0)}</span>
               <span className={loyaltyPreview < 0 ? 'danger' : 'good'}>分配忠诚影响 {loyaltyPreview >= 0 ? '+' : ''}{loyaltyPreview.toFixed(2)}/月</span>
+              <span className={projectedInfluence < estate.influence ? 'warn' : 'good'}>
+                影响力 {projectedInfluence >= estate.influence ? '+' : ''}{(projectedInfluence - estate.influence).toFixed(2)}/月
+              </span>
+              {minimumWillBind && (
+                <span className="warn">下月份额将被最低 {projectedMinimum.toFixed(2)}% 抬升</span>
+              )}
               <span>本阶级收入 {Math.round(estate.income / 12).toLocaleString()} 两/月</span>
-              <span>实际入库 {Math.round(estate.collected).toLocaleString()} 两/月</span>
+              <span>实收税（含粮折） {Math.round(estate.collected).toLocaleString()} 两/月</span>
               <span className="danger">腐败归属 -{Math.round(report?.corruptionByEstate?.[config.key] ?? 0).toLocaleString()} 两/月</span>
             </div>
             <div className="allocation-controls">

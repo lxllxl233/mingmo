@@ -109,6 +109,7 @@ export const countrySchema = z.object({
   playable: z.boolean(),
   aiPersonality: z.enum(['aggressive', 'defensive', 'opportunistic', 'mercantile', 'bureaucratic']),
   factions: z.array(z.string()).default([]),
+  factionInfluence: z.record(z.string(), z.number().min(0).max(100)).default({}),
   uniqueMechanic: z.string(),
   goal: z.string().max(80).default(''),
   background: z.string().max(240).default(''),
@@ -117,8 +118,7 @@ export const countrySchema = z.object({
   pressure: z.object({
     silverPerMonth: z.number().min(0).default(0),
     silverPerProvince: z.number().min(0).default(0),
-    stabilityMonthly: z.number().default(0),
-    corruptionMonthly: z.number().default(0),
+    estateLoyaltyMonthly: z.number().default(0),
     unrestMonthly: z.number().default(0),
   }).strict().optional(),
   leader: leaderSchema.optional(),
@@ -150,6 +150,7 @@ export const countryEstateSchema = z.object({
   influence: z.number().min(0).max(100),
   loyalty: z.number().min(0).max(100),
   incomeShare: z.number().min(0).max(1),
+  populationShare: z.number().min(0).max(1).optional(),
   privileges: z.array(z.string()).default([]),
   taxLaw: z.string(),
   custom: z.boolean().optional(),
@@ -162,6 +163,19 @@ export const countryEstatesSchema = z.object({
   const sum = value.estates.reduce((total, estate) => total + estate.incomeShare, 0);
   if (Math.abs(sum - 1) > 0.01) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['estates'], message: `income_share sum ${sum} != 1` });
+  }
+  const populationShares = value.estates
+    .map(estate => estate.populationShare)
+    .filter((share): share is number => share !== undefined);
+  if (populationShares.length > 0) {
+    if (populationShares.length !== value.estates.length) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['estates'], message: 'population_share must be set for every estate' });
+    } else {
+      const populationSum = populationShares.reduce((total, share) => total + share, 0);
+      if (Math.abs(populationSum - 1) > 0.01) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['estates'], message: `population_share sum ${populationSum} != 1` });
+      }
+    }
   }
   if (new Set(value.estates.map(estate => estate.key)).size !== value.estates.length) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['estates'], message: 'duplicate estate key' });
@@ -240,9 +254,11 @@ export const eventSchema = z.object({
   historicalContext: z.string().max(400).optional(),
   scope: z.enum(['country', 'province', 'estate']),
   country: z.union([tag, z.literal('any')]).optional(),
+  tags: z.array(tag).min(1).optional(),
   estate: z.string().optional(),
   trigger: z.unknown(),
   mtth: z.number().int().min(1).max(36500).optional(),
+  group: z.string().min(1).max(40).optional(),
   fireOnce: z.boolean().default(true),
   repeatable: z.boolean().optional(),
   cooldownDays: z.number().int().min(0).max(3650).optional(),
@@ -336,6 +352,11 @@ export const namedModifierSchema = z.object({
   modifiers: z.record(z.string(), z.number()),
 }).strict();
 
+const estateOverrideSchema = z.object({
+  influence: z.number().min(0).max(100).optional(),
+  loyalty: z.number().min(0).max(100).optional(),
+}).strict();
+
 export const scenarioSchema = z.object({
   id: z.string().min(1).max(20),
   name: z.string().min(1).max(30),
@@ -349,6 +370,8 @@ export const scenarioSchema = z.object({
   startingTechs: z.record(z.string(), z.array(z.string())).default({}),
   provinceOverrides: z.record(z.string(), tag).default({}),
   countryOverrides: z.record(z.string(), z.record(z.string(), z.unknown())).default({}),
+  estateOverrides: z.record(z.string(), z.record(z.string(), estateOverrideSchema)).default({}),
+  factionOverrides: z.record(z.string(), z.record(z.string(), z.number().min(0).max(100))).default({}),
   armies: z.array(z.object({
     tag,
     template: id,

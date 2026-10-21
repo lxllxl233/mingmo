@@ -86,11 +86,13 @@ export function applyEffect(effect: Effect, context: EffectContext): void {
   const nation = state.countries[country];
   if (!nation) return;
 
-  if ('addStability' in effect) nation.stability = clamp(nation.stability + effect.addStability, 0, 100);
-  else if ('addMandate' in effect) nation.mandate = clamp(nation.mandate + effect.addMandate, 0, 100);
-  else if ('addCorruption' in effect) nation.corruption = clamp(nation.corruption + effect.addCorruption, 0, 100);
-  else if ('addAuthority' in effect) nation.authority = clamp(nation.authority + effect.addAuthority, 0, 100);
-  else if ('addPoliticalPower' in effect) nation.politicalPower = clamp(nation.politicalPower + effect.addPoliticalPower, 0, 200);
+  // 内容层不直接改稳定/天命/皇权/腐败：全国性情绪只落到各阶级忠诚，
+  // 再由月结把它们加权折算成稳定与天命。
+  if ('addAllEstateLoyalty' in effect) {
+    for (const estate of Object.values(nation.estates)) {
+      estate.loyalty = clamp(estate.loyalty + effect.addAllEstateLoyalty, 0, 100);
+    }
+  } else if ('addPoliticalPower' in effect) nation.politicalPower = clamp(nation.politicalPower + effect.addPoliticalPower, 0, 200);
   else if ('addTreasury' in effect) {
     nation.treasury += effect.addTreasury;
     if (nation.treasury < 0) {

@@ -16,7 +16,7 @@ events:
         ai_chance: 60
         effect:
           - add_treasury: -80000
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - add_army_loyalty: 5
           - set_flag: ningyuan_victory
       - id: negotiate
@@ -25,7 +25,7 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: -30000
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - add_relation: { target: QING, value: 10 }
 
   - id: hist_shaanxi_famine_1628
@@ -46,7 +46,7 @@ events:
         effect:
           - add_treasury: -100000
           - add_food: -150000
-          - add_stability: 6
+          - add_all_estate_loyalty: 6
           - add_estate_loyalty: { estate: peasants, value: 8 }
       - id: ignore
         name: 严催如故
@@ -54,7 +54,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 50000
-          - add_stability: -8
+          - add_all_estate_loyalty: -8
           - add_estate_loyalty: { estate: peasants, value: -12 }
   - id: hist_kong_youde_1631
     title: 吴桥兵变
@@ -74,7 +74,7 @@ events:
         effect:
           - add_treasury: -100000
           - add_army_loyalty: 8
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
           - set_flag: captured_portuguese_guns
       - id: suppress
         name: 发兵进剿
@@ -83,7 +83,7 @@ events:
         effect:
           - add_manpower: -15000
           - add_treasury: -50000
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
           - add_army_loyalty: 2
 
   - id: hist_xiangyang_1643
@@ -102,8 +102,7 @@ events:
         tooltip: 天命与稳定上升，行政开支增加。
         ai_chance: 65
         effect:
-          - add_mandate: 5
-          - add_stability: 4
+          - add_all_estate_loyalty: 5.25
           - add_treasury: -60000
       - id: mobile
         name: 继续流动作战
@@ -111,7 +110,7 @@ events:
         ai_chance: 35
         effect:
           - add_army_loyalty: 6
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
 
   - id: hist_yangzhou_1645
     title: 扬州十日
@@ -130,7 +129,7 @@ events:
         ai_chance: 40
         effect:
           - add_treasury: 100000
-          - add_stability: -6
+          - add_all_estate_loyalty: -6
           - add_estate_loyalty: { estate: landlords, value: -10 }
       - id: restrain
         name: 约束军纪
@@ -138,7 +137,7 @@ events:
         ai_chance: 60
         effect:
           - add_treasury: -50000
-          - add_stability: 5
+          - add_all_estate_loyalty: 5
           - add_estate_loyalty: { estate: landlords, value: 6 }
 
   - id: hist_guilin_1652
@@ -160,14 +159,13 @@ events:
           - add_army_loyalty: 10
           - add_treasury: -80000
           - add_food: -80000
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
       - id: hold
         name: 固守广西
         tooltip: 稳住阵脚，天命上升。
         ai_chance: 45
         effect:
-          - add_stability: 4
-          - add_mandate: 4
+          - add_all_estate_loyalty: 5
           - add_treasury: -30000
 
   - id: hist_zeelandia_1661
@@ -195,8 +193,7 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: -30000
-          - add_stability: 3
-          - add_mandate: 3
+          - add_all_estate_loyalty: 3.75
 
   - id: hist_nerchinsk_1650
     title: 黑龙江边务
@@ -216,7 +213,7 @@ events:
         effect:
           - add_treasury: -60000
           - add_army_loyalty: 5
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: trade
         name: 遣使通商
         tooltip: 关系改善，但边疆威慑下降。
@@ -224,4 +221,4 @@ events:
         effect:
           - add_treasury: 30000
           - add_relation: { target: QING, value: 10 }
-          - add_stability: -1
+          - add_all_estate_loyalty: -1

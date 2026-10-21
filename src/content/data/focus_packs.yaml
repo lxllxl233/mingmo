@@ -284,7 +284,7 @@
           - { id: xi_expand_7, name: 争天下, tier: 6 }
       - name: 恐怖
         kind: unique
-        modifier: { stability_monthly: -0.08, army_attack_pct: 4 }
+        modifier: { estate_loyalty_monthly: -0.08, army_attack_pct: 4 }
         desc: 以杀立威最快，也最快把人心杀光。
         focuses:
           - { id: xi_terror_1, name: 严刑, tier: 0 }

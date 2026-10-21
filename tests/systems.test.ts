@@ -205,3 +205,20 @@ describe('victory', () => {
   });
 });
 
+describe('content effects route through estates', () => {
+  it('changes every estate loyalty without touching stability directly', () => {
+    const state = createInitialState(content, '1627', 42, 'MING');
+    const ming = state.countries['MING'];
+    if (!ming) throw new Error('missing MING');
+    const stabilityBefore = ming.stability;
+    const loyaltyBefore = Object.fromEntries(
+      Object.entries(ming.estates).map(([key, estate]) => [key, estate.loyalty]),
+    );
+    applyEffects([{ addAllEstateLoyalty: 5 }], { state, content, country: 'MING' });
+    expect(ming.stability).toBe(stabilityBefore);
+    for (const [key, estate] of Object.entries(ming.estates)) {
+      expect(estate.loyalty).toBeCloseTo((loyaltyBefore[key] ?? 0) + 5, 6);
+    }
+  });
+});
+

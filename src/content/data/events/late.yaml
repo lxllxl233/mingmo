@@ -28,7 +28,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 60000
-          - add_corruption: 3
+          - add_all_estate_loyalty: -1.5
           - add_estate_loyalty: { estate: peasants, value: -3 }
       - id: austerity
         name: 厉行节约
@@ -36,7 +36,7 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 20000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_estate_loyalty: { estate: ruling, value: -3 }
 
   - id: late_e_coastal_evacuation
@@ -58,7 +58,7 @@ events:
         effect:
           - add_treasury: 40000
           - add_food: -60000
-          - add_stability: -3
+          - add_all_estate_loyalty: -3
       - id: relax
         name: 弛禁通商
         tooltip: 商民得利，海防压力上升。
@@ -92,7 +92,7 @@ events:
         tooltip: 朝局安稳，学术停滞。
         ai_chance: 45
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_estate_loyalty: { estate: landlords, value: 3 }
 
   - id: late_e_office_sale
@@ -113,14 +113,14 @@ events:
         ai_chance: 55
         effect:
           - add_treasury: 120000
-          - add_corruption: 5
+          - add_all_estate_loyalty: -2.5
           - add_estate_loyalty: { estate: ruling, value: -3 }
       - id: refuse
         name: 拒绝开例
         tooltip: 吏治稍清，财政仍紧。
         ai_chance: 45
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_treasury: -10000
 
   - id: late_e_local_militia
@@ -148,7 +148,7 @@ events:
         tooltip: 稳定上升，兵员有限。
         ai_chance: 45
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_manpower: 10000
 
   - id: late_e_land_survey
@@ -169,14 +169,14 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 80000
-          - add_corruption: -4
+          - add_all_estate_loyalty: 2
           - add_estate_loyalty: { estate: landlords, value: -6 }
       - id: keep
         name: 照旧额
         tooltip: 士绅安稳，财政照旧吃紧。
         ai_chance: 50
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_estate_loyalty: { estate: landlords, value: 3 }
 
   - id: late_e_granary
@@ -198,7 +198,7 @@ events:
         effect:
           - add_treasury: -60000
           - add_food: 150000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: skip
         name: 缓建
         tooltip: 省银，粮储吃紧。
@@ -224,7 +224,7 @@ events:
         tooltip: 士绅归心，政治力上升。
         ai_chance: 55
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_political_power: 20
           - add_estate_loyalty: { estate: landlords, value: 4 }
       - id: suppress
@@ -232,8 +232,7 @@ events:
         tooltip: 权威上升，士绅离心。
         ai_chance: 45
         effect:
-          - add_authority: 3
-          - add_corruption: -2
+          - add_all_estate_loyalty: 2.5
           - add_estate_loyalty: { estate: landlords, value: -5 }
 
   - id: late_e_gunpowder_reform
@@ -261,7 +260,7 @@ events:
         ai_chance: 45
         effect:
           - add_manpower: 15000
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
 
   - id: late_e_loyalist_remnant
     title: 遗民起事
@@ -280,7 +279,7 @@ events:
         tooltip: 稳定上升，耗银。
         ai_chance: 55
         effect:
-          - add_stability: 3
+          - add_all_estate_loyalty: 3
           - add_treasury: -30000
       - id: crush
         name: 进剿
@@ -289,7 +288,7 @@ events:
         effect:
           - add_manpower: 15000
           - add_army_loyalty: 2
-          - add_stability: -2
+          - add_all_estate_loyalty: -2
 
   - id: late_e_yesong
     title: 礼讼
@@ -308,14 +307,14 @@ events:
         tooltip: 权威上升，官僚支持。
         ai_chance: 50
         effect:
-          - add_authority: 4
+          - add_all_estate_loyalty: 2
           - add_estate_loyalty: { estate: ruling, value: 3 }
       - id: southern
         name: 采南人礼论
         tooltip: 稳定上升，士林归心。
         ai_chance: 50
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_estate_loyalty: { estate: landlords, value: 3 }
 
   - id: late_e_genroku
@@ -336,13 +335,13 @@ events:
         ai_chance: 50
         effect:
           - add_treasury: 60000
-          - add_corruption: 4
+          - add_all_estate_loyalty: -2
       - id: frugal
         name: 厉行俭约
         tooltip: 稳定上升，商人不满。
         ai_chance: 50
         effect:
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
           - add_estate_loyalty: { estate: merchants, value: -3 }
 
   - id: late_e_dalai_visit
@@ -362,14 +361,14 @@ events:
         tooltip: 权威与银两增加，教权稍抑。
         ai_chance: 50
         effect:
-          - add_authority: 3
+          - add_all_estate_loyalty: 1.5
           - add_treasury: 30000
       - id: stay
         name: 闭关修行
         tooltip: 教众归心，稳定上升。
         ai_chance: 50
         effect:
-          - add_stability: 1
+          - add_all_estate_loyalty: 1
           - add_estate_loyalty: { estate: landlords, value: 4 }
 
   - id: late_e_river_works
@@ -392,14 +391,14 @@ events:
         effect:
           - add_treasury: -50000
           - add_food: 60000
-          - add_stability: 2
+          - add_all_estate_loyalty: 2
       - id: defer
         name: 缓修
         tooltip: 省银，粮食受损。
         ai_chance: 45
         effect:
           - add_food: -20000
-          - add_stability: -1
+          - add_all_estate_loyalty: -1
 
   # 1650 单极的追赶路径（Phase 2.2）：三藩之乱是真实历史，1673 年吴三桂起兵反清，
   # 半壁动摇。它只在大清仍占有 ≥200 省（即还在雪球）时触发，用真机制给反清势力开一个窗口，
@@ -422,20 +421,20 @@ events:
         tooltip: 糜烂数年，国库、兵源与稳定大损。
         ai_chance: 60
         effect:
-          - add_stability: -8
+          - add_all_estate_loyalty: -8
           - add_manpower: -40000
           - add_treasury: -150000
           - add_army_loyalty: -8
-          - add_corruption: 3
+          - add_all_estate_loyalty: -1.5
           - set_flag: qing_three_feudatories
       - id: negotiate
         name: 招抚议和
         tooltip: 暂缓兵戈，但养痈遗患，腐败滋生。
         ai_chance: 40
         effect:
-          - add_stability: -4
+          - add_all_estate_loyalty: -4
           - add_treasury: -80000
-          - add_corruption: 6
+          - add_all_estate_loyalty: -3
           - add_army_loyalty: -3
           - set_flag: qing_three_feudatories
 
@@ -457,15 +456,12 @@ events:
         tooltip: 乱后重建，朝局渐稳，皇权上升。
         ai_chance: 60
         effect:
-          - add_stability: 4
-          - add_authority: 4
+          - add_all_estate_loyalty: 6
           - add_treasury: 100000
       - id: purge
         name: 秋后算账
         tooltip: 严惩从逆，吏治稍清，却失人心。
         ai_chance: 40
         effect:
-          - add_authority: 6
-          - add_corruption: -3
-          - add_stability: -2
+          - add_all_estate_loyalty: 2.5
 

@@ -2,7 +2,7 @@ import type { ContentIndex } from '../../content/types';
 import { isQuarterStart } from '../core/clock';
 import type { GameState } from '../state/types';
 import { touchMap } from '../state/types';
-import { countryProvinceList } from './economy';
+import { countryProvinceList, customaryAllocationShare } from './economy';
 import { aggregateCountryModifiers } from '../rules/modifiers';
 import { topCourtFaction } from './court';
 import { topBannerFaction } from './banners';
@@ -27,6 +27,26 @@ function normalizeInfluence(state: GameState): void {
   }
 }
 
+/** 份额偏离惯例每 1 个百分点，每月带来多少影响力变化。刻意取小：影响力以「年」为单位变化。 */
+export const INFLUENCE_DRIFT_PER_SHARE = 2;
+
+/** 单步漂移，与月结共用；`share` / `customary` 均为 0–1 的比例。 */
+export function driftedInfluence(influence: number, share: number, customary: number): number {
+  return clamp(influence + (share - customary) * INFLUENCE_DRIFT_PER_SHARE, 0, 100);
+}
+
+/**
+ * 财富份额缓慢转化为政治影响力：份额高于史实惯例的阶级每月积累政治资本，
+ * 低于惯例则流失。影响力随后决定下月的最低分配份额。
+ */
+function driftInfluenceFromAllocation(nation: GameState['countries'][string], content: ContentIndex): void {
+  for (const estate of Object.values(nation.estates)) {
+    const share = (nation.allocation[estate.key] ?? 0) / 100;
+    const customary = customaryAllocationShare(content, nation.tag, estate.key);
+    estate.influence = driftedInfluence(estate.influence, share, customary);
+  }
+}
+
 function driftFactions(nation: GameState['countries'][string]): void {
   for (const name of Object.keys(nation.factions)) {
     const current = nation.factions[name] ?? 0;
@@ -41,10 +61,9 @@ function rebelTag(state: GameState, owner: string): string | null {
 }
 
 export function runMonthlyPolitics(state: GameState, content: ContentIndex): void {
-  if (isQuarterStart(state.day)) normalizeInfluence(state);
-
   for (const nation of Object.values(state.countries)) {
     if (!nation.alive) continue;
+    driftInfluenceFromAllocation(nation, content);
     const modifiers = aggregateCountryModifiers(state, content, nation.tag);
     const pressure = content.countries.get(nation.tag)?.pressure;
     driftFactions(nation);
@@ -72,9 +91,7 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
     if (nation.stability < content.balance.politics.lowStabilityThreshold) {
       nation.authority = clamp(nation.authority - 0.1, 0, 100);
     }
-    nation.authority = clamp(nation.authority + (modifiers['authority_monthly'] ?? 0), 0, 100);
-    nation.corruption = clamp(nation.corruption + (pressure?.corruptionMonthly ?? 0), 0, content.balance.politics.maxCorruption);
-    nation.stability = clamp(nation.stability + (pressure?.stabilityMonthly ?? 0), 0, 100);
+    nation.corruption = clamp(nation.corruption, 0, content.balance.politics.maxCorruption);
 
     const court = topCourtFaction(state, nation.tag);
     if (court === 'donglin') {
@@ -231,6 +248,6 @@ export function runMonthlyPolitics(state: GameState, content: ContentIndex): voi
       }
     }
   }
+  // 归一化放在漂移之后：季度校正总量到 100，但不抹掉本季度的相对变化。
+  if (isQuarterStart(state.day)) normalizeInfluence(state);
 }
-
-
